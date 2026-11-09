@@ -1,6 +1,6 @@
 # API — Cáterin
 
-- Estado: implementados auth (T03), inventario, proveedores, recetas e importación (T04), y pedidos y cotizaciones (T05). El resto es diseño. La fuente de verdad será el OpenAPI generado por FastAPI en `/api/v1/openapi.json` (con interfaz en `/docs`). Este documento resume y se mantiene al día con cada tarea.
+- Estado: implementados auth (T03), inventario, proveedores, recetas e importación (T04), pedidos y cotizaciones (T05) y métricas (T09). El resto es diseño. La fuente de verdad será el OpenAPI generado por FastAPI en `/api/v1/openapi.json` (con interfaz en `/docs`). Este documento resume y se mantiene al día con cada tarea.
 - Base: `https://<dominio>/api/v1`. Todo es JSON (UTF-8) salvo la carga de archivos (multipart), los PDF y el *streaming* del asistente (SSE).
 
 ## 1. Autenticación y roles
@@ -130,12 +130,17 @@ Todas las respuestas de error usan `application/problem+json`:
 | DELETE | `/documents/{id}` | Borra el documento y sus fragmentos |
 
 ### metrics (T09)
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| POST | `/metrics/survey` | Encuesta de 1 a 5 estrellas (+ comentario opcional) |
-| POST | `/metrics/quote-timing` | Tiempo de una cotización (inicio y fin medidos en la PWA) |
-| POST | `/metrics/manual-baseline` | Registro del tiempo de una cotización manual de referencia |
-| GET | `/metrics/summary` | Panel: satisfacción, tiempo de cotización antes/después, latencia por nivel, % de consultas sin LLM — solo dueña |
+| Método | Ruta | Quién | Descripción |
+|--------|------|-------|-------------|
+| POST | `/metrics/survey` | Cualquiera | `{ "stars": 1..5, "comment": null, "context": "general" \| "quote" \| "assistant" \| "vision" }` |
+| POST | `/metrics/quote-timing` | Cualquiera | `{ "started_at", "ended_at", "quote_id", "source" }` medidos en la PWA (con zona horaria). Máximo 24 h. Con `quote_id` es idempotente: si esa cotización ya tiene tiempo responde **200** con el registro existente; si la cotización es de otra pyme, 404 |
+| POST | `/metrics/manual-baseline` | Dueña | `{ "task": "quote" \| "data_lookup", "seconds", "reference", "repetition", "measured_on", "tool", "notes" }`. Protocolo: `docs/metrics/protocolo-cotizacion-manual.md` |
+| GET | `/metrics/summary?from=&to=` | Dueña | Satisfacción (promedio, n, distribución), mediana del tiempo de cotización con Cáterin y a mano, mediana de buscar un dato (asistente y a mano), latencia p50/p95 por nivel, % sin LLM (nivel 0), % de degradaciones (`fallback_reason`), periodo, `low_n` en cada cifra (n < 5) y `warnings` |
+| GET | `/metrics/summary.csv?from=&to=` | Dueña | El mismo resumen en CSV (`;`, coma decimal, UTF-8 con BOM) para Excel |
+
+- `from` y `to` son días en `America/Santiago`, ambos incluidos; por defecto, desde el inicio hasta hoy. Las mediciones manuales no se filtran por periodo (son la línea base).
+- Percentiles con interpolación lineal, igual que `percentile_cont` de Postgres. Sin datos, el valor es `null` (nunca 0).
+- La PWA ya no manda `started_at` al crear la cotización: usa `/metrics/quote-timing`. El campo `started_at` de `POST /orders/{id}/quotes` se mantiene por compatibilidad y comparte la misma regla de un registro por cotización.
 
 ## 5. Convenciones
 

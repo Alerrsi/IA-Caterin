@@ -12,6 +12,7 @@ from app.core.request_context import RequestIdMiddleware
 from app.modules.auth.router import router as auth_router
 from app.modules.imports.router import router as imports_router
 from app.modules.inventory.router import router as inventory_router
+from app.modules.metrics.router import router as metrics_router
 from app.modules.quotes.router import router as quotes_router
 from app.modules.recipes.router import router as recipes_router
 from app.modules.suppliers.router import router as suppliers_router
@@ -50,6 +51,7 @@ def create_app() -> FastAPI:
         recipes_router,
         imports_router,
         quotes_router,
+        metrics_router,
     ):
         api.include_router(router)
     app.include_router(api)

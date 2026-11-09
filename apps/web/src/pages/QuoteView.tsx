@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { api, apiBlob, ApiError, patch, post, type QuoteOut, type ShoppingList } from '../api'
+import { StarSurvey } from '../components/StarSurvey'
 import { Alert, Button, Page, Spinner } from '../components/ui'
 import { formatCLP, formatDate, formatQty, formatWeekdays } from '../format'
 import { t } from '../i18n'
@@ -198,6 +199,10 @@ export default function QuoteView({ id }: { id: string }) {
           </div>
         )}
       </details>
+
+      <div className="mt-6">
+        <StarSurvey key={id} context="quote" />
+      </div>
     </Page>
   )
 }

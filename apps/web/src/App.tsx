@@ -3,6 +3,7 @@ import { OfflineBanner, Spinner } from './components/ui'
 import { t } from './i18n'
 import Home from './pages/Home'
 import Login from './pages/Login'
+import Metrics from './pages/Metrics'
 import NewQuote from './pages/NewQuote'
 import Orders from './pages/Orders'
 import QuoteView from './pages/QuoteView'
@@ -25,6 +26,7 @@ function Routes() {
   if (quote) return <QuoteView key={quote.id} id={quote.id} />
   if (matchPath('/cotizar', path)) return <NewQuote />
   if (matchPath('/pedidos', path)) return <Orders />
+  if (matchPath('/metricas', path)) return <Metrics />
   return <Home />
 }
 

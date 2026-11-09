@@ -58,6 +58,7 @@ test('lee un pedido, ofrece sugerencias, se edita y genera la cotización', asyn
     }),
     'POST /orders': () => ({ status: 201, body: { id: 'o1', lines: [] } }),
     'POST /orders/o1/quotes': () => ({ status: 201, body: { ...incompleteQuote, id: 'q9' } }),
+    'POST /metrics/quote-timing': () => ({ status: 201, body: {} }),
   })
   window.location.hash = '#/cotizar'
   const user = userEvent.setup()
@@ -89,8 +90,16 @@ test('lee un pedido, ofrece sugerencias, se edita y genera la cotización', asyn
     { recipe_id: 'r-pino', requested_name: 'empanaditas de pino', qty: '80', unit: 'unit' },
     { recipe_id: 'r-queso', requested_name: 'empanadas', qty: '2.5', unit: 'dozen' },
   ])
-  const quoteCall = calls.find((c) => c.path === '/orders/o1/quotes')?.body as Record<string, unknown>
-  expect(quoteCall.started_at).toMatch(/^\d{4}-\d{2}-\d{2}T/)
+  // T09: el tiempo de la cotización se mide en la PWA y se envía a /metrics/quote-timing
+  const timing = await waitFor(() => {
+    const c = calls.find((x) => x.path === '/metrics/quote-timing')
+    expect(c).toBeDefined()
+    return c?.body as Record<string, string>
+  })
+  expect(timing.quote_id).toBe('q9')
+  expect(timing.source).toBe('text')
+  expect(timing.started_at).toMatch(/^\d{4}-\d{2}-\d{2}T/)
+  expect(Date.parse(timing.ended_at)).toBeGreaterThanOrEqual(Date.parse(timing.started_at))
 })
 
 test('si la IA no puede leer el pedido, ofrece el formulario a mano', async () => {

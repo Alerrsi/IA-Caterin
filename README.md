@@ -115,7 +115,9 @@ Los comandos los mantiene el equipo en `docs/tasks/T01-fundaciones.md`; si algo 
 
 1. **Satisfacción:** encuesta de 1 a 5 estrellas dentro de la app.
 2. **Tiempo de cotización:** minutos por cotización antes (manual) vs. después (Cáterin).
-3. **Tiempo de respuesta del asistente:** segundos del asistente vs. tiempo estimado de buscar el dato a mano.
+3. **Tiempo de respuesta del asistente:** segundos del asistente vs. tiempo medido de buscar el dato a mano.
+
+El tiempo "antes" se cronometra con `docs/metrics/protocolo-cotizacion-manual.md`. La dueña ve el panel en **Mis métricas** (con n, periodo y descarga CSV); el equipo puede sumar todas las pymes con `python -m app.modules.metrics.report --exclude-demo`.
 
 ## Desarrollo con agentes
 
