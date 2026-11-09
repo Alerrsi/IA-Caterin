@@ -1,5 +1,5 @@
 # T08 — Frontend PWA mobile-first
-- Estado: pendiente
+- Estado: en curso (pantallas de F3 hechas)
 - Depende de: T05, T06, T07 (por pantallas; inicio e inventario pueden empezar tras T04)
 - Funcionalidad: transversal
 
@@ -13,7 +13,8 @@ Una app que la emprendedora use desde su celular con una mano, entre una tanda y
 ## Entregables
 - [ ] **Inicio:** accesos grandes a "Cotizar", "Contar con foto", "Inventario", "Preguntar"; alertas de stock bajo y pedidos próximos.
 - [ ] **Inventario:** lista con búsqueda, ajuste rápido de stock (+/−), detalle con historial, recetas con costo.
-- [ ] **Cotizar:** pegar texto o llenar formulario → tabla editable del pedido interpretado → cotización con lista de compras y comparación → PDF (compartir con la hoja nativa del teléfono).
+- [x] **Cotizar:** pegar texto o llenar formulario → tabla editable del pedido interpretado → cotización con lista de compras → PDF. (Compartir con la hoja nativa del teléfono: pendiente; hoy se abre o descarga el PDF.)
+- [x] **Mis pedidos:** lista con "Cotizar" o "Ver cotización".
 - [ ] **Foto de producción:** cámara → conteo con cajas → corregir con +/− → confirmar.
 - [ ] **Chat:** botones de preguntas frecuentes, respuesta en *streaming*, fuente visible, pulgar arriba/abajo.
 - [ ] Importar planillas (vista previa de errores) y configuración básica (merma, margen, IVA).
@@ -41,4 +42,9 @@ Una app que la emprendedora use desde su celular con una mano, entre una tanda y
 - El tamaño del bundle afecta la carga con mala señal: presupuesto propuesto ≤ 250 KB de JS comprimido en la carga inicial (a medir).
 
 ## Resumen de cierre
-(se completa al terminar)
+**Avance parcial (9-nov-2026) — pantallas de F3:**
+- Router por hash sin dependencias (`src/router.ts`), cliente API con token en memoria, refresh automático ante 401 y problem+json (`src/api.ts`), sesión (`src/auth.tsx`), formatos es-CL (`src/format.ts`), textos en `src/i18n.ts`.
+- Pantallas: login, inicio, cotizar (pegar mensaje o formulario → tabla editable con sugerencias → pedido → cotización), cotización (totales, productos, aviso de precios faltantes, PDF, estados, lista de compras), mis pedidos. Banner "Sin conexión".
+- Verificado: lint, typecheck, 9 pruebas de Vitest, build (precache 253 KB) y 1 e2e de Playwright con el Chromium del sistema (login → 24 sopaipillas a mano → total $11.681 → PDF 200). Captura a 390 px revisada.
+- Pendiente: inventario, recetas, proveedores, importar, configuración, registro e invitación, foto, chat, cola offline e IndexedDB, encuesta, auditoría de accesibilidad.
+- El e2e deja en la base de desarrollo un pedido "Cliente E2E (demo)".

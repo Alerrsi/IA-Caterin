@@ -28,5 +28,5 @@ export default defineConfig({
     }),
   ],
   server: { proxy: { '/api': apiProxy, '/docs': apiProxy } },
-  test: { environment: 'jsdom', setupFiles: ['./src/test-setup.ts'], css: false },
+  test: { environment: 'jsdom', setupFiles: ['./src/test-setup.ts'], css: false, include: ['src/**/*.test.{ts,tsx}'] },
 })

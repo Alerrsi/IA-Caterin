@@ -1,24 +1,38 @@
-import { useEffect, useState } from 'react'
+import { AuthProvider, useAuth } from './auth'
+import { OfflineBanner, Spinner } from './components/ui'
 import { t } from './i18n'
+import Home from './pages/Home'
+import Login from './pages/Login'
+import NewQuote from './pages/NewQuote'
+import Orders from './pages/Orders'
+import QuoteView from './pages/QuoteView'
+import { matchPath, useHashPath } from './router'
 
-type Health = 'checking' | 'ok' | 'degraded' | 'down'
+function Routes() {
+  const { status } = useAuth()
+  const path = useHashPath()
+
+  if (status === 'loading') {
+    return (
+      <main className="mx-auto max-w-md p-6">
+        <Spinner label={t.loading} />
+      </main>
+    )
+  }
+  if (status === 'anonymous') return <Login />
+
+  const quote = matchPath('/cotizaciones/:id', path)
+  if (quote) return <QuoteView key={quote.id} id={quote.id} />
+  if (matchPath('/cotizar', path)) return <NewQuote />
+  if (matchPath('/pedidos', path)) return <Orders />
+  return <Home />
+}
 
 export default function App() {
-  const [health, setHealth] = useState<Health>('checking')
-
-  useEffect(() => {
-    fetch('/api/v1/health/ready')
-      .then(async (r) => setHealth(r.ok ? ((await r.json()).status as Health) : 'down'))
-      .catch(() => setHealth('down'))
-  }, [])
-
   return (
-    <main className="mx-auto max-w-md p-4">
-      <h1 className="text-3xl font-bold text-brand">{t.appName}</h1>
-      <p className="mt-1 text-stone-700">{t.tagline}</p>
-      <p role="status" className="mt-6 rounded-xl bg-white p-4 shadow-sm">
-        {t.health[health]}
-      </p>
-    </main>
+    <AuthProvider>
+      <OfflineBanner />
+      <Routes />
+    </AuthProvider>
   )
 }
