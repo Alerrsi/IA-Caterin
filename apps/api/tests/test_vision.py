@@ -127,13 +127,13 @@ def test_model_not_loaded_gives_503_and_model_endpoint(client: TestClient, demo:
         "input_size": None,
         "sha256": None,
     }
-    r = client.post(f"{API}/vision/count", headers=demo["owner"], files={"photo": ("a.jpg", _jpeg())})
+    r = client.post(f"{API}/vision/count", headers=demo["owner"], files={"image": ("a.jpg", _jpeg())})
     assert r.status_code == 503 and r.json()["code"] == "vision_model_unavailable"
 
 
 def test_count_maps_classes_to_recipes(client: TestClient, demo: dict) -> None:  # type: ignore[type-arg]
     _use(client, FakeDetector(["empanada"] * 3 + ["canape"]))
-    r = client.post(f"{API}/vision/count", headers=demo["owner"], files={"photo": ("a.jpg", _jpeg())})
+    r = client.post(f"{API}/vision/count", headers=demo["owner"], files={"image": ("a.jpg", _jpeg())})
     assert r.status_code == 200, r.text
     lines = {c["vision_class"]: c for c in r.json()["counts"]}
     assert lines["empanada"]["count"] == 3 and lines["empanada"]["recipe_id"] == str(demo["recipe"].id)
@@ -143,12 +143,12 @@ def test_count_maps_classes_to_recipes(client: TestClient, demo: dict) -> None: 
 
 def test_count_rejects_non_image(client: TestClient, demo: dict) -> None:  # type: ignore[type-arg]
     _use(client, FakeDetector([]))
-    r = client.post(f"{API}/vision/count", headers=demo["owner"], files={"photo": ("a.jpg", b"hola")})
+    r = client.post(f"{API}/vision/count", headers=demo["owner"], files={"image": ("a.jpg", b"hola")})
     assert r.status_code == 415 and r.json()["code"] == "invalid_image"
 
 
 def test_count_requires_login(client: TestClient) -> None:
-    assert client.post(f"{API}/vision/count", files={"photo": ("a.jpg", _jpeg())}).status_code == 401
+    assert client.post(f"{API}/vision/count", files={"image": ("a.jpg", _jpeg())}).status_code == 401
 
 
 def test_confirm_records_correction_and_is_idempotent(client: TestClient, demo: dict) -> None:  # type: ignore[type-arg]
@@ -209,7 +209,7 @@ def test_onnx_detector_runs_and_ignores_extra_slot(onnx_detector: OnnxDetector) 
 
 def test_count_endpoint_with_onnx_detector(client: TestClient, demo: dict, onnx_detector: OnnxDetector) -> None:  # type: ignore[type-arg]
     _use(client, onnx_detector)
-    r = client.post(f"{API}/vision/count", headers=demo["owner"], files={"photo": ("a.jpg", _jpeg((640, 480)))})
+    r = client.post(f"{API}/vision/count", headers=demo["owner"], files={"image": ("a.jpg", _jpeg((640, 480)))})
     assert r.status_code == 200, r.text
     lines = {c["vision_class"]: c["count"] for c in r.json()["counts"]}
     assert lines == {"empanada": 2, "canape": 1}

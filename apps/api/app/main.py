@@ -1,5 +1,8 @@
 """Punto de entrada de la API de Cáterin."""
 
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
 from fastapi import APIRouter, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -15,9 +18,16 @@ from app.modules.inventory.router import router as inventory_router
 from app.modules.quotes.router import router as quotes_router
 from app.modules.recipes.router import router as recipes_router
 from app.modules.suppliers.router import router as suppliers_router
+from app.modules.vision.detector import load_detector
 from app.modules.vision.router import router as vision_router
 
 API_PREFIX = "/api/v1"
+
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
+    load_detector()  # carga el ONNX al iniciar: la primera foto no paga la carga (si no hay modelo, solo avisa)
+    yield
 
 
 def create_app() -> FastAPI:
@@ -30,6 +40,7 @@ def create_app() -> FastAPI:
         openapi_url=f"{API_PREFIX}/openapi.json",
         docs_url="/docs",
         redoc_url=None,
+        lifespan=lifespan,
     )
     app.add_middleware(
         CORSMiddleware,

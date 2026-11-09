@@ -31,10 +31,11 @@ La línea base es floja: en la mitad de las fotos el conteo no es exacto, y por 
 |------|-----|-----|
 | Fotos pequeñas del test (n=25) | 401 ms | 440 ms |
 | Foto 12 MP sintética (n=15) | 557 ms | 629 ms |
-| Primera llamada tras iniciar | 1 836 ms | — |
+| Primera llamada tras iniciar (modelo ya cargado al arrancar) | 640 ms | — |
+| Primera llamada, con carga perezosa (versión anterior) | 1 836 ms | — |
 
 Límites: la foto de 12 MP es una imagen ampliada (0.5 MB), mucho más liviana de decodificar que un JPEG real de
-celular (3 a 5 MB); repetir con fotos reales. La primera llamada incluye la carga perezosa del ONNX. El benchmark
+celular (3 a 5 MB); repetir con fotos reales. El benchmark
 anterior (169 ms) medía solo la inferencia con una imagen aleatoria; este valor incluye decodificar, preprocesar y postprocesar.
 
 ## Límites y uso previsto

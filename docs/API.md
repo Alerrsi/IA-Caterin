@@ -115,10 +115,11 @@ Todas las respuestas de error usan `application/problem+json`:
 ### vision (T06)
 | Método | Ruta | Descripción |
 |--------|------|-------------|
-| POST | `/vision/count` | Multipart `image` (JPEG/PNG/WebP, ≤ 8 MB) → conteo por producto, cajas, versión del modelo y latencia |
-| POST | `/vision/productions` | Confirmar el conteo corregido → `production_record` (idempotente) |
-| GET | `/vision/productions` | Historial |
-| GET | `/vision/model` | Versión y clases del modelo cargado |
+| POST | `/vision/count` | Multipart `image` (cualquier formato que lea Pillow, ≤ 15 MB; no se guarda) → `counts` por clase unidos a la receta que declara esa `vision_class` (`recipe_id` nulo si ninguna), `detections` (cajas normalizadas), `model_version` y `elapsed_ms`. 415 `invalid_image`, 413 `image_too_large`, 503 `vision_model_unavailable` si no hay modelo (la interfaz ofrece contar a mano) |
+| POST | `/vision/productions` | `{recipe_id, confirmed_qty, detected_qty?, model_version?, detections?}` → `production_record`; `was_corrected` si lo confirmado difiere de lo detectado. Con `Idempotency-Key`, un reintento devuelve el original (200, `replayed: true`). 404 si la receta no existe o no es producto final |
+| GET | `/vision/model` | `{loaded, version, classes, input_size, sha256}` del modelo cargado; `loaded: false` si no hay |
+
+El historial de producciones (`GET /vision/productions`) queda pendiente. El modelo se carga al iniciar desde `VISION_MODEL_PATH` (`model.onnx` + `model.json`).
 
 ### assistant (T07)
 | Método | Ruta | Descripción |

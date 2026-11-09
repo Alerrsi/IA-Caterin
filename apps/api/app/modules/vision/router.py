@@ -24,19 +24,19 @@ def model_info(_user: CurrentUserDep, detector: DetectorDep) -> ModelOut:
 
 
 @router.post("/count", response_model=CountOut)
-def count(_user: CurrentUserDep, db: TenantDB, detector: DetectorDep, photo: Annotated[UploadFile, File()]) -> CountOut:
+def count(_user: CurrentUserDep, db: TenantDB, detector: DetectorDep, image: Annotated[UploadFile, File()]) -> CountOut:
     """Foto -> conteo por producto. La foto no se guarda; la usuaria corrige y confirma en `/productions`."""
     if detector is None:
         raise ProblemError(
             503, "vision_model_unavailable", "El conteo por foto no está disponible por ahora", "Cuenta a mano."
         )
     settings = get_settings()
-    image = photo.file.read(settings.vision_max_image_mb * 1024 * 1024 + 1)
-    if len(image) > settings.vision_max_image_mb * 1024 * 1024:
+    data = image.file.read(settings.vision_max_image_mb * 1024 * 1024 + 1)
+    if len(data) > settings.vision_max_image_mb * 1024 * 1024:
         raise ProblemError(413, "image_too_large", "La foto es demasiado grande")
     start = time.perf_counter()
     try:
-        detections = detector.detect(image, settings.vision_threshold)
+        detections = detector.detect(data, settings.vision_threshold)
     except InvalidImageError:
         raise ProblemError(415, "invalid_image", "No pudimos leer esa foto", "Prueba con una JPG o PNG.") from None
     return CountOut(
