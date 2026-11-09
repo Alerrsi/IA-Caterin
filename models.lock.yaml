@@ -1,0 +1,48 @@
+# Versiones fijas de los modelos de IA (AGENTS.md, sección 3.1; ADR-003).
+# Los pesos NO se commitean. Verificar con: python scripts/verify_models.py
+# Licencias verificadas el 9-nov-2026 en los metadatos de la model card (API de Hugging Face)
+# o en el repositorio oficial. Ver THIRD_PARTY_NOTICES.md.
+version: 1
+models:
+  - id: qwen3:4b
+    role: llm_default
+    source: ollama
+    digest: sha256:359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7
+    size_bytes: 2497293931
+    license: Apache-2.0
+    upstream: Qwen/Qwen3-4B@1cfa9a720891
+    required: true
+
+  - id: qwen3:8b
+    role: llm_level3_optional
+    source: ollama
+    digest: sha256:500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41
+    size_bytes: 5225388164
+    license: Apache-2.0
+    upstream: Qwen/Qwen3-8B@b968826d9c46
+    required: false
+
+  - id: bge-m3
+    role: embeddings_default
+    source: ollama
+    digest: null  # se fija al descargarlo en T07
+    license: MIT
+    upstream: BAAI/bge-m3@5617a9f61b02
+    required: false  # pasa a true en T07
+
+  - id: BAAI/bge-reranker-v2-m3
+    role: reranker_optional
+    source: huggingface
+    revision: 953dc6f6f85a
+    license: Apache-2.0
+    required: false
+
+  - id: rfdetr-nano
+    role: vision_detector
+    source: onnx
+    path: output/rfdetr-nano.onnx
+    sha256: cdf1ec2aa388d54b2511a2db4ba941912700c7d66ba0ee491b62820f1b74de18
+    size_bytes: 115160927
+    license: Apache-2.0
+    upstream: roboflow/rf-detr (RF-DETR Nano, preentrenado en COCO; aún sin ajustar a productos)
+    required: false  # pasa a true en T06

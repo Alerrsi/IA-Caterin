@@ -1,0 +1,42 @@
+# Entornos y dependencias
+env/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+node_modules/
+dist/
+dev-dist/
+*.tsbuildinfo
+playwright-report/
+test-results/
+
+# Secretos
+.env
+.env.*
+!.env.example
+
+# Pesos de modelos y artefactos pesados (se descargan por script, ver models.lock.yaml)
+output/
+*.onnx
+*.pt
+*.pth
+*.safetensors
+*.gguf
+ml/vision/data/
+ml/vision/runs/
+
+# Datos locales
+*.dump
+*.sql.gz
+storage/
+
+# Editor y sistema
+.idea/
+.vscode/
+.DS_Store

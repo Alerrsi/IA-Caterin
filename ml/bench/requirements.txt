@@ -1,0 +1,29 @@
+# Dependencias para bench_cpu.py (Cáterin)
+# Instalar en un entorno virtual:
+#   python -m venv .venv
+#   Windows:  .venv\Scripts\activate      Linux/macOS:  source .venv/bin/activate
+#   pip install -r requirements.txt
+#
+# Python recomendado: 3.10 a 3.12 (rfdetr pide 3.9 o superior).
+# Ollama NO se instala con pip: descárgalo desde ollama.com y deja el servicio abierto.
+
+# --- Comando "detector" (latencia de ONNX en CPU) ---
+numpy
+onnxruntime
+
+# --- Comando "embed" (embeddings y reranker) ---
+# Qwen3-Embedding necesita sentence-transformers y transformers recientes.
+sentence-transformers>=2.7
+transformers>=4.51
+# PyTorch: descarga grande (varios GB). Si quieres la versión solo-CPU, instálala antes con:
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+torch
+
+# --- Opcionales ---
+# Muestra la RAM total en bench_results.json
+psutil
+
+# Solo si vas a exportar RF-DETR a ONNX para medir su latencia
+# (descomenta la línea; también instala PyTorch y bastante más)
+# rfdetr[onnx]
+# onnx

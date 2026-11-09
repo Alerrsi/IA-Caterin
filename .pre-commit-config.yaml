@@ -1,0 +1,33 @@
+# Instalar: pip install pre-commit==4.7.0 && pre-commit install
+# mypy y pytest corren en CI y con scripts/check.sh (necesitan el entorno completo de la API).
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ["--maxkb=1024"]
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.4
+    hooks:
+      - id: ruff-check
+        args: ["--fix"]
+        files: ^apps/api/
+      - id: ruff-format
+        files: ^apps/api/
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+  - repo: local
+    hooks:
+      - id: web-lint
+        name: eslint (web)
+        entry: npm --prefix apps/web run lint
+        language: system
+        files: ^apps/web/.*\.(ts|tsx)$
+        pass_filenames: false

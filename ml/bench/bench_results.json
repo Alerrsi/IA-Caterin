@@ -1,0 +1,134 @@
+{
+  "system": {
+    "os": "Linux-6.12.115+deb13.1-amd64-x86_64-with-glibc2.41",
+    "python": "3.13.5",
+    "cpu": "Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz",
+    "logical_cpus": 8,
+    "ram_gb": 16.5
+  },
+  "llm": {
+    "qwen3:4b": {
+      "load_s": 7.39,
+      "latency_s": {
+        "p50": 22.7,
+        "p95": 26.1,
+        "n": 12
+      },
+      "tokens_per_s_p50": 7.5,
+      "prompt_eval_s_p50": 1.2,
+      "ram_gb": 3.2,
+      "tool_calling": {
+        "ok": 1,
+        "total": 4,
+        "detalle": [
+          {
+            "caso": "¿Cuánta harina me queda en bodega?",
+            "ok": false
+          },
+          {
+            "caso": "¿Cuánto cuesta producir la receta de empanadas de pino?",
+            "ok": false
+          },
+          {
+            "caso": "¿Qué pedidos tengo esta semana?",
+            "ok": false
+          },
+          {
+            "caso": "Cuéntame un chiste corto.",
+            "ok": true
+          }
+        ]
+      },
+      "extraccion": {
+        "campos_ok": 7,
+        "campos_total": 8
+      }
+    },
+    "qwen3:8b": {
+      "load_s": 31.8,
+      "latency_s": {
+        "p50": 11.1,
+        "p95": 25.2,
+        "n": 12
+      },
+      "tokens_per_s_p50": 4.3,
+      "prompt_eval_s_p50": 2.73,
+      "ram_gb": 3.2,
+      "tool_calling": {
+        "ok": 4,
+        "total": 4,
+        "detalle": [
+          {
+            "caso": "¿Cuánta harina me queda en bodega?",
+            "ok": true
+          },
+          {
+            "caso": "¿Cuánto cuesta producir la receta de empanadas de pino?",
+            "ok": true
+          },
+          {
+            "caso": "¿Qué pedidos tengo esta semana?",
+            "ok": true
+          },
+          {
+            "caso": "Cuéntame un chiste corto.",
+            "ok": true
+          }
+        ]
+      },
+      "extraccion": {
+        "campos_ok": 7,
+        "campos_total": 8
+      }
+    }
+  },
+  "embed": {
+    "BAAI/bge-m3": {
+      "load_s": 81.3,
+      "dim": 1024,
+      "corpus_12_pasajes_s": 2.78,
+      "consulta_ms_p50": 156,
+      "consulta_ms_p95": 235,
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0
+    },
+    "Qwen/Qwen3-Embedding-0.6B": {
+      "load_s": 66.9,
+      "dim": 1024,
+      "corpus_12_pasajes_s": 12.1,
+      "consulta_ms_p50": 807,
+      "consulta_ms_p95": 912,
+      "recall@1": 1.0,
+      "recall@3": 1.0,
+      "mrr": 1.0
+    },
+    "reranker:BAAI/bge-reranker-v2-m3": {
+      "load_s": 60.5,
+      "rerank_5_candidatos_ms_p50": 817,
+      "rerank_20_candidatos_ms_p50": 3696,
+      "tras_rerank_top5_del_primer_modelo": {
+        "recall@1": 1.0,
+        "recall@3": 1.0,
+        "mrr": 1.0
+      }
+    }
+  },
+  "detector": {
+    "rfdetr-nano.onnx": {
+      "onnx": "rfdetr-nano.onnx",
+      "input_shape": [
+        1,
+        3,
+        384,
+        384
+      ],
+      "threads": "auto",
+      "load_s": 0.6,
+      "ms_p50": 169.3,
+      "ms_p95": 199.1,
+      "fps_p50": 5.91,
+      "nota": "latencia con imagen aleatoria; no mide precisión"
+    }
+  }
+}

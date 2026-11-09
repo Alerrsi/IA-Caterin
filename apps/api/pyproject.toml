@@ -1,0 +1,36 @@
+[project]
+name = "caterin-api"
+version = "0.1.0"
+description = "API de Cáterin: gestión con IA para pymes de catering"
+requires-python = ">=3.12,<3.13"
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "N", "S", "BLE", "RUF", "DTZ"]
+ignore = ["RUF001", "RUF002", "RUF003"]  # textos en español con tildes y signos
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106"]
+"app/db/migrations/**" = ["E501"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]
+exclude = ["app/db/migrations/"]
+
+[[tool.mypy.overrides]]
+module = ["reportlab.*", "pgvector.*", "argon2.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+markers = ["llm: requiere un LLM real (Ollama); se omite si no está disponible"]
+
+[tool.coverage.run]
+source = ["app"]
+omit = ["app/db/migrations/*"]
