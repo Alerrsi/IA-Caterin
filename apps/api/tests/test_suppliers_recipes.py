@@ -23,8 +23,16 @@ def new_supplier(client: TestClient, t: Tenant, name: str = "Molino", **extra: o
 
 
 def new_price(client: TestClient, t: Tenant, ing: str, sup: str, **extra: object) -> dict[str, object]:
-    body = {"ingredient_id": ing, "supplier_id": sup, "package_label": "saco 25 kg", "package_qty": "25",
-            "package_unit": "kg", "price_clp": 21000, "price_date": "2026-11-02", **extra}  # fmt: skip
+    body = {
+        "ingredient_id": ing,
+        "supplier_id": sup,
+        "package_label": "saco 25 kg",
+        "package_qty": "25",
+        "package_unit": "kg",
+        "price_clp": 21000,
+        "price_date": "2026-11-02",
+        **extra,
+    }
     resp = client.post(f"{API}/prices", headers=t.headers, json=body)
     assert resp.status_code == 201, resp.text
     return dict(resp.json())
@@ -46,8 +54,16 @@ def test_prices_are_versioned_and_compared(client: TestClient, a: Tenant) -> Non
     old = new_price(client, a, flour["id"], molino["id"])
     assert old["package_qty"] == "25000.000"
     new = new_price(client, a, flour["id"], molino["id"], price_clp=19500)
-    net = new_price(client, a, flour["id"], dist["id"], package_label="bolsa 1 kg", package_qty="1",
-                    price_clp=700, includes_vat=False)  # fmt: skip
+    net = new_price(
+        client,
+        a,
+        flour["id"],
+        dist["id"],
+        package_label="bolsa 1 kg",
+        package_qty="1",
+        price_clp=700,
+        includes_vat=False,
+    )
     current = client.get(f"{API}/prices?ingredient_id={flour['id']}", headers=a.headers).json()
     assert {p["id"] for p in current} == {new["id"], net["id"]}
     history = client.get(f"{API}/prices?ingredient_id={flour['id']}&include_history=true", headers=a.headers).json()
@@ -69,9 +85,14 @@ def test_recipe_crud_cost_and_versions(client: TestClient, a: Tenant) -> None:
     dill = new_ingredient(client, a, "Eneldo")
     sup = new_supplier(client, a)
     new_price(client, a, flour["id"], sup["id"])
-    body = {"name": "Masa", "yield_qty": "12", "lines": [
-        {"ingredient_id": flour["id"], "qty": "0.6", "unit": "kg"},
-        {"ingredient_id": dill["id"], "qty": "5"}]}  # fmt: skip
+    body = {
+        "name": "Masa",
+        "yield_qty": "12",
+        "lines": [
+            {"ingredient_id": flour["id"], "qty": "0.6", "unit": "kg"},
+            {"ingredient_id": dill["id"], "qty": "5"},
+        ],
+    }
     resp = client.post(f"{API}/recipes", headers=a.headers, json=body)
     assert resp.status_code == 201, resp.text
     recipe = resp.json()
@@ -122,8 +143,14 @@ def test_suppliers_and_recipes_are_isolated(client: TestClient, a: Tenant) -> No
     b = register(client, "Pyme B", "b@pyme.cl")
     flour_a = new_ingredient(client, a, "Harina")
     sup_a = new_supplier(client, a)
-    price_body = {"ingredient_id": flour_a["id"], "supplier_id": sup_a["id"], "package_label": "1 kg",
-                  "package_qty": "1000", "price_clp": 1000, "price_date": "2026-11-02"}  # fmt: skip
+    price_body = {
+        "ingredient_id": flour_a["id"],
+        "supplier_id": sup_a["id"],
+        "package_label": "1 kg",
+        "package_qty": "1000",
+        "price_clp": 1000,
+        "price_date": "2026-11-02",
+    }
     recipe = client.post(
         f"{API}/recipes",
         headers=a.headers,

@@ -54,6 +54,10 @@ Equipo: ThinkPad i5-8250U (4 núcleos, 8 hilos), 16 GB de RAM, Debian 13, sin GP
 |--------|---------|-----------|---------|-------|
 | RF-DETR Nano (`output/rfdetr-nano.onnx`, 115 MB) | 1×3×384×384 | 169 / 199 ms | 5.9 | 0.6 s |
 
+### Extractor de pedidos con el flujo real de la API (T05, 9-nov-2026)
+
+`qwen3:4b`, prompt `extract-v1`, JSON schema, `think: false`, 22 pedidos sintéticos (`ml/evals/extractor/`): **188/193 campos (97,4 %)**, 18/22 pedidos perfectos, 0 JSON inválidos, latencia del LLM p50 13,7 s y p95 22,0 s, 89 tokens (p50). Dos de los cinco fallos fueron **cantidades cambiadas por el modelo** (200 → 201, 50 → 100): por eso el extractor tiene una barrera en código que marca cualquier cantidad que no aparezca en el mensaje.
+
 ## Límites y problemas detectados en el benchmark
 
 Revisión del script en `main.py` hecha al escribir este ADR:

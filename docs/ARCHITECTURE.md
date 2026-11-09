@@ -154,6 +154,11 @@ flowchart LR
 ```
 
 - El LLM solo entra en el paso del extractor. Todo lo que va desde "Resolver productos" en adelante es código determinista (ADR-002).
+- `POST /orders/extract` **no guarda nada**: devuelve la tabla editable. El pedido se crea recién cuando la usuaria confirma (`POST /orders`), así no quedan datos personales de pedidos descartados.
+- Recetas: se resuelven con `core/matching.py` (rapidfuzz, `token_set_ratio` sin tildes ni palabras vacías). Se asocia solo con puntaje ≥ 85 y 10 puntos de ventaja; si no, se ofrecen sugerencias. Fechas: `core/dates.py`, con reglas.
+- Para el **costo** se usa la presentación vigente más barata por unidad base. Para la **lista de compras**, la presentación con menor total a pagar (para 630 g conviene 1 bolsa de 1 kg y no un saco de 25 kg).
+- **Precio al cliente:** costo del producto × (1 + margen) / cantidad, redondeado a pesos. Subtotal = precio unitario × cantidad (el PDF cuadra a la vista). IVA sobre el neto.
+- Si falta algún precio, la cotización se guarda como incompleta y **no** se genera el PDF hasta completarla.
 - Cada cotización guarda la versión de precios usada (snapshot de los `PrecioInsumo`), los supuestos (merma, margen, IVA, redondeo) y quién la generó.
 - El tiempo de la cotización se mide desde que se abre el pedido hasta que se genera el PDF (T09).
 

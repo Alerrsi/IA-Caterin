@@ -314,3 +314,10 @@ La intención `get_cash_summary` ("¿cómo va la caja?") necesita algún dato de
 - **Columnas agregadas:** `pyme.quote_validity_days` y `pyme.is_demo`; `recipe.is_active` y `supplier.is_active`; `stock_movement.note`; `catering_order.notes`; `order_line.position` y `quote_line.position` (orden de las líneas); `quote.is_complete` (falta algún precio) y `quote.valid_until`; `quote_line.supplier_id`; `assistant_interaction.intents_version`.
 - **`cash_movement`** se creó (es pequeña) aunque su entrada al MVP sigue pendiente de decisión del equipo.
 - La migración crea las extensiones `vector` y `citext`; el `downgrade` no las elimina.
+
+## 8. Cambios al implementar (T05)
+
+- Las líneas de producto de la cotización (receta, versión de la receta, cantidad, unidad, costo, precio unitario, subtotal) se guardan en `quote.assumptions["products"]`, junto con el margen, el IVA, la merma por defecto, si se usó el stock, la foto del stock (`stock_snapshot`), las reglas de redondeo, los precios faltantes y el total de compras. No hizo falta una tabla nueva.
+- `quote.price_snapshot` guarda cada precio que intervino (el más barato para costear, el elegido para comprar y las alternativas) con sus valores de ese momento: la cotización se puede reproducir aunque los precios cambien después.
+- `quote_line.ingredient_price_id` apunta a la presentación elegida para comprar o, si el insumo quedó cubierto con stock, a la más barata usada para costear.
+- `catering_order.extraction` guarda la trazabilidad del extractor (modelo, versión del prompt, intentos, latencia, JSON devuelto) cuando el pedido vino de texto.

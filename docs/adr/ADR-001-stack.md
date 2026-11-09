@@ -44,3 +44,7 @@ Cáterin es para emprendedoras de catering con márgenes ajustados, poco tiempo 
 ## Observación sobre el entorno actual
 
 El entorno virtual local (`env/`) usa **Python 3.13.5**, y el stack fija 3.12. Para el benchmark no importa, pero la API y el CI usan 3.12 (imagen `python:3.12-slim`). Se corrige en T01.
+
+## Nota de implementación (T05, 9-nov-2026)
+
+La abstracción del LLM (`app/core/llm.py`, interfaz `LLMProvider`) se implementó con **llamadas HTTP directas a Ollama** (`httpx`), **sin LangChain**. Motivo: el extractor de F3 necesita una sola llamada con `format` = JSON schema y `think: false`, que la API de Ollama ofrece directamente; LangChain sumaba dependencias sin aportar nada aquí. La decisión de usar LangChain para el RAG (T07) sigue en pie y se reevalúa al implementarlo. Cambiar de proveedor sigue siendo agregar una clase que cumpla `LLMProvider`.

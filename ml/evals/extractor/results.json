@@ -1,0 +1,620 @@
+{
+  "summary": {
+    "model": "qwen3:4b",
+    "date": "2026-11-09",
+    "cases": 22,
+    "fields_ok": 188,
+    "fields_total": 193,
+    "cases_exact": 18,
+    "errors": [],
+    "retries": 0,
+    "llm_latency_ms_p50": 13707,
+    "llm_latency_ms_p95": 21955,
+    "tokens_out_p50": 89
+  },
+  "results": [
+    {
+      "id": "c01",
+      "fields_ok": 9,
+      "fields_total": 9,
+      "exact": true,
+      "failed": [],
+      "latency_ms": 17161,
+      "llm_latency_ms": 17158,
+      "tokens_out": 95,
+      "attempts": 1,
+      "got": [
+        {
+          "name": "empanadas de pino",
+          "recipe": "Empanadas de pino",
+          "qty": "80",
+          "unit": "unit"
+        },
+        {
+          "name": "canapés de salmón",
+          "recipe": "Canapés de salmón",
+          "qty": "60",
+          "unit": "unit"
+        }
+      ],
+      "got_guests": 50,
+      "got_date": "2026-11-14"
+    },
+    {
+      "id": "c02",
+      "fields_ok": 8,
+      "fields_total": 9,
+      "exact": false,
+      "failed": [
+        "sin productos inventados"
+      ],
+      "latency_ms": 19971,
+      "llm_latency_ms": 19968,
+      "tokens_out": 119,
+      "attempts": 1,
+      "got": [
+        {
+          "name": "cóctel",
+          "recipe": null,
+          "qty": "120",
+          "unit": "unit"
+        },
+        {
+          "name": "brochetas de pollo",
+          "recipe": "Brochetas de pollo",
+          "qty": "240",
+          "unit": "unit"
+        },
+        {
+          "name": "mini quiches",
+          "recipe": "Mini quiches",
+          "qty": "120",
+          "unit": "unit"
+        }
+      ],
+      "got_guests": 120,
+      "got_date": null
+    },
+    {
+      "id": "c03",
+      "fields_ok": 6,
+      "fields_total": 6,
+      "exact": true,
+      "failed": [],
+      "latency_ms": 11237,
+      "llm_latency_ms": 11235,
+      "tokens_out": 56,
+      "attempts": 1,
+      "got": [
+        {
+          "name": "sopaipillas",
+          "recipe": "Sopaipillas",
+          "qty": "3",
+          "unit": "dozen"
+        }
+      ],
+      "got_guests": null,
+      "got_date": "2026-11-10"
+    },
+    {
+      "id": "c04",
+      "fields_ok": 6,
+      "fields_total": 6,
+      "exact": true,
+      "failed": [],
+      "latency_ms": 11043,
+      "llm_latency_ms": 11041,
+      "tokens_out": 58,
+      "attempts": 1,
+      "got": [
+        {
+          "name": "empanadas de queso",
+          "recipe": "Empanadas de queso",
+          "qty": "2",
+          "unit": "dozen"
+        }
+      ],
+      "got_guests": null,
+      "got_date": "2026-11-13"
+    },
+    {
+      "id": "c05",
+      "fields_ok": 9,
+      "fields_total": 9,
+      "exact": true,
+      "failed": [],
+      "latency_ms": 12507,
+      "llm_latency_ms": 12505,
+      "tokens_out": 87,
+      "attempts": 1,
+      "got": [
+        {
+          "name": "empanaditas de pino",
+          "recipe": "Empanadas de pino",
+          "qty": "0.500",
+          "unit": "dozen"
+        },
+        {
+          "name": "pie de limón",
+          "recipe": "Pie de limón",
+          "qty": "1",
+          "unit": "unit"
+        }
+      ],
+      "got_guests": null,
+      "got_date": null
+    },
+    {
+      "id": "c06",
+      "fields_ok": 13,
+      "fields_total": 15,
+      "exact": false,
+      "failed": [
+        "date",
+        "Brochetas de pollo: cantidad"
+      ],
+      "latency_ms": 25097,
+      "llm_latency_ms": 25095,
+      "tokens_out": 174,
+      "attempts": 1,
+      "got": [
+        {
+          "name": "300 canapés de salmón",
+          "recipe": "Canapés de salmón",
+          "qty": "300",
+          "unit": "unit"
+        },
+        {
+          "name": "200 brochetas de pollo",
+          "recipe": "Brochetas de pollo",
+          "qty": "201",
+          "unit": "unit"
+        },
+        {
+          "name": "150 mini quiches",
+          "recipe": "Mini quiches",
+          "qty": "150",
+          "unit": "unit"
+        },
+        {
+          "name": "10 docenas de empanadas de pino",
+          "recipe": "Empanadas de pino",
+          "qty": "10",
+          "unit": "dozen"
+        }
+      ],
+      "got_guests": 150,
+      "got_date": null
+    },
+    {
+      "id": "c07",
+      "fields_ok": 12,
+      "fields_total": 12,
+      "exact": true,
+      "failed": [],
+      "latency_ms": 18197,
+      "llm_latency_ms": 18195,
+      "tokens_out": 129,
+      "attempts": 1,
+      "got": [
+        {
+          "name": "48 tomates cherry rellenos",
+          "recipe": "Tomates cherry rellenos",
+          "qty": "48",
+          "unit": "unit"
+        },
+        {
+          "name": "24 canapes salmon",
+          "recipe": "Canapés de salmón",
+          "qty": "24",
+          "unit": "unit"
+        },
+        {
+          "name": "36 empanadas pino",
+          "recipe": "Empanadas de pino",
+          "qty": "36",
+          "unit": "unit"
+        }
+      ],
+      "got_guests": null,
+      "got_date": "2026-11-28"
+    },
+    {
+      "id": "c08",
+      "fields_ok": 6,
+      "fields_total": 6,
+      "exact": true,
+      "failed": [],
+      "latency_ms": 8989,
+      "llm_latency_ms": 8987,
+      "tokens_out": 59,
+      "attempts": 1,
+      "got": [
+        {
+          "name": "empanadas d pino",
+          "recipe": "Empanadas de pino",
+          "qty": "100",
+          "unit": "unit"
+        }
+      ],
+      "got_guests": null,
+      "got_date": "2026-11-15"
+    },
+    {
+      "id": "c09",
+      "fields_ok": 9,
+      "fields_total": 9,
+      "exact": true,
+      "failed": [],
+      "latency_ms": 13873,
+      "llm_latency_ms": 13870,
+      "tokens_out": 84,
+      "attempts": 1,
+      "got": [
+        {
+          "name": "sopaipillas",
+          "recipe": "Sopaipillas",
+          "qty": "4",
+          "unit": "dozen"
+        },
+        {
+          "name": "pies de limón",
+          "recipe": "Pie de limón",
+          "qty": "2",
+          "unit": "unit"
+        }
+      ],
+      "got_guests": 30,
+      "got_date": null
+    },
+    {
+      "id": "c10",
+      "fields_ok": 6,
+      "fields_total": 6,
+      "exact": true,
+      "failed": [],
+      "latency_ms": 9141,
+      "llm_latency_ms": 9139,
+      "tokens_out": 58,
+      "attempts": 1,
+      "got": [
+        {
+          "name": "20 empanadas de queso",
+          "recipe": "Empanadas de queso",
+          "qty": "20",
+          "unit": "unit"
+        }
+      ],
+      "got_guests": null,
+      "got_date": null
+    },
+    {
+      "id": "c11",
+      "fields_ok": 9,
+      "fields_total": 9,
+      "exact": true,
+      "failed": [],
+      "latency_ms": 14335,
+      "llm_latency_ms": 14333,
+      "tokens_out": 98,
+      "attempts": 1,
+      "got": [
+        {
+          "name": "60 brochetas de pollo",
+          "recipe": "Brochetas de pollo",
+          "qty": "60",
+          "unit": "unit"
+        },
+        {
+          "name": "una torta de mil hojas",
+          "recipe": null,
+          "qty": "1",
+          "unit": "unit"
+        }
+      ],
+      "got_guests": 25,
+      "got_date": "2026-12-05"
+    },
+    {
+      "id": "c12",
+      "fields_ok": 12,
+      "fields_total": 12,
+      "exact": true,
+      "failed": [],
+      "latency_ms": 17192,
+      "llm_latency_ms": 17190,
+      "tokens_out": 118,
+      "attempts": 1,
+      "got": [
+        {
+          "name": "empanadas de pino",
+          "recipe": "Empanadas de pino",
+          "qty": "5",
+          "unit": "dozen"
+        },
+        {
+          "name": "empanadas de queso",
+          "recipe": "Empanadas de queso",
+          "qty": "5",
+          "unit": "dozen"
+        },
+        {
+          "name": "sopaipillas",
+          "recipe": "Sopaipillas",
+          "qty": "3",
+          "unit": "dozen"
+        }
+      ],
+      "got_guests": 40,
+      "got_date": null
+    },
+    {
+      "id": "c13",
+      "fields_ok": 6,
+      "fields_total": 6,
+      "exact": true,
+      "failed": [],
+      "latency_ms": 8624,
+      "llm_latency_ms": 8622,
+      "tokens_out": 59,
+      "attempts": 1,
+      "got": [
+        {
+          "name": "72 mini quiches",
+          "recipe": "Mini quiches",
+          "qty": "72",
+          "unit": "unit"
+        }
+      ],
+      "got_guests": null,
+      "got_date": "2026-11-12"
+    },
+    {
+      "id": "c14",
+      "fields_ok": 9,
+      "fields_total": 9,
+      "exact": true,
+      "failed": [],
+      "latency_ms": 16138,
+      "llm_latency_ms": 16136,
+      "tokens_out": 106,
+      "attempts": 1,
+      "got": [
+        {
+          "name": "160 canapés de salmón",
+          "recipe": "Canapés de salmón",
+          "qty": "160",
+          "unit": "unit"
+        },
+        {
+          "name": "160 brochetas de pollo",
+          "recipe": "Brochetas de pollo",
+          "qty": "160",
+          "unit": "unit"
+        }
+      ],
+      "got_guests": 80,
+      "got_date": "2026-12-03"
+    },
+    {
+      "id": "c15",
+      "fields_ok": 6,
+      "fields_total": 6,
+      "exact": true,
+      "failed": [],
+      "latency_ms": 8608,
+      "llm_latency_ms": 8607,
+      "tokens_out": 59,
+      "attempts": 1,
+      "got": [
+        {
+          "name": "cien empanadas de pino",
+          "recipe": "Empanadas de pino",
+          "qty": "100",
+          "unit": "unit"
+        }
+      ],
+      "got_guests": null,
+      "got_date": null
+    },
+    {
+      "id": "c16",
+      "fields_ok": 6,
+      "fields_total": 6,
+      "exact": true,
+      "failed": [],
+      "latency_ms": 8356,
+      "llm_latency_ms": 8354,
+      "tokens_out": 55,
+      "attempts": 1,
+      "got": [
+        {
+          "name": "empanadas de queso",
+          "recipe": "Empanadas de queso",
+          "qty": "2",
+          "unit": "kg"
+        }
+      ],
+      "got_guests": null,
+      "got_date": null
+    },
+    {
+      "id": "c17",
+      "fields_ok": 15,
+      "fields_total": 15,
+      "exact": true,
+      "failed": [],
+      "latency_ms": 21957,
+      "llm_latency_ms": 21955,
+      "tokens_out": 152,
+      "attempts": 1,
+      "got": [
+        {
+          "name": "empanadas de pino",
+          "recipe": "Empanadas de pino",
+          "qty": "12",
+          "unit": "dozen"
+        },
+        {
+          "name": "sopaipillas",
+          "recipe": "Sopaipillas",
+          "qty": "6",
+          "unit": "dozen"
+        },
+        {
+          "name": "pies de limón",
+          "recipe": "Pie de limón",
+          "qty": "3",
+          "unit": "unit"
+        },
+        {
+          "name": "tomates cherry rellenos",
+          "recipe": "Tomates cherry rellenos",
+          "qty": "96",
+          "unit": "unit"
+        }
+      ],
+      "got_guests": 70,
+      "got_date": "2026-12-24"
+    },
+    {
+      "id": "c18",
+      "fields_ok": 11,
+      "fields_total": 12,
+      "exact": false,
+      "failed": [
+        "Canapés de salmón: cantidad"
+      ],
+      "latency_ms": 16671,
+      "llm_latency_ms": 16668,
+      "tokens_out": 118,
+      "attempts": 1,
+      "got": [
+        {
+          "name": "brochetas de pollo",
+          "recipe": "Brochetas de pollo",
+          "qty": "50",
+          "unit": "unit"
+        },
+        {
+          "name": "mini quiches",
+          "recipe": "Mini quiches",
+          "qty": "50",
+          "unit": "unit"
+        },
+        {
+          "name": "canapés de salmón",
+          "recipe": "Canapés de salmón",
+          "qty": "100",
+          "unit": "unit"
+        }
+      ],
+      "got_guests": null,
+      "got_date": null
+    },
+    {
+      "id": "c19",
+      "fields_ok": 9,
+      "fields_total": 9,
+      "exact": true,
+      "failed": [],
+      "latency_ms": 13546,
+      "llm_latency_ms": 13545,
+      "tokens_out": 91,
+      "attempts": 1,
+      "got": [
+        {
+          "name": "empanadas de pino",
+          "recipe": "Empanadas de pino",
+          "qty": "40",
+          "unit": "unit"
+        },
+        {
+          "name": "empanadas de queso",
+          "recipe": "Empanadas de queso",
+          "qty": "40",
+          "unit": "unit"
+        }
+      ],
+      "got_guests": null,
+      "got_date": "2026-11-14"
+    },
+    {
+      "id": "c20",
+      "fields_ok": 4,
+      "fields_total": 4,
+      "exact": true,
+      "failed": [],
+      "latency_ms": 8207,
+      "llm_latency_ms": 8206,
+      "tokens_out": 55,
+      "attempts": 1,
+      "got": [
+        {
+          "name": "empanadas",
+          "recipe": null,
+          "qty": "50",
+          "unit": "unit"
+        }
+      ],
+      "got_guests": 50,
+      "got_date": null
+    },
+    {
+      "id": "c21",
+      "fields_ok": 8,
+      "fields_total": 9,
+      "exact": false,
+      "failed": [
+        "date"
+      ],
+      "latency_ms": 12565,
+      "llm_latency_ms": 12563,
+      "tokens_out": 88,
+      "attempts": 1,
+      "got": [
+        {
+          "name": "empanaditas de queso",
+          "recipe": "Empanadas de queso",
+          "qty": "3",
+          "unit": "dozen"
+        },
+        {
+          "name": "sopaipillas pasadas",
+          "recipe": "Sopaipillas",
+          "qty": "1",
+          "unit": "dozen"
+        }
+      ],
+      "got_guests": null,
+      "got_date": null
+    },
+    {
+      "id": "c22",
+      "fields_ok": 9,
+      "fields_total": 9,
+      "exact": true,
+      "failed": [],
+      "latency_ms": 14842,
+      "llm_latency_ms": 14840,
+      "tokens_out": 101,
+      "attempts": 1,
+      "got": [
+        {
+          "name": "canapés de salmón ahumado",
+          "recipe": "Canapés de salmón",
+          "qty": "120",
+          "unit": "unit"
+        },
+        {
+          "name": "tomatitos cherry rellenos",
+          "recipe": "Tomates cherry rellenos",
+          "qty": "120",
+          "unit": "unit"
+        }
+      ],
+      "got_guests": 60,
+      "got_date": "2026-11-30"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 # T05 — Cotizador automatizado
-- Estado: pendiente
+- Estado: hecha (API); pantallas en T08
 - Depende de: T04
 - Funcionalidad: F3
 
@@ -17,14 +17,14 @@ Que la emprendedora pegue el mensaje de su cliente ("necesito 80 empanadas y 60 
   - El precio al cliente se calcula como costo de insumos × (1 + margen). Mano de obra, gas y transporte **no** se incluyen salvo que la usuaria los agregue como línea manual.
 
 ## Entregables
-- [ ] Esquema Pydantic `ExtractedOrder` (invitados, fecha, ítems con nombre, cantidad y unidad) y extractor detrás de `LLMProvider`.
-- [ ] `POST /orders/extract`: borrador editable, resolución de nombres contra recetas con `rapidfuzz` y sugerencias si hay ambigüedad.
-- [ ] `quotes/calculator.py` (funciones puras): insumos necesarios con merma → descuento de stock → faltante → presentaciones a comprar → mejor oferta por insumo con alternativas → costo, margen, IVA y total.
-- [ ] `POST /orders/{id}/quotes` que guarda `price_snapshot`, `assumptions` y `calc_version`.
-- [ ] `GET /quotes/{id}/shopping-list` agrupada por proveedor (con los días de despacho).
-- [ ] `GET /quotes/{id}/pdf`: PDF simple y legible en el celular (librería con licencia permisiva, p. ej. WeasyPrint (BSD) o ReportLab (BSD)), con los datos de la pyme, el detalle, los totales, la validez y la fecha de los precios.
-- [ ] Registro de inicio y fin de la cotización para la métrica de tiempo (T09).
-- [ ] Set inicial de ≥ 20 pedidos de ejemplo para el extractor en `ml/evals/extractor/` (sintéticos, marcados como tales).
+- [x] Esquema Pydantic `ExtractedOrder` (invitados, fecha, ítems con nombre, cantidad y unidad) y extractor detrás de `LLMProvider`.
+- [x] `POST /orders/extract`: borrador editable, resolución de nombres contra recetas con `rapidfuzz` y sugerencias si hay ambigüedad.
+- [x] `quotes/calculator.py` (funciones puras): insumos necesarios con merma → descuento de stock → faltante → presentaciones a comprar → mejor oferta por insumo con alternativas → costo, margen, IVA y total.
+- [x] `POST /orders/{id}/quotes` que guarda `price_snapshot`, `assumptions` y `calc_version`.
+- [x] `GET /quotes/{id}/shopping-list` agrupada por proveedor (con los días de despacho).
+- [x] `GET /quotes/{id}/pdf`: PDF simple con ReportLab (BSD): datos de la pyme, productos, totales y validez. **Cambio:** no muestra la fecha de los precios de insumos (es información interna); esa fecha está en la lista de compras.
+- [x] Registro de inicio y fin de la cotización para la métrica de tiempo (T09).
+- [x] Set inicial de ≥ 20 pedidos de ejemplo para el extractor en `ml/evals/extractor/` (sintéticos, marcados como tales).
 
 ## Criterios de aceptación
 - Con el seed: un pedido de 80 empanadas de pino y 60 canapés produce una cotización cuyas cantidades y totales coinciden con un cálculo a mano documentado en el test.
@@ -48,4 +48,20 @@ Que la emprendedora pegue el mensaje de su cliente ("necesito 80 empanadas y 60 
 - La validez de la cotización (días): ¿la define la usuaria?
 
 ## Resumen de cierre
-(se completa al terminar)
+**Qué se hizo (9-nov-2026):**
+- `core/llm.py` (`LLMProvider`: Ollama por HTTP, Fake, Disabled; sin LangChain, ver nota en ADR-001), `core/dates.py` (fechas en español de Chile con reglas), `core/matching.py` (rapidfuzz `token_set_ratio`; asociar con ≥ 85 y 10 puntos de ventaja, si no sugerir).
+- `modules/quotes`: extractor (prompt fijo `extract-v1`, JSON schema, un reintento, **barrera determinista**: si una cantidad no aparece en el mensaje, la línea queda marcada "Revisa la cantidad"), calculador puro (`CALC_VERSION` 1.1.0), servicio con trazabilidad (snapshot de precios, supuestos, stock, versión de receta, quién la generó), lista de compras por proveedor, PDF sin costos internos, métrica de tiempo de cotización (`metric_event`, `started_at`).
+- Decisiones: extraer **no guarda nada**; costo con la presentación más barata por unidad; compra con la de menor total; precio unitario redondeado y subtotal = unitario × cantidad; cotización incompleta (falta un precio) se guarda pero **no genera PDF**; solo la dueña cotiza (propuesta de API.md); margen sin valor por defecto inventado (`margin_required`).
+- Evaluación: 22 pedidos sintéticos en `ml/evals/extractor/` + `python -m app.modules.quotes.evaluation`.
+
+**Verificado:**
+- 105 pruebas pasan + 1 con LLM real (`RUN_LLM_TESTS=1`, pasa). Incluye un cálculo a mano en `test_hand_calculated_quote_without_stock`, invariantes con Hypothesis (subtotal = unitario × cantidad; total = neto + IVA; más stock nunca aumenta la compra), flujo completo con precio faltante → 409 en el PDF → se agrega el precio → versión 2 completa → PDF con el total correcto y sin nombres de insumos ni costos, cotización antigua que conserva sus precios, validaciones y aislamiento A/B.
+- **Extractor con `qwen3:4b` real** (i5-8250U, CPU, 9-nov-2026, antes de agregar la barrera de cantidades): **188/193 campos (97,4 %)**, **18/22 pedidos perfectos**, 0 errores de JSON, 0 reintentos; latencia del LLM p50 **13,7 s**, p95 **22,0 s**; 89 tokens generados (p50). Fallos: inventó "cóctel" como producto (c02), cambió 200 → 201 brochetas (c06) y 50 → 100 canapés (c18), no rescató la fecha en c06 y c21. Los dos errores de cantidad los detecta ahora la barrera determinista. Son 22 casos sintéticos: sirven para detectar problemas, no para fijar un porcentaje.
+- Cálculo + PDF por la API (sin LLM): p50 0,07 s, p95 0,12 s en 20 repeticiones (incluye el `curl` y el parseo), bajo la meta propuesta de 2 s.
+- Prueba manual: pedido real por texto → 80 empanadas de pino + 4 docenas de brochetas → total $155.552 → PDF revisado a la vista (cuadra).
+
+**Pendiente / riesgos:**
+- La extracción tarda 14–22 s en CPU: en la pantalla hay que mostrar que está trabajando, y T10 debe probar `qwen3:4b-instruct` y Gemma 4 E4B.
+- Reglas de redondeo, margen, IVA en los costos y "más barato" como criterio: validar con una emprendedora real.
+- Pedidos en porciones ("para 50 personas") no se calculan: se pide la cantidad.
+- No se mide aún el tiempo de cotización manual de referencia (T09).

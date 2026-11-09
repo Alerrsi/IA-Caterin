@@ -1,6 +1,6 @@
 # API — Cáterin
 
-- Estado: auth (T03) e inventario, proveedores, recetas e importación (T04) implementados. El resto es diseño. La fuente de verdad será el OpenAPI generado por FastAPI en `/api/v1/openapi.json` (con interfaz en `/docs`). Este documento resume y se mantiene al día con cada tarea.
+- Estado: implementados auth (T03), inventario, proveedores, recetas e importación (T04), y pedidos y cotizaciones (T05). El resto es diseño. La fuente de verdad será el OpenAPI generado por FastAPI en `/api/v1/openapi.json` (con interfaz en `/docs`). Este documento resume y se mantiene al día con cada tarea.
 - Base: `https://<dominio>/api/v1`. Todo es JSON (UTF-8) salvo la carga de archivos (multipart), los PDF y el *streaming* del asistente (SSE).
 
 ## 1. Autenticación y roles
@@ -99,16 +99,18 @@ Todas las respuestas de error usan `application/problem+json`:
 | GET | `/recipes/{id}/cost?qty=` | Costo calculado para N unidades, con IVA, usando por insumo la presentación vigente más barata; desglose por línea, precios usados y `is_complete` si falta algún precio |
 
 ### quotes (T05)
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| POST | `/orders/extract` | Texto libre → pedido interpretado (borrador editable). Un reintento si el JSON no valida; si vuelve a fallar responde `extraction_failed` y la PWA abre el formulario |
-| GET/POST | `/orders` | Listar y crear pedidos (desde el formulario o desde el borrador confirmado) |
-| GET/PATCH | `/orders/{id}` | |
-| POST | `/orders/{id}/quotes` | Calcular una cotización nueva (insumos, stock, compras, comparación, totales) |
-| GET | `/quotes/{id}` | Detalle con líneas, supuestos y precios usados |
-| GET | `/quotes/{id}/shopping-list` | Lista de compras agrupada por proveedor |
-| GET | `/quotes/{id}/pdf` | PDF para el cliente final (`application/pdf`) |
-| PATCH | `/quotes/{id}` | Cambiar el estado (enviada, aceptada, rechazada) |
+| Método | Ruta | Rol | Descripción |
+|--------|------|-----|-------------|
+| POST | `/orders/extract` | ambas | `{"text": "..."}` → pedido interpretado como tabla editable (productos con receta sugerida, cantidad, unidad, invitados, fecha). **No guarda nada.** Un reintento si el JSON del LLM no valida; si vuelve a fallar → 422 `extraction_failed`; sin LLM → 503 `llm_unavailable`. En ambos casos la interfaz ofrece el formulario |
+| GET | `/orders?status=&upcoming_days=` | ambas | Pedidos, por fecha de evento |
+| POST | `/orders` | ambas | Crear pedido (desde el formulario o desde lo extraído y confirmado). Cada línea exige `recipe_id` |
+| GET/PATCH | `/orders/{id}` | ambas | Ver y editar (las líneas se reemplazan completas) |
+| POST | `/orders/{id}/quotes` | dueña | `{"margin_pct"?, "use_stock"?, "started_at"?}` → cotización nueva (versión siguiente). 422 `margin_required` si no hay margen; 422 `quote_calculation` si una unidad no calza con la receta |
+| GET | `/orders/{id}/quotes` | dueña | Versiones de la cotización |
+| GET | `/quotes/{id}` | dueña | Detalle: productos con precio, insumos (necesario, stock usado, a comprar, presentación elegida y alternativas), totales, supuestos |
+| PATCH | `/quotes/{id}` | dueña | Cambiar estado. `sent`/`accepted` exigen cotización completa; `accepted` confirma el pedido |
+| GET | `/quotes/{id}/shopping-list` | dueña | Lista de compras agrupada por proveedor, con días de despacho |
+| GET | `/quotes/{id}/pdf` | dueña | PDF para el cliente final (productos, precios, neto, IVA, total; **sin costos internos**). 409 `quote_incomplete` si falta algún precio |
 
 ### vision (T06)
 | Método | Ruta | Descripción |
