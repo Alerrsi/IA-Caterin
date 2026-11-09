@@ -23,7 +23,7 @@ plugins = ["pydantic.mypy"]
 exclude = ["app/db/migrations/"]
 
 [[tool.mypy.overrides]]
-module = ["reportlab.*", "pgvector.*", "argon2.*"]
+module = ["reportlab.*", "pgvector.*", "argon2.*", "onnxruntime.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]

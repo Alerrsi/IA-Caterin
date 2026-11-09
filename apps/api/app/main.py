@@ -15,6 +15,7 @@ from app.modules.inventory.router import router as inventory_router
 from app.modules.quotes.router import router as quotes_router
 from app.modules.recipes.router import router as recipes_router
 from app.modules.suppliers.router import router as suppliers_router
+from app.modules.vision.router import router as vision_router
 
 API_PREFIX = "/api/v1"
 
@@ -50,6 +51,7 @@ def create_app() -> FastAPI:
         recipes_router,
         imports_router,
         quotes_router,
+        vision_router,
     ):
         api.include_router(router)
     app.include_router(api)

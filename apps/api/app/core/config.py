@@ -26,6 +26,10 @@ class Settings(BaseSettings):
     cors_origins: list[str] = ["http://localhost:5173"]
     storage_dir: Path = Path("/data")
 
+    vision_model_path: Path = Path("/data/models/vision/model.onnx")  # junto a model.json
+    vision_threshold: float = 0.5
+    vision_max_image_mb: int = 15
+
     llm_provider: Literal["ollama", "fake", "disabled"] = "ollama"
     ollama_url: str = "http://ollama:11434"
     llm_model: str = "qwen3:4b"
