@@ -1,0 +1,153 @@
+# Catálogo de intenciones del asistente (ADR-005). Se edita como un artefacto de producto:
+# cada intención lleva ≥ 8 frases de ejemplo en español de Chile y su plantilla de respuesta.
+# `keywords` son regex sobre el texto normalizado (minúsculas, sin tildes ni signos); si UNA sola intención
+# coincide, se enruta directo. Si no, se compara la pregunta con los ejemplos (rapidfuzz) y se exige un
+# umbral y un margen sobre la segunda intención.
+version: "1"
+
+quick_actions:
+  - id: low_stock
+    label: "¿Qué me falta?"
+    question: "¿Qué me falta comprar?"
+    intent: low_stock
+  - id: orders_week
+    label: "Pedidos de esta semana"
+    question: "¿Qué pedidos tengo esta semana?"
+    intent: upcoming_orders
+  - id: orders_today
+    label: "Pedidos de hoy"
+    question: "¿Qué pedidos tengo hoy?"
+    intent: upcoming_orders
+
+intents:
+  - name: stock_of_item
+    description: Cuánto stock hay de un insumo
+    query: get_stock
+    domains: [inventory]
+    allow_level1: false
+    keywords:
+      - '\b(cuanto|cuanta|cuantos|cuantas)\b.*\b(queda|quedan|tengo|hay)\b'
+      - '\bstock (de|del)\b'
+    examples:
+      - "¿Cuánta harina me queda?"
+      - "¿Cuánto azúcar tengo?"
+      - "¿Tengo crema en la bodega?"
+      - "stock de mantequilla"
+      - "¿Me queda queso mantecoso?"
+      - "¿Cuántos huevos hay?"
+      - "dime cuánto queda de palta"
+      - "¿Cuánto salmón me queda en el refri?"
+      - "¿Hay harina para hacer masa?"
+      - "cuánta sal tengo"
+    template: "{answer}"
+
+  - name: low_stock
+    description: Insumos bajo el mínimo
+    query: list_low_stock
+    domains: [inventory]
+    allow_level1: true
+    keywords:
+      - '\bque (me )?(falta|faltan)\b'
+      - '\bque (tengo que|debo|hay que|tendria que) comprar\b'
+      - '\bbajo (el )?minimo\b'
+      - '\b(se me )?(esta )?(acabando|acabo|acabaron|agotando|terminando)\b'
+      - '\b(reponer|reposicion)\b'
+    examples:
+      - "¿Qué me falta?"
+      - "¿Qué tengo que comprar?"
+      - "¿Qué insumos están bajo el mínimo?"
+      - "¿Qué se me está acabando?"
+      - "dime qué comprar esta semana"
+      - "¿Qué cosas me faltan en la bodega?"
+      - "lista de lo que hay que reponer"
+      - "¿Qué se me agotó?"
+      - "¿Qué debería ir a comprar?"
+      - "insumos con poco stock"
+    template: "{answer}"
+
+  - name: recipe_cost
+    description: Costo de producir una receta
+    query: get_recipe_cost
+    domains: [recipes, suppliers, inventory]
+    allow_level1: true
+    keywords:
+      - '\bcuanto (me )?(sale|cuesta|cuestan|vale|valen)\b.*\b(docena|receta|\d+)\b'
+      - '\bcuanto (me )?gasto en (hacer|producir|preparar)\b'
+      - '\b(costo|costos)\b.*\b(receta|docena|producir|hacer)\b'
+      - '\bcuanto (me )?(cuesta|sale) (hacer|producir|preparar)\b'
+    examples:
+      - "¿Cuánto me sale la docena de empanadas?"
+      - "¿Cuánto cuesta hacer 50 canapés?"
+      - "costo de la receta de brochetas"
+      - "¿Cuánto me cuesta producir una bandeja de empanadas de pino?"
+      - "¿A cuánto me sale cada empanada?"
+      - "¿Cuánto vale preparar la receta de queque?"
+      - "dime el costo de 100 canapés de salmón"
+      - "¿Cuánto gasto en insumos para una docena de empanadas?"
+      - "precio de costo de las empanadas de queso"
+    template: "{answer}"
+
+  - name: upcoming_orders
+    description: Pedidos próximos
+    query: list_upcoming_orders
+    domains: [orders]
+    allow_level1: true
+    keywords:
+      - '\b(que|cuantos|cuales)\b.*\bpedidos?\b'
+      - '\bpedidos? (de|para|del|que)\b'
+      - '\b(tengo|hay)\b.*\b(pedidos?|eventos?|encargos?)\b'
+      - '\b(pedidos?|eventos?|encargos?)\b.*\b(tengo|hay|vienen)\b'
+    examples:
+      - "¿Qué pedidos tengo esta semana?"
+      - "¿Tengo algún pedido para mañana?"
+      - "pedidos de hoy"
+      - "¿Qué eventos tengo el sábado?"
+      - "¿Cuántos pedidos hay para este fin de semana?"
+      - "muéstrame los encargos de la próxima semana"
+      - "¿Qué tengo que entregar mañana?"
+      - "¿Cómo viene la semana de pedidos?"
+      - "¿Hay algo agendado para el viernes?"
+      - "pedidos pendientes"
+    template: "{answer}"
+
+  - name: best_price
+    description: Dónde está más barato un insumo
+    query: compare_prices
+    domains: [suppliers]
+    allow_level1: true
+    keywords:
+      - '\b(mas|mejor) (barat[oa]|precio|conveniente)\b'
+      - '\bdonde (esta|puedo|me conviene|compro|comprar|cuesta).*\b(barat[oa]|menos)\b'
+      - '\bcomparar? precios?\b'
+    examples:
+      - "¿Dónde está más barata la harina?"
+      - "¿Quién vende más barato el azúcar?"
+      - "mejor precio de la mantequilla"
+      - "¿Con qué proveedor me conviene comprar crema?"
+      - "compara precios de huevos"
+      - "¿Dónde compro más barato el salmón?"
+      - "¿Cuál proveedor tiene la palta más económica?"
+      - "¿A quién le compro la harina más barata?"
+      - "precio más bajo de queso"
+    template: "{answer}"
+
+  - name: supplier_info
+    description: Datos de un proveedor (despacho, contacto)
+    query: get_supplier
+    domains: [suppliers]
+    allow_level1: false
+    keywords:
+      - '\b(que dias|cuando|que dia)\b.*\b(despacha|reparte|entrega|llega)\b'
+      - '\b(telefono|numero|contacto|correo|mail|whatsapp)\b.*\b(de|del)\b'
+      - '\b(despacha|despachan|reparte|reparten)\b'
+    examples:
+      - "¿Qué días despacha Molino Sur?"
+      - "teléfono de Distribuidora Lago"
+      - "¿Cuándo reparte el proveedor de lácteos?"
+      - "¿Cuál es el contacto de Frutas del Valle?"
+      - "¿Despachan los sábados en Molino Sur?"
+      - "dame el número del proveedor de carnes"
+      - "¿Qué día llega el pedido de Molino Sur?"
+      - "¿Cómo contacto a Distribuidora Lago?"
+      - "correo del proveedor de harina"
+    template: "{answer}"

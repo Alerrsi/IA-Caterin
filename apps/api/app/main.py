@@ -12,6 +12,7 @@ from app.core.config import get_settings
 from app.core.errors import register_error_handlers
 from app.core.logging import configure_logging
 from app.core.request_context import RequestIdMiddleware
+from app.modules.assistant.router import router as assistant_router
 from app.modules.auth.router import router as auth_router
 from app.modules.imports.router import router as imports_router
 from app.modules.inventory.router import router as inventory_router
@@ -63,6 +64,7 @@ def create_app() -> FastAPI:
         imports_router,
         quotes_router,
         vision_router,
+        assistant_router,
     ):
         api.include_router(router)
     app.include_router(api)

@@ -27,7 +27,7 @@ Licencias de los modelos y dependencias principales. Revisado el 9-nov-2026. Las
 
 | Paquete | Licencia |
 |---------|----------|
-| FastAPI, Pydantic, pydantic-settings, SQLAlchemy, Alembic, pgvector (Python), argon2-cffi, PyJWT, openpyxl, RapidFuzz | MIT |
+| FastAPI, Pydantic, pydantic-settings, SQLAlchemy, Alembic, pgvector (Python), argon2-cffi, PyJWT, openpyxl, RapidFuzz, PyYAML | MIT |
 | Uvicorn, HTTPX | BSD-3-Clause |
 | ReportLab | BSD |
 | python-multipart | Apache-2.0 |

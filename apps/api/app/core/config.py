@@ -26,6 +26,12 @@ class Settings(BaseSettings):
     cors_origins: list[str] = ["http://localhost:5173"]
     storage_dir: Path = Path("/data")
 
+    # Asistente (ADR-005). El umbral y el margen son PROVISIONALES: no están medidos, los calibra T10.
+    assistant_router_threshold: float = 0.65
+    assistant_router_margin: float = 0.03
+    assistant_use_llm: bool = False  # nivel 1 apagado hasta validar la calidad de redacción en T10
+    assistant_cache_size: int = 512
+
     vision_model_path: Path = Path("/data/models/vision/model.onnx")  # junto a model.json
     vision_threshold: float = 0.5
     vision_max_image_mb: int = 15

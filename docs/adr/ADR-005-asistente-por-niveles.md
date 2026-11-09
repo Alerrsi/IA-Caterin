@@ -91,3 +91,16 @@ Cada respuesta registra en `assistant_interaction`: nivel, intención, puntaje d
 - La calidad del asistente depende de lo bien hecho que esté `intents.yaml`. Se mantiene como un artefacto de producto, no solo como código.
 - Preguntas fuera del catálogo terminan en el nivel 2 o en "no sé". Se registran para decidir qué intenciones agregar.
 - El nivel 3 queda como extensión opcional (`ASSISTANT_ENABLE_AGENT=false`).
+
+## Implementación en T07 (10-nov-2026): lo que cambió respecto del diseño
+
+- **Similitud con texto, no con embeddings.** El enrutador usa reglas y, si no alcanzan, `rapidfuzz` contra los ejemplos de `intents.yaml`. No necesita Ollama y responde en ~1 ms. Se cambia a `bge-m3` si la evaluación de T10 lo justifica.
+- **Umbral provisional `0.65` y margen `0.03`** (`ASSISTANT_ROUTER_THRESHOLD`, `ASSISTANT_ROUTER_MARGIN`), elegidos con el barrido de `ml/evals/assistant/eval_router.py` para mantener el enrutamiento erróneo bajo 5 %. **No están calibrados** con un set reservado.
+- **Nivel 1 apagado por defecto** (`ASSISTANT_USE_LLM=false`): la calidad de redacción en español de Chile no está medida (T10). Funciona sin *streaming* y se probó solo con un LLM simulado, no con Ollama.
+- **Caché en memoria** por `(pyme_id, intención, pregunta normalizada, data_version de sus dominios, versión del catálogo, nivel, fecha)`; cubre niveles 0 y 1 y no guarda respuestas degradadas por LLM caído.
+- **Todavía no existen:** nivel 2 (documentos, pgvector, búsqueda híbrida), SSE, feedback y las intenciones `order_detail`, `order_feasibility`, `cash_summary` y `production_summary`. Hasta que exista `order_feasibility`, "¿me alcanza la harina para el pedido del sábado?" se enruta por error a pedidos próximos.
+- **Resolución de entidades:** además de `rapidfuzz`, se desempata por cobertura del nombre ("empanadas de queso" gana a "Empanadas de pino"); con empate real se pregunta a la usuaria.
+
+### Medido (equipo de referencia, base de desarrollo con datos de demo)
+- **Enrutador, set dorado de 51 casos** (`ml/evals/assistant/golden.yaml`, escrito por una persona antes de ver resultados): primera corrida **45/51 (88,2 %)** con 4 mal enrutados. Tras corregir reglas y subir el umbral: **47/51 (92,2 %)** con 1 mal enrutado. **La segunda cifra es optimista**: se afinó contra el mismo set. T10 debe armar un set reservado.
+- **Latencia del nivel 0** (`POST /assistant/ask`): p50 26 ms y p95 95 ms sin caché (n = 8, indicativo) y ~16 ms con caché; meta p95 ≤ 1,5 s.

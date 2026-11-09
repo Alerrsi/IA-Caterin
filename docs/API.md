@@ -124,11 +124,10 @@ El historial de producciones (`GET /vision/productions`) queda pendiente. El mod
 ### assistant (T07)
 | Método | Ruta | Descripción |
 |--------|------|-------------|
-| POST | `/assistant/ask` | `{ "question": "...", "quick_action": null }`. Responde en SSE (`text/event-stream`): eventos `meta` (nivel, intención, fuentes), `token`, `final` (texto completo, fuentes, latencia) y `error`. Con `Accept: application/json` responde en un bloque |
-| GET | `/assistant/quick-actions` | Botones de preguntas frecuentes (van directo al nivel 0) |
-| POST | `/assistant/feedback` | Pulgar arriba/abajo sobre una respuesta |
-| GET/POST | `/documents` | Listar y subir documentos (PDF, XLSX, CSV, TXT, ≤ 10 MB) para el nivel 2 |
-| DELETE | `/documents/{id}` | Borra el documento y sus fragmentos |
+| POST | `/assistant/ask` | `{ "question": "...", "quick_action": null }` → `{answer, level, intent, status, sources, options, fallback_reason, cache_hit, latency_ms, interaction_id}`. `level` 0 = sin LLM (plantilla con datos reales); 1 = redactada por el LLM con el dato ya resuelto, solo si `ASSISTANT_USE_LLM=true` y la intención lo permite. `status`: `ok`, `no_data`, `ambiguous` (hay `options` para elegir), `missing_entity` o `unrecognized` (`options` = intenciones probables). Una cifra que el LLM agregue descarta su texto y se entrega el nivel 0 (`fallback_reason: figures_mismatch`); sin LLM, `llm_unavailable`. Intenciones: stock de un insumo, qué me falta, costo de una receta, pedidos próximos, mejor precio, datos de un proveedor |
+| GET | `/assistant/quick-actions` | Botones de preguntas frecuentes; se envían como `quick_action` y entran directo al nivel 0 |
+
+Pendiente de T07: respuesta en *streaming* (SSE), `POST /assistant/feedback`, `/documents` y el nivel 2 (RAG sobre documentos).
 
 ### metrics (T09)
 | Método | Ruta | Descripción |
