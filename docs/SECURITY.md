@@ -9,7 +9,8 @@ Riesgo principal: que una pyme vea o modifique datos de otra.
 - Toda tabla de negocio tiene `pyme_id` NOT NULL. El `pyme_id` sale **solo del JWT**, mediante la dependencia central `get_tenant()`. Nunca se lee del cuerpo, de la URL ni de un header controlado por el cliente.
 - Los repositorios usan una sesión con filtro automático por tenant. Escribir filtros a mano está prohibido y se revisa en code review.
 - FK compuestas `(pyme_id, id)` para que la base impida referencias cruzadas.
-- Evaluar Row Level Security de Postgres como segunda barrera (T03).
+- Row Level Security de Postgres: evaluado en T03 y **no activado en el MVP** (ADR-006). Se reevalúa en T11.
+- Implementación: `app/core/tenancy.py` (filtro automático en lecturas y bloqueo de escrituras ajenas). `execution_options(skip_tenant_filter=True)` solo se permite en `modules/auth`.
 - Si se pide un id de otra pyme, se responde **404** (no 403), para no revelar que existe.
 - Archivos (fotos, PDF, documentos) se guardan en `/<pyme_id>/...`, y se sirven solo a través de la API, nunca con una URL pública directa.
 - Las claves de caché del asistente incluyen `pyme_id`.
@@ -17,10 +18,12 @@ Riesgo principal: que una pyme vea o modifique datos de otra.
 
 ## 2. Autenticación y autorización
 
-- Contraseñas con **Argon2id**. Mínimo 10 caracteres; sin reglas de composición forzadas, pero con verificación contra contraseñas comunes.
+- Contraseñas con **Argon2id**. Mínimo 10 caracteres; sin reglas de composición forzadas, pero con verificación contra una lista corta de contraseñas comunes (`modules/auth/schemas.py`; ampliarla es trabajo pendiente).
 - JWT de acceso de 15 min, firmado con una clave de `.env` (`JWT_SECRET`, ≥ 32 bytes aleatorios). Refresh token rotado, guardado como hash en la base y revocable.
 - Roles `owner` y `collaborator` (matriz en `docs/API.md`). Se comprueba en el servidor, no solo se oculta en la interfaz.
-- Límite de intentos de login por IP y por correo (p. ej. 10 por 15 min) con respuesta genérica ("correo o contraseña incorrectos").
+- Límite de intentos de login: 10 fallidos por correo o 50 por IP en 15 min (configurable) → 429. Respuesta genérica ("Correo o contraseña incorrectos") también para correos que no existen.
+- Reutilizar un refresh token ya rotado revoca todos los refresh de esa usuaria (detección de robo).
+- Recuperación de contraseña: sin correo saliente en el MVP; la dueña restablece la contraseña de su colaboradora con `PATCH /users/{id}`.
 - CORS cerrado al dominio de la PWA. Cookies `HttpOnly`, `Secure`, `SameSite=Strict`.
 
 ## 3. Prompt injection y uso del LLM

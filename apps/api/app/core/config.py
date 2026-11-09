@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     jwt_refresh_ttl_days: int = 30
     login_max_attempts: int = 10
     login_window_min: int = 15
+    refresh_cookie_secure: bool = True
 
     cors_origins: list[str] = ["http://localhost:5173"]
     storage_dir: Path = Path("/data")

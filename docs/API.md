@@ -1,6 +1,6 @@
 # API — Cáterin
 
-- Estado: diseño inicial (9-nov-2026). La fuente de verdad será el OpenAPI generado por FastAPI en `/api/v1/openapi.json` (con interfaz en `/docs`). Este documento resume y se mantiene al día con cada tarea.
+- Estado: diseño inicial (9-nov-2026); auth implementada en T03. La fuente de verdad será el OpenAPI generado por FastAPI en `/api/v1/openapi.json` (con interfaz en `/docs`). Este documento resume y se mantiene al día con cada tarea.
 - Base: `https://<dominio>/api/v1`. Todo es JSON (UTF-8) salvo la carga de archivos (multipart), los PDF y el *streaming* del asistente (SSE).
 
 ## 1. Autenticación y roles
@@ -65,7 +65,7 @@ Todas las respuestas de error usan `application/problem+json`:
 | GET | `/auth/me` | Usuaria y pyme actuales |
 | GET/PATCH | `/pyme` | Ver y editar la configuración (merma, margen, IVA) — solo dueña |
 | GET/POST | `/users` | Listar e invitar colaboradoras — solo dueña |
-| PATCH/DELETE | `/users/{id}` | Cambiar rol o desactivar — solo dueña |
+| PATCH/DELETE | `/users/{id}` | Cambiar nombre, rol, contraseña o desactivar (DELETE desactiva, no borra) — solo dueña. Protege a la última dueña activa |
 
 ### inventory (T04)
 | Método | Ruta | Descripción |

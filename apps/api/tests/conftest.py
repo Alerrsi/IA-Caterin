@@ -10,6 +10,7 @@ os.environ["DATABASE_URL"] = os.environ.get(
     "TEST_DATABASE_URL", "postgresql+psycopg://caterin:caterin_dev@postgres:5432/caterin_test"
 )
 os.environ["LLM_PROVIDER"] = "fake"
+os.environ["REFRESH_COOKIE_SECURE"] = "false"  # TestClient usa http
 
 from collections.abc import Iterator
 
@@ -20,9 +21,12 @@ from app.main import create_app
 
 
 @pytest.fixture
-def client() -> Iterator[TestClient]:
-    with TestClient(create_app()) as c:
-        yield c
+def client(migrated_db: None) -> Iterator[TestClient]:
+    try:
+        with TestClient(create_app()) as c:
+            yield c
+    finally:
+        truncate_all()
 
 
 # --------------------------------------------------------------------------- base de datos de pruebas
