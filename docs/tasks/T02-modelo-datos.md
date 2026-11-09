@@ -1,5 +1,5 @@
 # T02 — Modelo de datos, migraciones y seed
-- Estado: pendiente
+- Estado: hecha
 - Depende de: T01
 - Funcionalidad: transversal
 
@@ -13,15 +13,15 @@ Tener una única fuente de verdad para insumos, recetas, pedidos, precios y prod
 - Decisión pendiente: si `cash_movement` entra al MVP (pregunta 3 del índice). Si no se decide antes de empezar, se crea la tabla igual (es pequeña) y se marca como opcional en la interfaz.
 
 ## Entregables
-- [ ] Modelos SQLAlchemy 2.x tipados en `app/db/models/` para todas las entidades de DATA_MODEL.
-- [ ] Mixin común (`id`, `pyme_id`, `created_at`, `updated_at`, `created_by`) y FK compuestas `(pyme_id, id)`.
-- [ ] Extensiones `vector` y `citext` en la primera migración.
-- [ ] Migraciones Alembic desde cero, con `downgrade` en todas.
-- [ ] `document_chunk.embedding` como `vector(1024)` con índice HNSW (coseno) y `tsv` generado con `spanish` e índice GIN.
-- [ ] Índices: `pyme_id` en todas las tablas, únicos por pyme, parcial único de precio vigente.
-- [ ] `app/core/units.py`: unidades base y conversiones fijas, con tests.
-- [ ] `python -m app.db.seed`: **dos pymes de demo** (para probar el aislamiento) con ~30 insumos, ~8 recetas (empanadas de pino, canapés, brochetas, mini quiches, sopaipillas…), 3 proveedores con precios en CLP, 5 pedidos y movimientos de stock. Todo marcado como **sintético** (`name` con sufijo "(demo)" o un campo `is_demo`).
-- [ ] Actualizar `docs/DATA_MODEL.md` con cualquier cambio hecho al implementar.
+- [x] Modelos SQLAlchemy 2.x tipados en `app/db/models/` para todas las entidades de DATA_MODEL.
+- [x] Mixin común (`id`, `pyme_id`, `created_at`, `updated_at`, `created_by`) y FK compuestas `(pyme_id, id)`.
+- [x] Extensiones `vector` y `citext` en la primera migración.
+- [x] Migraciones Alembic desde cero, con `downgrade` en todas.
+- [x] `document_chunk.embedding` como `vector(1024)` con índice HNSW (coseno) y `tsv` generado con `spanish` e índice GIN.
+- [x] Índices: `pyme_id` en todas las tablas, únicos por pyme, parcial único de precio vigente.
+- [x] `app/core/units.py`: unidades base y conversiones fijas, con tests.
+- [x] `python -m app.db.seed`: **dos pymes de demo** (para probar el aislamiento) con ~30 insumos, ~8 recetas (empanadas de pino, canapés, brochetas, mini quiches, sopaipillas…), 3 proveedores con precios en CLP, 5 pedidos y movimientos de stock. Todo marcado como **sintético** (`name` con sufijo "(demo)" o un campo `is_demo`).
+- [x] Actualizar `docs/DATA_MODEL.md` con cualquier cambio hecho al implementar.
 
 ## Criterios de aceptación
 - `docker compose exec api alembic upgrade head` en una base vacía funciona; `alembic downgrade base` también, y volver a subir no falla.
@@ -41,4 +41,15 @@ Tener una única fuente de verdad para insumos, recetas, pedidos, precios y prod
 - UUIDv7: confirmar que la librería elegida está mantenida; si no, usar v4.
 
 ## Resumen de cierre
-(se completa al terminar)
+**Qué se hizo (9-nov-2026):**
+- Modelos en `app/db/models.py` (21 tablas), base con FK compuestas por tenant en `app/db/base.py`, enums en `app/db/enums.py`.
+- Migración inicial `81b5e0e8e593` con extensiones, índice HNSW (coseno) y columna `tsv` generada con `spanish` + GIN.
+- `app/core/units.py` (unidades base, conversiones, formato es-CL) y `app/core/money.py` (CLP, parseo de números chilenos como "21.000" y "2,5"), `app/core/security.py` (Argon2id).
+- Seed idempotente con dos pymes sintéticas: "Cocina Los Aromos (demo)" (31 insumos, 3 proveedores, 8 recetas, 5 pedidos) y "Banquetería del Lago (demo)". Nombres, clientes y precios inventados; el eneldo queda sin precio a propósito.
+- `DATA_MODEL.md` actualizado (sección 7).
+
+**Verificado:** `alembic upgrade head`, `downgrade base` y otra vez `upgrade head` en el contenedor; `alembic check` sin diferencias; seed dos veces sin duplicar. 35 pruebas pasan (unidades, dinero con Hypothesis, migraciones, FK entre pymes rechazada por la base, nombres únicos por pyme, precio vigente único, CHECKs, seed). ruff y `mypy --strict` limpios.
+
+**Pendiente / riesgos:**
+- Contraseña de demo pública (`caterin-demo-2026`, configurable con `SEED_DEMO_PASSWORD`): las cuentas de demo **no deben existir en producción** (T11).
+- Row Level Security no se activó (se evalúa en T03).

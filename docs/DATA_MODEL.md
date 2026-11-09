@@ -1,6 +1,6 @@
 # Modelo de datos — Cáterin
 
-- Estado: propuesta inicial (9-nov-2026). Se implementa en T02 con SQLAlchemy 2.x y Alembic.
+- Estado: **implementado en T02** (9-nov-2026) en `apps/api/app/db/models.py`, migración inicial en `apps/api/app/db/migrations/`. Ver "Cambios al implementar" al final.
 - Nombres de tablas y columnas en inglés (convención de código); entre paréntesis, el nombre de negocio en español.
 
 ## 1. Diagrama de entidades
@@ -41,7 +41,7 @@ Todas las tablas de negocio llevan:
 
 | Columna | Tipo | Regla |
 |---------|------|-------|
-| `id` | UUID | Generado por la API (UUIDv7 si la librería lo permite, para ordenar por tiempo; si no, v4) |
+| `id` | UUID | Generado por la API con UUIDv4 (Python 3.12 no trae UUIDv7) |
 | `pyme_id` | UUID, FK → `pyme.id`, NOT NULL, indexado | Multi-tenancy (sección 4) |
 | `created_at`, `updated_at` | `timestamptz` | En UTC; se muestran en `America/Santiago` |
 | `created_by` | UUID, FK → `user.id`, nullable | Trazabilidad |
@@ -63,7 +63,7 @@ Leyenda: **[MVP]** son las entidades exigidas en `AGENTS.md` (sección 7.1). **[
 | `vat_pct` | numeric(5,2), default 19.00 | IVA de Chile |
 | `prices_include_vat` | bool, default true | Si sus precios de compra se ingresan con IVA |
 
-### Usuario (`user`) [MVP]
+### Usuario (`app_user`) [MVP]
 | Campo | Tipo | Nota |
 |-------|------|------|
 | `email` | citext, único global | Login |
@@ -143,7 +143,7 @@ El precio por unidad base se calcula en código cuando se necesita (`price_clp /
 
 Sub-recetas (una receta que usa otra, p. ej. "masa"): **fuera del MVP**. Si aparecen en los datos reales, se evalúan en T04.
 
-### Pedido (`order`) [MVP]
+### Pedido (`catering_order`) [MVP]
 | Campo | Tipo | Nota |
 |-------|------|------|
 | `customer_name` | text | Dato personal mínimo |
@@ -303,3 +303,14 @@ La intención `get_cash_summary` ("¿cómo va la caja?") necesita algún dato de
 | `order.raw_text`, `assistant_interaction.question` | 90 días (configurable) | Pueden tener datos personales; sirven para evaluar |
 | Fotos de producción | Mientras sirvan para reentrenar; borrables por la usuaria | Sin personas ni metadatos de ubicación |
 | Cotizaciones, precios, movimientos | Indefinida | Trazabilidad del negocio |
+
+## 7. Cambios al implementar (T02)
+
+- **Nombres de tabla:** `user` y `order` son palabras reservadas en Postgres, así que las tablas son `app_user` y `catering_order`.
+- **UUIDv4** en lugar de UUIDv7.
+- **Enums** guardados como texto con `CHECK` (no como `ENUM` nativo de Postgres), para que agregar un valor no exija `ALTER TYPE`.
+- **FK compuestas**: cada tabla de negocio tiene `UNIQUE(pyme_id, id)` y sus relaciones van con `(pyme_id, x_id) → (pyme_id, id)`, incluida `created_by`. No se usa `ON DELETE SET NULL` en FK compuestas (anularía también `pyme_id`); se usa `RESTRICT` y borrado lógico (`is_active`).
+- **Tablas agregadas para T03:** `refresh_token` (hash del token, vencimiento, revocación) y `login_attempt` (intentos fallidos, sin tenant).
+- **Columnas agregadas:** `pyme.quote_validity_days` y `pyme.is_demo`; `recipe.is_active` y `supplier.is_active`; `stock_movement.note`; `catering_order.notes`; `order_line.position` y `quote_line.position` (orden de las líneas); `quote.is_complete` (falta algún precio) y `quote.valid_until`; `quote_line.supplier_id`; `assistant_interaction.intents_version`.
+- **`cash_movement`** se creó (es pequeña) aunque su entrada al MVP sigue pendiente de decisión del equipo.
+- La migración crea las extensiones `vector` y `citext`; el `downgrade` no las elimina.

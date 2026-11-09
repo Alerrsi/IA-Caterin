@@ -23,3 +23,42 @@ from app.main import create_app
 def client() -> Iterator[TestClient]:
     with TestClient(create_app()) as c:
         yield c
+
+
+# --------------------------------------------------------------------------- base de datos de pruebas
+
+from alembic import command  # noqa: E402
+from alembic.config import Config  # noqa: E402
+from sqlalchemy import text  # noqa: E402
+from sqlalchemy.orm import Session  # noqa: E402
+
+from app.db.base import Base  # noqa: E402
+from app.db.session import get_engine, get_sessionmaker  # noqa: E402
+
+
+def alembic_config() -> Config:
+    cfg = Config("alembic.ini")
+    cfg.attributes["database_url"] = os.environ["DATABASE_URL"]
+    return cfg
+
+
+@pytest.fixture(scope="session")
+def migrated_db() -> None:
+    command.upgrade(alembic_config(), "head")
+
+
+def truncate_all() -> None:
+    tables = ", ".join(f'"{t.name}"' for t in Base.metadata.sorted_tables)
+    with get_engine().begin() as conn:
+        conn.execute(text(f"TRUNCATE {tables} RESTART IDENTITY CASCADE"))
+
+
+@pytest.fixture
+def db(migrated_db: None) -> Iterator[Session]:
+    session = get_sessionmaker()()
+    try:
+        yield session
+    finally:
+        session.rollback()
+        session.close()
+        truncate_all()

@@ -5,7 +5,7 @@ Actualizado: 9-nov-2026. Por decisión del usuario (9-nov-2026), las tareas se t
 | ID | Título | Funcionalidad | Estado | Depende de | Dueño |
 |----|--------|---------------|--------|------------|-------|
 | [T01](T01-fundaciones.md) | Fundaciones del repositorio | transversal | hecha | — | por asignar |
-| [T02](T02-modelo-datos.md) | Modelo de datos, migraciones y seed | transversal | pendiente | T01 | por asignar |
+| [T02](T02-modelo-datos.md) | Modelo de datos, migraciones y seed | transversal | hecha | T01 | por asignar |
 | [T03](T03-auth-multitenant.md) | Autenticación y multi-tenancy | transversal | pendiente | T02 | por asignar |
 | [T04](T04-inventario-recetas-proveedores.md) | Inventario, recetas, proveedores e importación | transversal | pendiente | T03 | por asignar |
 | [T05](T05-cotizador-f3.md) | Cotizador automatizado | F3 | pendiente | T04 | por asignar |
