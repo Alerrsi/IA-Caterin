@@ -125,6 +125,7 @@ class Ingredient(TenantMixin, Base):
     density_g_per_ml: Mapped[Decimal | None] = mapped_column(Quantity)
     category: Mapped[str | None] = mapped_column(String(60))
     is_active: Mapped[bool] = mapped_column(Boolean, server_default=sql_text("true"))
+    import_batch_id: Mapped[uuid.UUID | None] = mapped_column(index=True)
 
     __table_args__ = tenant_args(
         "ingredient",
@@ -190,7 +191,7 @@ class IngredientPrice(TenantMixin, Base):
     includes_vat: Mapped[bool] = mapped_column(Boolean, server_default=sql_text("true"))
     price_date: Mapped[date] = mapped_column(Date)
     source: Mapped[PriceSourceKind] = mapped_column(str_enum(PriceSourceKind, "price_source_kind"))
-    import_batch_id: Mapped[uuid.UUID | None] = mapped_column()
+    import_batch_id: Mapped[uuid.UUID | None] = mapped_column(index=True)
     is_current: Mapped[bool] = mapped_column(Boolean, server_default=sql_text("true"))
 
     supplier: Mapped["Supplier"] = relationship(

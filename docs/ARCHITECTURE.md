@@ -57,7 +57,8 @@ Proveedor externo de LLM: opcional, se activa por `.env` y pasa por la misma int
 | `core/llm` | Interfaz `LLMProvider` (Ollama por defecto, externo opcional), timeouts, *streaming* | Ningún módulo importa un SDK de LLM fuera de aquí |
 | `core/embeddings` | Interfaz `EmbeddingProvider` (`bge-m3`) y reranker opcional | — |
 | `modules/auth` | Registro, login JWT, roles (dueña, colaboradora) | — |
-| `modules/inventory` | Insumos, stock (libro de movimientos), importación CSV/Excel | — |
+| `modules/inventory` | Insumos y stock (libro de movimientos) | — |
+| `modules/imports` | Importación de insumos y precios desde CSV/Excel (vista previa, confirmación, deshacer) | — |
 | `modules/suppliers` | Proveedores, precios por presentación, importación de listas, interfaz `PriceSource` | Scraping sin ADR aprobado |
 | `modules/recipes` | Recetas, líneas de receta, costo calculado | — |
 | `modules/quotes` | Pedidos, extractor de pedidos, cálculo de insumos, comparación de precios, PDF | Dejar que el LLM calcule |
@@ -76,12 +77,13 @@ Cada módulo de `apps/api/app/modules/<módulo>/` sigue la misma forma:
 router.py     # rutas HTTP; solo valida, llama al servicio y responde
 schemas.py    # modelos Pydantic de entrada y salida
 service.py    # lógica de negocio; la única API pública del módulo hacia otros módulos
-repository.py # acceso a datos, siempre a través de la sesión con tenant
 ```
+
+El acceso a datos va dentro de `service.py` con la sesión de tenant (`core/tenancy.TenantDB`), que filtra por `pyme_id` sola. Se crea un `repository.py` solo si un módulo crece lo suficiente para justificarlo.
 
 Reglas:
 
-1. Un módulo solo importa `service.py` y `schemas.py` de otro módulo, nunca su `repository.py` ni sus modelos internos.
+1. Un módulo solo importa `service.py` y `schemas.py` de otro módulo.
 2. Dependencias permitidas (sin ciclos):
    - `inventory`, `suppliers` y `recipes` dependen solo de `core`.
    - `quotes` depende de `recipes`, `inventory` y `suppliers`.

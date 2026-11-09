@@ -10,6 +10,10 @@ from app.core.errors import register_error_handlers
 from app.core.logging import configure_logging
 from app.core.request_context import RequestIdMiddleware
 from app.modules.auth.router import router as auth_router
+from app.modules.imports.router import router as imports_router
+from app.modules.inventory.router import router as inventory_router
+from app.modules.recipes.router import router as recipes_router
+from app.modules.suppliers.router import router as suppliers_router
 
 API_PREFIX = "/api/v1"
 
@@ -38,7 +42,8 @@ def create_app() -> FastAPI:
 
     api = APIRouter(prefix=API_PREFIX)
     api.include_router(health_router)
-    api.include_router(auth_router)
+    for router in (auth_router, inventory_router, suppliers_router, recipes_router, imports_router):
+        api.include_router(router)
     app.include_router(api)
     return app
 

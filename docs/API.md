@@ -1,6 +1,6 @@
 # API — Cáterin
 
-- Estado: diseño inicial (9-nov-2026); auth implementada en T03. La fuente de verdad será el OpenAPI generado por FastAPI en `/api/v1/openapi.json` (con interfaz en `/docs`). Este documento resume y se mantiene al día con cada tarea.
+- Estado: auth (T03) e inventario, proveedores, recetas e importación (T04) implementados. El resto es diseño. La fuente de verdad será el OpenAPI generado por FastAPI en `/api/v1/openapi.json` (con interfaz en `/docs`). Este documento resume y se mantiene al día con cada tarea.
 - Base: `https://<dominio>/api/v1`. Todo es JSON (UTF-8) salvo la carga de archivos (multipart), los PDF y el *streaming* del asistente (SSE).
 
 ## 1. Autenticación y roles
@@ -75,9 +75,11 @@ Todas las respuestas de error usan `application/problem+json`:
 | GET | `/ingredients/{id}/movements` | Historial de movimientos |
 | POST | `/stock/movements` | Registrar entrada, salida, ajuste o merma (idempotente) |
 | GET | `/stock/low` | Insumos bajo el mínimo |
-| POST | `/imports/ingredients` | Subir CSV o Excel → **vista previa** con errores por fila |
-| POST | `/imports/{import_id}/confirm` | Confirmar la importación |
-| DELETE | `/imports/{import_id}` | Deshacer una importación confirmada (si no se usó) |
+| GET | `/ingredients?q=&limit=&cursor=&updated_since=&low_only=` | Paginado por cursor, con ETag |
+| GET | `/imports/templates/{ingredients\|prices}.csv` | Plantilla de ejemplo (separador `;`) |
+| POST | `/imports/ingredients/preview` | Subir CSV o Excel (multipart `file`) → filas válidas ya normalizadas + errores por fila. No guarda nada |
+| POST | `/imports/ingredients/confirm` | Reenviar las filas válidas (`{"rows": [...]}`); se validan de nuevo y se crean con un `import_batch_id`. Solo crea insumos nuevos |
+| DELETE | `/imports/{import_batch_id}` | Deshacer una importación (insumos o precios) si sus datos no se usaron; con precios, vuelve a la versión anterior |
 
 ### suppliers (T04)
 | Método | Ruta | Descripción |
@@ -86,14 +88,15 @@ Todas las respuestas de error usan `application/problem+json`:
 | GET/PATCH/DELETE | `/suppliers/{id}` | |
 | GET/POST | `/prices` | Listar precios vigentes (filtro por insumo o proveedor) y crear un precio nuevo (versiona el anterior) |
 | GET | `/ingredients/{id}/prices` | Comparación de precios vigentes de un insumo, normalizados por unidad base |
-| POST | `/imports/prices` | Importar una lista de precios (CSV/Excel) con vista previa |
+| POST | `/imports/prices/preview` | Lista de precios (CSV/Excel) → vista previa; marca los proveedores nuevos |
+| POST | `/imports/prices/confirm` | Crea los precios (y los proveedores que falten) |
 
 ### recipes (T04)
 | Método | Ruta | Descripción |
 |--------|------|-------------|
 | GET/POST | `/recipes` | Listar y crear recetas con sus líneas |
 | GET/PATCH/DELETE | `/recipes/{id}` | |
-| GET | `/recipes/{id}/cost?qty=` | Costo calculado para N unidades, con el desglose y los precios usados |
+| GET | `/recipes/{id}/cost?qty=` | Costo calculado para N unidades, con IVA, usando por insumo la presentación vigente más barata; desglose por línea, precios usados y `is_complete` si falta algún precio |
 
 ### quotes (T05)
 | Método | Ruta | Descripción |
