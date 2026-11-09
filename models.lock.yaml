@@ -46,3 +46,15 @@ models:
     license: Apache-2.0
     upstream: roboflow/rf-detr (RF-DETR Nano, preentrenado en COCO; aún sin ajustar a productos)
     required: false  # pasa a true en T06
+
+  # Modelo de PRUEBA entrenado con Snacks (Open Images, CC BY): valida el pipeline, no sirve como producto.
+  # Para usarlo en la API: copiar model.onnx y model.json a VISION_MODEL_PATH.
+  - id: snacks-v1-nano-1
+    role: vision_detector_test
+    source: onnx
+    path: ml/vision/runs/snacks-v1-nano-1/onnx/model.onnx
+    sha256: 91a3d3a9c41e1966bab543f6135f78cdbc8826d6014c76c0d16d49a6bb6aa87b
+    size_bytes: 113066039
+    license: Apache-2.0
+    upstream: roboflow/rf-detr 1.12.0 (RF-DETR Nano) ajustado 30 épocas, semilla 42, dataset snacks-v1 (dataset_sha256 13d2f7be…)
+    required: false
