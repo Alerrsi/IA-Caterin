@@ -49,8 +49,17 @@ identifica los datos exactos con que se entrenó un modelo y va en el model card
 
 ## Datos de prueba
 
-Si se parte con fotos de prueba (no de una pyme real), el model card debe decirlo y sus métricas no se
-presentan como del caso real (AGENTS.md §10).
+Mientras no haya fotos de una pyme real se usa Snacks (Open Images, CC BY; cookie, muffin, doughnut, pretzel):
+
+```bash
+# bajar de Hugging Face a data/_snacks: train.csv, val.csv, test.csv (snacks-detection) e images.zip, credits.csv (snacks)
+.venv/bin/python prepare_snacks.py                         # -> data/raw (1.164 imágenes, 1.964 cajas)
+.venv/bin/python dataset.py split --version snacks-v1
+```
+
+La "sesión" es el autor de la foto, para que un mismo fotógrafo no quede repartido entre splits. Son fotos de
+comida de internet, no bandejas de una cocina: sirven para validar el pipeline, y el model card debe decirlo.
+Sus métricas no se presentan como del caso real (AGENTS.md §10). Atribución en `THIRD_PARTY_NOTICES.md`.
 
 ## Pendiente
 

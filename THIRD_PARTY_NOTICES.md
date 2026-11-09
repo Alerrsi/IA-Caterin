@@ -39,3 +39,10 @@ Licencias de los modelos y dependencias principales. Revisado el 9-nov-2026. Las
 |---------|----------|
 | React, React DOM, React Router, Vite, Tailwind CSS, vite-plugin-pwa, Workbox, Vitest, Testing Library, ESLint, typescript-eslint | MIT |
 | TypeScript | Apache-2.0 |
+
+## Datos de prueba de visión (no van a producción)
+
+| Dato | Licencia | Notas |
+|------|----------|-------|
+| Snacks (Detection), cajas: huggingface.co/datasets/Matthijs/snacks-detection | CC BY 4.0 (anotaciones de Google, Open Images) | Solo clases cookie, muffin, doughnut y pretzel |
+| Snacks, imágenes: huggingface.co/datasets/Matthijs/snacks | CC BY 2.0 (fotos de Flickr de distintos autores) | Atribución por foto en `ml/vision/data/raw/CREDITS.csv` (se genera con `prepare_snacks.py`; las fotos no se commitean). Un modelo entrenado solo con esto sirve para validar el pipeline, no como producto |
