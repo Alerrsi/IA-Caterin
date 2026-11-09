@@ -61,6 +61,30 @@ La "sesión" es el autor de la foto, para que un mismo fotógrafo no quede repar
 comida de internet, no bandejas de una cocina: sirven para validar el pipeline, y el model card debe decirlo.
 Sus métricas no se presentan como del caso real (AGENTS.md §10). Atribución en `THIRD_PARTY_NOTICES.md`.
 
+## Entrenar y evaluar
+
+En Colab o Kaggle (GPU), con `ml/vision/` y `data/snacks-v1` subidos:
+
+```bash
+pip install "rfdetr[train,onnx]==1.12.0"
+python train.py --dataset data/snacks-v1 --version snacks-v1-nano-1 --epochs 30
+```
+
+Deja `runs/<version>/onnx/model.onnx` y `model.json` (versión, clases, tamaño de entrada, sha256 del dataset y del
+ONNX). Se baja esa carpeta y se evalúa en tu equipo con el **mismo código que usa la API**:
+
+```bash
+.venv/bin/python eval_onnx.py --model runs/snacks-v1-nano-1/onnx --dataset data/snacks-v1 --out eval.json
+```
+
+Reporta, por clase y por umbral (0.3, 0.5, 0.7), el error absoluto medio de conteo y el % de fotos con conteo
+exacto, más la latencia de punta a punta en esa CPU. mAP50 y mAP50:95 salen del log de entrenamiento de RF-DETR.
+
+Para usar el modelo en la API: copiar `model.onnx` y `model.json` a la carpeta de `VISION_MODEL_PATH`
+(por defecto `/data/models/vision/`).
+
 ## Pendiente
 
-Pre-etiquetado, augmentations, fine-tuning, export ONNX, curva de aprendizaje y `MODEL_CARD.md`.
+Pre-etiquetado (solo hará falta con fotos reales), augmentations propias, curva de aprendizaje y `MODEL_CARD.md`.
+Falta correr el entrenamiento: el formato de salida del ONNX se verificó leyendo el código de `rfdetr` 1.12.0 y
+con un modelo de juguete, no con un modelo entrenado.

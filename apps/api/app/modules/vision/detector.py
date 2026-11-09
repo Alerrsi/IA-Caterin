@@ -1,8 +1,9 @@
 """Detector de productos (F2): preprocesamiento, inferencia ONNX y postprocesamiento.
 
-Supuesto a verificar al exportar el modelo real (T06, paso de fine-tuning): el ONNX de RF-DETR entrega
-primero las cajas (1, N, 4) como cx, cy, w, h normalizadas y después los logits (1, N, C), y las C
-columnas coinciden en orden con `classes` del archivo `model.json` junto al ONNX.
+Formato del ONNX de RF-DETR (verificado en el código de rfdetr 1.12.0, falta confirmarlo con un modelo
+entrenado): salidas `dets` (1, N, 4) = cx, cy, w, h normalizadas y `labels` (1, N, C+1) = logits, en ese orden.
+Con clases 0..C-1 la última columna es una ranura sin entrenar ("sin objeto") y se descarta; las C primeras
+siguen el orden de `classes` en `model.json` junto al ONNX. Se usa sigmoide por clase, como RF-DETR.
 """
 
 import hashlib
@@ -67,8 +68,10 @@ def postprocess(
     boxes: NDArray[np.float32], logits: NDArray[np.float32], classes: list[str], threshold: float
 ) -> list[Detection]:
     """Cajas cxcywh + logits -> detecciones sobre el umbral, ordenadas por confianza."""
+    if logits.shape[-1] == len(classes) + 1:
+        logits = logits[..., :-1]
     if logits.shape[-1] != len(classes):
-        raise ValueError(f"El modelo tiene {logits.shape[-1]} clases y model.json declara {len(classes)}")
+        raise ValueError(f"El modelo tiene {logits.shape[-1]} columnas y model.json declara {len(classes)} clases")
     probs = 1.0 / (1.0 + np.exp(-logits[0]))
     best = probs.argmax(axis=1)
     scores = probs[np.arange(len(best)), best]

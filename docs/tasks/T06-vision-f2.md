@@ -1,5 +1,5 @@
 # T06 — Conteo de productos por foto
-- Estado: pendiente
+- Estado: en curso
 - Depende de: T04
 - Funcionalidad: F2
 

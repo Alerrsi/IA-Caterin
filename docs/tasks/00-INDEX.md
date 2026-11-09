@@ -9,7 +9,7 @@ Actualizado: 9-nov-2026. Por decisión del usuario (9-nov-2026), las tareas se t
 | [T03](T03-auth-multitenant.md) | Autenticación y multi-tenancy | transversal | hecha | T02 | por asignar |
 | [T04](T04-inventario-recetas-proveedores.md) | Inventario, recetas, proveedores e importación | transversal | hecha | T03 | por asignar |
 | [T05](T05-cotizador-f3.md) | Cotizador automatizado | F3 | hecha (API + pantallas) | T04 | por asignar |
-| [T06](T06-vision-f2.md) | Conteo de productos por foto | F2 | pendiente | T04 | por asignar |
+| [T06](T06-vision-f2.md) | Conteo de productos por foto | F2 | en curso (API y datos listos; falta entrenar) | T04 | por asignar |
 | [T07](T07-asistente-rag-f1.md) | Asistente por niveles con RAG | F1 | pendiente | T04 | por asignar |
 | [T08](T08-frontend-pwa.md) | Frontend PWA mobile-first | transversal | en curso (F3 hecha) | T05, T06, T07 (por pantallas) | por asignar |
 | [T09](T09-metricas.md) | Métricas de éxito | transversal | pendiente | T05, T07, T08 | por asignar |

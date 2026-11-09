@@ -1,7 +1,9 @@
 """F2: preprocesamiento, postprocesamiento, conteo por receta y confirmación idempotente."""
 
 import io
+import json
 import uuid
+from pathlib import Path
 
 import numpy as np
 import pytest
@@ -16,6 +18,7 @@ from app.modules.vision.detector import (
     Detection,
     InvalidImageError,
     ModelInfo,
+    OnnxDetector,
     get_detector,
     postprocess,
     preprocess,
@@ -76,9 +79,15 @@ def test_postprocess_threshold_boxes_and_order() -> None:
     assert dets[1].box[0] == 0.0  # recortada al borde de la imagen
 
 
+def test_postprocess_drops_untrained_last_slot() -> None:
+    boxes = np.array([[[0.5, 0.5, 0.2, 0.2]]], dtype=np.float32)
+    logits = np.array([[[-5.0, -5.0, 9.0]]], dtype=np.float32)  # solo la ranura extra (sin entrenar) es alta
+    assert postprocess(boxes, logits, ["empanada", "canape"], 0.5) == []
+
+
 def test_postprocess_class_count_mismatch() -> None:
     with pytest.raises(ValueError, match="clases"):
-        postprocess(np.zeros((1, 1, 4), np.float32), np.zeros((1, 1, 3), np.float32), ["a"], 0.5)
+        postprocess(np.zeros((1, 1, 4), np.float32), np.zeros((1, 1, 5), np.float32), ["a"], 0.5)
 
 
 # --------------------------------------------------------------------------- API
@@ -179,3 +188,30 @@ def test_other_pyme_cannot_confirm_on_my_recipe(client: TestClient, demo: dict) 
     assert_isolated(
         client, intruder, "POST", f"{API}/vision/productions", {"recipe_id": str(demo["recipe"].id), "confirmed_qty": 5}
     )
+
+
+# --------------------------------------------------------------------------- ONNX real (modelo de juguete)
+
+FIXTURES = Path(__file__).parent / "fixtures"
+
+
+@pytest.fixture
+def onnx_detector() -> OnnxDetector:
+    meta = json.loads((FIXTURES / "tiny_detector.json").read_text())
+    return OnnxDetector(FIXTURES / "tiny_detector.onnx", meta)
+
+
+def test_onnx_detector_runs_and_ignores_extra_slot(onnx_detector: OnnxDetector) -> None:
+    dets = onnx_detector.detect(_jpeg(), 0.5)
+    assert sorted(d.vision_class for d in dets) == ["canape", "empanada", "empanada"]
+    assert len(onnx_detector.info.sha256) == 64
+
+
+def test_count_endpoint_with_onnx_detector(client: TestClient, demo: dict, onnx_detector: OnnxDetector) -> None:  # type: ignore[type-arg]
+    _use(client, onnx_detector)
+    r = client.post(f"{API}/vision/count", headers=demo["owner"], files={"photo": ("a.jpg", _jpeg((640, 480)))})
+    assert r.status_code == 200, r.text
+    lines = {c["vision_class"]: c["count"] for c in r.json()["counts"]}
+    assert lines == {"empanada": 2, "canape": 1}
+    assert r.json()["model_version"] == "tiny-test"
+    assert client.get(f"{API}/vision/model", headers=demo["owner"]).json()["loaded"] is True
