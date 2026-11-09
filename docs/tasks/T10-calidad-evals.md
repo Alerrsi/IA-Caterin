@@ -19,7 +19,7 @@ Saber, con evidencia propia, que los números son correctos, que el asistente no
 - [ ] **Calibración del umbral del enrutador** (curva de precisión y cobertura); el valor elegido queda en ADR-005 y en `.env.example`.
 - [ ] **Extractor:** ≥ 20 pedidos (sintéticos y, si es posible, reales anonimizados), exactitud campo a campo.
 - [ ] **RAG:** ≥ 50 preguntas sobre documentos realistas; recall@5 y MRR; `bge-m3` (Ollama) frente a `sentence-transformers` y `Qwen3-Embedding-0.6B`; con y sin reranker.
-- [ ] **Visión:** evaluación en el split de test (mAP, error de conteo, latencia de punta a punta).
+- [ ] **Visión:** evaluación en el split de test (mAP, error de conteo, latencia de punta a punta). Viene de T06, que dejó el pipeline y un modelo de **prueba** (Snacks); con fotos reales de una pyme falta: reentrenar (`ml/vision/train.py`), mAP50 y mAP50:95 por clase, matriz de confusión, curva de aprendizaje, fijar el umbral objetivo de precisión en `ml/vision/MODEL_CARD.md`, y repetir la latencia con JPEG de celular y en el VPS. Sin fotos reales se reporta como no cumplido.
 - [ ] **Cobertura mínima:** ≥ 80% en `recipes/costing.py`, `quotes/calculator.py`, `core/units.py` y el verificador de cifras; ≥ 60% en el resto de la API (propuesta).
 - [ ] **E2E** con Playwright de los criterios globales del MVP (`AGENTS.md`, sección 9).
 - [ ] **Carga ligera:** p. ej. 5 usuarias concurrentes durante 5 minutos (k6 o Locust) mezclando consultas de nivel 0, cotizaciones y fotos; ver cómo se comporta el LLM en cola.
