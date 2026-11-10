@@ -3,6 +3,7 @@ import {
   api,
   ApiError,
   post,
+  sendQuoteTiming,
   type Extraction,
   type OrderOut,
   type OrderUnit,
@@ -131,7 +132,9 @@ export default function NewQuote() {
           unit: l.unit,
         })),
       })
-      const quote = await post<QuoteOut>(`/orders/${order.id}/quotes`, { started_at: startedAt.current })
+      const quote = await post<QuoteOut>(`/orders/${order.id}/quotes`, {})
+      // Métrica T09: desde que se abrió esta pantalla hasta tener la cotización calculada.
+      sendQuoteTiming({ started_at: startedAt.current, ended_at: new Date().toISOString(), quote_id: quote.id, source })
       navigate(`/cotizaciones/${quote.id}`)
     } catch (err) {
       if (err instanceof ApiError && err.status === 403) setError(t.quote.ownerOnly)

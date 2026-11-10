@@ -240,3 +240,42 @@ export interface ShoppingList {
   covered_by_stock: string[]
   total_clp: number
 }
+
+// --------------------------------------------------------------------------- métricas (T09)
+
+export interface MetricStat {
+  n: number
+  value: number | null
+  unit: string
+  low_n: boolean
+}
+
+export interface BaselineRange {
+  first_measured_on: string | null
+  last_measured_on: string | null
+}
+
+export interface MetricsSummary {
+  period: { date_from: string | null; date_to: string; timezone: string }
+  low_n_threshold: number
+  satisfaction: { n: number; mean_stars: number | null; distribution: Record<string, number>; low_n: boolean }
+  quote_time: { caterin_median: MetricStat; manual_median: MetricStat; manual_range: BaselineRange }
+  data_lookup: { assistant_median: MetricStat; manual_median: MetricStat; manual_range: BaselineRange }
+  assistant: {
+    total: number
+    levels: { level: number; n: number; p50_ms: number | null; p95_ms: number | null; low_n: boolean }[]
+    without_llm: { n: number; total: number; pct: number | null; low_n: boolean }
+    degraded: { n: number; total: number; pct: number | null; low_n: boolean }
+  }
+  warnings: string[]
+}
+
+/** Envía el tiempo de una cotización sin bloquear a la usuaria: si falla, se pierde solo la métrica. */
+export function sendQuoteTiming(body: {
+  started_at: string
+  ended_at: string
+  quote_id: string
+  source: 'text' | 'form'
+}): void {
+  post('/metrics/quote-timing', body).catch(() => undefined)
+}

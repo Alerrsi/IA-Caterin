@@ -41,3 +41,36 @@ export function parseQtyInput(raw: string): string | null {
   if (!/^\d+(\.\d{1,3})?$/.test(cleaned)) return null
   return Number(cleaned) > 0 ? cleaned : null
 }
+
+/** Segundos -> "25 min 30 s", "1 h 05 min", "0,8 s". Para tiempos medidos (métricas T09). */
+export function formatDuration(seconds: number | null | undefined): string {
+  if (seconds === null || seconds === undefined) return '—'
+  if (seconds < 10) return `${formatQty(seconds.toFixed(1))} s`
+  const total = Math.round(seconds)
+  const h = Math.floor(total / 3600)
+  const m = Math.floor((total % 3600) / 60)
+  const s = total % 60
+  if (h > 0) return `${h} h ${String(m).padStart(2, '0')} min`
+  if (m > 0) return s ? `${m} min ${s} s` : `${m} min`
+  return `${s} s`
+}
+
+/** Milisegundos -> "850 ms" o "12,5 s". */
+export function formatMs(ms: number | null | undefined): string {
+  if (ms === null || ms === undefined) return '—'
+  return ms < 1000 ? `${Math.round(ms)} ms` : `${formatQty((ms / 1000).toFixed(1))} s`
+}
+
+/** 58.3 -> "58,3 %" */
+export function formatPct(value: number | null | undefined): string {
+  return value === null || value === undefined ? '—' : `${formatQty(value.toFixed(1))} %`
+}
+
+/** "4 min 30" -> segundos. Acepta minutos con coma ("2,5") y segundos opcionales. */
+export function parseMinutesSeconds(minutes: string, seconds: string): number | null {
+  const m = minutes.trim() ? Number(minutes.trim().replace(',', '.')) : 0
+  const s = seconds.trim() ? Number(seconds.trim()) : 0
+  if (!Number.isFinite(m) || !Number.isFinite(s) || m < 0 || s < 0 || s >= 60) return null
+  const total = m * 60 + s
+  return total > 0 ? Math.round(total * 10) / 10 : null
+}

@@ -321,3 +321,12 @@ La intención `get_cash_summary` ("¿cómo va la caja?") necesita algún dato de
 - `quote.price_snapshot` guarda cada precio que intervino (el más barato para costear, el elegido para comprar y las alternativas) con sus valores de ese momento: la cotización se puede reproducir aunque los precios cambien después.
 - `quote_line.ingredient_price_id` apunta a la presentación elegida para comprar o, si el insumo quedó cubierto con stock, a la más barata usada para costear.
 - `catering_order.extraction` guarda la trazabilidad del extractor (modelo, versión del prompt, intentos, latencia, JSON devuelto) cuando el pedido vino de texto.
+
+## 9. Cambios al implementar (T09)
+
+- `metric_event.payload` por tipo:
+  - `survey`: `context` y `comment` opcional (texto libre de la usuaria: puede traer datos personales, no se exporta en el CSV). `value_num` = estrellas.
+  - `quote_timing`: `started_at`, `ended_at`, `measured_by` (`pwa`), `source`, `quote_id`, `order_id`. `value_num` = segundos. Un registro por `quote_id`.
+  - `manual_baseline`: `task` (`quote` | `data_lookup`), `reference` (sin datos de clientes), `repetition`, `measured_on`, `tool`, `notes`. `value_num` = segundos.
+- Índice nuevo `ix_assistant_interaction_pyme_created (pyme_id, created_at)` para filtrar el panel por periodo (migración `3c1f9a7d2b10`). `metric_event` ya tenía `(pyme_id, kind, created_at)`.
+- "Resuelta sin LLM" = `assistant_interaction.level = 0`. "Degradada" = `fallback_reason IS NOT NULL` (se llamó al LLM pero se entregó la plantilla).

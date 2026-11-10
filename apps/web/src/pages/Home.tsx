@@ -28,6 +28,9 @@ export default function Home() {
         <BigAction label={t.home.orders} hint={t.home.ordersHint} onClick={() => navigate('/pedidos')} />
         <BigAction label={t.home.vision} hint={t.home.soon} disabled />
         <BigAction label={t.home.assistant} hint={t.home.soon} disabled />
+        {user?.role === 'owner' && (
+          <BigAction label={t.home.metrics} hint={t.home.metricsHint} onClick={() => navigate('/metricas')} />
+        )}
       </div>
       <Button variant="ghost" className="mt-8" onClick={() => logout()}>
         {t.home.logout}

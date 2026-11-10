@@ -484,7 +484,11 @@ class AssistantInteraction(TenantMixin, Base):
     first_token_ms: Mapped[int | None] = mapped_column(Integer)
     intents_version: Mapped[str | None] = mapped_column(String(20))
 
-    __table_args__ = tenant_args("assistant_interaction", ("user_id", "app_user", "CASCADE"))
+    __table_args__ = tenant_args(
+        "assistant_interaction",
+        ("user_id", "app_user", "CASCADE"),
+        extra=(Index("ix_assistant_interaction_pyme_created", "pyme_id", "created_at"),),
+    )
 
 
 class MetricEvent(TenantMixin, Base):
