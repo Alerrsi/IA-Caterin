@@ -101,7 +101,17 @@ docker compose -f infra/docker-compose.yml exec ollama ollama pull qwen3:4b   # 
 # Migraciones y datos de ejemplo (sintéticos)
 docker compose -f infra/docker-compose.yml exec api alembic upgrade head
 docker compose -f infra/docker-compose.yml exec api python -m app.db.seed
+# Opcional: pyme de demo GRANDE que llena todas las tablas (~1,5 min; necesita Ollama con bge-m3)
+docker compose -f infra/docker-compose.yml exec api python -m app.db.demo_full
 ```
+
+**Cuentas de demo** (todas con la contraseña `caterin-demo-2026`, datos sintéticos):
+
+| Pyme | Cuentas | Para qué |
+|------|---------|----------|
+| Cocina Los Aromos (`seed`) | `duena.aromos@demo.local`, `colaboradora.aromos@demo.local` | Datos chicos y fijos: los usan las pruebas y los sets de evaluación. No modificarlos a mano |
+| Banquetería del Lago (`seed`) | `duena.lago@demo.local` | Segunda pyme para probar el aislamiento |
+| Banquetería Volcán Llaima (`demo_full`) | `duena.llaima@demo.local`, `cocina.llaima@demo.local`, `ventas.llaima@demo.local`; clientes del portal `cliente1.llaima@demo.local` … `cliente8.llaima@demo.local` (enlace `#/cliente/llaima-demo-2026`) | Volumen para la demo: ~100 insumos, 10 proveedores con historial de precios, 30 recetas, ~220 pedidos en 8 meses con cotizaciones, más de 3.600 movimientos de stock, caja, producción, 6 documentos indexados, fichas del RAG, preguntas al asistente, métricas y solicitudes del portal |
 
 - API: http://localhost:8000/docs (OpenAPI en `/api/v1/openapi.json`)
 - Web: http://localhost:5173

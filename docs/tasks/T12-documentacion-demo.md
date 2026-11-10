@@ -15,6 +15,7 @@ Que cualquiera pueda instalar Cáterin siguiendo el README, que una emprendedora
 - [ ] `docs/GUIA_USUARIA.md`: lenguaje simple, con capturas, para las 5 acciones principales; qué funciona sin señal; qué hacer si algo falla.
 - [ ] `docs/DEMO.md`: guion de 10 minutos (problema → cargar insumos y receta → cotizar desde un mensaje de WhatsApp → contar con foto → preguntar al asistente → métricas medidas), con tiempos por bloque y plan B si falla la red o el LLM.
 - [ ] Seed de demo (`python -m app.db.seed --demo`) con una pyme ficticia coherente con el guion, marcada como sintética.
+  - Avance (10-nov-2026): `python -m app.db.demo_full` crea "Banquetería Volcán Llaima (demo)", que llena todas las tablas con volumen (ver README). Usa los servicios reales: cotizaciones, portal, documentos y asistente sin LLM. Las métricas que crea son inventadas y llevan `"synthetic": true`; la pyme es `is_demo`, así que el panel global puede excluirlas. Prueba: `tests/test_demo_full.py`. Falta ajustarla al guion de la demo.
 - [ ] Revisión final de que la documentación coincide con el código (ADR, API, DATA_MODEL).
 - [ ] Resumen de cierre en cada tarea y estados al día en `00-INDEX.md`.
 
