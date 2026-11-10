@@ -174,7 +174,7 @@ def delete(db: Session, doc_id: uuid.UUID) -> None:
     path.unlink(missing_ok=True)
 
 
-def _or_query(question: str) -> str | None:
+def or_query(question: str) -> str | None:
     words = [w for w in re.findall(r"[a-z0-9]+", normalize(question)) if len(w) > 2]
     return " | ".join(dict.fromkeys(words)) or None
 
@@ -191,7 +191,7 @@ def search(db: Session, emb: EmbeddingProvider, question: str, k: int, min_simil
     sims: dict[uuid.UUID, float] = {}
     text_hits: set[uuid.UUID] = set()
 
-    tsq = _or_query(question)
+    tsq = or_query(question)
     if tsq:
         query = func.to_tsquery(text("'spanish'"), tsq)
         rank = func.ts_rank(DocumentChunk.tsv, query)

@@ -13,7 +13,7 @@ Actualizado: 10-nov-2026. Por decisión del usuario (9-nov-2026), las tareas se 
 | [T07](T07-asistente-rag-f1.md) | Asistente por niveles con RAG | F1 | hecha (falta `cash_summary`, bloqueada por la pregunta 3; reranker → T10) | T04 | por asignar |
 | [T08](T08-frontend-pwa.md) | Frontend PWA mobile-first | transversal | hecha (falta Lighthouse y prueba con usuaria externa) | T05, T06, T07 (por pantallas) | por asignar |
 | [T09](T09-metricas.md) | Métricas de éxito | transversal | hecha (sin mediciones reales; asistente pendiente de T07) | T05, T07, T08 | por asignar |
-| [T10](T10-calidad-evals.md) | Calidad y evaluaciones | transversal | en curso (hecho: benchmark corregido, umbral, cobertura, e2e, carga mixta, RAG por frase; falta: LLM en limpio, extractor, reranker, revisión humana, visión; **siguiente: RAG sobre fichas del negocio, decidido el 10-nov, requiere ADR-006**) | T05–T07 | por asignar |
+| [T10](T10-calidad-evals.md) | Calidad y evaluaciones | transversal | en curso (hecho: benchmark corregido, umbral, cobertura, e2e, carga mixta, RAG por frase; RAG sobre fichas del negocio (ADR-006); falta: LLM en limpio, extractor, reranker, revisión humana, visión) | T05–T07 | por asignar |
 | [T11](T11-despliegue.md) | Despliegue en producción | transversal | pendiente | T08 | por asignar |
 | [T12](T12-documentacion-demo.md) | Documentación final y demo | transversal | pendiente | T09–T11 | por asignar |
 

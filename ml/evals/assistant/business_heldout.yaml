@@ -1,0 +1,27 @@
+# Set RESERVADO de preguntas abiertas sobre los datos del negocio (T10, ADR-006). Escrito el 10-nov-2026 DESPUÉS
+# de corregir las listas con business_questions.yaml y ANTES de correr nada contra él. No se ajusta el código
+# mirando estos resultados. Pyme de demo "Cocina Los Aromos" (SINTÉTICA). Lo escribió la misma persona (un agente)
+# que hizo el cambio: validación débil, aunque honesta.
+version: "1"
+questions:
+  # --- listas y filtros
+  - {q: "cuales son todos mis insumos", keys: ["mantequilla", "sal"]}
+  - {q: "qué cosas tengo registradas en bodega", keys: ["pasas"]}
+  - {q: "muéstrame los proveedores", keys: ["harinas cautin", "verduleria el huerto"]}
+  - {q: "que tipos de pescado hay", keys: ["salmon ahumado"]}
+  - {q: "cuantas recetas tengo cargadas", keys: ["8 recetas"]}
+  - {q: "qué recetas usan queso crema", keys: ["canapes de salmon"]}
+  - {q: "listame lo de panadería", keys: ["pan de coctel", "masa de hojaldre"]}
+  - {q: "que abarrotes me quedan", keys: ["azucar", "aceite vegetal"]}
+  - {q: "qué recetas llevan pollo", keys: ["brochetas de pollo"]}
+  # --- preguntas abiertas sobre una ficha
+  - {q: "a quién le compro el salmón", keys: ["nielol"]}
+  - {q: "cuánto rinde la receta de sopaipillas", keys: ["rinde"]}
+  - {q: "el champiñón en qué formato lo venden", keys: ["bandeja 500 g"]}
+  - {q: "qué días despacha la verdulería", keys: ["huerto"]}
+  - {q: "de qué categoría son los palitos de brocheta", keys: ["desechables"]}
+  - {q: "qué lleva el pie de limón", keys: ["limon"]}
+  # --- sin dato
+  - {q: "qué proveedor vende carbón", keys: [], expect: no_data}
+  - {q: "qué recetas llevan mariscos", keys: [], expect: no_data}
+  - {q: "cuál es el correo de la verdulería", keys: [], expect: no_data}

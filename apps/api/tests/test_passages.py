@@ -86,6 +86,7 @@ def test_confidence_thresholds() -> None:
     assert passages.confidence(0.8, 0.0) == "low"  # muy parecida, pero sin ningún término en común
     assert passages.confidence(0.5, 0.3) == "low"
     assert passages.confidence(0.4, 0.2) == "none"
+    assert passages.confidence(None, 0.9) == "low" and passages.confidence(None, 0.5) == "none"  # sin vector
 
 
 def test_legacy_long_chunks_are_split_without_per_sentence_similarity() -> None:

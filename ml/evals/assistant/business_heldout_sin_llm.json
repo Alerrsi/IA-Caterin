@@ -1,0 +1,340 @@
+{
+  "measured_at": "2026-11-10 06:29",
+  "api": "http://127.0.0.1:8002/api/v1",
+  "questions_file": "business_heldout.yaml",
+  "note": "Pyme de demo SINTÉTICA; preguntas escritas antes de implementar (business_questions.yaml).",
+  "summary": {
+    "with_answer": 15,
+    "with_answer_ok": 13,
+    "no_data": 3,
+    "no_data_ok": 2,
+    "confident_wrong": 1,
+    "by_level": {
+      "0": 9,
+      "2": 9
+    },
+    "llm_fallbacks": 0,
+    "client_ms": {
+      "p50": 120,
+      "max": 308
+    }
+  },
+  "cases": [
+    {
+      "q": "cuales son todos mis insumos",
+      "keys": [
+        "mantequilla",
+        "sal"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": "low_stock",
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 31 insumos: Aceite vegetal (5 L); Aceituna negra (200 unidades); Ají de color (300 g); Azúcar (5 kg); Carne molida (6 kg); Cebolla (8 kg); Champiñón (1 kg); Ciboulette (50 g); Comino (200 g); Crema de leche (3 L); Eneldo (50 g); Harina sin polvos (18 kg); Huevo (90 unidades); Jamón (1 kg); Leche (4 L); Limón (30 unidades); Manteca (2 kg); Mantequilla (1 kg); Masa de hojaldre (2 kg); Palito de brocheta (300 unidades); Pan de cóctel (100 unidades); Pasas (500 g); Pechuga de pollo (4 kg); Pimentón rojo (1,5 kg); Polvos de hornear (250 g); Queso crema (2 kg); Queso mantecoso (3 kg); Sal (3 kg); Salmón ahumado (2,5 kg); Tomate cherry (150 unidades); Zapallo (3 kg).",
+      "sources": [
+        "tu inventario"
+      ],
+      "client_ms": 39
+    },
+    {
+      "q": "qué cosas tengo registradas en bodega",
+      "keys": [
+        "pasas"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 31 insumos: Aceite vegetal (5 L); Aceituna negra (200 unidades); Ají de color (300 g); Azúcar (5 kg); Carne molida (6 kg); Cebolla (8 kg); Champiñón (1 kg); Ciboulette (50 g); Comino (200 g); Crema de leche (3 L); Eneldo (50 g); Harina sin polvos (18 kg); Huevo (90 unidades); Jamón (1 kg); Leche (4 L); Limón (30 unidades); Manteca (2 kg); Mantequilla (1 kg); Masa de hojaldre (2 kg); Palito de brocheta (300 unidades); Pan de cóctel (100 unidades); Pasas (500 g); Pechuga de pollo (4 kg); Pimentón rojo (1,5 kg); Polvos de hornear (250 g); Queso crema (2 kg); Queso mantecoso (3 kg); Sal (3 kg); Salmón ahumado (2,5 kg); Tomate cherry (150 unidades); Zapallo (3 kg).",
+      "sources": [
+        "tu inventario"
+      ],
+      "client_ms": 32
+    },
+    {
+      "q": "muéstrame los proveedores",
+      "keys": [
+        "harinas cautin",
+        "verduleria el huerto"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 3 proveedores: Distribuidora Ñielol (demo); Harinas Cautín (demo); Verdulería El Huerto (demo).",
+      "sources": [
+        "tus proveedores"
+      ],
+      "client_ms": 18
+    },
+    {
+      "q": "que tipos de pescado hay",
+      "keys": [
+        "salmon ahumado"
+      ],
+      "expect": null,
+      "ok": false,
+      "confident": false,
+      "level": 2,
+      "intent": null,
+      "status": "no_data",
+      "fallback_reason": null,
+      "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
+      "sources": [],
+      "client_ms": 205
+    },
+    {
+      "q": "cuantas recetas tengo cargadas",
+      "keys": [
+        "8 recetas"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": "stock_of_item",
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 8 recetas: Brochetas de pollo; Canapés de salmón; Empanadas de pino; Empanadas de queso; Mini quiches; Pie de limón; Sopaipillas; Tomates cherry rellenos.",
+      "sources": [
+        "tus recetas"
+      ],
+      "client_ms": 23
+    },
+    {
+      "q": "qué recetas usan queso crema",
+      "keys": [
+        "canapes de salmon"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 3 recetas con «queso crema»: Canapés de salmón; Mini quiches; Tomates cherry rellenos.",
+      "sources": [
+        "tus recetas"
+      ],
+      "client_ms": 19
+    },
+    {
+      "q": "listame lo de panadería",
+      "keys": [
+        "pan de coctel",
+        "masa de hojaldre"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": "low_stock",
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 2 insumos de Panadería: Masa de hojaldre (2 kg); Pan de cóctel (100 unidades).",
+      "sources": [
+        "tu inventario"
+      ],
+      "client_ms": 34
+    },
+    {
+      "q": "que abarrotes me quedan",
+      "keys": [
+        "azucar",
+        "aceite vegetal"
+      ],
+      "expect": null,
+      "ok": false,
+      "confident": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en tu inventario: Pasas: «Insumo: Pasas. Categoría: Abarrotes. Stock: 500 g. Lo vende: Verdulería El Huerto (demo), bolsa 500 g a $2.490 (precio del 02/11/2026).»",
+      "sources": [
+        "tu inventario: Pasas"
+      ],
+      "client_ms": 225
+    },
+    {
+      "q": "qué recetas llevan pollo",
+      "keys": [
+        "brochetas de pollo"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 1 receta con «pollo»: Brochetas de pollo.",
+      "sources": [
+        "tus recetas"
+      ],
+      "client_ms": 17
+    },
+    {
+      "q": "a quién le compro el salmón",
+      "keys": [
+        "nielol"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en tu inventario: Salmón ahumado: «Insumo: Salmón ahumado. Categoría: Pescados. Stock: 2,5 kg (mínimo 500 g). Lo vende: Distribuidora Ñielol (demo), paquete 500 g a $11.990 (precio del 02/11/2026).»",
+      "sources": [
+        "tu inventario: Salmón ahumado"
+      ],
+      "client_ms": 200
+    },
+    {
+      "q": "cuánto rinde la receta de sopaipillas",
+      "keys": [
+        "rinde"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Según tus recetas: Sopaipillas: «Receta: Sopaipillas. Rinde 12 unidades. Ingredientes: 500 g de Harina sin polvos; 300 g de Zapallo; 60 g de Manteca; 5 g de Polvos de hornear; 6 g de Sal; 1 L de Aceite vegetal. Producto final.»",
+      "sources": [
+        "tus recetas: Sopaipillas"
+      ],
+      "client_ms": 229
+    },
+    {
+      "q": "el champiñón en qué formato lo venden",
+      "keys": [
+        "bandeja 500 g"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Según tu inventario: Champiñón: «Insumo: Champiñón. Categoría: Verduras. Stock: 1 kg. Merma: 5 %. Lo vende: Verdulería El Huerto (demo), bandeja 500 g a $2.290 (precio del 02/11/2026).»",
+      "sources": [
+        "tu inventario: Champiñón"
+      ],
+      "client_ms": 293
+    },
+    {
+      "q": "qué días despacha la verdulería",
+      "keys": [
+        "huerto"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": "supplier_info",
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Verdulería El Huerto (demo) despacha lunes, miércoles y viernes.",
+      "sources": [
+        "tus proveedores"
+      ],
+      "client_ms": 20
+    },
+    {
+      "q": "de qué categoría son los palitos de brocheta",
+      "keys": [
+        "desechables"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Según tu inventario: Palito de brocheta: «Insumo: Palito de brocheta. Categoría: Desechables. Stock: 300 unidades (mínimo 100 unidades). Lo vende: Verdulería El Huerto (demo), paquete 100 unidades a $1.490 (precio del 02/11/2026).»",
+      "sources": [
+        "tu inventario: Palito de brocheta"
+      ],
+      "client_ms": 271
+    },
+    {
+      "q": "qué lleva el pie de limón",
+      "keys": [
+        "limon"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Según tus recetas: Pie de limón: «Receta: Pie de limón. Rinde 1 unidades. Ingredientes: 250 g de Harina sin polvos; 125 g de Mantequilla; 200 g de Azúcar; 4 unidades de Huevo; 4 unidades de Limón; 400 ml de Leche. Producto final.»",
+      "sources": [
+        "tus recetas: Pie de limón"
+      ],
+      "client_ms": 308
+    },
+    {
+      "q": "qué proveedor vende carbón",
+      "keys": [],
+      "expect": "no_data",
+      "ok": true,
+      "confident": false,
+      "level": 2,
+      "intent": null,
+      "status": "no_data",
+      "fallback_reason": null,
+      "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
+      "sources": [],
+      "client_ms": 218
+    },
+    {
+      "q": "qué recetas llevan mariscos",
+      "keys": [],
+      "expect": "no_data",
+      "ok": true,
+      "confident": false,
+      "level": 2,
+      "intent": null,
+      "status": "no_data",
+      "fallback_reason": null,
+      "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
+      "sources": [],
+      "client_ms": 223
+    },
+    {
+      "q": "cuál es el correo de la verdulería",
+      "keys": [],
+      "expect": "no_data",
+      "ok": false,
+      "confident": true,
+      "level": 0,
+      "intent": "supplier_info",
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Verdulería El Huerto (demo) despacha lunes, miércoles y viernes.",
+      "sources": [
+        "tus proveedores"
+      ],
+      "client_ms": 13
+    }
+  ]
+}

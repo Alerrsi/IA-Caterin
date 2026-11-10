@@ -1,0 +1,411 @@
+{
+  "measured_at": "2026-11-10 06:29",
+  "api": "http://127.0.0.1:8002/api/v1",
+  "note": "Pyme de demo SINTÉTICA; preguntas escritas antes de implementar (business_questions.yaml).",
+  "summary": {
+    "with_answer": 18,
+    "with_answer_ok": 18,
+    "no_data": 4,
+    "no_data_ok": 4,
+    "confident_wrong": 0,
+    "by_level": {
+      "0": 11,
+      "2": 11
+    },
+    "llm_fallbacks": 0,
+    "client_ms": {
+      "p50": 159,
+      "max": 333
+    }
+  },
+  "cases": [
+    {
+      "q": "Que elementos existen actualmente dentro del inventario",
+      "keys": [
+        "harina sin polvos",
+        "queso crema"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 31 insumos: Aceite vegetal (5 L); Aceituna negra (200 unidades); Ají de color (300 g); Azúcar (5 kg); Carne molida (6 kg); Cebolla (8 kg); Champiñón (1 kg); Ciboulette (50 g); Comino (200 g); Crema de leche (3 L); Eneldo (50 g); Harina sin polvos (18 kg); Huevo (90 unidades); Jamón (1 kg); Leche (4 L); Limón (30 unidades); Manteca (2 kg); Mantequilla (1 kg); Masa de hojaldre (2 kg); Palito de brocheta (300 unidades); Pan de cóctel (100 unidades); Pasas (500 g); Pechuga de pollo (4 kg); Pimentón rojo (1,5 kg); Polvos de hornear (250 g); Queso crema (2 kg); Queso mantecoso (3 kg); Sal (3 kg); Salmón ahumado (2,5 kg); Tomate cherry (150 unidades); Zapallo (3 kg).",
+      "sources": [
+        "tu inventario"
+      ],
+      "client_ms": 38
+    },
+    {
+      "q": "¿qué insumos tengo?",
+      "keys": [
+        "huevo",
+        "azucar"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 31 insumos: Aceite vegetal (5 L); Aceituna negra (200 unidades); Ají de color (300 g); Azúcar (5 kg); Carne molida (6 kg); Cebolla (8 kg); Champiñón (1 kg); Ciboulette (50 g); Comino (200 g); Crema de leche (3 L); Eneldo (50 g); Harina sin polvos (18 kg); Huevo (90 unidades); Jamón (1 kg); Leche (4 L); Limón (30 unidades); Manteca (2 kg); Mantequilla (1 kg); Masa de hojaldre (2 kg); Palito de brocheta (300 unidades); Pan de cóctel (100 unidades); Pasas (500 g); Pechuga de pollo (4 kg); Pimentón rojo (1,5 kg); Polvos de hornear (250 g); Queso crema (2 kg); Queso mantecoso (3 kg); Sal (3 kg); Salmón ahumado (2,5 kg); Tomate cherry (150 unidades); Zapallo (3 kg).",
+      "sources": [
+        "tu inventario"
+      ],
+      "client_ms": 42
+    },
+    {
+      "q": "muéstrame todas mis recetas",
+      "keys": [
+        "empanadas de pino",
+        "brochetas de pollo"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 8 recetas: Brochetas de pollo; Canapés de salmón; Empanadas de pino; Empanadas de queso; Mini quiches; Pie de limón; Sopaipillas; Tomates cherry rellenos.",
+      "sources": [
+        "tus recetas"
+      ],
+      "client_ms": 66
+    },
+    {
+      "q": "¿cuántos proveedores tengo?",
+      "keys": [
+        "3 proveedores"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": "stock_of_item",
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 3 proveedores: Distribuidora Ñielol (demo); Harinas Cautín (demo); Verdulería El Huerto (demo).",
+      "sources": [
+        "tus proveedores"
+      ],
+      "client_ms": 55
+    },
+    {
+      "q": "qué lácteos tengo",
+      "keys": [
+        "queso crema",
+        "leche"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 6 insumos de Lácteos y huevos: Crema de leche (3 L); Huevo (90 unidades); Leche (4 L); Mantequilla (1 kg); Queso crema (2 kg); Queso mantecoso (3 kg).",
+      "sources": [
+        "tu inventario"
+      ],
+      "client_ms": 117
+    },
+    {
+      "q": "¿qué recetas llevan huevo?",
+      "keys": [
+        "empanadas de pino"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 3 recetas con «huevo»: Empanadas de pino; Mini quiches; Pie de limón.",
+      "sources": [
+        "tus recetas"
+      ],
+      "client_ms": 22
+    },
+    {
+      "q": "que verduras hay en bodega",
+      "keys": [
+        "cebolla",
+        "zapallo"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 8 insumos de Verduras: Cebolla (8 kg); Champiñón (1 kg); Ciboulette (50 g); Eneldo (50 g); Limón (30 unidades); Pimentón rojo (1,5 kg); Tomate cherry (150 unidades); Zapallo (3 kg).",
+      "sources": [
+        "tu inventario"
+      ],
+      "client_ms": 38
+    },
+    {
+      "q": "lista de carnes",
+      "keys": [
+        "carne molida",
+        "pechuga de pollo"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 3 insumos de Carnes: Carne molida (6 kg); Jamón (1 kg); Pechuga de pollo (4 kg).",
+      "sources": [
+        "tu inventario"
+      ],
+      "client_ms": 38
+    },
+    {
+      "q": "dame el listado de especias",
+      "keys": [
+        "comino"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 2 insumos de Especias: Ají de color (300 g); Comino (200 g).",
+      "sources": [
+        "tu inventario"
+      ],
+      "client_ms": 31
+    },
+    {
+      "q": "¿qué desechables tengo?",
+      "keys": [
+        "palito de brocheta"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 1 insumo de Desechables: Palito de brocheta (300 unidades).",
+      "sources": [
+        "tu inventario"
+      ],
+      "client_ms": 36
+    },
+    {
+      "q": "¿quién me vende la crema de leche?",
+      "keys": [
+        "nielol"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Según tu inventario: Crema de leche: «Insumo: Crema de leche. Categoría: Lácteos y huevos. Stock: 3 L (mínimo 1 L). Lo vende: Distribuidora Ñielol (demo), caja 1 L a $3.990 (precio del 02/11/2026).»",
+      "sources": [
+        "tu inventario: Crema de leche"
+      ],
+      "client_ms": 333
+    },
+    {
+      "q": "¿de qué categoría es el comino?",
+      "keys": [
+        "especias"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Según tu inventario: Comino: «Insumo: Comino. Categoría: Especias. Stock: 200 g. Lo vende: Verdulería El Huerto (demo), sobre 100 g a $990 (precio del 02/11/2026).»",
+      "sources": [
+        "tu inventario: Comino"
+      ],
+      "client_ms": 229
+    },
+    {
+      "q": "con qué se hacen las brochetas de pollo",
+      "keys": [
+        "pechuga de pollo"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Según tus recetas: Brochetas de pollo: «Receta: Brochetas de pollo. Rinde 12 unidades. Ingredientes: 900 g de Pechuga de pollo; 300 g de Pimentón rojo; 240 g de Champiñón; 12 unidades de Palito de brocheta; 30 ml de Aceite vegetal; 6 g de Sal. Producto final.»",
+      "sources": [
+        "tus recetas: Brochetas de pollo"
+      ],
+      "client_ms": 258
+    },
+    {
+      "q": "qué ingredientes usan las empanadas de queso",
+      "keys": [
+        "queso mantecoso"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Según tus recetas: Empanadas de queso: «Receta: Empanadas de queso. Rinde 12 unidades. Ingredientes: 600 g de Harina sin polvos; 100 g de Manteca; 600 g de Queso mantecoso; 8 g de Sal; 800 ml de Aceite vegetal. Producto final.»",
+      "sources": [
+        "tus recetas: Empanadas de queso"
+      ],
+      "client_ms": 268
+    },
+    {
+      "q": "en qué presentación viene la masa de hojaldre",
+      "keys": [
+        "paquete 1 kg"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Según tu inventario: Masa de hojaldre: «Insumo: Masa de hojaldre. Categoría: Panadería. Stock: 2 kg. Lo vende: Distribuidora Ñielol (demo), paquete 1 kg a $4.590 (precio del 02/11/2026).»",
+      "sources": [
+        "tu inventario: Masa de hojaldre"
+      ],
+      "client_ms": 245
+    },
+    {
+      "q": "dónde compro tomate cherry",
+      "keys": [
+        "huerto"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Según tu inventario: Tomate cherry: «Insumo: Tomate cherry. Categoría: Verduras. Stock: 150 unidades. Lo vende: Verdulería El Huerto (demo), bandeja 30 unidades a $1.990 (precio del 02/11/2026).»",
+      "sources": [
+        "tu inventario: Tomate cherry"
+      ],
+      "client_ms": 201
+    },
+    {
+      "q": "que productos me vende la distribuidora ñielol",
+      "keys": [
+        "carne molida"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Según tus proveedores: Distribuidora Ñielol (demo): «Proveedor: Distribuidora Ñielol (demo). Despacha: martes, jueves. Teléfono: +56 9 0000 0002. Vende: Aceite vegetal (bidón 5 L, $11.990); Carne molida (bolsa 1 kg, $7.990); Crema de leche (caja 1 L, $3.990); Harina sin polvos (saco 25 kg, $22.500); Huevo (bandeja 30 unidades, $6.490); Jamón (paquete 1 kg, $8.990); Leche (caja 1 L, $1.090); Manteca…»",
+      "sources": [
+        "tus proveedores: Distribuidora Ñielol (demo)"
+      ],
+      "client_ms": 260
+    },
+    {
+      "q": "el pan de coctel a quien se lo compro",
+      "keys": [
+        "huerto"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Según tu inventario: Pan de cóctel: «Insumo: Pan de cóctel. Categoría: Panadería. Stock: 100 unidades (mínimo 48 unidades). Lo vende: Verdulería El Huerto (demo), bolsa 48 unidades a $3.990 (precio del 02/11/2026).»",
+      "sources": [
+        "tu inventario: Pan de cóctel"
+      ],
+      "client_ms": 240
+    },
+    {
+      "q": "¿qué proveedor me vende vino?",
+      "keys": [],
+      "expect": "no_data",
+      "ok": true,
+      "confident": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en tus proveedores: Distribuidora Ñielol (demo): «Proveedor: Distribuidora Ñielol (demo). Despacha: martes, jueves. Teléfono: +56 9 0000 0002. Vende: Aceite vegetal (bidón 5 L, $11.990); Carne molida (bolsa 1 kg, $7.990); Crema de leche (caja 1 L, $3.990); Harina sin polvos (saco 25 kg, $22.500); Huevo (bandeja 30 unidades, $6.490); Jamón (paquete 1 kg, $8.990); Leche (caja 1 L, $1.090); Manteca…»",
+      "sources": [
+        "tus proveedores: Distribuidora Ñielol (demo)"
+      ],
+      "client_ms": 216
+    },
+    {
+      "q": "¿cuánto vendí el mes pasado?",
+      "keys": [],
+      "expect": "no_data",
+      "ok": true,
+      "confident": false,
+      "level": 0,
+      "intent": "stock_of_item",
+      "status": "ambiguous",
+      "fallback_reason": null,
+      "answer": "¿A cuál insumo te refieres?",
+      "sources": [],
+      "client_ms": 16
+    },
+    {
+      "q": "¿qué recetas llevan chocolate?",
+      "keys": [],
+      "expect": "no_data",
+      "ok": true,
+      "confident": false,
+      "level": 2,
+      "intent": null,
+      "status": "no_data",
+      "fallback_reason": null,
+      "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
+      "sources": [],
+      "client_ms": 216
+    },
+    {
+      "q": "dame el rut de la verdulería",
+      "keys": [],
+      "expect": "no_data",
+      "ok": true,
+      "confident": false,
+      "level": 2,
+      "intent": null,
+      "status": "no_data",
+      "fallback_reason": null,
+      "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
+      "sources": [],
+      "client_ms": 237
+    }
+  ]
+}

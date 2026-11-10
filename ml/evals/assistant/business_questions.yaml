@@ -1,0 +1,32 @@
+# Preguntas ABIERTAS sobre los datos del negocio (T10, ADR-006). Escritas el 10-nov-2026 ANTES de implementar las
+# fichas, las listas y el RAG sobre datos, sin mirar ninguna respuesta. Datos: pyme de demo "Cocina Los Aromos"
+# (app/db/seed.py, SINTÉTICA). Frases escritas por una sola persona (un agente), no por emprendedoras reales.
+# `keys`: textos (sin tildes ni mayúsculas) que deben aparecer TODOS en la respuesta. `keys: []` con
+# `expect: no_data` = la respuesta correcta es que no hay ese dato (no inventar).
+version: "1"
+questions:
+  # --- listas y filtros (respuesta completa, en código)
+  - {q: "Que elementos existen actualmente dentro del inventario", keys: ["harina sin polvos", "queso crema"]}
+  - {q: "¿qué insumos tengo?", keys: ["huevo", "azucar"]}
+  - {q: "muéstrame todas mis recetas", keys: ["empanadas de pino", "brochetas de pollo"]}
+  - {q: "¿cuántos proveedores tengo?", keys: ["3 proveedores"]}
+  - {q: "qué lácteos tengo", keys: ["queso crema", "leche"]}
+  - {q: "¿qué recetas llevan huevo?", keys: ["empanadas de pino"]}
+  - {q: "que verduras hay en bodega", keys: ["cebolla", "zapallo"]}
+  - {q: "lista de carnes", keys: ["carne molida", "pechuga de pollo"]}
+  - {q: "dame el listado de especias", keys: ["comino"]}
+  - {q: "¿qué desechables tengo?", keys: ["palito de brocheta"]}
+  # --- preguntas abiertas sobre una ficha (RAG)
+  - {q: "¿quién me vende la crema de leche?", keys: ["nielol"]}
+  - {q: "¿de qué categoría es el comino?", keys: ["especias"]}
+  - {q: "con qué se hacen las brochetas de pollo", keys: ["pechuga de pollo"]}
+  - {q: "qué ingredientes usan las empanadas de queso", keys: ["queso mantecoso"]}
+  - {q: "en qué presentación viene la masa de hojaldre", keys: ["paquete 1 kg"]}
+  - {q: "dónde compro tomate cherry", keys: ["huerto"]}
+  - {q: "que productos me vende la distribuidora ñielol", keys: ["carne molida"]}
+  - {q: "el pan de coctel a quien se lo compro", keys: ["huerto"]}
+  # --- sin dato: lo correcto es decir que no está
+  - {q: "¿qué proveedor me vende vino?", keys: [], expect: no_data}
+  - {q: "¿cuánto vendí el mes pasado?", keys: [], expect: no_data}
+  - {q: "¿qué recetas llevan chocolate?", keys: [], expect: no_data}
+  - {q: "dame el rut de la verdulería", keys: [], expect: no_data}

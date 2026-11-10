@@ -195,7 +195,7 @@ Carga inicial: 7.4 s (4B) y 31.8 s (8B). Cada modelo corrió 12 preguntas, 4 cas
 - **Medición por nivel:** cada respuesta registra nivel usado, intención, latencia y tokens generados. Es la base de la métrica de tiempo de respuesta (T09) y del ajuste del umbral del enrutador.
 
 **Reglas de calidad y seguridad (aplican a todos los niveles):**
-- Datos estructurados (stock, costos, pedidos) se consultan por funciones, no se vectorizan. Solo los documentos subidos (PDF/Excel/CSV/texto) pasan por chunking → embeddings → pgvector, con metadatos (`pyme_id`, origen, fecha).
+- **Cálculos y listas completas** (costos, factibilidad, totales, "¿qué hay en el inventario?") se resuelven por funciones en código. **Además**, los datos del negocio se vectorizan como **fichas de texto generadas por código** (una por insumo, receta, proveedor y pedido activo; `knowledge_card`), que se re-vectorizan cuando cambia su `data_version`, para el RAG de preguntas abiertas (ADR-006, decisión del usuario del 10-nov-2026). Los documentos subidos (PDF/Excel/CSV/texto) se indexan por frase → embeddings → pgvector, con metadatos (`pyme_id`, origen, fecha).
 - Respuestas en español de Chile, cortas, con fuente visible ("según tu inventario de hoy…"). Si no hay dato, dice que no lo tiene; no inventa.
 - El LLM redacta a partir del dato que recibe y no puede agregar cifras: se verifica que los números de la respuesta aparezcan en el dato de entrada; si no, se descarta y se usa la plantilla.
 - Defensa contra prompt injection: el contenido de documentos y proveedores se trata como datos, nunca como instrucciones.

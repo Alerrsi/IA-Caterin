@@ -226,6 +226,23 @@ Sub-recetas (una receta que usa otra, p. ej. "masa"): **fuera del MVP**. Si apar
 | `embedding_version` | text | Revisión del `models.lock.yaml` |
 | `meta` | jsonb | Página, hoja o fila de origen (para citar); `unit`; `context` (título · sección · etiqueta del párrafo, se antepone al texto que se vectoriza); `paragraph` (el párrafo de la frase si mide ≤ 350 caracteres, para mostrarlo entero y dárselo al LLM) |
 
+### Ficha del negocio (`knowledge_card`) — ADR-006
+Texto generado por código desde las tablas de negocio para el RAG del asistente. **No es fuente de verdad**: se regenera.
+
+| Campo | Tipo | Nota |
+|-------|------|------|
+| `kind` | text (`ingredient` \| `recipe` \| `supplier` \| `order`) | Tipo de entidad |
+| `entity_id` | uuid | Id del insumo, receta, proveedor o pedido. Sin FK: si la entidad se borra o se desactiva, la ficha se elimina en la siguiente sincronización. UNIQUE (`pyme_id`, `kind`, `entity_id`) |
+| `title` | text | Nombre visible en la cita ("tu inventario: Queso crema") |
+| `text` | text | Valores actuales (stock, mínimo, categoría, precios vigentes, ingredientes, días de despacho, productos de un pedido). Los pedidos **no** incluyen el contacto del cliente |
+| `text_hash` | text | sha256 del texto: solo se re-vectoriza si cambia |
+| `tsv` | tsvector generado (`spanish`, sin tildes), GIN | Igual que `document_chunk` |
+| `embedding` | vector(1024), HNSW coseno | `bge-m3`; nulo si Ollama no estaba disponible (se completa en la siguiente sincronización) |
+| `embedding_model`, `embedding_version` | text | |
+
+### Sincronización de fichas (`knowledge_sync`) — ADR-006
+Una fila por pyme y dominio (`inventory`, `recipes`, `suppliers`, `orders`) con la `data_version` hasta la que las fichas están al día. UNIQUE (`pyme_id`, `domain`).
+
 ### Interacción del asistente (`assistant_interaction`) [propuesta]
 Cumple la regla de trazabilidad: cada respuesta guarda las consultas usadas y sus fuentes.
 

@@ -39,6 +39,7 @@ COVERAGE_WEIGHT = 0.25
 HIGH_MIN_SCORE = 0.72
 HIGH_MIN_COVERAGE = 0.2
 LOW_MIN_SCORE = 0.55
+TEXT_ONLY_LOW_COVERAGE = 0.8  # sin similitud (modo degradado): no calibrado, ver ADR-006
 MAX_CHARS = 350
 STEM = 5
 CONTEXT_WEIGHT = 0.5
@@ -73,7 +74,8 @@ class Passage:
     confidence: Confidence
 
 
-def _stems(text: str) -> set[str]:
+def stems(text: str) -> set[str]:
+    """Raíces (5 letras) de las palabras con contenido: sin tildes, sin palabras vacías."""
     return {w[:STEM] for w in normalize(text).split() if w not in STOPWORDS and (len(w) > 2 or w.isdigit())}
 
 
@@ -95,10 +97,10 @@ def candidates(hits: list[Any]) -> list[Candidate]:
 
 
 def coverages(question: str, cands: list[Candidate]) -> list[float]:
-    terms = {t for t in _stems(question) if not t.isdigit()}
-    numbers = {t for t in _stems(question) if t.isdigit()}
-    own = [_stems(c.text) for c in cands]
-    ctx = [_stems(c.context) for c in cands]
+    terms = {t for t in stems(question) if not t.isdigit()}
+    numbers = {t for t in stems(question) if t.isdigit()}
+    own = [stems(c.text) for c in cands]
+    ctx = [stems(c.context) for c in cands]
     n = len(cands)
     weights = {t: math.log(1 + n / (1 + sum(t in a or t in b for a, b in zip(own, ctx, strict=True)))) for t in terms}
     total = sum(weights.values())
@@ -115,10 +117,24 @@ def score(similarity: float | None, coverage: float) -> float:
 
 
 def confidence(similarity: float | None, coverage: float) -> Confidence:
+    if similarity is None:
+        # Sin vector (Ollama caído o fragmento antiguo): solo hay coincidencia de términos. Nunca "alta"; "baja"
+        # si la frase tiene casi todos los términos de la pregunta, para no dejar a la usuaria sin nada.
+        return "low" if coverage >= TEXT_ONLY_LOW_COVERAGE else "none"
     s = score(similarity, coverage)
     if s >= HIGH_MIN_SCORE and coverage >= HIGH_MIN_COVERAGE:
         return "high"
     return "low" if s >= LOW_MIN_SCORE else "none"
+
+
+def rank_hits(question: str, hits: list[Any]) -> list[int]:
+    """Índices de `hits` ordenados por el mejor puntaje de sus frases (para elegir qué recibe el LLM cuando se
+    mezclan documentos y fichas, cuyos puntajes de búsqueda no son comparables)."""
+    cands = candidates(hits)
+    best: dict[int, float] = {}
+    for c, cv in zip(cands, coverages(question, cands), strict=True):
+        best[c.hit_index] = max(best.get(c.hit_index, 0.0), score(c.similarity, cv))
+    return sorted(range(len(hits)), key=lambda i: (-best.get(i, 0.0), i))
 
 
 def best_passage(question: str, hits: list[Any]) -> Passage | None:

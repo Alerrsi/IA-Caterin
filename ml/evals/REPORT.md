@@ -62,6 +62,41 @@ docker run --rm --network caterin_default -v "$PWD":/repo:z -w /repo \
 
 <!-- LLM_NIVEL2 -->
 
+## 1b. Preguntas abiertas sobre los datos del negocio (ADR-006) — `ml/evals/assistant/eval_business.py`
+
+**Cambio.** Además de los documentos, el asistente busca por RAG en **fichas del negocio**: una por insumo, receta, proveedor y pedido activo, generadas por código y re-vectorizadas solo cuando cambia su texto. Las **listas** ("¿qué hay en el inventario?", "¿qué lácteos tengo?", "¿qué recetas llevan huevo?") se resuelven completas en código. Los cálculos siguen en las intenciones.
+
+```bash
+docker run --rm --network container:caterin-api-1 -v "$PWD":/repo:z -w /repo/ml/evals/assistant caterin-api \
+  python eval_business.py --api http://127.0.0.1:8000/api/v1 --questions business_heldout.yaml --out business_heldout_con_llm.json
+```
+
+Pyme de demo (sintética). `business_questions.yaml` (22 preguntas) se escribió **antes** de implementar. Después de la primera corrida se corrigieron tres cosas con ese set:
+- filtrar por el campo categoría (no por texto, porque "verdu" calzaba con "Verdulería");
+- que las palabras de lista no filtren;
+- subir el tope de la lista a 40.
+
+Por eso se escribió `business_heldout.yaml` (18 preguntas nuevas) **sin volver a tocar el código**.
+
+| Set | Con respuesta: bien | Sin dato: bien | Seguras y equivocadas | Latencia p50 / máx |
+|-----|---------------------|----------------|------------------------|--------------------|
+| Ajuste, sin LLM | **18/18** | **4/4** | 0 | 159 / 333 ms |
+| Reservado, sin LLM | **13/15** | 2/3 | 1 | 120 / 308 ms |
+| Ajuste, con LLM (`qwen3:4b`) | 17/18 (18/18 en revisión manual) | 4/4 | 1 | ver nota |
+| Reservado, con LLM | 12/15 (13/15 en revisión manual) | 2/3 | 3 | ver nota |
+
+- **Antes de este cambio, ninguna de estas preguntas tenía respuesta.** La pregunta que lo motivó, "Que elementos existen actualmente dentro del inventario", responde ahora "Tienes 31 insumos: Aceite vegetal (5 L); …" en ~40 ms.
+- **Fallos del reservado (sin LLM):**
+  - "que tipos de pescado hay" y "que abarrotes me quedan": "tipos" y "quedan" quedan como términos de filtro, la lista sale vacía y la pregunta pasa al RAG. **Las listas dependen de una lista de palabras de relleno**, y una palabra inesperada las rompe. Propuesta, a medir con otro set: si la pregunta nombra una categoría y los términos extra no calzan con nada, responder la lista de la categoría.
+  - "cuál es el correo de la verdulería": la toma la intención `supplier_info`, que responde los días de despacho (limitación de la intención).
+- **Con LLM:**
+  - La comparación exacta de claves no acepta paráfrasis: "bandeja de 500 g", "paquete de 1 kg" están bien en la revisión manual.
+  - "que abarrotes me quedan" recibió una **lista parcial** redactada por el LLM. Es el riesgo que motiva las listas en código.
+  - 2 respuestas pasaron `LLM_TIMEOUT_S` = 60 s y se mostró la extractiva, que es la degradación esperada.
+- **Latencia con LLM: no válida.** El nivel 2 con LLM dio p50 de 45 s con la máquina sobrecargada: poca RAM libre, swap, navegador y las pruebas corriendo a la vez; el prefill bajó a ~22 tokens/s. Hay que medir de nuevo en limpio antes de compararla con la meta de 15 s.
+- **Primera pregunta abierta de una pyme:** crea y vectoriza sus fichas (~50 en la demo, ~17 s con la máquina cargada). Las siguientes solo vectorizan las fichas que cambiaron.
+- **Sin Ollama**, las fichas se guardan sin vector, la búsqueda queda por texto y la confianza máxima es "baja" (`TEXT_ONLY_LOW_COVERAGE` = 0,8, sin calibrar).
+
 ## 2. Enrutador de intenciones — `ml/evals/assistant/`
 
 - **Set reservado** `heldout.yaml`: 64 frases nuevas, escritas antes de correr nada, incluidas preguntas fuera de alcance, ambiguas e intentos de inyección. **Set dorado** `golden.yaml`: 65 casos, ya usados para afinar en T07.
@@ -77,7 +112,7 @@ docker run --rm --network caterin_default -v "$PWD":/repo:z -w /repo \
 
 ## 3. Cobertura de pruebas de la API
 
-`pytest --cov` dentro del contenedor de la API (10-nov): **96 % en total**, con 215 pruebas que pasan. Medido antes de los cambios del RAG. Después de esos cambios, la suite completa da 227 pruebas que pasan y 1 `xfail`, con lint y tipos limpios; la cobertura no se volvió a medir.
+`pytest --cov` dentro del contenedor de la API (10-nov): **96 % en total**, con 215 pruebas que pasan. Después del RAG por frase y de las fichas del negocio (10-nov): **237 pruebas que pasan y 1 `xfail`**, con lint y tipos limpios, y **96 %** de cobertura total. Los módulos nuevos están entre 96 y 100 %: `knowledge/cards.py` 96 %, `knowledge/service.py` 97 %, `knowledge/lists.py` 100 %, `documents/sentences.py` 100 % y `assistant/passages.py` 99 %.
 
 | Módulo | Cobertura | Meta |
 |--------|-----------|------|

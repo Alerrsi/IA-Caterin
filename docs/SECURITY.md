@@ -61,6 +61,12 @@ Reglas:
 - **Derechos de las personas:** la dueña puede exportar y borrar los datos de su pyme (endpoint a definir en T03/T11).
 - **Datos de demo:** sintéticos y marcados como tales. **Nunca** datos personales reales en el repo, en los seeds ni en los sets de evaluación.
 
+### Fichas del negocio (ADR-006)
+- Las fichas de pedidos (`knowledge_card`, `kind = order`) incluyen el **nombre del cliente**, los productos y la fecha, pero **no** `customer_contact`.
+- Con Ollama local, las fichas y los prompts no salen del servidor. Con un proveedor externo de LLM, los nombres de clientes viajarían en el prompt del nivel 2: hay que configurarlo explícitamente y documentarlo antes de activarlo.
+- Las fichas pasan por la sesión de tenant (lectura, escritura y borrado filtrados por `pyme_id`). Hay pruebas de que una pyme no ve ni lista las fichas de otra (`tests/test_knowledge.py`).
+- El texto de las fichas es dato, igual que el de los documentos: va delimitado en `<documento>` y se escapan `<` y `>`.
+
 ## 5. Gestión de secretos
 
 - Toda la configuración va por variables de entorno (`pydantic-settings`). En el repo solo está `.env.example`, con valores ficticios y comentarios.

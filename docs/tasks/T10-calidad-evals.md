@@ -58,24 +58,31 @@ Detalle en `ml/evals/REPORT.md`. Todo con datos **sintéticos**.
   - Asistente de punta a punta con LLM (`eval_assistant.py`, escrito, sin correr).
   - Carga con LLM (cortada).
 - **Pendiente:**
+  - nuevo set reservado de listas (filtros con palabras inesperadas) y repetir la latencia del nivel 2 con LLM en limpio;
   - extractor con 20 pedidos reservados y 3 modelos (`eval_extractor.py`, listo);
   - reranker (`rerank_eval.py`, listo);
   - revisión humana de la redacción (2 personas del equipo);
   - visión (sin fotos reales y sin el modelo de prueba en esta máquina: **no cumplido**).
 
-### Decisión del usuario (10-nov-2026): RAG sobre los datos del negocio
+### RAG sobre los datos del negocio (decisión del usuario, 10-nov-2026) — **implementado**
 
-Las intenciones fijas se quedan cortas ("¿qué elementos hay en el inventario?" no tiene intención y no se responde). Se decidió pasar a **RAG sobre fichas del negocio más cálculos en código**:
-- una ficha de texto por insumo, receta, proveedor y pedido, con sus valores actuales, en pgvector junto a los documentos, y re-vectorizada al cambiar el dato (`data_version`);
-- el LLM responde por RAG las preguntas abiertas, citando la ficha, y el verificador de cifras sigue activo;
-- las listas y los totales los arma un filtro en código;
-- los costos y la factibilidad siguen calculados en código. Las intenciones quedan como atajo rápido.
+Las intenciones fijas se quedaban cortas: "¿qué elementos hay en el inventario?" no tenía intención y no se respondía. Se implementó **ADR-006**:
+- tablas `knowledge_card` y `knowledge_sync` (migración `67b617a7b8cb`);
+- fichas generadas por código, una por insumo, receta, proveedor y pedido activo, sincronizadas por `data_version` y re-vectorizadas solo si cambia su texto;
+- listas y filtros completos en código (`knowledge/lists.py`);
+- RAG sobre fichas y documentos, con la confianza de ADR-005;
+- los cálculos siguen en las intenciones;
+- `AGENTS.md` actualizado.
 
-Esto cambia la regla de `AGENTS.md` ("datos estructurados … no se vectorizan") y requiere **ADR-006** antes de implementar. Todavía no está implementado.
+Resultado con `eval_business.py`:
+- sin LLM: 18/18 y 4/4 en el set de ajuste; 13/15 y 2/3 en el reservado, con 1 respuesta segura equivocada;
+- con LLM: ver `ml/evals/REPORT.md`, sección 1b. Las listas dependen de palabras de relleno: es una debilidad conocida, con propuesta.
 
-Estado local al subir: en el `.env` de desarrollo de quien subió el cambio se activó `ASSISTANT_USE_LLM=true`. El valor por defecto en `.env.example` y `config.py` sigue en `false`. La pyme de demo de esa base tiene los 9 documentos sintéticos de `ml/evals/rag/docs` cargados.
+Estado local al subir:
+- en el `.env` de desarrollo de quien subió el cambio está `ASSISTANT_USE_LLM=true`; el valor por defecto sigue en `false`;
+- la pyme de demo de esa base tiene cargados los 9 documentos sintéticos de `ml/evals/rag/docs`.
 
-Verificado antes de subir (10-nov): `ruff check`, `ruff format --check` y `mypy app` limpios; `pytest -m "not llm"`: 227 pasan y 1 es un fallo esperado (`xfail`).
+Verificado antes de subir (10-nov): `ruff`, `mypy app` y `pytest -m "not llm"` (237 pasan, 1 `xfail`; cobertura 96 %); `alembic upgrade head`, `downgrade -1` y `upgrade head` sin errores.
 
 ## Resumen de cierre
 (se completa al terminar)

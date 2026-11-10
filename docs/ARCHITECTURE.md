@@ -107,7 +107,10 @@ flowchart TD
     R1 -->|intención clara| ENT
     R1 -->|no| R2["Similitud bge-m3 contra<br/>ejemplos de intents.yaml"]
     R2 -->|"≥ umbral"| ENT["Resolución de entidades<br/>rapidfuzz + reglas de fecha"]
-    R2 -->|"< umbral"| DOC{"¿Hay documentos<br/>relevantes?"}
+    R2 -->|"< umbral"| LST{"¿Pide una lista?<br/>(inventario, recetas, categoría)"}
+    LST -->|sí| LS0["Nivel 0: lista completa<br/>en código (ADR-006)"]
+    LS0 --> OUT
+    LST -->|no| DOC{"¿Hay documentos o fichas<br/>del negocio relevantes?"}
     ENT -->|ambigua| ASK["Ofrecer opciones<br/>a la usuaria"]
     ENT -->|resuelta| C{"¿En caché con<br/>versión vigente?"}
     C -->|sí| OUT
@@ -115,7 +118,7 @@ flowchart TD
     QRY --> LVL{"¿La intención admite nivel 1<br/>y aporta redactar?"}
     LVL -->|no| L0["Nivel 0: plantilla"]
     LVL -->|sí| L1["Nivel 1: LLM redacta<br/>con dato compacto (streaming)"]
-    DOC -->|sí| L2["Nivel 2: búsqueda híbrida<br/>→ 3-5 fragmentos → LLM cita"]
+    DOC -->|sí| L2["Nivel 2: búsqueda híbrida en documentos y fichas<br/>(sincronizadas por data_version)<br/>→ frase/ficha con confianza → LLM cita"]
     DOC -->|no| NOSE["'No tengo ese dato'<br/>o pregunta de aclaración"]
     L1 --> V{"¿Cifras de la respuesta<br/>presentes en el dato?"}
     L2 --> V

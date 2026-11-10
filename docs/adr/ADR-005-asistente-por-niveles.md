@@ -84,7 +84,7 @@ Cada respuesta registra en `assistant_interaction`: nivel, intención, puntaje d
 - **Agente con tool calling por defecto:** descartado por los datos medidos (arriba).
 - **LLM como clasificador de intenciones:** una llamada de ~2 s o más solo para clasificar, y con el 4B poco confiable. Los embeddings cuestan ~0.16 s.
 - **Text-to-SQL:** riesgo de fuga entre pymes y de cifras incorrectas. Descartado (ADR-002).
-- **Vectorizar el inventario y las recetas:** los datos estructurados se consultan, no se buscan por similitud; vectorizarlos da respuestas desactualizadas o aproximadas.
+- **Vectorizar el inventario y las recetas:** descartado aquí por riesgo de datos desactualizados o aproximados. **Revertido en parte por ADR-006 (10-nov-2026):** se vectorizan fichas generadas por código y sincronizadas por `data_version`, para preguntas abiertas; los cálculos y las listas siguen en código.
 
 ## Consecuencias
 

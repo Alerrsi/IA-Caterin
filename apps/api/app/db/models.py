@@ -465,6 +465,58 @@ class DocumentChunk(TenantMixin, Base):
     )
 
 
+# --------------------------------------------------------------------------- fichas del negocio (ADR-006)
+
+
+class KnowledgeCard(TenantMixin, Base):
+    """Ficha de texto de un insumo, receta, proveedor o pedido, generada por código, para el RAG (ADR-006).
+
+    No es fuente de verdad: se regenera desde las tablas de negocio cuando cambia su `data_version`."""
+
+    __tablename__ = "knowledge_card"
+
+    kind: Mapped[str] = mapped_column(String(20))  # ingredient | recipe | supplier | order
+    entity_id: Mapped[uuid.UUID] = mapped_column()
+    title: Mapped[str] = mapped_column(String(200))
+    text: Mapped[str] = mapped_column(Text)
+    text_hash: Mapped[str] = mapped_column(String(64))
+    tsv: Mapped[Any] = mapped_column(
+        TSVECTOR, Computed("to_tsvector('spanish', caterin_unaccent(text))", persisted=True)
+    )
+    embedding: Mapped[Any] = mapped_column(Vector(EMBEDDING_DIM), nullable=True)
+    embedding_model: Mapped[str] = mapped_column(String(80))
+    embedding_version: Mapped[str] = mapped_column(String(40))
+
+    __table_args__ = tenant_args(
+        "knowledge_card",
+        extra=(
+            UniqueConstraint("pyme_id", "kind", "entity_id", name="uq_knowledge_card_entity"),
+            CheckConstraint("kind IN ('ingredient', 'recipe', 'supplier', 'order')", name="kind_valid"),
+            Index("ix_knowledge_card_tsv", "tsv", postgresql_using="gin"),
+            Index(
+                "ix_knowledge_card_embedding",
+                "embedding",
+                postgresql_using="hnsw",
+                postgresql_with={"m": 16, "ef_construction": 64},
+                postgresql_ops={"embedding": "vector_cosine_ops"},
+            ),
+        ),
+    )
+
+
+class KnowledgeSync(TenantMixin, Base):
+    """Hasta qué `data_version` de cada dominio están al día las fichas de la pyme."""
+
+    __tablename__ = "knowledge_sync"
+
+    domain: Mapped[DataDomain] = mapped_column(str_enum(DataDomain, "knowledge_sync_domain"))
+    version: Mapped[int] = mapped_column(BigInteger)
+
+    __table_args__ = tenant_args(
+        "knowledge_sync", extra=(UniqueConstraint("pyme_id", "domain", name="uq_knowledge_sync_domain"),)
+    )
+
+
 # --------------------------------------------------------------------------- asistente y métricas
 
 
