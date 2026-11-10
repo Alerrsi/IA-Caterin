@@ -21,6 +21,7 @@ Riesgo principal: que una pyme vea o modifique datos de otra.
 - Contraseñas con **Argon2id**. Mínimo 10 caracteres; sin reglas de composición forzadas, pero con verificación contra una lista corta de contraseñas comunes (`modules/auth/schemas.py`; ampliarla es trabajo pendiente).
 - JWT de acceso de 15 min, firmado con una clave de `.env` (`JWT_SECRET`, ≥ 32 bytes aleatorios). Refresh token rotado, guardado como hash en la base y revocable.
 - Roles `owner` y `collaborator` (matriz en `docs/API.md`). Se comprueba en el servidor, no solo se oculta en la interfaz.
+- Rol `customer` (portal de clientes, ADR-007): solo `/auth/*` y `/portal/*`. El bloqueo es central (`get_current_user` → 403 `staff_only`) y una prueba recorre todas las rutas del OpenAPI. El portal responde con esquemas propios, sin costos, margen, insumos, proveedores ni stock. Cada consulta del portal filtra por el cliente además de la pyme. El registro es público con el enlace que comparte la dueña, que puede cambiarlo o cerrarlo. Las lecturas con LLM tienen tope por cliente y hora (`PORTAL_EXTRACT_PER_HOUR`).
 - Límite de intentos de login: 10 fallidos por correo o 50 por IP en 15 min (configurable) → 429. Respuesta genérica ("Correo o contraseña incorrectos") también para correos que no existen.
 - Reutilizar un refresh token ya rotado revoca todos los refresh de esa usuaria (detección de robo).
 - Recuperación de contraseña: sin correo saliente en el MVP; la dueña restablece la contraseña de su colaboradora con `PATCH /users/{id}`.
@@ -49,6 +50,7 @@ Datos personales que maneja Cáterin:
 |------|-------|--------|
 | Nombre y correo de las usuarias | `user` | Necesarios para el servicio |
 | Nombre y contacto del cliente final | `order` | Mínimo: el contacto es opcional |
+| Cuenta del cliente final en el portal | `app_user` (`customer`) y `order.customer_contact` | Nombre y correo, con su consentimiento al registrarse. No se le piden teléfono, RUT ni dirección |
 | Texto original del pedido | `order.raw_text` | Puede traer datos de terceros; se borra a los 90 días (configurable) |
 | Preguntas al asistente | `assistant_interaction.question` | Igual, 90 días |
 | Fotos de producción | Volumen de archivos | Se eliminan los EXIF (GPS, dispositivo). Indicar en la interfaz que se fotografíen productos, no personas |

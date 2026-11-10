@@ -9,6 +9,7 @@ interface AuthState {
   pyme: client.Pyme | null
   login: (email: string, password: string) => Promise<void>
   register: (data: Parameters<typeof client.registerAccount>[0]) => Promise<void>
+  registerCustomer: (data: Parameters<typeof client.registerCustomer>[0]) => Promise<void>
   logout: () => Promise<void>
 }
 
@@ -68,6 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       pyme,
       login: async (email, password) => apply(await client.login(email, password)),
       register: async (data) => apply(await client.registerAccount(data)),
+      registerCustomer: async (data) => apply(await client.registerCustomer(data)),
       logout: async () => {
         await client.logout().catch(() => undefined)
         remember(null)

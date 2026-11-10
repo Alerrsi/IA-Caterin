@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { ApiError, api, patch, post, type PymeSettings, type User } from '../api'
+import { ApiError, api, customerLink, patch, post, type PymeSettings, type User } from '../api'
 import { useAuth } from '../auth'
 import { Alert, Button, Field, Page, Spinner, inputClass, useOnline } from '../components/ui'
 import { t } from '../i18n'
@@ -210,6 +210,81 @@ function Team({ online }: { online: boolean }) {
   )
 }
 
+/** Enlace del portal de clientes (ADR-007): crearlo, copiarlo, cambiarlo o cerrar el registro. */
+function CustomerPortal({ online }: { online: boolean }) {
+  const [code, setCode] = useState<string | null | undefined>(undefined)
+  const [error, setError] = useState<string | null>(null)
+  const [copied, setCopied] = useState(false)
+  const [busy, setBusy] = useState(false)
+
+  useEffect(() => {
+    api<PymeSettings>('/pyme')
+      .then((p) => setCode(p.customer_code ?? null))
+      .catch((err) => setError(errorText(err)))
+  }, [])
+
+  async function change(method: 'POST' | 'DELETE') {
+    setBusy(true)
+    setError(null)
+    setCopied(false)
+    try {
+      const p = await api<PymeSettings>('/pyme/customer-code', { method })
+      setCode(p.customer_code ?? null)
+    } catch (err) {
+      setError(errorText(err))
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  async function copy(link: string) {
+    try {
+      await navigator.clipboard.writeText(link)
+      setCopied(true)
+    } catch {
+      setCopied(false)
+    }
+  }
+
+  const link = code ? customerLink(code) : null
+  return (
+    <section className="space-y-3 rounded-2xl bg-white p-4 shadow-sm">
+      <h2 className="text-xl font-bold text-stone-900">{t.settings.customersTitle}</h2>
+      <p className="text-stone-700">{t.settings.customersHint}</p>
+      {code === undefined && !error && <Spinner label={t.loading} />}
+      {link ? (
+        <>
+          <p className="break-all rounded-xl bg-stone-100 p-3 font-mono text-base" data-testid="customer-link">
+            {link}
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <Button className="flex-1" onClick={() => copy(link)}>
+              {t.settings.copy}
+            </Button>
+            <Button variant="secondary" className="flex-1" onClick={() => change('POST')} disabled={busy || !online}>
+              {t.settings.customersNew}
+            </Button>
+          </div>
+          <Button variant="ghost" onClick={() => change('DELETE')} disabled={busy || !online}>
+            {t.settings.customersClose}
+          </Button>
+        </>
+      ) : (
+        code === null && (
+          <>
+            <p className="text-stone-700">{t.settings.customersOff}</p>
+            <Button className="w-full" onClick={() => change('POST')} disabled={busy || !online}>
+              {t.settings.customersOpen}
+            </Button>
+          </>
+        )
+      )}
+      {copied && <Alert kind="info">{t.settings.copied}</Alert>}
+      {error && <Alert>{error}</Alert>}
+    </section>
+  )
+}
+
 export default function Settings() {
   const { user } = useAuth()
   const online = useOnline()
@@ -220,6 +295,7 @@ export default function Settings() {
       ) : (
         <div className="space-y-6">
           <PymeForm online={online} />
+          <CustomerPortal online={online} />
           <Team online={online} />
         </div>
       )}

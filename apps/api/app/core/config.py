@@ -50,6 +50,8 @@ class Settings(BaseSettings):
     ollama_url: str = "http://ollama:11434"
     llm_model: str = "qwen3:4b"
     llm_timeout_s: float = 60.0
+    # Portal de clientes (ADR-007): pedidos leídos con el LLM por cliente y hora (protege la CPU del servidor).
+    portal_extract_per_hour: int = 10
     llm_keep_alive: str = "30m"
 
     def is_production(self) -> bool:

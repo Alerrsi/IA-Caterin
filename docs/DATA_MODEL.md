@@ -62,6 +62,7 @@ Leyenda: **[MVP]** son las entidades exigidas en `AGENTS.md` (sección 7.1). **[
 | `default_margin_pct` | numeric(5,2), nullable | Margen por defecto. **Sin valor inventado**: lo define la usuaria |
 | `vat_pct` | numeric(5,2), default 19.00 | IVA de Chile |
 | `prices_include_vat` | bool, default true | Si sus precios de compra se ingresan con IVA |
+| `customer_code` | text, único, nullable | Código del enlace del portal de clientes (ADR-007). Null = registro cerrado |
 
 ### Usuario (`app_user`) [MVP]
 | Campo | Tipo | Nota |
@@ -69,7 +70,7 @@ Leyenda: **[MVP]** son las entidades exigidas en `AGENTS.md` (sección 7.1). **[
 | `email` | citext, único global | Login |
 | `full_name` | text | |
 | `password_hash` | text | Argon2id |
-| `role` | enum `owner` \| `collaborator` | Dueña / colaboradora |
+| `role` | enum `owner` \| `collaborator` \| `customer` | Dueña / colaboradora / cliente del portal (ADR-007) |
 | `is_active` | bool | |
 
 Una usuaria pertenece a una sola pyme en el MVP. Si se necesitan varias, se agrega una tabla de membresías con una migración.
@@ -150,10 +151,13 @@ Sub-recetas (una receta que usa otra, p. ej. "masa"): **fuera del MVP**. Si apar
 | `customer_contact` | text, nullable | Teléfono o correo; opcional |
 | `event_date` | date, nullable | |
 | `guests` | int, nullable | |
-| `status` | enum `draft` \| `confirmed` \| `delivered` \| `cancelled` | |
+| `status` | enum `draft` \| `confirmed` \| `delivered` \| `cancelled` \| `customer_draft` \| `requested` | Los dos últimos, del portal de clientes (ADR-007): sin enviar (la pyme no lo ve) y enviado a la pyme |
 | `source` | enum `text` \| `list` \| `form` | |
 | `raw_text` | text, nullable | Texto original. Puede tener datos personales: se borra a los N días (configurable, ver SECURITY) |
 | `extraction` | jsonb, nullable | Salida del extractor (modelo, versión del prompt, JSON) para evaluación |
+| `customer_user_id` | uuid, nullable, FK compuesta a `app_user` | Cliente del portal que lo pidió (ADR-007) |
+| `submitted_at` / `decided_at` | timestamptz, nullable | Cuándo lo envió el cliente y cuándo respondió la dueña |
+| `owner_message` | text, nullable | Mensaje de la dueña al aceptar o rechazar; lo ve el cliente |
 
 ### Línea de pedido (`order_line`) [propuesta]
 | Campo | Tipo | Nota |

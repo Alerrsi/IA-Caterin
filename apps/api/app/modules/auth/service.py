@@ -6,6 +6,7 @@ import uuid
 from datetime import UTC, datetime, timedelta
 
 import jwt
+from fastapi import Response
 from sqlalchemy import delete, func, or_, select, update
 from sqlalchemy.orm import Session
 
@@ -16,7 +17,19 @@ from app.core.security import hash_password, needs_rehash, verify_password
 from app.core.tenancy import ACCESS_TOKEN_TYPE, CurrentUser
 from app.db.enums import Role
 from app.db.models import LoginAttempt, Pyme, RefreshToken, User
-from app.modules.auth.schemas import PymeUpdate, RegisterIn, UserCreate, UserUpdate
+from app.modules.auth.schemas import (
+    PymeOut,
+    PymePublicOut,
+    PymeUpdate,
+    RegisterIn,
+    TokenOut,
+    UserCreate,
+    UserOut,
+    UserUpdate,
+)
+
+REFRESH_COOKIE = "caterin_refresh"
+REFRESH_PATH = "/api/v1/auth"
 
 _INVALID_LOGIN = ProblemError(401, "invalid_credentials", "Correo o contraseña incorrectos")
 
@@ -185,7 +198,8 @@ def update_pyme(db: Session, current: CurrentUser, data: PymeUpdate) -> Pyme:
 
 
 def list_users(db: Session) -> list[User]:
-    return list(db.scalars(select(User).order_by(User.created_at)))
+    """El equipo de la pyme (sin los clientes del portal)."""
+    return list(db.scalars(select(User).where(User.role != Role.CUSTOMER).order_by(User.created_at)))
 
 
 def get_user(db: Session, user_id: uuid.UUID) -> User:
@@ -212,6 +226,8 @@ def _active_owners(db: Session) -> int:
 
 def update_user(db: Session, current: CurrentUser, user_id: uuid.UUID, data: UserUpdate) -> User:
     user = get_user(db, user_id)
+    if user.role == Role.CUSTOMER:  # un cliente no se convierte en parte del equipo desde aquí
+        raise not_found("user_not_found", "No encontramos a esa usuaria")
     changes = data.model_dump(exclude_unset=True)
     demotes_owner = user.role == Role.OWNER and changes.get("role") == Role.COLLABORATOR
     deactivates_owner = user.role == Role.OWNER and changes.get("is_active") is False
@@ -236,3 +252,51 @@ def update_user(db: Session, current: CurrentUser, user_id: uuid.UUID, data: Use
 
 def deactivate_user(db: Session, current: CurrentUser, user_id: uuid.UUID) -> None:
     update_user(db, current, user_id, UserUpdate(is_active=False))
+
+
+def new_customer_code(db: Session, current: CurrentUser) -> Pyme:
+    """Crea (o cambia) el código del enlace del portal. El código anterior deja de servir."""
+    pyme = get_pyme(db, current)
+    pyme.customer_code = secrets.token_urlsafe(9)
+    db.commit()
+    db.refresh(pyme)
+    return pyme
+
+
+def close_customer_portal(db: Session, current: CurrentUser) -> Pyme:
+    """Sin código no se registran clientes nuevos; los ya registrados siguen entrando."""
+    pyme = get_pyme(db, current)
+    pyme.customer_code = None
+    db.commit()
+    db.refresh(pyme)
+    return pyme
+
+
+# --------------------------------------------------------------------------- sesión (la usa también el portal)
+
+
+def _set_refresh_cookie(response: Response, raw: str) -> None:
+    settings = get_settings()
+    response.set_cookie(
+        REFRESH_COOKIE,
+        raw,
+        max_age=settings.jwt_refresh_ttl_days * 86400,
+        httponly=True,
+        secure=settings.refresh_cookie_secure,
+        samesite="strict",
+        path=REFRESH_PATH,
+    )
+
+
+def token_response(db: Session, response: Response, user: User, refresh: str | None = None) -> TokenOut:
+    access, ttl = create_access_token(user)
+    _set_refresh_cookie(response, refresh or issue_refresh_token(db, user))
+    pyme = db.get(Pyme, user.pyme_id)
+    return TokenOut(access_token=access, expires_in=ttl, user=UserOut.model_validate(user), pyme=pyme_view(user, pyme))
+
+
+def pyme_view(user: User, pyme: Pyme | None) -> PymeOut | PymePublicOut:
+    """Un cliente del portal no ve el margen ni la configuración interna de la pyme (ADR-007)."""
+    if user.role == Role.CUSTOMER:
+        return PymePublicOut.model_validate(pyme)
+    return PymeOut.model_validate(pyme)

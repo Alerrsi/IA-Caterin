@@ -69,14 +69,15 @@ export interface User {
   id: string
   email: string
   full_name: string
-  role: 'owner' | 'collaborator'
+  role: 'owner' | 'collaborator' | 'customer'
   is_active: boolean
 }
 
 export interface Pyme {
   id: string
   name: string
-  default_margin_pct: string | null
+  /** No viene en la sesión de un cliente del portal (ADR-007). */
+  default_margin_pct?: string | null
   vat_pct: string
   is_demo: boolean
 }
@@ -210,10 +211,16 @@ export interface OrderOut {
   customer_name: string
   event_date: string | null
   guests: number | null
-  status: 'draft' | 'confirmed' | 'delivered' | 'cancelled'
+  status: OrderStatus
+  notes?: string | null
   lines: { id: string; recipe_name: string | null; requested_name: string; qty: string; unit: OrderUnit }[]
   last_quote_id: string | null
+  from_customer?: boolean
+  submitted_at?: string | null
+  owner_message?: string | null
 }
+
+export type OrderStatus = 'draft' | 'confirmed' | 'delivered' | 'cancelled' | 'customer_draft' | 'requested'
 
 export interface QuoteProduct {
   recipe_name: string
@@ -479,6 +486,7 @@ export interface PymeSettings {
   prices_include_vat: boolean
   quote_validity_days: number | null
   is_demo: boolean
+  customer_code?: string | null
 }
 
 export interface CountLine {
@@ -529,4 +537,66 @@ export async function registerAccount(body: {
   const out = await post<TokenResponse>('/auth/register', body)
   setAccessToken(out.access_token)
   return out
+}
+
+// --------------------------------------------------------------------------- portal de clientes (ADR-007)
+
+export interface PortalProduct {
+  id: string
+  name: string
+  yield_unit: 'g' | 'ml' | 'unit'
+}
+
+export interface CustomerQuote {
+  version: number
+  is_complete: boolean
+  products: { name: string; qty: string; unit_label: string; unit_price_clp: number | null; subtotal_clp: number | null }[]
+  net_clp: number | null
+  vat_pct: string
+  vat_clp: number | null
+  total_clp: number | null
+  valid_until: string | null
+}
+
+export interface PortalRequest {
+  id: string
+  status: OrderStatus
+  created_at: string
+  submitted_at: string | null
+  decided_at: string | null
+  event_date: string | null
+  guests: number | null
+  notes: string | null
+  owner_message: string | null
+  lines: { name: string; qty: string; unit: OrderUnit; unit_label: string }[]
+  quote: CustomerQuote | null
+  price_pending: 'margin_required' | 'missing_prices' | 'cannot_calculate' | null
+  can_send: boolean
+  can_cancel: boolean
+}
+
+export interface PortalRequestSummary {
+  id: string
+  status: OrderStatus
+  created_at: string
+  submitted_at: string | null
+  event_date: string | null
+  products: string
+  total_clp: number | null
+}
+
+export async function registerCustomer(body: {
+  code: string
+  full_name: string
+  email: string
+  password: string
+}): Promise<TokenResponse> {
+  const out = await post<TokenResponse>('/portal/register', body)
+  setAccessToken(out.access_token)
+  return out
+}
+
+/** Enlace que la dueña comparte con sus clientes para que se registren en el portal. */
+export function customerLink(code: string): string {
+  return `${window.location.origin}${window.location.pathname}#/cliente/${encodeURIComponent(code)}`
 }

@@ -22,6 +22,7 @@ from app.modules.quotes.schemas import (
     QuoteOut,
     QuoteStatusUpdate,
     QuoteSummary,
+    RequestDecision,
     ShoppingList,
 )
 
@@ -66,6 +67,18 @@ def get_order(order_id: uuid.UUID, _user: CurrentUserDep, db: TenantDB) -> Order
 @router.patch("/orders/{order_id}", response_model=OrderOut)
 def update_order(order_id: uuid.UUID, data: OrderUpdate, _user: CurrentUserDep, db: TenantDB) -> OrderOut:
     return service.order_out(db, service.update_order(db, order_id, data))
+
+
+@router.post("/orders/{order_id}/accept", response_model=OrderOut)
+def accept_request(order_id: uuid.UUID, data: RequestDecision, _owner: OwnerDep, db: TenantDB) -> OrderOut:
+    """Acepta la solicitud de un cliente del portal: pedido confirmado y su última cotización aceptada."""
+    return service.order_out(db, service.decide_request(db, order_id, True, data.message))
+
+
+@router.post("/orders/{order_id}/reject", response_model=OrderOut)
+def reject_request(order_id: uuid.UUID, data: RequestDecision, _owner: OwnerDep, db: TenantDB) -> OrderOut:
+    """Rechaza la solicitud de un cliente del portal. El mensaje (opcional) lo ve el cliente."""
+    return service.order_out(db, service.decide_request(db, order_id, False, data.message))
 
 
 @router.post("/orders/{order_id}/quotes", response_model=QuoteOut, status_code=status.HTTP_201_CREATED)

@@ -90,6 +90,7 @@ Reglas:
    - `assistant` depende de los servicios de lectura de `inventory`, `recipes`, `suppliers` y `quotes`.
    - `vision` depende de `recipes` (producto final) e `inventory` (registro de producción).
    - `metrics` recibe eventos de todos y no es dependencia de nadie.
+   - `portal` (ADR-007) depende de `quotes` (mismo motor de cotización) y de `auth` (emitir la sesión del cliente).
 3. Los modelos SQLAlchemy viven en `app/db/models/` (uno por agregado) para que Alembic los vea todos. Cada módulo usa solo los suyos.
 4. La aritmética de negocio (cantidades, costos, IVA, redondeos) vive en funciones puras sin acceso a la base, en `recipes/costing.py` y `quotes/calculator.py`, para testearla aislada (ver ADR-002).
 
@@ -164,6 +165,8 @@ flowchart LR
 - Si falta algún precio, la cotización se guarda como incompleta y **no** se genera el PDF hasta completarla.
 - Cada cotización guarda la versión de precios usada (snapshot de los `PrecioInsumo`), los supuestos (merma, margen, IVA, redondeo) y quién la generó.
 - El tiempo de la cotización se mide desde que se abre el pedido hasta que se genera el PDF (T09).
+
+**Portal de clientes (ADR-007).** El cliente final se registra con el enlace de la pyme y cotiza con la misma pantalla y el mismo motor, pero solo ve el precio al cliente. Su pedido queda `customer_draft` (la pyme no lo ve) hasta que lo envía (`requested`). La dueña lo ve en Pedidos y lo acepta (`confirmed`, cotización `accepted`) o lo rechaza con un mensaje.
 
 ## 6. Estrategia offline (resumen)
 

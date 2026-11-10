@@ -3,7 +3,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.db.enums import OrderSource, OrderStatus, OrderUnit, QuoteStatus
 
@@ -65,6 +65,16 @@ class OrderLineIn(BaseModel):
     unit: OrderUnit = OrderUnit.UNIT
 
 
+# Estados que solo pone el portal de clientes o la decisión de la dueña (ADR-007), no un PATCH.
+PORTAL_STATUSES = (OrderStatus.CUSTOMER_DRAFT, OrderStatus.REQUESTED)
+
+
+def _staff_status(value: OrderStatus | None) -> OrderStatus | None:
+    if value in PORTAL_STATUSES:
+        raise ValueError("Ese estado lo pone el portal de clientes")
+    return value
+
+
 class OrderCreate(BaseModel):
     customer_name: str = Field(min_length=2, max_length=120)
     customer_contact: str | None = Field(default=None, max_length=120)
@@ -77,6 +87,8 @@ class OrderCreate(BaseModel):
     notes: str | None = Field(default=None, max_length=2000)
     lines: list[OrderLineIn] = Field(min_length=1, max_length=50)
 
+    _status = field_validator("status")(_staff_status)
+
 
 class OrderUpdate(BaseModel):
     customer_name: str | None = Field(default=None, min_length=2, max_length=120)
@@ -86,6 +98,8 @@ class OrderUpdate(BaseModel):
     status: OrderStatus | None = None
     notes: str | None = Field(default=None, max_length=2000)
     lines: list[OrderLineIn] | None = Field(default=None, min_length=1, max_length=50)
+
+    _status = field_validator("status")(_staff_status)
 
 
 class OrderLineOut(BaseModel):
@@ -115,6 +129,13 @@ class OrderOut(BaseModel):
     updated_at: datetime
     lines: list[OrderLineOut]
     last_quote_id: uuid.UUID | None = None
+    from_customer: bool = False  # lo pidió un cliente por el portal (ADR-007)
+    submitted_at: datetime | None = None
+    owner_message: str | None = None
+
+
+class RequestDecision(BaseModel):
+    message: str | None = Field(default=None, max_length=1000, description="Lo ve el cliente en el portal")
 
 
 # --------------------------------------------------------------------------- cotizaciones

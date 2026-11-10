@@ -135,3 +135,16 @@ export function OfflineBanner() {
     </>
   )
 }
+
+/** Estado de un pedido o cotización como etiqueta. */
+export function StatusChip({ status, children }: { status: string; children: ReactNode }) {
+  const tone =
+    status === 'confirmed' || status === 'accepted' || status === 'delivered'
+      ? 'bg-green-100 text-green-900'
+      : status === 'cancelled' || status === 'rejected'
+        ? 'bg-stone-200 text-stone-800'
+        : status === 'requested' || status === 'sent'
+          ? 'bg-sky-100 text-sky-900'
+          : 'bg-orange-100 text-brand-dark'
+  return <span className={`inline-block rounded-full px-3 py-1 text-sm font-semibold ${tone}`}>{children}</span>
+}

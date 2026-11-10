@@ -67,6 +67,8 @@ class Pyme(TimestampMixin, Base):
     prices_include_vat: Mapped[bool] = mapped_column(Boolean, server_default=sql_text("true"))
     quote_validity_days: Mapped[int | None] = mapped_column(SmallInteger)
     is_demo: Mapped[bool] = mapped_column(Boolean, server_default=sql_text("false"))
+    # Código del enlace para que los clientes se registren en el portal (ADR-007). None = portal cerrado.
+    customer_code: Mapped[str | None] = mapped_column(String(32), unique=True)
 
     __table_args__ = (
         CheckConstraint("default_waste_pct >= 0 AND default_waste_pct < 100", name="waste_range"),
@@ -295,6 +297,11 @@ class Order(TenantMixin, Base):
     raw_text: Mapped[str | None] = mapped_column(Text)
     extraction: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
     notes: Mapped[str | None] = mapped_column(Text)
+    # Portal de clientes (ADR-007): quién lo pidió, cuándo lo envió y la respuesta de la pyme.
+    customer_user_id: Mapped[uuid.UUID | None] = mapped_column()
+    submitted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    decided_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    owner_message: Mapped[str | None] = mapped_column(Text)
 
     lines: Mapped[list["OrderLine"]] = relationship(
         primaryjoin="and_(Order.id == OrderLine.order_id, Order.pyme_id == OrderLine.pyme_id)",
@@ -306,9 +313,16 @@ class Order(TenantMixin, Base):
 
     __table_args__ = tenant_args(
         "catering_order",
+        ("customer_user_id", "app_user", None),
         extra=(
             CheckConstraint("guests IS NULL OR guests > 0", name="guests_positive"),
             Index("ix_catering_order_pyme_event", "pyme_id", "event_date"),
+            Index(
+                "ix_catering_order_customer",
+                "pyme_id",
+                "customer_user_id",
+                postgresql_where=sql_text("customer_user_id IS NOT NULL"),
+            ),
         ),
     )
 

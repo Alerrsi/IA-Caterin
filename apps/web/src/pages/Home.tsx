@@ -32,6 +32,7 @@ function Alerts() {
   const orders = useCached<OrderOut[]>('orders:upcoming', '/orders?upcoming_days=7')
   const low = ingredients.value?.data.filter((i) => i.is_active && i.is_low).length
   const upcoming = orders.value?.data.filter((o) => o.status === 'draft' || o.status === 'confirmed').length
+  const requested = useCached<OrderOut[]>('orders:requested', '/orders?status=requested').value?.data.length
   if (low === undefined && upcoming === undefined) return null
   return (
     <section aria-labelledby="alerts-title" className="mb-6 rounded-2xl bg-white p-4 shadow-sm">
@@ -47,6 +48,17 @@ function Alerts() {
               className={`min-h-12 w-full rounded-xl px-3 text-left text-lg font-semibold underline-offset-4 hover:underline focus-visible:ring-4 focus-visible:ring-orange-300 ${low > 0 ? 'bg-amber-50 text-amber-950' : 'text-stone-800'}`}
             >
               {low > 0 ? `⚠ ${t.home.lowStock(low)}` : t.home.noLowStock}
+            </button>
+          </li>
+        )}
+        {requested !== undefined && requested > 0 && (
+          <li>
+            <button
+              type="button"
+              onClick={() => navigate('/pedidos')}
+              className="min-h-12 w-full rounded-xl bg-sky-50 px-3 text-left text-lg font-semibold text-sky-950 underline-offset-4 hover:underline focus-visible:ring-4 focus-visible:ring-orange-300"
+            >
+              {t.home.requests(requested)}
             </button>
           </li>
         )}

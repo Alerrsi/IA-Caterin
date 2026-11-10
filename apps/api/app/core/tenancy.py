@@ -110,7 +110,8 @@ def _bearer_token(request: Request) -> str:
     return token
 
 
-def get_current_user(request: Request) -> CurrentUser:
+def get_session_user(request: Request) -> CurrentUser:
+    """Cualquier cuenta activa, incluidos los clientes del portal. Solo para /auth/me y el portal."""
     claims = decode_access_token(_bearer_token(request))
     try:
         user_id = uuid.UUID(claims["sub"])
@@ -123,6 +124,17 @@ def get_current_user(request: Request) -> CurrentUser:
     if user is None or not user.is_active:
         raise _unauthorized()
     return CurrentUser(user.id, user.pyme_id, user.role, user.email, user.full_name)
+
+
+SessionUserDep = Annotated[CurrentUser, Depends(get_session_user)]
+
+
+def get_current_user(user: SessionUserDep) -> CurrentUser:
+    """La dueña o una colaboradora. Un cliente del portal (ADR-007) no entra a ninguna ruta de la pyme: todas
+    usan esta dependencia (o `require_owner`), así que el bloqueo es central y no depende de cada módulo."""
+    if user.role == Role.CUSTOMER:
+        raise ProblemError(403, "staff_only", "Esta sección es solo para la pyme")
+    return user
 
 
 CurrentUserDep = Annotated[CurrentUser, Depends(get_current_user)]
@@ -146,3 +158,24 @@ def require_owner(user: CurrentUserDep) -> CurrentUser:
 
 
 OwnerDep = Annotated[CurrentUser, Depends(require_owner)]
+
+
+def require_customer(user: SessionUserDep) -> CurrentUser:
+    if user.role != Role.CUSTOMER:
+        raise ProblemError(403, "customer_only", "Esta sección es para los clientes de la pyme")
+    return user
+
+
+CustomerDep = Annotated[CurrentUser, Depends(require_customer)]
+
+
+def get_customer_db(user: CustomerDep) -> Iterator[Session]:
+    """Sesión de tenant del cliente: ve solo su pyme. Lo suyo dentro de ella lo filtra el portal."""
+    session = open_tenant_session(user.pyme_id, user.id)
+    try:
+        yield session
+    finally:
+        session.close()
+
+
+CustomerDB = Annotated[Session, Depends(get_customer_db)]

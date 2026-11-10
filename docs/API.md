@@ -19,6 +19,8 @@
 | Invitar usuarias, configurar la pyme | ✔ | ✘ |
 | Usar el asistente | ✔ | ✔ (solo intenciones permitidas a su rol) |
 
+**Cliente del portal (`customer`, ADR-007):** solo usa `/auth/*` y `/portal/*`. Cualquier otra ruta responde 403 `staff_only` (bloqueo central en `get_current_user`). Su sesión trae la pyme sin margen ni configuración interna (`PymePublicOut`).
+
 ## 2. Errores (RFC 9457)
 
 Todas las respuestas de error usan `application/problem+json`:
@@ -65,7 +67,8 @@ Todas las respuestas de error usan `application/problem+json`:
 | GET | `/auth/me` | Usuaria y pyme actuales |
 | GET/PATCH | `/pyme` | Ver y editar la configuración (merma, margen, IVA) — solo dueña |
 | GET/POST | `/users` | Listar e invitar colaboradoras — solo dueña |
-| PATCH/DELETE | `/users/{id}` | Cambiar nombre, rol, contraseña o desactivar (DELETE desactiva, no borra) — solo dueña. Protege a la última dueña activa |
+| PATCH/DELETE | `/users/{id}` | Cambiar nombre, rol, contraseña o desactivar (DELETE desactiva, no borra) — solo dueña. Protege a la última dueña activa. `/users` no lista ni modifica clientes del portal, y no acepta el rol `customer` |
+| POST/DELETE | `/pyme/customer-code` | Crea o cambia (POST) el código del enlace del portal de clientes, o cierra el registro (DELETE) — solo dueña |
 
 ### inventory (T04)
 | Método | Ruta | Descripción |
@@ -111,6 +114,26 @@ Todas las respuestas de error usan `application/problem+json`:
 | PATCH | `/quotes/{id}` | dueña | Cambiar estado. `sent`/`accepted` exigen cotización completa; `accepted` confirma el pedido |
 | GET | `/quotes/{id}/shopping-list` | dueña | Lista de compras agrupada por proveedor, con días de despacho |
 | GET | `/quotes/{id}/pdf` | dueña | PDF para el cliente final (productos, precios, neto, IVA, total; **sin costos internos**). 409 `quote_incomplete` si falta algún precio |
+| POST | `/orders/{id}/accept` | dueña | Acepta la solicitud de un cliente (`requested`): pedido `confirmed`, última cotización `accepted`. `{"message"?}` lo ve el cliente. 409 `quote_incomplete` sin cotización completa; 409 `not_a_request` si no es una solicitud pendiente |
+| POST | `/orders/{id}/reject` | dueña | Rechaza la solicitud: pedido `cancelled`, cotización `rejected`, con mensaje opcional |
+
+Los pedidos `customer_draft` (cotizados por un cliente sin enviar) no aparecen en `/orders` ni se pueden abrir por id. Los estados `customer_draft` y `requested` no se pueden poner con POST o PATCH (422). `OrderOut` trae `from_customer`, `submitted_at` y `owner_message`.
+
+### portal (ADR-007, T13)
+| Método | Ruta | Quién | Descripción |
+|--------|------|-------|-------------|
+| GET | `/portal/pymes/{code}` | público | Nombre y comuna de la pyme del enlace. 404 `portal_code_not_found` |
+| POST | `/portal/register` | público | `{code, full_name, email, password}` → cuenta de cliente y sesión (como `/auth/login`). 409 `email_taken` |
+| GET | `/portal/products` | cliente | Recetas activas marcadas como producto final (id, nombre, unidad de rendimiento) |
+| POST | `/portal/extract` | cliente | Igual que `/orders/extract`, solo con sus productos. Tope `PORTAL_EXTRACT_PER_HOUR` por cliente y hora → 429 `too_many_reads` |
+| GET/POST | `/portal/requests` | cliente | Sus cotizaciones guardadas / guardar un pedido nuevo y cotizarlo con el margen de la pyme (queda `customer_draft`) |
+| GET | `/portal/requests/{id}` | cliente | Detalle: líneas, precio al cliente (sin costos), `price_pending` (`margin_required` \| `missing_prices` \| `cannot_calculate`), mensaje de la pyme |
+| POST | `/portal/requests/{id}/quote` | cliente | Recalcula con los precios de hoy (solo sin enviar) |
+| POST | `/portal/requests/{id}/send` | cliente | La envía a la pyme (`requested`) |
+| POST | `/portal/requests/{id}/cancel` | cliente | La anula mientras la pyme no responde |
+| GET | `/portal/requests/{id}/pdf` | cliente | El PDF para el cliente. 409 si todavía no hay precio completo |
+
+Lo de otro cliente responde 404. Si falta un precio, los montos van en `null`: el cliente no ve un total incompleto.
 
 ### vision (T06)
 | Método | Ruta | Descripción |

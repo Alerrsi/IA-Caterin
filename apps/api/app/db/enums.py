@@ -6,6 +6,7 @@ from enum import StrEnum
 class Role(StrEnum):
     OWNER = "owner"
     COLLABORATOR = "collaborator"
+    CUSTOMER = "customer"  # cliente final de la pyme: solo usa el portal (ADR-007)
 
 
 class BaseUnit(StrEnum):
@@ -36,6 +37,9 @@ class OrderStatus(StrEnum):
     CONFIRMED = "confirmed"
     DELIVERED = "delivered"
     CANCELLED = "cancelled"
+    # Pedidos que arma un cliente en el portal (ADR-007):
+    CUSTOMER_DRAFT = "customer_draft"  # cotizado por el cliente, sin enviar: la pyme no lo ve
+    REQUESTED = "requested"  # enviado a la pyme, espera que la dueña lo acepte o rechace
 
 
 class OrderSource(StrEnum):

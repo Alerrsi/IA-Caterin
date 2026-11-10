@@ -10,11 +10,13 @@ from sqlalchemy.orm import Session
 
 from app.core.data_version import bump
 from app.core.errors import ProblemError, not_found
+from app.core.llm import LLMProvider
 from app.core.money import quantize_clp
 from app.core.tenancy import CurrentUser
-from app.db.enums import DataDomain, MetricKind, OrderStatus, QuoteStatus
+from app.db.enums import DataDomain, MetricKind, OrderStatus, OrderUnit, QuoteStatus, Role
 from app.db.models import Ingredient, MetricEvent, Order, OrderLine, Pyme, Quote, QuoteLine, Recipe, Supplier
 from app.modules.quotes.calculator import (
+    ORDER_UNIT_LABELS,
     IngredientInfo,
     ProductRequest,
     PurchaseChoice,
@@ -25,7 +27,10 @@ from app.modules.quotes.calculator import (
     RecipeLineInfo,
     calculate_quote,
 )
+from app.modules.quotes.extractor import extract_order
+from app.modules.quotes.pdf import quote_number, render_quote_pdf
 from app.modules.quotes.schemas import (
+    ExtractionOut,
     OrderCreate,
     OrderLineIn,
     OrderLineOut,
@@ -57,7 +62,7 @@ def _recipes(db: Session, ids: list[uuid.UUID]) -> dict[uuid.UUID, Recipe]:
     return found
 
 
-def _build_lines(db: Session, lines: list[OrderLineIn]) -> list[OrderLine]:
+def build_lines(db: Session, lines: list[OrderLineIn]) -> list[OrderLine]:
     recipes = _recipes(db, list({line.recipe_id for line in lines}))
     return [
         OrderLine(
@@ -72,7 +77,12 @@ def _build_lines(db: Session, lines: list[OrderLineIn]) -> list[OrderLine]:
 
 
 def list_orders(db: Session, status: OrderStatus | None, upcoming_days: int | None, today: date) -> list[Order]:
-    stmt = select(Order).order_by(Order.event_date.asc().nulls_last(), Order.created_at.desc())
+    # Lo que un cliente cotizó y no envió es suyo: la pyme no lo ve (ADR-007).
+    stmt = (
+        select(Order)
+        .where(Order.status != OrderStatus.CUSTOMER_DRAFT)
+        .order_by(Order.event_date.asc().nulls_last(), Order.created_at.desc())
+    )
     if status:
         stmt = stmt.where(Order.status == status)
     if upcoming_days is not None:
@@ -84,9 +94,9 @@ def list_orders(db: Session, status: OrderStatus | None, upcoming_days: int | No
     return list(db.scalars(stmt.limit(200)))
 
 
-def get_order(db: Session, order_id: uuid.UUID) -> Order:
+def get_order(db: Session, order_id: uuid.UUID, include_customer_drafts: bool = False) -> Order:
     order = db.get(Order, order_id)
-    if order is None:
+    if order is None or (order.status == OrderStatus.CUSTOMER_DRAFT and not include_customer_drafts):
         raise not_found("order_not_found", "No encontramos ese pedido")
     return order
 
@@ -96,7 +106,7 @@ def create_order(db: Session, data: OrderCreate) -> Order:
     order.customer_name = order.customer_name.strip()
     db.add(order)
     db.flush()
-    for line in _build_lines(db, data.lines):
+    for line in build_lines(db, data.lines):
         line.pyme_id, line.order_id = order.pyme_id, order.id
         db.add(line)
     bump(db, DataDomain.ORDERS)
@@ -113,7 +123,7 @@ def update_order(db: Session, order_id: uuid.UUID, data: OrderUpdate) -> Order:
             continue
         setattr(order, field, value)
     if data.lines is not None:
-        new_lines = _build_lines(db, data.lines)
+        new_lines = build_lines(db, data.lines)
         order.lines.clear()
         db.flush()
         order.lines.extend(new_lines)
@@ -132,10 +142,62 @@ def order_out(db: Session, order: Order) -> OrderOut:
         line.recipe_name = names.get(line.recipe_id) if line.recipe_id else None
         lines.append(line)
     out.lines = lines
+    out.from_customer = order.customer_user_id is not None
     out.last_quote_id = db.scalar(
         select(Quote.id).where(Quote.order_id == order.id).order_by(Quote.version.desc()).limit(1)
     )
     return out
+
+
+def extract(llm: LLMProvider, text: str, choices: dict[uuid.UUID, str], today: date) -> ExtractionOut:
+    """Lee un pedido escrito contra `choices` (recetas de la pyme, o productos del portal). No guarda nada."""
+    return extract_order(llm, text, choices, today)
+
+
+def pdf(quote: Quote, order: Order, pyme: Pyme) -> tuple[bytes, str]:
+    """El PDF para el cliente final y su nombre de archivo."""
+    return render_quote_pdf(quote, order, pyme), f"{quote_number(quote)}.pdf"
+
+
+def unit_label(unit: OrderUnit, qty: Decimal) -> str:
+    singular, plural = ORDER_UNIT_LABELS[unit]
+    return singular if qty == 1 else plural
+
+
+def latest_quote(db: Session, order_id: uuid.UUID) -> Quote | None:
+    return db.scalar(select(Quote).where(Quote.order_id == order_id).order_by(Quote.version.desc()).limit(1))
+
+
+def decide_request(db: Session, order_id: uuid.UUID, accept: bool, message: str | None) -> Order:
+    """La dueña acepta o rechaza lo que envió un cliente del portal (ADR-007).
+
+    Aceptar: el pedido queda confirmado y su última cotización (si está completa) aceptada.
+    Rechazar: el pedido queda cancelado y la cotización rechazada. El mensaje lo ve el cliente.
+    """
+    order = get_order(db, order_id)
+    if order.status != OrderStatus.REQUESTED:
+        raise ProblemError(409, "not_a_request", "Este pedido no es una solicitud pendiente de un cliente")
+    quote = latest_quote(db, order.id)
+    if accept:
+        if quote is None or not quote.is_complete:
+            raise ProblemError(
+                409,
+                "quote_incomplete",
+                "Primero calcula una cotización completa",
+                (missing_detail(quote) if quote else "El pedido aún no tiene cotización.")
+                + " Así el cliente ve el precio que aceptas.",
+            )
+        order.status, quote.status = OrderStatus.CONFIRMED, QuoteStatus.ACCEPTED
+    else:
+        order.status = OrderStatus.CANCELLED
+        if quote is not None:
+            quote.status = QuoteStatus.REJECTED
+    order.decided_at = datetime.now(UTC)
+    order.owner_message = message.strip() if message and message.strip() else None
+    bump(db, DataDomain.ORDERS)
+    db.commit()
+    db.refresh(order)
+    return order
 
 
 def recipe_choices(db: Session) -> dict[uuid.UUID, str]:
@@ -232,7 +294,7 @@ def stock_check(db: Session, order: Order) -> QuoteResult:
 
 
 def create_quote(db: Session, user: CurrentUser, order_id: uuid.UUID, data: QuoteCreate, today: date) -> Quote:
-    order = get_order(db, order_id)
+    order = get_order(db, order_id, include_customer_drafts=user.role == Role.CUSTOMER)
     if order.status == OrderStatus.CANCELLED:
         raise ProblemError(409, "order_cancelled", "El pedido está cancelado")
     pyme = db.get(Pyme, user.pyme_id)
@@ -333,8 +395,9 @@ def create_quote(db: Session, user: CurrentUser, order_id: uuid.UUID, data: Quot
 
 
 def get_quote(db: Session, quote_id: uuid.UUID) -> Quote:
+    """Para la pyme: la cotización de un pedido que el cliente aún no envía no existe para ella."""
     quote = db.get(Quote, quote_id)
-    if quote is None:
+    if quote is None or db.scalar(select(Order.status).where(Order.id == quote.order_id)) == OrderStatus.CUSTOMER_DRAFT:
         raise not_found("quote_not_found", "No encontramos esa cotización")
     return quote
 
@@ -351,7 +414,9 @@ def update_quote_status(db: Session, quote_id: uuid.UUID, status: QuoteStatus) -
     quote.status = status
     if status == QuoteStatus.ACCEPTED:
         order = get_order(db, quote.order_id)
-        if order.status == OrderStatus.DRAFT:
+        if order.status == OrderStatus.REQUESTED:  # aceptar la cotización acepta la solicitud del cliente
+            order.decided_at = datetime.now(UTC)
+        if order.status in (OrderStatus.DRAFT, OrderStatus.REQUESTED):
             order.status = OrderStatus.CONFIRMED
     bump(db, DataDomain.ORDERS)
     db.commit()

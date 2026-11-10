@@ -18,10 +18,21 @@ import Metrics from './pages/Metrics'
 import NewQuote from './pages/NewQuote'
 import Orders from './pages/Orders'
 import QuoteView from './pages/QuoteView'
+import CustomerRegister from './pages/portal/CustomerRegister'
+import PortalHome from './pages/portal/PortalHome'
+import RequestView from './pages/portal/RequestView'
 import { matchPath, useHashPath } from './router'
 
+/** Un cliente del portal (ADR-007) solo ve sus cotizaciones: ninguna pantalla de la pyme. */
+function CustomerRoutes({ path }: { path: string }) {
+  const request = matchPath('/solicitudes/:id', path)
+  if (request) return <RequestView key={request.id} id={request.id} />
+  if (matchPath('/cotizar', path)) return <NewQuote portal />
+  return <PortalHome />
+}
+
 function Routes() {
-  const { status } = useAuth()
+  const { status, user } = useAuth()
   const path = useHashPath()
 
   if (status === 'loading') {
@@ -31,7 +42,12 @@ function Routes() {
       </main>
     )
   }
-  if (status === 'anonymous') return matchPath('/registro', path) ? <Register /> : <Login />
+  if (status === 'anonymous') {
+    const invite = matchPath('/cliente/:code', path)
+    if (invite) return <CustomerRegister code={invite.code} />
+    return matchPath('/registro', path) ? <Register /> : <Login />
+  }
+  if (user?.role === 'customer') return <CustomerRoutes path={path} />
 
   const quote = matchPath('/cotizaciones/:id', path)
   if (quote) return <QuoteView key={quote.id} id={quote.id} />

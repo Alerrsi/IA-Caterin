@@ -18,6 +18,7 @@ from app.modules.documents.router import router as documents_router
 from app.modules.imports.router import router as imports_router
 from app.modules.inventory.router import router as inventory_router
 from app.modules.metrics.router import router as metrics_router
+from app.modules.portal.router import router as portal_router
 from app.modules.quotes.router import router as quotes_router
 from app.modules.recipes.router import router as recipes_router
 from app.modules.suppliers.router import router as suppliers_router
@@ -69,6 +70,7 @@ def create_app() -> FastAPI:
         assistant_router,
         documents_router,
         metrics_router,
+        portal_router,
     ):
         api.include_router(router)
     app.include_router(api)
