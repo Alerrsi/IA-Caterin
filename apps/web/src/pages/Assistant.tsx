@@ -8,7 +8,8 @@ import {
   type AskSource,
   type QuickAction,
 } from '../api'
-import { Alert, Button, Page } from '../components/ui'
+import { StarSurvey } from '../components/StarSurvey'
+import { Alert, Button, Page, useOnline } from '../components/ui'
 import { t } from '../i18n'
 import { navigate } from '../router'
 
@@ -22,21 +23,6 @@ interface Turn {
   pending: boolean
   error?: string
   feedback?: boolean
-}
-
-function useOnline(): boolean {
-  const [online, setOnline] = useState(() => navigator.onLine)
-  useEffect(() => {
-    const on = () => setOnline(true)
-    const off = () => setOnline(false)
-    window.addEventListener('online', on)
-    window.addEventListener('offline', off)
-    return () => {
-      window.removeEventListener('online', on)
-      window.removeEventListener('offline', off)
-    }
-  }, [])
-  return online
 }
 
 function Answer({ turn, onAsk, onFeedback }: { turn: Turn; onAsk: (q: string) => void; onFeedback: (useful: boolean) => void }) {
@@ -174,6 +160,7 @@ export default function Assistant() {
             <Answer turn={turn} onAsk={(q) => void ask(q)} onFeedback={(u) => void feedback(turn, u)} />
           </div>
         ))}
+        {turns.filter((x) => !x.pending && !x.error).length >= 2 && <StarSurvey context="assistant" />}
         <div ref={bottom} />
       </div>
       <form onSubmit={submit} className="mt-6 flex gap-2">

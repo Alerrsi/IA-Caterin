@@ -82,18 +82,28 @@ export interface Pyme {
 }
 
 let refreshing: Promise<TokenResponse | null> | null = null
+let refreshFailedByNetwork = false
+
+/** true si el último refresh falló por falta de red (no por sesión vencida). */
+export function lastRefreshFailedByNetwork(): boolean {
+  return refreshFailedByNetwork
+}
 
 /** Pide un token nuevo con la cookie de refresh. Devuelve null si la sesión ya no es válida. */
 export function refreshSession(): Promise<TokenResponse | null> {
   if (!refreshing) {
     refreshing = fetch(`${API}/auth/refresh`, { method: 'POST', credentials: 'include' })
       .then(async (resp) => {
+        refreshFailedByNetwork = false
         if (!resp.ok) return null
         const body = (await resp.json()) as TokenResponse
         setAccessToken(body.access_token)
         return body
       })
-      .catch(() => null)
+      .catch(() => {
+        refreshFailedByNetwork = true
+        return null
+      })
       .finally(() => {
         refreshing = null
       })
@@ -101,7 +111,7 @@ export function refreshSession(): Promise<TokenResponse | null> {
   return refreshing
 }
 
-async function raw(path: string, init: RequestInit = {}, retry = true): Promise<Response> {
+export async function raw(path: string, init: RequestInit = {}, retry = true): Promise<Response> {
   const headers = new Headers(init.headers)
   if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`)
   if (init.body && !(init.body instanceof FormData) && !headers.has('Content-Type')) {
@@ -163,7 +173,10 @@ export type OrderUnit = 'unit' | 'dozen' | 'g' | 'kg' | 'ml' | 'l' | 'portion'
 export interface RecipeSummary {
   id: string
   name: string
+  yield_qty?: string
   yield_unit: 'g' | 'ml' | 'unit'
+  is_final_product?: boolean
+  vision_class?: string | null
   is_active: boolean
 }
 
@@ -364,4 +377,156 @@ export async function askAssistant(
   }
   if (!done) throw new ApiError(0, 'stream_incomplete', t.assistant.cutOff)
   return done
+}
+
+// --------------------------------------------------------------------------- inventario, recetas, ajustes (T08)
+
+export type BaseUnitCode = 'g' | 'ml' | 'unit'
+
+export interface Ingredient {
+  id: string
+  name: string
+  base_unit: BaseUnitCode
+  stock_qty: string
+  min_stock_qty: string | null
+  waste_pct: string | null
+  category: string | null
+  is_active: boolean
+  is_low: boolean
+  updated_at: string
+}
+
+export interface Movement {
+  id: string
+  ingredient_id: string
+  delta_qty: string
+  reason: string
+  note: string | null
+  occurred_at: string
+}
+
+interface Page<T> {
+  items: T[]
+  next_cursor: string | null
+}
+
+/** Todos los insumos activos (la API pagina de a 100 como máximo). */
+export async function loadAllIngredients(): Promise<Ingredient[]> {
+  const out: Ingredient[] = []
+  let cursor: string | null = null
+  do {
+    const qs: string = cursor ? `&cursor=${encodeURIComponent(cursor)}` : ''
+    const page: Page<Ingredient> = await api<Page<Ingredient>>(`/ingredients?limit=100${qs}`)
+    out.push(...page.items)
+    cursor = page.next_cursor
+  } while (cursor)
+  return out
+}
+
+export async function loadMovements(ingredientId: string): Promise<Movement[]> {
+  return (await api<Page<Movement>>(`/ingredients/${ingredientId}/movements?limit=20`)).items
+}
+
+export interface RecipeLine {
+  id: string
+  ingredient_id: string
+  ingredient_name: string
+  base_unit: BaseUnitCode | null
+  qty: string
+  waste_pct: string | null
+}
+
+export interface RecipeDetail {
+  id: string
+  name: string
+  yield_qty: string
+  yield_unit: BaseUnitCode
+  is_final_product: boolean
+  vision_class: string | null
+  notes: string | null
+  version: number
+  is_active: boolean
+  lines: RecipeLine[]
+}
+
+export interface RecipeCost {
+  recipe_name: string
+  units: string
+  yield_unit: BaseUnitCode
+  total_clp: number
+  per_unit_clp: number | null
+  is_complete: boolean
+  missing_prices: string[]
+  lines: {
+    ingredient_name: string
+    base_unit: BaseUnitCode
+    required_qty: string
+    supplier_name: string | null
+    package_label: string | null
+    price_date: string | null
+    cost_clp: number | null
+  }[]
+}
+
+export interface PymeSettings {
+  id: string
+  name: string
+  rut: string | null
+  commune: string | null
+  default_waste_pct: string
+  default_margin_pct: string | null
+  vat_pct: string
+  prices_include_vat: boolean
+  quote_validity_days: number | null
+  is_demo: boolean
+}
+
+export interface CountLine {
+  vision_class: string
+  count: number
+  recipe_id: string | null
+  recipe_name: string | null
+}
+
+export interface CountOut {
+  model_version: string
+  counts: CountLine[]
+  detections: { vision_class: string; score: number; box: [number, number, number, number] }[]
+  elapsed_ms: number
+}
+
+export async function countPhoto(image: Blob): Promise<CountOut> {
+  const form = new FormData()
+  form.append('image', image, 'bandeja.jpg')
+  return api<CountOut>('/vision/count', { method: 'POST', body: form })
+}
+
+export interface RowIssue {
+  row: number
+  field: string
+  message: string
+}
+
+export interface ImportPreview<Row> {
+  total_rows: number
+  valid: Row[]
+  errors: RowIssue[]
+  source?: string
+}
+
+export interface ImportResult {
+  import_batch_id: string
+  created: number
+  suppliers_created: number
+}
+
+export async function registerAccount(body: {
+  pyme_name: string
+  full_name: string
+  email: string
+  password: string
+}): Promise<TokenResponse> {
+  const out = await post<TokenResponse>('/auth/register', body)
+  setAccessToken(out.access_token)
+  return out
 }

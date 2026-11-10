@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { post } from '../api'
 import { t } from '../i18n'
+import { enqueue } from '../offline/queue'
 
-/** Encuesta de 1 a 5 estrellas (métrica T09). Un toque y listo; si falla la red no molesta a la usuaria. */
+/** Encuesta de 1 a 5 estrellas (métrica T09). Un toque y listo; sin señal queda en la cola y se envía después. */
 export function StarSurvey({ context }: { context: 'general' | 'quote' | 'assistant' | 'vision' }) {
   const [sent, setSent] = useState<number | null>(null)
   if (sent !== null) {
@@ -14,9 +14,9 @@ export function StarSurvey({ context }: { context: 'general' | 'quote' | 'assist
   }
   return (
     <fieldset className="rounded-2xl bg-white p-4 shadow-sm">
-      <legend className="sr-only">{t.survey.question}</legend>
+      <legend className="sr-only">{t.survey.questions[context]}</legend>
       <p aria-hidden="true" className="mb-2 font-semibold text-stone-800">
-        {t.survey.question}
+        {t.survey.questions[context]}
       </p>
       <div className="flex justify-between gap-1">
         {[1, 2, 3, 4, 5].map((n) => (
@@ -26,7 +26,7 @@ export function StarSurvey({ context }: { context: 'general' | 'quote' | 'assist
             aria-label={t.survey.star(n)}
             onClick={() => {
               setSent(n)
-              post('/metrics/survey', { stars: n, context }).catch(() => undefined)
+              void enqueue({ path: '/metrics/survey', body: { stars: n, context }, label: t.survey.star(n) })
             }}
             className="min-h-12 min-w-12 rounded-xl text-3xl text-amber-600 hover:bg-amber-50 focus-visible:ring-4 focus-visible:ring-orange-300"
           >

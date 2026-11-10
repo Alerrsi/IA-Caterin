@@ -18,6 +18,7 @@ export function mockApi(routes: Routes) {
     const result = handler ? handler(body) : { status: 404, body: { code: 'not_found', title: 'No encontrado' } }
     const status = result?.status ?? 200
     const isError = status >= 400
+    if (status === 204) return new Response(null, { status })
     return new Response(JSON.stringify(result?.body ?? {}), {
       status,
       headers: { 'Content-Type': isError ? 'application/problem+json' : 'application/json' },

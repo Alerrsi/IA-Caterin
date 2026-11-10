@@ -55,6 +55,11 @@ export default function Login() {
           {busy ? t.login.submitting : t.login.submit}
         </Button>
       </form>
+      <p className="mt-6 text-center">
+        <a href="#/registro" className="inline-block min-h-12 py-3 text-lg font-semibold text-brand underline underline-offset-4">
+          {t.register.link}
+        </a>
+      </p>
     </main>
   )
 }

@@ -1,0 +1,174 @@
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { loadAllIngredients, type Ingredient } from '../api'
+import { StockAdjust, applyDelta } from '../components/StockAdjust'
+import { Alert, Button, Page, Spinner, inputClass } from '../components/ui'
+import { formatStock } from '../format'
+import { t } from '../i18n'
+import { useCached } from '../offline/cache'
+import { useQueue } from '../offline/queue'
+import { navigate } from '../router'
+
+export function plain(text: string): string {
+  return text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim()
+}
+
+/** "2026-11-09T14:32:00Z" -> "09-11-2026 11:32" en la hora local del teléfono. */
+export function savedAtLabel(iso: string): string {
+  const d = new Date(iso)
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${pad(d.getDate())}-${pad(d.getMonth() + 1)}-${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
+/** Ids de insumos con movimientos todavía en la cola. */
+export function usePendingIngredients(): Set<string> {
+  const { pending } = useQueue()
+  return useMemo(
+    () =>
+      new Set(
+        pending
+          .filter((op) => op.path === '/stock/movements')
+          .map((op) => (op.body as { ingredient_id?: string }).ingredient_id ?? ''),
+      ),
+    [pending],
+  )
+}
+
+/** Cuando la cola termina de enviar, vuelve a pedir el dato real al servidor. */
+export function useReloadWhenSynced(reload: () => void): void {
+  const { pending } = useQueue()
+  const prev = useRef(pending.length)
+  useEffect(() => {
+    const before = prev.current
+    prev.current = pending.length
+    if (before > 0 && pending.length === 0) {
+      const timer = window.setTimeout(reload, 0)
+      return () => window.clearTimeout(timer)
+    }
+  }, [pending.length, reload])
+}
+
+export default function Inventory() {
+  const { value, error, loading, setData, reload } = useCached<Ingredient[]>('ingredients', loadAllIngredients)
+  const [query, setQuery] = useState('')
+  const [onlyLow, setOnlyLow] = useState(false)
+  const [open, setOpen] = useState<{ id: string; sign: 1 | -1 } | null>(null)
+  const [notice, setNotice] = useState<{ kind: 'info' | 'warning'; text: string } | null>(null)
+  const pendingIds = usePendingIngredients()
+  useReloadWhenSynced(reload)
+
+  const items = useMemo(() => {
+    const q = plain(query)
+    return (value?.data ?? [])
+      .filter((i) => i.is_active && (!onlyLow || i.is_low) && (!q || plain(i.name).includes(q)))
+      .sort((a, b) => a.name.localeCompare(b.name, 'es'))
+  }, [value, query, onlyLow])
+
+  function applied(ing: Ingredient, deltaBase: number) {
+    const updated = applyDelta(ing, deltaBase)
+    setData((all) => all.map((i) => (i.id === ing.id ? applyDelta(i, deltaBase) : i)))
+    setOpen(null)
+    if (Number(updated.stock_qty) < 0) setNotice({ kind: 'warning', text: t.inventory.wentNegative })
+    else if (!navigator.onLine) setNotice({ kind: 'info', text: t.sync.savedLocally })
+    else setNotice(null)
+  }
+
+  return (
+    <Page title={t.inventory.title} onBack={() => navigate('/')}>
+      {value?.fromCache && (
+        <div className="mb-3">
+          <Alert kind="info">{t.sync.staleData(savedAtLabel(value.savedAt))}</Alert>
+        </div>
+      )}
+      {notice && (
+        <div className="mb-3">
+          <Alert kind={notice.kind}>{notice.text}</Alert>
+        </div>
+      )}
+      <label htmlFor="inventory-search" className="mb-1 block font-semibold text-stone-800">
+        {t.inventory.search}
+      </label>
+      <input
+        id="inventory-search"
+        type="search"
+        className={inputClass}
+        placeholder={t.inventory.searchPlaceholder}
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        autoComplete="off"
+      />
+      <label className="mt-3 flex min-h-12 items-center gap-3 text-lg">
+        <input
+          type="checkbox"
+          className="h-6 w-6 accent-orange-700"
+          checked={onlyLow}
+          onChange={(e) => setOnlyLow(e.target.checked)}
+        />
+        {t.inventory.onlyLow}
+      </label>
+
+      {error && !value ? (
+        <div className="mt-4">
+          <Alert>{error.code === 'offline_no_cache' ? t.sync.noCache : error.userMessage}</Alert>
+        </div>
+      ) : !value ? (
+        loading && <Spinner label={t.loading} />
+      ) : value.data.length === 0 ? (
+        <p className="mt-4">{t.inventory.noItems}</p>
+      ) : items.length === 0 ? (
+        <p className="mt-4">{t.inventory.empty}</p>
+      ) : (
+        <ul className="mt-4 space-y-3">
+          {items.map((ing) => (
+            <li key={ing.id} className="rounded-2xl bg-white p-4 shadow-sm">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => navigate(`/inventario/${ing.id}`)}
+                  className="min-h-12 min-w-0 flex-1 rounded-xl text-left focus-visible:ring-4 focus-visible:ring-orange-300"
+                >
+                  <span className="block text-lg font-bold text-stone-900">{ing.name}</span>
+                  <span className="block text-stone-800">{formatStock(ing.stock_qty, ing.base_unit)}</span>
+                  {ing.is_low && (
+                    <span className="mt-1 inline-block rounded-full bg-amber-100 px-2 py-0.5 text-sm font-semibold text-amber-950">
+                      {t.inventory.low}
+                      {ing.min_stock_qty && ` · ${t.inventory.min(formatStock(ing.min_stock_qty, ing.base_unit))}`}
+                    </span>
+                  )}
+                  {pendingIds.has(ing.id) && (
+                    <span className="mt-1 ml-1 inline-block rounded-full bg-stone-200 px-2 py-0.5 text-sm font-semibold text-stone-900">
+                      {t.inventory.pendingBadge}
+                    </span>
+                  )}
+                </button>
+                <Button
+                  variant="secondary"
+                  className="w-12 shrink-0 px-0 text-2xl"
+                  aria-label={t.inventory.remove(ing.name)}
+                  onClick={() => setOpen({ id: ing.id, sign: -1 })}
+                >
+                  −
+                </Button>
+                <Button
+                  className="w-12 shrink-0 px-0 text-2xl"
+                  aria-label={t.inventory.add(ing.name)}
+                  onClick={() => setOpen({ id: ing.id, sign: 1 })}
+                >
+                  +
+                </Button>
+              </div>
+              {open?.id === ing.id && (
+                <StockAdjust
+                  key={`${ing.id}${open.sign}`}
+                  ingredient={ing}
+                  sign={open.sign}
+                  onDone={(delta) => applied(ing, delta)}
+                  onCancel={() => setOpen(null)}
+                />
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </Page>
+  )
+}

@@ -39,6 +39,7 @@ Licencias de los modelos y dependencias principales. Revisado el 9-nov-2026. Las
 | Paquete | Licencia |
 |---------|----------|
 | React, React DOM, React Router, Vite, Tailwind CSS, vite-plugin-pwa, Workbox, Vitest, Testing Library, ESLint, typescript-eslint | MIT |
+| `@axe-core/playwright` y `axe-core` (solo pruebas de accesibilidad; no se distribuyen con la app) | MPL-2.0 |
 | TypeScript | Apache-2.0 |
 
 ## Datos de prueba de visión (no van a producción)

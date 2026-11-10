@@ -32,7 +32,7 @@ test('sin sesión muestra el login y al entrar muestra el inicio', async () => {
   await user.click(screen.getByRole('button', { name: 'Entrar' }))
   expect(await screen.findByText('Hola, Dueña')).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /Cotizar un pedido/ })).toBeEnabled()
-  expect(screen.getByRole('button', { name: /Contar con foto/ })).toBeDisabled()
+  expect(screen.getByRole('button', { name: /Contar con foto/ })).toBeEnabled()
 })
 
 test('lee un pedido, ofrece sugerencias, se edita y genera la cotización', async () => {
@@ -174,4 +174,21 @@ test('ante un 401 renueva la sesión una vez y reintenta', async () => {
   })
   expect(await screen.findByRole('button', { name: 'Ver PDF' })).toBeInTheDocument()
   expect(refreshes).toBe(2) // al abrir la app y tras el 401
+})
+
+test('sin señal abre con la última sesión conocida (sin tokens guardados)', async () => {
+  localStorage.setItem('caterin:last-session', JSON.stringify({ user: session.user, pyme: session.pyme }))
+  vi.spyOn(globalThis, 'fetch').mockRejectedValue(new TypeError('Failed to fetch'))
+  render(<App />)
+  expect(await screen.findByText('Hola, Dueña')).toBeInTheDocument()
+  expect(localStorage.getItem('caterin:last-session')).not.toContain('tok')
+  localStorage.removeItem('caterin:last-session')
+})
+
+test('con la sesión vencida (401) pide login aunque haya una sesión recordada', async () => {
+  localStorage.setItem('caterin:last-session', JSON.stringify({ user: session.user, pyme: session.pyme }))
+  mockApi({ 'POST /auth/refresh': () => ({ status: 401, body: { code: 'session_expired', title: 'Tu sesión venció' } }) })
+  render(<App />)
+  expect(await screen.findByLabelText('Correo')).toBeInTheDocument()
+  localStorage.removeItem('caterin:last-session')
 })

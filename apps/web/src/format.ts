@@ -74,3 +74,30 @@ export function parseMinutesSeconds(minutes: string, seconds: string): number | 
   const total = m * 60 + s
   return total > 0 ? Math.round(total * 10) / 10 : null
 }
+
+export type BaseUnit = 'g' | 'ml' | 'unit'
+
+/** Stock en la unidad más legible: 18000 g -> "18 kg", 750 ml -> "750 ml", 12 unit -> "12 unid." */
+export function formatStock(qty: string | number, base: BaseUnit): string {
+  const n = Number(qty)
+  if (base === 'g' && Math.abs(n) >= 1000) return `${formatQty((n / 1000).toFixed(3))} kg`
+  if (base === 'ml' && Math.abs(n) >= 1000) return `${formatQty((n / 1000).toFixed(3))} L`
+  if (base === 'unit') return `${formatQty(n.toFixed(3))} unid.`
+  return `${formatQty(n.toFixed(3))} ${base}`
+}
+
+/** Unidades que puede elegir la usuaria al ajustar, con su factor a la unidad base (las mismas que la API). */
+export const ADJUST_UNITS: Record<BaseUnit, { value: string; label: string; factor: number }[]> = {
+  g: [
+    { value: 'kg', label: 'kg', factor: 1000 },
+    { value: 'g', label: 'g', factor: 1 },
+  ],
+  ml: [
+    { value: 'l', label: 'litros', factor: 1000 },
+    { value: 'ml', label: 'ml', factor: 1 },
+  ],
+  unit: [
+    { value: 'unidad', label: 'unidades', factor: 1 },
+    { value: 'docena', label: 'docenas', factor: 12 },
+  ],
+}

@@ -1,5 +1,6 @@
 import { useEffect, useState, type ButtonHTMLAttributes, type ReactNode } from 'react'
 import { t } from '../i18n'
+import { dismissFailed, useQueue } from '../offline/queue'
 
 type Variant = 'primary' | 'secondary' | 'ghost'
 
@@ -79,7 +80,7 @@ export function Spinner({ label }: { label: string }) {
   )
 }
 
-export function OfflineBanner() {
+export function useOnline(): boolean {
   const [online, setOnline] = useState(() => navigator.onLine)
   useEffect(() => {
     const on = () => setOnline(true)
@@ -91,10 +92,46 @@ export function OfflineBanner() {
       window.removeEventListener('offline', off)
     }
   }, [])
-  if (online) return null
+  return online
+}
+
+/** Estado de la red y de la cola de cambios (ADR-004): siempre visible si hay algo que contar. */
+export function OfflineBanner() {
+  const online = useOnline()
+  const { pending, failed } = useQueue()
   return (
-    <div role="status" className="bg-stone-900 px-4 py-2 text-center text-white">
-      {t.offline}
-    </div>
+    <>
+      {(!online || pending.length > 0) && (
+        <div role="status" className="bg-stone-900 px-4 py-2 text-center text-white">
+          {!online && <span className="block">{t.offline}</span>}
+          {pending.length > 0 && (
+            <span className="block font-semibold">
+              {online ? t.sync.sending(pending.length) : t.sync.pending(pending.length)}
+            </span>
+          )}
+        </div>
+      )}
+      {failed.length > 0 && (
+        <div role="alert" className="border-b-4 border-red-700 bg-red-50 px-4 py-3 text-red-900">
+          <p className="font-semibold">{t.sync.failed(failed.length)}</p>
+          <ul className="mt-1 space-y-2">
+            {failed.map((op) => (
+              <li key={op.id} className="flex items-center justify-between gap-2">
+                <span>
+                  {op.label}: {op.error}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => void dismissFailed(op.id)}
+                  className="min-h-12 shrink-0 rounded-xl px-3 font-semibold underline focus-visible:ring-4 focus-visible:ring-red-300"
+                >
+                  {t.sync.dismiss}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </>
   )
 }
