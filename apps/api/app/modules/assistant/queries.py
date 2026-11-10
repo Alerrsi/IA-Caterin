@@ -64,7 +64,7 @@ def _resolve(
 
 def get_stock(db: Session, text: str, today: date) -> QueryResult:
     choices = {i.id: i.name for i in db.scalars(select(Ingredient).where(Ingredient.is_active))}
-    found, ask = _resolve("ingredient", text, choices, lambda n: f"¿Cuánto {n} me queda?", "insumo")
+    found, ask = _resolve("ingredient", text, choices, lambda n: f"¿Cuánto me queda de {n}?", "insumo")
     if found is None:
         return ask  # type: ignore[return-value]
     ing = db.get(Ingredient, found)

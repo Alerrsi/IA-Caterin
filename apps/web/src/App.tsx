@@ -1,6 +1,7 @@
 import { AuthProvider, useAuth } from './auth'
 import { OfflineBanner, Spinner } from './components/ui'
 import { t } from './i18n'
+import Assistant from './pages/Assistant'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Metrics from './pages/Metrics'
@@ -27,6 +28,7 @@ function Routes() {
   if (matchPath('/cotizar', path)) return <NewQuote />
   if (matchPath('/pedidos', path)) return <Orders />
   if (matchPath('/metricas', path)) return <Metrics />
+  if (matchPath('/preguntar', path)) return <Assistant />
   return <Home />
 }
 

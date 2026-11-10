@@ -279,3 +279,89 @@ export function sendQuoteTiming(body: {
 }): void {
   post('/metrics/quote-timing', body).catch(() => undefined)
 }
+
+// --------------------------------------------------------------------------- asistente (T07)
+
+export interface AskSource {
+  kind: string
+  label: string
+}
+
+export interface AskOption {
+  label: string
+  question: string
+}
+
+export interface AskOut {
+  interaction_id: string | null
+  answer: string
+  level: number
+  intent: string | null
+  status: 'ok' | 'no_data' | 'ambiguous' | 'missing_entity' | 'unrecognized'
+  sources: AskSource[]
+  options: AskOption[]
+  fallback_reason: string | null
+  cache_hit: boolean
+  latency_ms: number
+}
+
+export interface QuickAction {
+  id: string
+  label: string
+  question: string
+}
+
+export type AskEvent =
+  | { event: 'meta'; data: { sources: AskSource[]; options: AskOption[]; drafting: boolean } }
+  | { event: 'delta'; data: { text: string } }
+  | { event: 'replace'; data: { text: string; fallback_reason: string } }
+  | { event: 'done'; data: AskOut }
+
+function parseSseBlock(block: string): AskEvent | null {
+  let event = ''
+  let data = ''
+  for (const line of block.split('\n')) {
+    if (line.startsWith('event: ')) event = line.slice(7)
+    else if (line.startsWith('data: ')) data += line.slice(6)
+  }
+  if (!event || !data) return null
+  return { event, data: JSON.parse(data) } as AskEvent
+}
+
+/** Pregunta al asistente con *streaming* (SSE). Si el servidor responde JSON, entrega un solo `done`. */
+export async function askAssistant(
+  body: { question: string; quick_action?: string },
+  onEvent: (e: AskEvent) => void,
+): Promise<AskOut> {
+  const resp = await raw('/assistant/ask', {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: { Accept: 'text/event-stream' },
+  })
+  if (!(resp.headers.get('Content-Type') ?? '').startsWith('text/event-stream') || !resp.body) {
+    const out = (await resp.json()) as AskOut
+    onEvent({ event: 'done', data: out })
+    return out
+  }
+  const reader = resp.body.getReader()
+  const decoder = new TextDecoder()
+  let buffer = ''
+  let done: AskOut | null = null
+  for (;;) {
+    const { value, done: finished } = await reader.read()
+    buffer += decoder.decode(value, { stream: !finished })
+    let cut = buffer.indexOf('\n\n')
+    while (cut >= 0) {
+      const ev = parseSseBlock(buffer.slice(0, cut))
+      buffer = buffer.slice(cut + 2)
+      if (ev) {
+        if (ev.event === 'done') done = ev.data
+        onEvent(ev)
+      }
+      cut = buffer.indexOf('\n\n')
+    }
+    if (finished) break
+  }
+  if (!done) throw new ApiError(0, 'stream_incomplete', t.assistant.cutOff)
+  return done
+}

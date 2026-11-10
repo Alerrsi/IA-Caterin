@@ -120,6 +120,15 @@ def test_ambiguous_item_asks_instead_of_guessing(client: TestClient, demo: dict)
     assert "kg" not in out["answer"]  # no inventó un dato
 
 
+def test_every_clarifying_option_resolves(client: TestClient, demo: dict) -> None:  # type: ignore[type-arg]
+    """Tocar una opción de aclaración nunca vuelve a preguntar lo mismo (lo encontró la prueba e2e)."""
+    out = ask(client, demo["owner"], "¿Cuánta crema me queda?")
+    assert out["status"] == "ambiguous" and out["options"]
+    for opt in out["options"]:
+        again = ask(client, demo["owner"], opt["question"])
+        assert again["status"] == "ok" and opt["label"] in again["answer"], (opt, again["answer"])
+
+
 def test_unknown_item_says_it_does_not_have_it(client: TestClient, demo: dict) -> None:  # type: ignore[type-arg]
     out = ask(client, demo["owner"], "¿Cuánto caviar me queda?")
     assert out["status"] in ("missing_entity", "ambiguous") and "caviar" not in out["sources"].__str__()
