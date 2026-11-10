@@ -1,0 +1,13 @@
+archivo;empanadas;canapes;brochetas;total;descripcion
+01_empanadas_pocas.jpg;8;0;0;8;Solo empanadas, pocas y grandes, luz normal
+02_empanadas_muchas.jpg;13;0;0;13;Solo empanadas, muchas y chicas
+03_canapes.jpg;0;13;0;13;Solo canapés
+04_brochetas.jpg;0;0;7;7;Solo brochetas
+05_mixta.jpg;3;3;4;10;Los tres productos, luz normal
+06_mixta_luz_calida.jpg;6;6;2;14;Los tres productos, luz cálida de cocina
+07_mixta_oscura.jpg;3;3;2;8;Los tres productos, poca luz (de noche)
+08_mixta_luz_fria.jpg;3;2;3;8;Los tres productos, luz fría y brillante
+09_empanadas_canapes.jpg;8;3;0;11;Empanadas y canapés
+10_canapes_brochetas.jpg;0;8;5;13;Canapés y brochetas
+11_mixta_chica.jpg;6;5;2;13;Los tres productos, chicos (bandeja lejos)
+12_mixta_grande.jpg;5;3;1;9;Los tres productos, grandes (bandeja cerca)
