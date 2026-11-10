@@ -4,7 +4,7 @@ import io
 import json
 import os
 from collections.abc import Iterator
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, date, datetime, timedelta
 
 import httpx
 import pytest
@@ -72,6 +72,17 @@ def test_extract_resolves_recipes_units_and_dates(client: TestClient, demo: dict
     assert body["extraction"]["prompt_version"] == "extract-v1"
     assert "<pedido>" in fake_llm.calls[0]  # el texto va delimitado como dato
     assert client.get(f"{API}/orders", headers=demo["owner"]).json()  # extraer no creó pedidos nuevos
+
+
+def test_extract_ignores_date_not_in_message(client: TestClient, demo: dict, fake_llm: FakeProvider) -> None:  # type: ignore[type-arg]
+    """El LLM copió "sábado 22" del ejemplo del prompt: el código lo descarta y usa la fecha del mensaje."""
+    fake_llm.responses.append(_llm_json([{"name": "sopaipillas", "quantity": 30, "unit": "unidad"}], when="sábado 22"))
+    text = "Hola, para el sábado somos 40 personas, necesito 30 sopaipillas"
+    body = client.post(f"{API}/orders/extract", headers=demo["owner"], json={"text": text}).json()
+    assert body["event_date_text"] == "el sabado"
+    assert date.fromisoformat(body["event_date"]).weekday() == 5
+    assert body["extraction"]["date_source"] == "code"
+    assert body["extraction"]["date_discarded"] == "sábado 22"
 
 
 def test_extract_flags_quantities_not_in_text(client: TestClient, demo: dict, fake_llm: FakeProvider) -> None:  # type: ignore[type-arg]

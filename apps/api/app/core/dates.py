@@ -82,3 +82,41 @@ def parse_event_date(text: str | None, today: date) -> date | None:
     if day_num and re.search(r"\b(el|dia)\s+\d{1,2}\b", t):
         return _next_month_day(today, int(day_num[1]))
     return None
+
+
+_WD = "|".join(WEEKDAYS)
+_MO = "|".join(MONTHS)
+# Expresiones de fecha que parse_event_date entiende, en el mismo orden de prioridad.
+_DATE_TEXT = [
+    re.compile(r"\b\d{4}-\d{1,2}-\d{1,2}\b"),
+    re.compile(r"\b\d{1,2}[/-]\d{1,2}(?:[/-]\d{2,4})?\b(?!\s*(?:kg|kilos?|k|g|gr|grs|litros?|lt|l|docenas?)\b)"),
+    re.compile(rf"\b(?:(?:{_WD})\s+)?\d{{1,2}}\s+de\s+(?:{_MO})\b"),
+    re.compile(rf"\b(?:(?:el|este|esta|proximo|otro)\s+)?(?:{_WD})(?:\s+\d{{1,2}})?\b"),
+    re.compile(r"\bpasado manana\b"),
+    re.compile(r"\b(?:para|desde|el|hasta)\s+manana\b"),
+    re.compile(r"\b(?:para|desde)\s+hoy\b"),
+    re.compile(r"\b(?:el|dia)\s+\d{1,2}\b(?!\s*(?:docenas?|unidades?|kg|kilos?|personas?|invitados?)\b)"),
+]
+
+
+def find_date_text(text: str | None) -> str | None:
+    """La expresión de fecha del mensaje, buscada por código (sin tildes y en minúsculas), o None.
+
+    Sirve para no depender de que el LLM copie bien la fecha: si su texto no está en el mensaje, se usa este.
+    """
+    if not text:
+        return None
+    t = _norm(text)
+    for rx in _DATE_TEXT:
+        if m := rx.search(t):
+            return m[0]
+    return None
+
+
+def appears_in(fragment: str, text: str) -> bool:
+    """Si `fragment` está en `text`, sin contar tildes, mayúsculas ni espacios repetidos."""
+
+    def squash(s: str) -> str:
+        return re.sub(r"\s+", " ", _norm(s)).strip()
+
+    return bool(squash(fragment)) and squash(fragment) in squash(text)

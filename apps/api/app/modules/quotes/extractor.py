@@ -16,7 +16,7 @@ from typing import Any
 
 from pydantic import ValidationError
 
-from app.core.dates import parse_event_date
+from app.core.dates import appears_in, find_date_text, parse_event_date
 from app.core.errors import ProblemError
 from app.core.llm import LLMProvider, LLMUnavailableError, parse_json_object
 from app.core.matching import match_name
@@ -163,11 +163,22 @@ def extract_order(llm: LLMProvider, text: str, recipes: dict[uuid.UUID, str], to
                 warning=warning,
             )
         )
+    # La fecha del LLM vale solo si está en el mensaje (llegó a copiar "sábado 22" del ejemplo del prompt).
+    # Si no, la busca el código. En ambos casos la resuelve parse_event_date, nunca el LLM.
+    llm_when = order.event_date_text
+    when: str | None
+    if llm_when and appears_in(llm_when, text):
+        when, meta["date_source"] = llm_when, "llm"
+    else:
+        when = find_date_text(text)
+        meta["date_source"] = "code" if when else None
+        if llm_when:
+            meta["date_discarded"] = llm_when
     meta["total_ms"] = int((time.perf_counter() - started) * 1000)
     return ExtractionOut(
         guests=order.guests,
-        event_date=parse_event_date(order.event_date_text, today),
-        event_date_text=order.event_date_text,
+        event_date=parse_event_date(when, today),
+        event_date_text=when,
         lines=lines,
         needs_review=any(line.recipe_id is None or line.warning for line in lines),
         extraction=meta,

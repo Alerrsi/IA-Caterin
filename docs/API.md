@@ -101,7 +101,7 @@ Todas las respuestas de error usan `application/problem+json`:
 ### quotes (T05)
 | Método | Ruta | Rol | Descripción |
 |--------|------|-----|-------------|
-| POST | `/orders/extract` | ambas | `{"text": "..."}` → pedido interpretado como tabla editable (productos con receta sugerida, cantidad, unidad, invitados, fecha). **No guarda nada.** Un reintento si el JSON del LLM no valida; si vuelve a fallar → 422 `extraction_failed`; sin LLM → 503 `llm_unavailable`. En ambos casos la interfaz ofrece el formulario |
+| POST | `/orders/extract` | ambas | `{"text": "..."}` → pedido interpretado como tabla editable (productos con receta sugerida, cantidad, unidad, invitados, fecha). **No guarda nada.** La fecha del LLM se usa solo si aparece en el mensaje; si no, el código la busca en el texto (`extraction.date_source` = `llm` \| `code`, y `date_discarded` con lo descartado). Un reintento si el JSON del LLM no valida; si vuelve a fallar → 422 `extraction_failed`; sin LLM → 503 `llm_unavailable`. En ambos casos la interfaz ofrece el formulario |
 | GET | `/orders?status=&upcoming_days=` | ambas | Pedidos, por fecha de evento |
 | POST | `/orders` | ambas | Crear pedido (desde el formulario o desde lo extraído y confirmado). Cada línea exige `recipe_id` |
 | GET/PATCH | `/orders/{id}` | ambas | Ver y editar (las líneas se reemplazan completas) |

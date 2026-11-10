@@ -61,6 +61,7 @@ Que la emprendedora pegue el mensaje de su cliente ("necesito 80 empanadas y 60 
 - Prueba manual: pedido real por texto → 80 empanadas de pino + 4 docenas de brochetas → total $155.552 → PDF revisado a la vista (cuadra).
 
 **Pendiente / riesgos:**
+- **Corregido (10-nov, T10):** el LLM copiaba la fecha del ejemplo del prompt ("sábado 22") cuando el mensaje decía "el sábado". Ahora su fecha solo vale si está en el mensaje; si no, el código la busca en el texto (`core/dates.find_date_text`) y la resuelve `parse_event_date`.
 - La extracción tarda 14–22 s en CPU: en la pantalla hay que mostrar que está trabajando, y T10 debe probar `qwen3:4b-instruct` y Gemma 4 E4B.
 - Reglas de redondeo, margen, IVA en los costos y "más barato" como criterio: validar con una emprendedora real.
 - Pedidos en porciones ("para 50 personas") no se calculan: se pide la cantidad.

@@ -8,7 +8,7 @@ import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
-from app.core.dates import parse_event_date
+from app.core.dates import find_date_text, parse_event_date
 from app.core.matching import match_name
 from app.db.enums import BaseUnit, OrderUnit
 from app.modules.quotes.calculator import (
@@ -216,3 +216,21 @@ def test_numbers_in_text_guard() -> None:
     found = numbers_in_text("Necesito 200 brochetas, dos docenas de empanadas, 2,5 kilos y media docena. Total 1.000")
     assert {Decimal(200), Decimal(2), Decimal("2.5"), Decimal("0.5"), Decimal(1000)} <= found
     assert Decimal(201) not in found
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("Hola, para el sábado somos 40 personas, necesito 5 docenas de empanadas", date(2026, 11, 14)),
+        ("80 empanadas para mañana en la mañana", date(2026, 11, 10)),
+        ("el 22 de noviembre, 30 personas", date(2026, 11, 22)),
+        ("evento el 21/11 a las 19 hrs", date(2026, 11, 21)),
+        ("para el 5, 3 docenas de sopaipillas", date(2026, 12, 5)),
+        ("1/2 kg de queso y 3 docenas de empanadas", None),  # medio kilo, no el 1 de febrero
+        ("necesito el 5 docenas", None),
+        ("quiero 3 docenas de sopaipillas", None),
+    ],
+)
+def test_find_date_text_in_message(text: str, expected: date | None) -> None:
+    """La fecha la encuentra el código en el mensaje, sin depender de que el LLM la copie bien."""
+    assert parse_event_date(find_date_text(text), TODAY) == expected
