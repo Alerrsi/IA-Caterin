@@ -85,6 +85,28 @@ def test_extract_ignores_date_not_in_message(client: TestClient, demo: dict, fak
     assert body["extraction"]["date_discarded"] == "sábado 22"
 
 
+def test_extract_ignores_unit_not_in_message(client: TestClient, demo: dict, fake_llm: FakeProvider) -> None:  # type: ignore[type-arg]
+    """ "2 kuchen" no son 2 kg aunque el LLM lo diga: la unidad debe estar en el mensaje."""
+    fake_llm.responses.append(
+        _llm_json(
+            [
+                {"name": "pie de limón", "quantity": 2, "unit": "kg"},
+                {"name": "sopaipillas", "quantity": 3, "unit": "docena"},
+            ]
+        )
+    )
+    text = "Necesito 2 pie de limón y 3 docenas de sopaipillas"
+    lines = client.post(f"{API}/orders/extract", headers=demo["owner"], json={"text": text}).json()["lines"]
+    assert lines[0]["unit"] == "unit" and "Revisa la unidad" in lines[0]["warning"]
+    assert lines[1]["unit"] == "dozen" and lines[1]["warning"] is None
+
+
+def test_validation_error_says_the_limit(client: TestClient, demo: dict) -> None:  # type: ignore[type-arg]
+    body = {"customer_name": "x" * 121, "lines": [{"recipe_id": demo["recipes"]["Sopaipillas"], "qty": "1"}]}
+    err = client.post(f"{API}/orders", headers=demo["owner"], json=body).json()["errors"][0]
+    assert err == {"field": "customer_name", "message": "El texto es demasiado largo (máximo 120 caracteres)"}
+
+
 def test_extract_flags_quantities_not_in_text(client: TestClient, demo: dict, fake_llm: FakeProvider) -> None:  # type: ignore[type-arg]
     fake_llm.responses.append(_llm_json([{"name": "brochetas de pollo", "quantity": 201, "unit": "unidad"}]))
     body = client.post(f"{API}/orders/extract", headers=demo["owner"], json={"text": "200 brochetas de pollo"}).json()

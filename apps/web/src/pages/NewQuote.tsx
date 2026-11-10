@@ -227,7 +227,13 @@ export default function NewQuote({ portal = false }: { portal?: boolean }) {
       <div className="space-y-4">
         {!portal && (
           <Field label={t.quote.customer}>
-            <input className={inputClass} value={customer} onChange={(e) => setCustomer(e.target.value)} autoComplete="off" />
+            <input
+              className={inputClass}
+              value={customer}
+              onChange={(e) => setCustomer(e.target.value)}
+              autoComplete="off"
+              maxLength={120}
+            />
           </Field>
         )}
         <div className="grid grid-cols-2 gap-3">

@@ -31,8 +31,8 @@ _DEFAULT_TITLES: dict[int, tuple[str, str]] = {
 
 _VALIDATION_MESSAGES: dict[str, str] = {
     "missing": "Este campo es obligatorio",
-    "string_too_short": "El texto es demasiado corto",
-    "string_too_long": "El texto es demasiado largo",
+    "string_too_short": "El texto es demasiado corto (mínimo {min_length} caracteres)",
+    "string_too_long": "El texto es demasiado largo (máximo {max_length} caracteres)",
     "greater_than": "Debe ser mayor que {gt}",
     "greater_than_equal": "Debe ser mayor o igual que {ge}",
     "less_than_equal": "Debe ser menor o igual que {le}",

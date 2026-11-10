@@ -22,7 +22,10 @@ export class ApiError extends Error {
   /** Mensaje para mostrar a la usuaria. */
   get userMessage(): string {
     if (this.errors && this.errors.length > 0) {
-      return `${this.title}: ${this.errors.map((e) => e.message).join(', ')}`
+      // "customer_name" -> "Nombre del cliente: El texto es demasiado largo (máximo 120 caracteres)"
+      const label = (field: string) => t.fields[field.split('.').find((p) => t.fields[p]) ?? ''] ?? null
+      const parts = this.errors.map((e) => (label(e.field) ? `${label(e.field)}: ${e.message}` : e.message))
+      return `${this.title}. ${parts.join('; ')}`
     }
     return this.detail ? `${this.title}. ${this.detail}` : this.title
   }

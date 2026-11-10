@@ -50,6 +50,25 @@ _UNIT_MAP: dict[tuple[BaseUnit, Decimal], OrderUnit] = {
 }
 
 
+# Palabras que deben aparecer en el mensaje para aceptar la unidad que propone el LLM (sin tildes, minúsculas).
+_UNIT_WORDS: dict[OrderUnit, re.Pattern[str]] = {
+    OrderUnit.DOZEN: re.compile(r"\bdocenas?\b|\bdoc\b"),
+    OrderUnit.KILOGRAM: re.compile(r"\d\s*kg\b|\bkgs?\b|\bkilos?\b|\bkilogramos?\b"),
+    OrderUnit.GRAM: re.compile(r"\d\s*g\b|\bgr?s?\b|\bgramos?\b"),
+    OrderUnit.LITER: re.compile(r"\d\s*l\b|\blts?\b|\blitros?\b"),
+    OrderUnit.MILLILITER: re.compile(r"\d\s*ml\b|\bml\b|\bcc\b|\bmililitros?\b"),
+}
+
+
+def unit_in_text(unit: OrderUnit, text: str) -> bool:
+    """Si el mensaje menciona la unidad (la unidad simple y las porciones no se exigen)."""
+    rx = _UNIT_WORDS.get(unit)
+    if rx is None:
+        return True
+    plain = unicodedata.normalize("NFD", text.lower()).encode("ascii", "ignore").decode()
+    return rx.search(plain) is not None
+
+
 def normalize_order_unit(raw: str | None) -> tuple[OrderUnit, str | None]:
     """Unidad del LLM -> OrderUnit. Devuelve también un aviso si hubo que suponer."""
     if raw is None or not raw.strip():
@@ -139,6 +158,10 @@ def extract_order(llm: LLMProvider, text: str, recipes: dict[uuid.UUID, str], to
     in_text = numbers_in_text(text)
     for item in order.items:
         unit, warning = normalize_order_unit(item.unit)
+        if not unit_in_text(unit, text):
+            # Barrera determinista, como con las cifras: "2 kuchen" no son 2 kg aunque el LLM lo diga.
+            warning = f"Revisa la unidad: no encontré «{item.unit}» en el mensaje"
+            unit = OrderUnit.UNIT
         qty = Decimal(str(item.quantity)).quantize(Decimal("0.001"))
         if qty == qty.to_integral_value():
             qty = qty.quantize(Decimal(1))
