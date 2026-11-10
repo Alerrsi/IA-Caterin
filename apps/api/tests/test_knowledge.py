@@ -190,7 +190,8 @@ def test_open_question_with_llm_gets_the_cards_as_data(
     client: TestClient, demo: dict, monkeypatch: pytest.MonkeyPatch, text_only: None
 ) -> None:  # type: ignore[type-arg]
     fake = FakeProvider()
-    fake.responses.append("La crema de leche te la vende Distribuidora Ñielol (demo).")
+    reply = "La crema de leche te la vende Distribuidora Ñielol (demo)."
+    fake.responses.append(reply)
     client.app.dependency_overrides[get_llm] = lambda: fake  # type: ignore[attr-defined]
     on = get_settings().model_copy(update={"assistant_use_llm": True})
     monkeypatch.setattr(assistant, "get_settings", lambda: on)
@@ -198,7 +199,9 @@ def test_open_question_with_llm_gets_the_cards_as_data(
         out = ask(client, demo["owner"], "¿quién me vende la crema de leche?")
     finally:
         client.app.dependency_overrides.pop(get_llm, None)  # type: ignore[attr-defined]
-    assert out["level"] == 2 and out["answer"].startswith("La crema de leche") and out["fallback_reason"] is None
+    # Sin vectores la confianza es baja: el texto del LLM llega con el aviso delante (no lo escribe el LLM).
+    assert out["level"] == 2 and out["fallback_reason"] is None
+    assert out["answer"] == "No estoy seguro de que esto responda tu pregunta. " + reply
     prompt = fake.calls[-1]
     assert 'fuente="tu' in prompt and "Crema de leche" in prompt  # fichas como datos, delimitadas y citadas
     assert any(s["kind"] == "knowledge" for s in out["sources"])
@@ -216,3 +219,22 @@ def test_unexpected_words_do_not_break_lists_but_required_filters_do(client: Tes
     assert not nueces["answer"].startswith("Tienes ")
     # "verdulería" no es la categoría "Verduras" (antes la raíz "verdu" las confundía).
     assert not ask(client, demo["owner"], "dame el rut de la verdulería")["answer"].startswith("Tienes ")
+
+
+def test_low_confidence_notice_is_not_repeated_when_the_llm_did_not_find_it(
+    client: TestClient, demo: dict, monkeypatch: pytest.MonkeyPatch, text_only: None
+) -> None:  # type: ignore[type-arg]
+    fake = FakeProvider()
+    fake.responses.append("No lo encontré en tus datos.")
+    # En Ollama llega en trozos ("No lo ", "encontré "…): la decisión sobre el aviso no puede mirar solo el primero.
+    monkeypatch.setattr(
+        fake, "chat_stream", lambda *a, **k: iter(["No lo ", "encontr", "é ", "en ", "tus ", "datos."]), raising=False
+    )
+    client.app.dependency_overrides[get_llm] = lambda: fake  # type: ignore[attr-defined]
+    on = get_settings().model_copy(update={"assistant_use_llm": True})
+    monkeypatch.setattr(assistant, "get_settings", lambda: on)
+    try:
+        out = ask(client, demo["owner"], "¿quién me vende la crema de leche?")
+    finally:
+        client.app.dependency_overrides.pop(get_llm, None)  # type: ignore[attr-defined]
+    assert out["answer"] == "No lo encontré en tus datos."

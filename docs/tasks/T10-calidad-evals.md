@@ -80,11 +80,13 @@ Resultado con `eval_business.py`:
 - **Corrección de las listas** (filtros obligatorios y opcionales, y categoría por palabra): 15/15 en el primer reservado, ya gastado, y **9/9** en un reservado nuevo escrito antes de corregir.
 - Con LLM: ver `ml/evals/REPORT.md`, sección 1b; no se repitió después de la corrección.
 
+- **LLM del nivel 2:** dejó de repetir la pregunta y de inventar. Tiene prompt nuevo, verificación de eco y de nombres, y aviso con confianza baja (`ml/evals/REPORT.md`, sección 1c): 11/11 en la verificación corta con el LLM real. Para el MVP basta con ~80 %.
+
 Estado local al subir:
 - en el `.env` de desarrollo de quien subió el cambio está `ASSISTANT_USE_LLM=true`; el valor por defecto sigue en `false`;
 - la pyme de demo de esa base tiene cargados los 9 documentos sintéticos de `ml/evals/rag/docs`.
 
-Verificado antes de subir (10-nov): `ruff`, `mypy app` y `pytest -m "not llm"` (238 pasan, 1 `xfail`; cobertura 96 %); `alembic upgrade head`, `downgrade -1` y `upgrade head` sin errores.
+Verificado antes de subir (10-nov): `ruff`, `mypy app` y `pytest -m "not llm"` (244 pasan, 1 `xfail`; cobertura 96 %); `alembic upgrade head`, `downgrade -1` y `upgrade head` sin errores.
 
 ## Resumen de cierre
 (se completa al terminar)

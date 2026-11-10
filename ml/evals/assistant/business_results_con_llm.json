@@ -1,5 +1,5 @@
 {
-  "measured_at": "2026-11-10 06:37",
+  "measured_at": "2026-11-10 07:35",
   "api": "http://127.0.0.1:8000/api/v1",
   "questions_file": "business_questions.yaml",
   "note": "Pyme de demo SINTÉTICA; preguntas escritas antes de implementar (business_questions.yaml).",
@@ -7,16 +7,16 @@
     "with_answer": 18,
     "with_answer_ok": 17,
     "no_data": 4,
-    "no_data_ok": 4,
-    "confident_wrong": 1,
+    "no_data_ok": 3,
+    "confident_wrong": 2,
     "by_level": {
       "0": 11,
       "2": 11
     },
-    "llm_fallbacks": 2,
+    "llm_fallbacks": 1,
     "client_ms": {
-      "p50": 248,
-      "max": 65435
+      "p50": 157,
+      "max": 40407
     }
   },
   "cases": [
@@ -37,7 +37,7 @@
       "sources": [
         "tu inventario"
       ],
-      "client_ms": 36
+      "client_ms": 27
     },
     {
       "q": "¿qué insumos tengo?",
@@ -56,7 +56,7 @@
       "sources": [
         "tu inventario"
       ],
-      "client_ms": 37
+      "client_ms": 32
     },
     {
       "q": "muéstrame todas mis recetas",
@@ -75,7 +75,7 @@
       "sources": [
         "tus recetas"
       ],
-      "client_ms": 21
+      "client_ms": 43
     },
     {
       "q": "¿cuántos proveedores tengo?",
@@ -112,7 +112,7 @@
       "sources": [
         "tu inventario"
       ],
-      "client_ms": 42
+      "client_ms": 33
     },
     {
       "q": "¿qué recetas llevan huevo?",
@@ -130,7 +130,7 @@
       "sources": [
         "tus recetas"
       ],
-      "client_ms": 23
+      "client_ms": 18
     },
     {
       "q": "que verduras hay en bodega",
@@ -149,7 +149,7 @@
       "sources": [
         "tu inventario"
       ],
-      "client_ms": 33
+      "client_ms": 34
     },
     {
       "q": "lista de carnes",
@@ -168,7 +168,7 @@
       "sources": [
         "tu inventario"
       ],
-      "client_ms": 33
+      "client_ms": 25
     },
     {
       "q": "dame el listado de especias",
@@ -186,7 +186,7 @@
       "sources": [
         "tu inventario"
       ],
-      "client_ms": 28
+      "client_ms": 25
     },
     {
       "q": "¿qué desechables tengo?",
@@ -204,7 +204,7 @@
       "sources": [
         "tu inventario"
       ],
-      "client_ms": 34
+      "client_ms": 25
     },
     {
       "q": "¿quién me vende la crema de leche?",
@@ -218,14 +218,14 @@
       "intent": null,
       "status": "ok",
       "fallback_reason": null,
-      "answer": "Distribuidora Ñielol (demo) vende crema de leche en caja 1 L a $3.990 (precio del 02/11/2026).",
+      "answer": "La crema de leche te la vende Distribuidora Ñielol (demo).",
       "sources": [
         "tu inventario: Crema de leche",
         "tus proveedores: Distribuidora Ñielol (demo)",
         "lista-precios-lacteos-sur.csv, filas 2-7",
         "tu inventario: Queso crema"
       ],
-      "client_ms": 45806
+      "client_ms": 26916
     },
     {
       "q": "¿de qué categoría es el comino?",
@@ -239,14 +239,14 @@
       "intent": null,
       "status": "ok",
       "fallback_reason": null,
-      "answer": "Especias",
+      "answer": "El comino es de la categoría Especias.",
       "sources": [
         "tu inventario: Comino",
         "tus recetas: Empanadas de pino",
         "tu inventario: Jamón",
         "tu inventario: Salmón ahumado"
       ],
-      "client_ms": 28866
+      "client_ms": 17060
     },
     {
       "q": "con qué se hacen las brochetas de pollo",
@@ -260,13 +260,13 @@
       "intent": null,
       "status": "ok",
       "fallback_reason": null,
-      "answer": "Las brochetas de pollo se hacen con pechuga de pollo, pimentón rojo, champiñón, palito de brocheta, aceite vegetal y sal. La marinada lleva soya y sésamo.",
+      "answer": "Con pechuga de pollo, pimentón rojo, champiñón, palito de brocheta, aceite vegetal y sal se hacen las brochetas de pollo.",
       "sources": [
         "tus recetas: Brochetas de pollo",
         "ficha-alergenos.md",
         "tus pedidos: Cliente demo F (prueba) (14/11/2026)"
       ],
-      "client_ms": 34853
+      "client_ms": 17720
     },
     {
       "q": "qué ingredientes usan las empanadas de queso",
@@ -279,15 +279,15 @@
       "level": 2,
       "intent": null,
       "status": "ok",
-      "fallback_reason": null,
-      "answer": "Los ingredientes que usan las empanadas de queso son: 600 g de Harina sin polvos, 100 g de Manteca, 600 g de Queso mantecoso, 8 g de Sal y 800 ml de Aceite vegetal.",
+      "fallback_reason": "llm_no_answer",
+      "answer": "Según tus recetas: Empanadas de queso: «Receta: Empanadas de queso. Rinde 12 unidades. Ingredientes: 600 g de Harina sin polvos; 100 g de Manteca; 600 g de Queso mantecoso; 8 g de Sal; 800 ml de Aceite vegetal. Producto final.»",
       "sources": [
         "tus recetas: Empanadas de queso",
         "ficha-alergenos.md",
         "tus recetas: Empanadas de pino",
         "preguntas-frecuentes-clientes.txt"
       ],
-      "client_ms": 45303
+      "client_ms": 18015
     },
     {
       "q": "en qué presentación viene la masa de hojaldre",
@@ -301,14 +301,14 @@
       "intent": null,
       "status": "ok",
       "fallback_reason": null,
-      "answer": "La masa de hojaldre viene en paquete de 1 kg. (precio: $4.590).",
+      "answer": "La masa de hojaldre viene en paquete de 1 kg.",
       "sources": [
         "tu inventario: Masa de hojaldre",
         "tus recetas: Mini quiches",
         "tus proveedores: Distribuidora Ñielol (demo)",
         "receta-pie-de-limon.txt"
       ],
-      "client_ms": 50828
+      "client_ms": 28281
     },
     {
       "q": "dónde compro tomate cherry",
@@ -322,14 +322,14 @@
       "intent": null,
       "status": "ok",
       "fallback_reason": null,
-      "answer": "Dónde compro tomate cherry: Verdulería El Huerto (demo). Precio: $1.990 por bandeja de 30 unidades (02/11/2026).",
+      "answer": "El tomate cherry lo compras en Verdulería El Huerto (demo).",
       "sources": [
         "tu inventario: Tomate cherry",
         "tus recetas: Tomates cherry rellenos",
         "tus proveedores: Verdulería El Huerto (demo)",
         "tu inventario: Pimentón rojo"
       ],
-      "client_ms": 51016
+      "client_ms": 24781
     },
     {
       "q": "que productos me vende la distribuidora ñielol",
@@ -342,15 +342,15 @@
       "level": 2,
       "intent": null,
       "status": "ok",
-      "fallback_reason": "llm_timeout",
-      "answer": "Según tus proveedores: Distribuidora Ñielol (demo): «Proveedor: Distribuidora Ñielol (demo). Despacha: martes, jueves. Teléfono: +56 9 0000 0002. Vende: Aceite vegetal (bidón 5 L, $11.990); Carne molida (bolsa 1 kg, $7.990); Crema de leche (caja 1 L, $3.990); Harina sin polvos (saco 25 kg, $22.500); Huevo (bandeja 30 unidades, $6.490); Jamón (paquete 1 kg, $8.990); Leche (caja 1 L, $1.090); Manteca…»",
+      "fallback_reason": null,
+      "answer": "La distribuidora ñielol vende aceite vegetal (bidón 5 L, $11.990); carne molida (bolsa 1 kg, $7.990); crema de leche (caja 1 L, $3.990); harina sin polvos (saco 25 kg, $22.500); huevo (bandeja 30 unidades, $6.490); jamón (paquete 1",
       "sources": [
         "tus proveedores: Distribuidora Ñielol (demo)",
         "tu inventario: Huevo",
         "tu inventario: Leche",
         "tu inventario: Crema de leche"
       ],
-      "client_ms": 64530
+      "client_ms": 40407
     },
     {
       "q": "el pan de coctel a quien se lo compro",
@@ -364,33 +364,33 @@
       "intent": null,
       "status": "ok",
       "fallback_reason": null,
-      "answer": "El pan de coctel se lo compras a Verdulería El Huerto (demo).",
+      "answer": "El pan de cóctel lo compras a Verdulería El Huerto (demo).",
       "sources": [
         "tu inventario: Pan de cóctel",
         "tus proveedores: Verdulería El Huerto (demo)",
         "tus recetas: Canapés de salmón",
         "tus pedidos: Cliente demo A (cóctel de oficina) (14/11/2026)"
       ],
-      "client_ms": 44873
+      "client_ms": 26012
     },
     {
       "q": "¿qué proveedor me vende vino?",
       "keys": [],
       "expect": "no_data",
-      "ok": true,
-      "confident": false,
+      "ok": false,
+      "confident": true,
       "level": 2,
       "intent": null,
       "status": "ok",
-      "fallback_reason": "llm_timeout",
-      "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en tus proveedores: Distribuidora Ñielol (demo): «Proveedor: Distribuidora Ñielol (demo). Despacha: martes, jueves. Teléfono: +56 9 0000 0002. Vende: Aceite vegetal (bidón 5 L, $11.990); Carne molida (bolsa 1 kg, $7.990); Crema de leche (caja 1 L, $3.990); Harina sin polvos (saco 25 kg, $22.500); Huevo (bandeja 30 unidades, $6.490); Jamón (paquete 1 kg, $8.990); Leche (caja 1 L, $1.090); Manteca…»",
+      "fallback_reason": null,
+      "answer": "No lo encontré en los datos.",
       "sources": [
         "tus proveedores: Distribuidora Ñielol (demo)",
         "tus proveedores: Verdulería El Huerto (demo)",
         "tus proveedores: Harinas Cautín (demo)",
         "tu inventario: Huevo"
       ],
-      "client_ms": 65435
+      "client_ms": 25413
     },
     {
       "q": "¿cuánto vendí el mes pasado?",
@@ -404,7 +404,7 @@
       "fallback_reason": null,
       "answer": "¿A cuál insumo te refieres?",
       "sources": [],
-      "client_ms": 39
+      "client_ms": 13
     },
     {
       "q": "¿qué recetas llevan chocolate?",
@@ -418,7 +418,7 @@
       "fallback_reason": null,
       "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
       "sources": [],
-      "client_ms": 758
+      "client_ms": 219
     },
     {
       "q": "dame el rut de la verdulería",
@@ -432,7 +432,7 @@
       "fallback_reason": null,
       "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
       "sources": [],
-      "client_ms": 400
+      "client_ms": 218
     }
   ]
 }

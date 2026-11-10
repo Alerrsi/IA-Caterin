@@ -62,6 +62,16 @@ La regla "Datos estructurados (stock, costos, pedidos) se consultan por funcione
   - La negación ("sin precio") no se maneja.
 - **Límites:** el RAG sobre fichas sigue trayendo pocas fichas. Una pregunta de lista que el detector no reconozca recibe una respuesta parcial (con LLM, una lista incompleta). Se mide con `ml/evals/assistant/business_*.yaml` (`eval_business.py`, resultados en `ml/evals/REPORT.md`, sección 1b).
 
+## Redacción del LLM sobre fichas y documentos (T10, 10-nov)
+
+- **Prompt del nivel 2:** datos primero y pregunta al final, una frase completa y un ejemplo de formato. Si no hay dato, responde exactamente "No lo encontré en tus datos.".
+- **Verificaciones del texto del LLM:**
+  - cifras (ADR-002);
+  - eco de la pregunta (`llm_no_answer`);
+  - nombres propios que no están en los datos (`names_mismatch`).
+- **Confianza baja en la búsqueda:** el texto del LLM se muestra con el aviso "No estoy seguro…".
+- Detalle en `ml/evals/REPORT.md`, sección 1c.
+
 ## Alternativas descartadas
 
 - **Todo por RAG, incluidos los cálculos:** un modelo de 4B se equivoca con los números (ADR-002) y las listas salen incompletas.

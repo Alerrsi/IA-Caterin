@@ -114,6 +114,34 @@ Como sale de los fallos del primer reservado, ese set queda gastado. Se escribi�
 - **Primera pregunta abierta de una pyme:** crea y vectoriza sus fichas (~50 en la demo, ~17 s con la máquina cargada). Las siguientes solo vectorizan las fichas que cambiaron.
 - **Sin Ollama**, las fichas se guardan sin vector, la búsqueda queda por texto y la confianza máxima es "baja" (`TEXT_ONLY_LOW_COVERAGE` = 0,8, sin calibrar).
 
+## 1c. Redacción del LLM en el nivel 2 (10-nov) — `ml/evals/assistant/llm_level2_prompts.py`
+
+**Problema visto en uso.** Con `ASSISTANT_USE_LLM=true`, `qwen3:4b` a veces **devolvía la misma pregunta** como respuesta: "¿a quién le compro el salmón?" → "¿a quién le compro el salmón?". Como no traía cifras, el verificador lo dejaba pasar.
+
+**Experimento** con el prompt exacto del asistente y Ollama real, en la pyme de demo (`llm_level2_prompts_r1.json` y `llm_level2_prompts.json`):
+
+| Variante | Con el dato esperado | Eco | Nota |
+|----------|----------------------|-----|------|
+| A: prompt anterior (pregunta al principio), `qwen3:4b` | 8/10 y 12/15 | 1 | Responde largo; "no lo encontré" para el salmón, aunque la ficha lo dice |
+| B: pregunta al final y "no repitas", `qwen3:4b` | 8/10 | 2 | Corrige el salmón; respuestas escuetas ("No", "Especias") |
+| C: igual que B, con `qwen3:4b-instruct` | 7/10 | 3 | 3 respuestas vacías: se descarta para esto |
+| **D: B más una frase completa y un ejemplo**, `qwen3:4b` | **13/15** | 1 (falso positivo del detector) | "La crema de leche te la vende Distribuidora Ñielol (demo)." |
+
+**Verificación de punta a punta con D** (todos los sets, LLM real). Revisando las respuestas una por una aparecieron **errores graves** que la comparación de claves no veía:
+- copió el nombre del ejemplo del prompt ("atienden en concepción" → "La harina te la vende Molino Sur.");
+- aplicó la temperatura del refrigerador al helado;
+- convirtió "no está en los datos" en un "no" inventado ("¿la harina tiene certificado orgánico?" → "no tiene").
+
+Todos ocurrieron con **confianza baja** en la búsqueda.
+
+**Defensas aplicadas:**
+1. **Eco:** si el texto no agrega ninguna palabra a la pregunta, se descarta (`llm_no_answer`) y se muestra la respuesta extractiva. Compara palabras enteras, así que "Las sopaipillas no llevan huevo." no cuenta como eco.
+2. **Nombres:** todo nombre propio del texto tiene que estar en los datos (`names_mismatch`).
+3. **Prompt:** si los datos no hablan de lo preguntado, el LLM debe responder exactamente "No lo encontré en tus datos.", nunca un "no" inventado. El ejemplo se marca como de formato, con nombres que no debe usar.
+4. **Confianza baja:** con confianza baja en la búsqueda, el texto del LLM llega precedido de "No estoy seguro de que esto responda tu pregunta.", salvo que diga que no lo encontró.
+
+**Resultado** (verificación corta con el LLM real, 11 preguntas, incluidas las 4 que fallaban): **11/11 correctas**. Los cuatro casos graves ahora responden "No lo encontré en tus datos." No se repitió la evaluación completa con LLM: para el MVP basta con ~80 % (decisión del usuario, 10-nov). La latencia sigue sin ser válida en esta máquina (5 a 35 s por respuesta).
+
 ## 2. Enrutador de intenciones — `ml/evals/assistant/`
 
 - **Set reservado** `heldout.yaml`: 64 frases nuevas, escritas antes de correr nada, incluidas preguntas fuera de alcance, ambiguas e intentos de inyección. **Set dorado** `golden.yaml`: 65 casos, ya usados para afinar en T07.

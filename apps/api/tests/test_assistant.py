@@ -22,7 +22,7 @@ from app.modules.assistant import router as assistant_router
 from app.modules.assistant import service
 from app.modules.assistant.intents import load_catalog
 from app.modules.assistant.parsing import parse_qty, parse_range
-from app.modules.assistant.verifier import figures_ok
+from app.modules.assistant.verifier import adds_content, figures_ok, names_ok
 from tests.helpers import login, register
 
 API = "/api/v1"
@@ -400,6 +400,41 @@ def test_level2_invented_figure_falls_back_to_the_fragment(
     llm.responses.append("Tienes 72 horas para devolver.")
     out = ask(client, with_doc["owner"], Q_DOC)
     assert out["level"] == 2 and out["fallback_reason"] == "figures_mismatch" and "48 horas" in out["answer"]
+
+
+def test_level2_llm_that_only_repeats_the_question_is_discarded(
+    client: TestClient, with_doc: dict, llm: FakeProvider
+) -> None:  # type: ignore[type-arg]
+    llm.responses.append("¿Hasta cuándo aceptan devoluciones?")  # visto con qwen3:4b en T10
+    out = ask(client, with_doc["owner"], Q_DOC)
+    assert out["level"] == 2 and out["fallback_reason"] == "llm_no_answer" and "48 horas" in out["answer"]
+
+
+def test_echo_check_keeps_short_negative_answers() -> None:
+    assert not adds_content("con qué se hacen las brochetas de pollo", "con qué se hacen las brochetas de pollo")
+    assert adds_content("Las sopaipillas no llevan huevo.", "¿las sopaipillas llevan huevo?")
+    assert adds_content("Especias.", "¿de qué categoría es el comino?")
+
+
+def test_names_check_rejects_names_not_in_the_data() -> None:
+    facts = "Lo vende: Distribuidora Ñielol (demo), caja 1 L."
+    assert names_ok("La crema te la vende Distribuidora Ñielol.", facts)
+    assert not names_ok("La harina te la vende Molino Sur.", facts)  # copiado del ejemplo del prompt (T10)
+    assert names_ok("No lo encontré en tus datos.", facts)
+
+
+def test_level2_llm_with_a_name_not_in_the_data_is_discarded(
+    client: TestClient, with_doc: dict, llm: FakeProvider
+) -> None:  # type: ignore[type-arg]
+    llm.responses.append("Las devoluciones las recibe Molino Sur.")
+    out = ask(client, with_doc["owner"], Q_DOC)
+    assert out["fallback_reason"] == "names_mismatch" and "48 horas" in out["answer"]
+
+
+def test_level2_prompt_puts_the_question_last(client: TestClient, with_doc: dict, llm: FakeProvider) -> None:  # type: ignore[type-arg]
+    llm.responses.append("Se aceptan hasta 48 horas después de la entrega.")
+    ask(client, with_doc["owner"], Q_DOC)
+    assert llm.calls[-1].rstrip().endswith(f"<pregunta>{Q_DOC}</pregunta>")
 
 
 def test_level2_other_pyme_does_not_see_my_documents(client: TestClient, with_doc: dict) -> None:  # type: ignore[type-arg]

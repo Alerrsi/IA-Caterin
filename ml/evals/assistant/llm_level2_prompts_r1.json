@@ -1,0 +1,301 @@
+{
+ "measured_at": "2026-11-10",
+ "note": "Pyme de demo SINTÉTICA. Máquina cargada (poca RAM libre, swap): las latencias no son válidas como medición.",
+ "A_actual_4b": {
+  "echo": 1,
+  "key_ok": 8,
+  "figures_bad": 0,
+  "n": 10,
+  "ms_p50": 16647,
+  "rows": [
+   {
+    "q": "¿a quién le compro el salmón?",
+    "answer": "¿a quién le compro el salmón? - No lo encontré en los datos",
+    "ms": 5408,
+    "tokens": 32,
+    "echo": false,
+    "key_ok": false,
+    "figures_ok": true
+   },
+   {
+    "q": "¿quién me vende la crema de leche?",
+    "answer": "Distribuidora Ñielol (demo) vende crema de leche en caja 1 L a $3.990 (precio del 02/11/2026).",
+    "ms": 10171,
+    "tokens": 58,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿de qué categoría es el comino?",
+    "answer": "Especias",
+    "ms": 2744,
+    "tokens": 16,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "con qué se hacen las brochetas de pollo",
+    "answer": "con qué se hacen las brochetas de pollo",
+    "ms": 18805,
+    "tokens": 24,
+    "echo": true,
+    "key_ok": false,
+    "figures_ok": true
+   },
+   {
+    "q": "en qué presentación viene la masa de hojaldre",
+    "answer": "La masa de hojaldre viene en paquete de 1 kg, según el inventario y los proveedores. En la receta de Mini quiches se usa 600 g por unidad, pero la presentación estándar es paquete 1 kg a $4.590 (precio del 02/11/2026).",
+    "ms": 16647,
+    "tokens": 91,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "el pan de coctel a quien se lo compro",
+    "answer": "El pan de coctel se lo compras a Verdulería El Huerto (demo).",
+    "ms": 6262,
+    "tokens": 33,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "cuánto rinde la receta de sopaipillas",
+    "answer": "La receta de sopaipillas rinde 12 unidades según tus recetas: Sopaipillas.",
+    "ms": 17944,
+    "tokens": 35,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿Hasta cuándo se pueden cambiar los invitados?",
+    "answer": "Hasta 4 días antes del evento sin recargo.",
+    "ms": 18221,
+    "tokens": 23,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿las sopaipillas llevan huevo?",
+    "answer": "No, las sopaipillas no llevan huevo. Según la ficha de alérgenos, no llevan huevo ni lácteos.",
+    "ms": 16966,
+    "tokens": 44,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿a qué temperatura debe estar el refrigerador?",
+    "answer": "El refrigerador debe estar entre 1 y 4 °C.",
+    "ms": 12081,
+    "tokens": 25,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   }
+  ]
+ },
+ "B_nuevo_4b": {
+  "echo": 2,
+  "key_ok": 8,
+  "figures_bad": 0,
+  "n": 10,
+  "ms_p50": 17578,
+  "rows": [
+   {
+    "q": "¿a quién le compro el salmón?",
+    "answer": "Distribuidora Ñielol (demo)",
+    "ms": 35875,
+    "tokens": 21,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿quién me vende la crema de leche?",
+    "answer": "Distribuidora Ñielol (demo)",
+    "ms": 25910,
+    "tokens": 21,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿de qué categoría es el comino?",
+    "answer": "Especias",
+    "ms": 17578,
+    "tokens": 16,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "con qué se hacen las brochetas de pollo",
+    "answer": "con qué se hacen las brochetas de pollo",
+    "ms": 14722,
+    "tokens": 24,
+    "echo": true,
+    "key_ok": false,
+    "figures_ok": true
+   },
+   {
+    "q": "en qué presentación viene la masa de hojaldre",
+    "answer": "paquete 1 kg",
+    "ms": 27711,
+    "tokens": 16,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "el pan de coctel a quien se lo compro",
+    "answer": "Verdulería El Huerto (demo)",
+    "ms": 26367,
+    "tokens": 20,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "cuánto rinde la receta de sopaipillas",
+    "answer": "12 unidades",
+    "ms": 12733,
+    "tokens": 16,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿Hasta cuándo se pueden cambiar los invitados?",
+    "answer": "Hasta 4 días antes del evento",
+    "ms": 15559,
+    "tokens": 20,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿las sopaipillas llevan huevo?",
+    "answer": "No",
+    "ms": 11872,
+    "tokens": 14,
+    "echo": true,
+    "key_ok": false,
+    "figures_ok": true
+   },
+   {
+    "q": "¿a qué temperatura debe estar el refrigerador?",
+    "answer": "El refrigerador debe estar entre 1 y 4 °C.",
+    "ms": 11548,
+    "tokens": 25,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   }
+  ]
+ },
+ "C_nuevo_instruct": {
+  "echo": 3,
+  "key_ok": 7,
+  "figures_bad": 0,
+  "n": 10,
+  "ms_p50": 25128,
+  "rows": [
+   {
+    "q": "¿a quién le compro el salmón?",
+    "answer": "",
+    "ms": 66208,
+    "tokens": 120,
+    "echo": true,
+    "key_ok": false,
+    "figures_ok": true
+   },
+   {
+    "q": "¿quién me vende la crema de leche?",
+    "answer": "Distribuidora Ñielol (demo)",
+    "ms": 25128,
+    "tokens": 18,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿de qué categoría es el comino?",
+    "answer": "Especias",
+    "ms": 16745,
+    "tokens": 11,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "con qué se hacen las brochetas de pollo",
+    "answer": "con pechuga de pollo, pimentón rojo, champiñón, palito de brocheta, aceite vegetal y sal",
+    "ms": 17980,
+    "tokens": 46,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "en qué presentación viene la masa de hojaldre",
+    "answer": "paquete 1 kg",
+    "ms": 27319,
+    "tokens": 13,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "el pan de coctel a quien se lo compro",
+    "answer": "",
+    "ms": 42010,
+    "tokens": 120,
+    "echo": true,
+    "key_ok": false,
+    "figures_ok": true
+   },
+   {
+    "q": "cuánto rinde la receta de sopaipillas",
+    "answer": "12 unidades",
+    "ms": 11800,
+    "tokens": 11,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿Hasta cuándo se pueden cambiar los invitados?",
+    "answer": "Hasta 4 días antes del evento",
+    "ms": 15694,
+    "tokens": 18,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿las sopaipillas llevan huevo?",
+    "answer": "",
+    "ms": 26068,
+    "tokens": 120,
+    "echo": true,
+    "key_ok": false,
+    "figures_ok": true
+   },
+   {
+    "q": "¿a qué temperatura debe estar el refrigerador?",
+    "answer": "El refrigerador debe estar entre 1 y 4 °C.",
+    "ms": 11101,
+    "tokens": 22,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   }
+  ]
+ }
+}

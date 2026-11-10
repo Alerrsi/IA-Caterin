@@ -1,22 +1,22 @@
 {
-  "measured_at": "2026-11-10 06:41",
+  "measured_at": "2026-11-10 07:37",
   "api": "http://127.0.0.1:8000/api/v1",
   "questions_file": "business_heldout.yaml",
   "note": "Pyme de demo SINTÉTICA; preguntas escritas antes de implementar (business_questions.yaml).",
   "summary": {
     "with_answer": 15,
-    "with_answer_ok": 12,
+    "with_answer_ok": 15,
     "no_data": 3,
     "no_data_ok": 2,
-    "confident_wrong": 3,
+    "confident_wrong": 1,
     "by_level": {
-      "0": 9,
-      "2": 9
+      "0": 11,
+      "2": 7
     },
     "llm_fallbacks": 0,
     "client_ms": {
-      "p50": 122,
-      "max": 55584
+      "p50": 27,
+      "max": 28031
     }
   },
   "cases": [
@@ -37,7 +37,7 @@
       "sources": [
         "tu inventario"
       ],
-      "client_ms": 33
+      "client_ms": 27
     },
     {
       "q": "qué cosas tengo registradas en bodega",
@@ -55,7 +55,7 @@
       "sources": [
         "tu inventario"
       ],
-      "client_ms": 34
+      "client_ms": 27
     },
     {
       "q": "muéstrame los proveedores",
@@ -74,7 +74,7 @@
       "sources": [
         "tus proveedores"
       ],
-      "client_ms": 18
+      "client_ms": 14
     },
     {
       "q": "que tipos de pescado hay",
@@ -82,15 +82,17 @@
         "salmon ahumado"
       ],
       "expect": null,
-      "ok": false,
-      "confident": false,
-      "level": 2,
+      "ok": true,
+      "confident": true,
+      "level": 0,
       "intent": null,
-      "status": "no_data",
+      "status": "ok",
       "fallback_reason": null,
-      "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
-      "sources": [],
-      "client_ms": 211
+      "answer": "Tienes 1 insumo de Pescados: Salmón ahumado (2,5 kg).",
+      "sources": [
+        "tu inventario"
+      ],
+      "client_ms": 25
     },
     {
       "q": "cuantas recetas tengo cargadas",
@@ -108,7 +110,7 @@
       "sources": [
         "tus recetas"
       ],
-      "client_ms": 21
+      "client_ms": 17
     },
     {
       "q": "qué recetas usan queso crema",
@@ -126,7 +128,7 @@
       "sources": [
         "tus recetas"
       ],
-      "client_ms": 20
+      "client_ms": 16
     },
     {
       "q": "listame lo de panadería",
@@ -145,7 +147,7 @@
       "sources": [
         "tu inventario"
       ],
-      "client_ms": 33
+      "client_ms": 42
     },
     {
       "q": "que abarrotes me quedan",
@@ -154,20 +156,17 @@
         "aceite vegetal"
       ],
       "expect": null,
-      "ok": false,
+      "ok": true,
       "confident": true,
-      "level": 2,
+      "level": 0,
       "intent": null,
       "status": "ok",
       "fallback_reason": null,
-      "answer": "En tu inventario de abarrotes, te quedan: Pasas (500 g), Aceituna negra (200 unidades), Manteca (2 kg) y Sal (3 kg).",
+      "answer": "Tienes 8 insumos de Abarrotes: Aceite vegetal (5 L); Aceituna negra (200 unidades); Azúcar (5 kg); Harina sin polvos (18 kg); Manteca (2 kg); Pasas (500 g); Polvos de hornear (250 g); Sal (3 kg).",
       "sources": [
-        "tu inventario: Pasas",
-        "tu inventario: Aceituna negra",
-        "tu inventario: Manteca",
-        "tu inventario: Sal"
+        "tu inventario"
       ],
-      "client_ms": 37124
+      "client_ms": 24
     },
     {
       "q": "qué recetas llevan pollo",
@@ -185,7 +184,7 @@
       "sources": [
         "tus recetas"
       ],
-      "client_ms": 26
+      "client_ms": 16
     },
     {
       "q": "a quién le compro el salmón",
@@ -199,14 +198,14 @@
       "intent": null,
       "status": "ok",
       "fallback_reason": null,
-      "answer": "El salmón ahumado se vende a través de la Distribuidora Ñielol (demo) en paquetes de 500 g a $11.990 (precio del 02/11/2026).",
+      "answer": "El salmón lo compro a Distribuidora Ñielol (demo).",
       "sources": [
         "tu inventario: Salmón ahumado",
         "tus recetas: Canapés de salmón",
         "tus proveedores: Distribuidora Ñielol (demo)",
         "tus pedidos: Cliente demo A (cóctel de oficina) (14/11/2026)"
       ],
-      "client_ms": 55584
+      "client_ms": 28031
     },
     {
       "q": "cuánto rinde la receta de sopaipillas",
@@ -220,13 +219,13 @@
       "intent": null,
       "status": "ok",
       "fallback_reason": null,
-      "answer": "La receta de sopaipillas rinde 12 unidades según tus recetas: Sopaipillas.",
+      "answer": "La receta de sopaipillas rinde 12 unidades.",
       "sources": [
         "tus recetas: Sopaipillas",
         "tus recetas: Canapés de salmón",
         "tus pedidos: Cliente E2E (demo) (sin fecha)"
       ],
-      "client_ms": 25849
+      "client_ms": 12885
     },
     {
       "q": "el champiñón en qué formato lo venden",
@@ -234,20 +233,20 @@
         "bandeja 500 g"
       ],
       "expect": null,
-      "ok": false,
+      "ok": true,
       "confident": true,
       "level": 2,
       "intent": null,
       "status": "ok",
       "fallback_reason": null,
-      "answer": "El champiñón lo venden en bandeja de 500 g a $2.290 (precio del 02/11/2026).",
+      "answer": "El champiñón se vende en bandeja 500 g.",
       "sources": [
         "tu inventario: Champiñón",
         "tus proveedores: Verdulería El Huerto (demo)",
         "tu inventario: Salmón ahumado",
         "tu inventario: Jamón"
       ],
-      "client_ms": 38922
+      "client_ms": 24744
     },
     {
       "q": "qué días despacha la verdulería",
@@ -265,7 +264,7 @@
       "sources": [
         "tus proveedores"
       ],
-      "client_ms": 24
+      "client_ms": 17
     },
     {
       "q": "de qué categoría son los palitos de brocheta",
@@ -279,14 +278,14 @@
       "intent": null,
       "status": "ok",
       "fallback_reason": null,
-      "answer": "Desechables",
+      "answer": "Los palitos de brocheta son de categoría Desechables.",
       "sources": [
         "tu inventario: Palito de brocheta",
         "tus recetas: Brochetas de pollo",
         "tus proveedores: Verdulería El Huerto (demo)",
         "ficha-alergenos.md"
       ],
-      "client_ms": 43491
+      "client_ms": 24953
     },
     {
       "q": "qué lleva el pie de limón",
@@ -300,12 +299,12 @@
       "intent": null,
       "status": "ok",
       "fallback_reason": null,
-      "answer": "El pie de limón lleva: 250 g de Harina sin polvos; 125 g de Mantequilla; 200 g de Azúcar; 4 unidades de Huevo; 4 unidades de Limón; 400 ml de Leche. (De la receta en tus recetas: Pie de limón)",
+      "answer": "El pie de limón lleva harina sin polvos, mantequilla, azúcar, huevo, limón, leche y merengue.",
       "sources": [
         "tus recetas: Pie de limón",
         "receta-pie-de-limon.txt"
       ],
-      "client_ms": 40801
+      "client_ms": 20170
     },
     {
       "q": "qué proveedor vende carbón",
@@ -319,7 +318,7 @@
       "fallback_reason": null,
       "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
       "sources": [],
-      "client_ms": 395
+      "client_ms": 185
     },
     {
       "q": "qué recetas llevan mariscos",
@@ -333,7 +332,7 @@
       "fallback_reason": null,
       "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
       "sources": [],
-      "client_ms": 291
+      "client_ms": 211
     },
     {
       "q": "cuál es el correo de la verdulería",
@@ -349,7 +348,7 @@
       "sources": [
         "tus proveedores"
       ],
-      "client_ms": 14
+      "client_ms": 10
     }
   ]
 }

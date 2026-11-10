@@ -1,0 +1,747 @@
+{
+  "measured_at": "2026-11-10 07:46",
+  "api": "http://127.0.0.1:8000/api/v1",
+  "questions_file": "questions_heldout.yaml",
+  "note": "Documentos y preguntas SINTÉTICOS; pyme de prueba nueva, sin inventario ni pedidos.",
+  "summary": {
+    "answerable": 31,
+    "answerable_ok": 24,
+    "answerable_ok_confident": 23,
+    "answerable_ok_tentative": 1,
+    "answerable_wrong_confident": 5,
+    "answerable_wrong_tentative": 0,
+    "answerable_no_answer": 2,
+    "answerable_routed_to_intent": 2,
+    "unanswerable": 10,
+    "unanswerable_ok": 4,
+    "unanswerable_said_not_found": 4,
+    "unanswerable_tentative": 0,
+    "unanswerable_wrong_confident": 6,
+    "client_ms": {
+      "p50": 12676,
+      "p95": 17694
+    }
+  },
+  "cases": [
+    {
+      "q": "a que hora cierran los pedidos de harina",
+      "doc": "condiciones-harinas-cautin.md",
+      "key": "hasta las 18:00",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": "upcoming_orders",
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md"
+      ],
+      "answer": "Los pedidos se reciben por WhatsApp hasta las 18:00 del día hábil anterior al despacho.",
+      "latency_ms": 16249,
+      "client_ms": 16257
+    },
+    {
+      "q": "el despacho a vilcun que dia sale",
+      "doc": "condiciones-harinas-cautin.md",
+      "key": "solo los jueves",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": "supplier_info",
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md",
+        "lista-precios-lacteos-sur.csv, filas 2-7"
+      ],
+      "answer": "El despacho a Vilcún sale solo los jueves.",
+      "latency_ms": 11070,
+      "client_ms": 11079
+    },
+    {
+      "q": "si soy cliente nuevo como le pago al de la harina",
+      "doc": "condiciones-harinas-cautin.md",
+      "key": "transferencia antes del despacho",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md",
+        "contrato-tipo-servicio.md"
+      ],
+      "answer": "Si eres cliente nuevo, pagas por transferencia antes del despacho para la harina.",
+      "latency_ms": 12903,
+      "client_ms": 12911
+    },
+    {
+      "q": "me cambian la harina humeda?",
+      "doc": "condiciones-harinas-cautin.md",
+      "key": "dentro de 24 horas",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md",
+        "protocolo-higiene.md"
+      ],
+      "answer": "Sí, si se avisa dentro de 24 horas desde la entrega con fotos del producto.",
+      "latency_ms": 13514,
+      "client_ms": 13525
+    },
+    {
+      "q": "devuelven un saco abierto que esta bueno",
+      "doc": "condiciones-harinas-cautin.md",
+      "key": "no se aceptan devoluciones",
+      "ok": false,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md",
+        "politica-anulaciones.md"
+      ],
+      "answer": "No, no devuelven un saco abierto que este bueno.",
+      "latency_ms": 8327,
+      "client_ms": 8338
+    },
+    {
+      "q": "sin pagar abono me guardan la fecha?",
+      "doc": "politica-anulaciones.md",
+      "key": "no queda reservada",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "politica-anulaciones.md",
+        "contrato-tipo-servicio.md"
+      ],
+      "answer": "No, sin pagar abono la fecha no queda reservada.",
+      "latency_ms": 14020,
+      "client_ms": 14028
+    },
+    {
+      "q": "si anulan con 10 dias de anticipacion",
+      "doc": "politica-anulaciones.md",
+      "key": "abono completo",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "politica-anulaciones.md"
+      ],
+      "answer": "Si anulan con 10 días de anticipación, se devuelve el abono completo.",
+      "latency_ms": 11080,
+      "client_ms": 11090
+    },
+    {
+      "q": "cuanto mas invitados puedo sumar despues del plazo",
+      "doc": "politica-anulaciones.md",
+      "key": "hasta un 10 %",
+      "ok": true,
+      "kind": "tentative",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": "llm_no_answer",
+      "cited": [
+        "politica-anulaciones.md",
+        "manual-garzones.pdf, pág. 2",
+        "preguntas-frecuentes-clientes.txt"
+      ],
+      "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en politica-anulaciones.md: «La cantidad de invitados se puede cambiar hasta 4 días antes del evento sin recargo. Después, solo se aceptan aumentos de hasta un 10 % y se cobran al precio de la cotización.»",
+      "latency_ms": 15651,
+      "client_ms": 15661
+    },
+    {
+      "q": "por donde se mandan los reclamos",
+      "doc": "politica-anulaciones.md",
+      "key": "por correo o whatsapp",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "politica-anulaciones.md"
+      ],
+      "answer": "Los reclamos se mandan por correo o WhatsApp.",
+      "latency_ms": 5544,
+      "client_ms": 5552
+    },
+    {
+      "q": "la empanada de queso lleva huevo",
+      "doc": "ficha-alergenos.md",
+      "key": "huevo en el pintado",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": "llm_no_answer",
+      "cited": [
+        "ficha-alergenos.md",
+        "preguntas-frecuentes-clientes.txt"
+      ],
+      "answer": "Según ficha-alergenos.md: «Empanadas de queso: contienen gluten, lácteos (queso mantecoso) y huevo en el pintado.»",
+      "latency_ms": 13035,
+      "client_ms": 13045
+    },
+    {
+      "q": "de que carne es el pino",
+      "doc": "ficha-alergenos.md",
+      "key": "vacuno",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "ficha-alergenos.md",
+        "protocolo-higiene.md"
+      ],
+      "answer": "La carne del pino es de vacuno.",
+      "latency_ms": 11149,
+      "client_ms": 11157
+    },
+    {
+      "q": "los quiches son aptos para alguien sin lacteos",
+      "doc": "ficha-alergenos.md",
+      "key": "huevo y lacteos",
+      "ok": false,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "ficha-alergenos.md",
+        "preguntas-frecuentes-clientes.txt"
+      ],
+      "answer": "Los quiches no son aptos para alguien sin lacteos porque contienen lácteos (crema y queso).",
+      "latency_ms": 17160,
+      "client_ms": 17169
+    },
+    {
+      "q": "en que aceite se frien las sopaipillas",
+      "doc": "ficha-alergenos.md",
+      "key": "aceite vegetal",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "ficha-alergenos.md",
+        "protocolo-higiene.md"
+      ],
+      "answer": "Las sopaipillas se fríen en aceite vegetal.",
+      "latency_ms": 7235,
+      "client_ms": 7246
+    },
+    {
+      "q": "cuantos limones lleva el pie",
+      "doc": "receta-pie-de-limon.txt",
+      "key": "4 limones de pica",
+      "ok": false,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "receta-pie-de-limon.txt",
+        "ficha-alergenos.md"
+      ],
+      "answer": "El pie lleva 4 limones.",
+      "latency_ms": 17870,
+      "client_ms": 17881
+    },
+    {
+      "q": "cuanto rato se hornea la masa en blanco",
+      "doc": "receta-pie-de-limon.txt",
+      "key": "15 minutos a 180",
+      "ok": false,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "receta-pie-de-limon.txt"
+      ],
+      "answer": "La masa se hornea 15 minutos en blanco a 180 °C.",
+      "latency_ms": 15732,
+      "client_ms": 15740
+    },
+    {
+      "q": "cuantos dias dura el pie en el refri",
+      "doc": "receta-pie-de-limon.txt",
+      "key": "hasta 3 dias",
+      "ok": false,
+      "kind": "none",
+      "level": 2,
+      "intent": null,
+      "status": "no_data",
+      "fallback_reason": null,
+      "cited": [],
+      "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
+      "latency_ms": 113,
+      "client_ms": 123
+    },
+    {
+      "q": "de que tamano es el molde del pie",
+      "doc": "receta-pie-de-limon.txt",
+      "key": "24 cm",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "receta-pie-de-limon.txt"
+      ],
+      "answer": "El molde del pie es de 24 cm.",
+      "latency_ms": 11057,
+      "client_ms": 11065
+    },
+    {
+      "q": "cuanto tiempo hay que lavarse las manos",
+      "doc": "protocolo-higiene.md",
+      "key": "20 segundos",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "protocolo-higiene.md",
+        "preguntas-frecuentes-clientes.txt"
+      ],
+      "answer": "El tiempo que hay que lavarse las manos es 20 segundos.",
+      "latency_ms": 12666,
+      "client_ms": 12676
+    },
+    {
+      "q": "cuantas veces al dia se anota la temperatura del refrigerador",
+      "doc": "protocolo-higiene.md",
+      "key": "dos veces al dia",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "protocolo-higiene.md"
+      ],
+      "answer": "Se anota la temperatura del refrigerador dos veces al día, al abrir y al cerrar.",
+      "latency_ms": 12307,
+      "client_ms": 12318
+    },
+    {
+      "q": "que tiene que decir la etiqueta de los preparados",
+      "doc": "protocolo-higiene.md",
+      "key": "fecha de elaboracion",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "protocolo-higiene.md",
+        "preguntas-frecuentes-clientes.txt",
+        "contrato-tipo-servicio.md"
+      ],
+      "answer": "La etiqueta de los preparados debe incluir el nombre, fecha de elaboración y fecha de vencimiento.",
+      "latency_ms": 15721,
+      "client_ms": 15729
+    },
+    {
+      "q": "tabla para cortar verduras de que color es",
+      "doc": "protocolo-higiene.md",
+      "key": "verde para verduras",
+      "ok": false,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "protocolo-higiene.md",
+        "preguntas-frecuentes-clientes.txt"
+      ],
+      "answer": "La tabla para cortar verduras es verde.",
+      "latency_ms": 8332,
+      "client_ms": 8341
+    },
+    {
+      "q": "a que hora llega el personal a montar",
+      "doc": "contrato-tipo-servicio.md",
+      "key": "2 horas antes",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "contrato-tipo-servicio.md",
+        "manual-garzones.pdf, pág. 1",
+        "protocolo-higiene.md",
+        "politica-anulaciones.md"
+      ],
+      "answer": "El personal llega a montar 2 horas antes del inicio del evento.",
+      "latency_ms": 16362,
+      "client_ms": 16370
+    },
+    {
+      "q": "que pasa con el abono si hay una catastrofe",
+      "doc": "contrato-tipo-servicio.md",
+      "key": "credito por 6 meses",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "contrato-tipo-servicio.md",
+        "politica-anulaciones.md"
+      ],
+      "answer": "Si hay una catastrofe, el abono se guarda como crédito por 6 meses.",
+      "latency_ms": 10398,
+      "client_ms": 10407
+    },
+    {
+      "q": "si el cliente paga atrasado pierde la fecha",
+      "doc": "contrato-tipo-servicio.md",
+      "key": "no liberan la fecha",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": "llm_no_answer",
+      "cited": [
+        "contrato-tipo-servicio.md",
+        "politica-anulaciones.md"
+      ],
+      "answer": "Según contrato-tipo-servicio.md: «SEGUNDO. Precio y pago: el cliente paga un 30 % de abono al firmar y el saldo hasta 48 horas antes del evento. Los pagos atrasados no liberan la fecha.»",
+      "latency_ms": 13356,
+      "client_ms": 13367
+    },
+    {
+      "q": "a cuanto esta la crema de leche",
+      "doc": "lista-precios-lacteos-sur.csv",
+      "key": "3.890",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "lista-precios-lacteos-sur.csv, filas 2-7",
+        "receta-pie-de-limon.txt"
+      ],
+      "answer": "La crema de leche cuesta 3.890 pesos.",
+      "latency_ms": 15185,
+      "client_ms": 15194
+    },
+    {
+      "q": "en que formato viene el queso mantecoso",
+      "doc": "lista-precios-lacteos-sur.csv",
+      "key": "1 kg",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "lista-precios-lacteos-sur.csv, filas 2-7",
+        "ficha-alergenos.md"
+      ],
+      "answer": "El queso mantecoso viene en formato de 1 kg.",
+      "latency_ms": 13038,
+      "client_ms": 13047
+    },
+    {
+      "q": "cuantos bocados si el coctel es antes de la cena",
+      "doc": "preguntas-frecuentes-clientes.txt",
+      "key": "6 bocados",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "preguntas-frecuentes-clientes.txt",
+        "manual-garzones.pdf, pág. 2",
+        "contrato-tipo-servicio.md",
+        "politica-anulaciones.md"
+      ],
+      "answer": "Para un cóctel antes de una cena, se calculan 6 bocados por invitado.",
+      "latency_ms": 18934,
+      "client_ms": 18945
+    },
+    {
+      "q": "con cuantos dias pedir un evento chico",
+      "doc": "preguntas-frecuentes-clientes.txt",
+      "key": "3 dias habiles",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "preguntas-frecuentes-clientes.txt",
+        "politica-anulaciones.md",
+        "contrato-tipo-servicio.md"
+      ],
+      "answer": "Para pedidos pequeños, 3 días hábiles.",
+      "latency_ms": 12081,
+      "client_ms": 12090
+    },
+    {
+      "q": "cobran extra por ir fuera de temuco",
+      "doc": "preguntas-frecuentes-clientes.txt",
+      "key": "recargo de traslado",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "preguntas-frecuentes-clientes.txt",
+        "contrato-tipo-servicio.md",
+        "condiciones-harinas-cautin.md"
+      ],
+      "answer": "¿Cobran extra por ir fuera de Temuco? Sí, en toda la Región de La Araucanía, con un recargo de traslado que se cotiza según la distancia.",
+      "latency_ms": 17685,
+      "client_ms": 17694
+    },
+    {
+      "q": "que color es el delantal de los garzones",
+      "doc": "manual-garzones.pdf",
+      "key": "burdeo",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "manual-garzones.pdf, pág. 1",
+        "protocolo-higiene.md",
+        "contrato-tipo-servicio.md"
+      ],
+      "answer": "El delantal de los garzones es burdeo.",
+      "latency_ms": 14843,
+      "client_ms": 14851
+    },
+    {
+      "q": "los garzones pueden usar anillos",
+      "doc": "manual-garzones.pdf",
+      "key": "sin joyas",
+      "ok": false,
+      "kind": "none",
+      "level": 2,
+      "intent": null,
+      "status": "no_data",
+      "fallback_reason": null,
+      "cited": [],
+      "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
+      "latency_ms": 104,
+      "client_ms": 113
+    },
+    {
+      "q": "cuanto cobra harinas cautin por un saco de azucar",
+      "doc": null,
+      "key": null,
+      "ok": false,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md"
+      ],
+      "answer": "No se encontró información sobre el costo de un saco de azúcar en los datos proporcionados.",
+      "latency_ms": 16908,
+      "client_ms": 16918
+    },
+    {
+      "q": "tienen opciones veganas para matrimonios",
+      "doc": null,
+      "key": null,
+      "ok": false,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "preguntas-frecuentes-clientes.txt"
+      ],
+      "answer": "No, no tienen opciones veganas para matrimonios.",
+      "latency_ms": 5553,
+      "client_ms": 5562
+    },
+    {
+      "q": "cual es el telefono de lacteos sur",
+      "doc": null,
+      "key": null,
+      "ok": true,
+      "kind": "none",
+      "level": 0,
+      "intent": "supplier_info",
+      "status": "missing_entity",
+      "fallback_reason": null,
+      "cited": [],
+      "answer": "No encontré ese proveedor en tus datos. ¿Me dices cómo se llama?",
+      "latency_ms": 112,
+      "client_ms": 121
+    },
+    {
+      "q": "a que temperatura se guarda el helado",
+      "doc": null,
+      "key": null,
+      "ok": false,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "protocolo-higiene.md",
+        "receta-pie-de-limon.txt"
+      ],
+      "answer": "El helado se guarda a 1 a 4 °C.",
+      "latency_ms": 9740,
+      "client_ms": 9747
+    },
+    {
+      "q": "cuanto le pago a un garzon por evento",
+      "doc": null,
+      "key": null,
+      "ok": false,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "contrato-tipo-servicio.md",
+        "manual-garzones.pdf, pág. 2"
+      ],
+      "answer": "No se encontró información sobre el costo por evento de un garzón en los documentos proporcionados.",
+      "latency_ms": 16902,
+      "client_ms": 16910
+    },
+    {
+      "q": "el contrato incluye seguro de accidentes",
+      "doc": null,
+      "key": null,
+      "ok": true,
+      "kind": "none",
+      "level": 2,
+      "intent": null,
+      "status": "no_data",
+      "fallback_reason": null,
+      "cited": [],
+      "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
+      "latency_ms": 92,
+      "client_ms": 100
+    },
+    {
+      "q": "que vino recomiendan con el salmon",
+      "doc": null,
+      "key": null,
+      "ok": true,
+      "kind": "none",
+      "level": 2,
+      "intent": null,
+      "status": "no_data",
+      "fallback_reason": null,
+      "cited": [],
+      "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
+      "latency_ms": 85,
+      "client_ms": 93
+    },
+    {
+      "q": "atienden en concepcion",
+      "doc": null,
+      "key": null,
+      "ok": false,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "preguntas-frecuentes-clientes.txt"
+      ],
+      "answer": "La harina te la vende Molino Sur.",
+      "latency_ms": 3909,
+      "client_ms": 3918
+    },
+    {
+      "q": "la harina tiene certificado organico",
+      "doc": null,
+      "key": null,
+      "ok": false,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md",
+        "ficha-alergenos.md"
+      ],
+      "answer": "La harina no tiene certificado orgánico.",
+      "latency_ms": 15899,
+      "client_ms": 15910
+    },
+    {
+      "q": "cuanto demora en llegar un pedido de queso a pucon",
+      "doc": null,
+      "key": null,
+      "ok": true,
+      "kind": "none",
+      "level": 0,
+      "intent": "upcoming_orders",
+      "status": "no_data",
+      "fallback_reason": null,
+      "cited": [],
+      "answer": "No tienes pedidos para los próximos 7 días.",
+      "latency_ms": 145,
+      "client_ms": 153
+    }
+  ]
+}

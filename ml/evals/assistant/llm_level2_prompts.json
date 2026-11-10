@@ -1,0 +1,272 @@
+{
+ "measured_at": "2026-11-10",
+ "note": "Pyme de demo SINTÉTICA. Máquina cargada (poca RAM libre, swap): las latencias no son válidas como medición.",
+ "A_actual_4b": {
+  "echo": 1,
+  "key_ok": 12,
+  "figures_bad": 0,
+  "n": 15,
+  "ms_p50": 24516,
+  "rows": [
+   {
+    "q": "¿a quién le compro el salmón?",
+    "answer": "No encontré la información en los datos proporcionados. La pregunta '¿a quién le compro el salmón?' no tiene respuesta en los documentos de inventario, recetas, proveedores ni pedidos. Los documentos muestran que se vende Salmón ahumado en Distribuidora Ñielol (demo), pero no especifican a quién se le compra el salmón en el contexto de la empresa.",
+    "ms": 39603,
+    "tokens": 103,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿quién me vende la crema de leche?",
+    "answer": "Distribuidora Ñielol (demo)",
+    "ms": 24516,
+    "tokens": 21,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿de qué categoría es el comino?",
+    "answer": "En los documentos, el comino aparece en el inventario como 'Insumo: Comino. Categoría: Especias.' y en la receta de empanadas de pino se menciona 3 g de comino. Por lo tanto, la categoría del comino es Especias.",
+    "ms": 24320,
+    "tokens": 77,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "con qué se hacen las brochetas de pollo",
+    "answer": "con qué se hacen las brochetas de pollo",
+    "ms": 12845,
+    "tokens": 24,
+    "echo": true,
+    "key_ok": false,
+    "figures_ok": true
+   },
+   {
+    "q": "en qué presentación viene la masa de hojaldre",
+    "answer": "La masa de hojaldre viene en paquete de 1 kg, según el proveedor Distribuidora Ñielol (demo).",
+    "ms": 30467,
+    "tokens": 41,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "el pan de coctel a quien se lo compro",
+    "answer": "El pan de cóctel se lo compras a Verdulería El Huerto (demo).",
+    "ms": 26749,
+    "tokens": 32,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "cuánto rinde la receta de sopaipillas",
+    "answer": "La receta de sopaipillas rinde 12 unidades según el documento n=1. En el pedido de Cliente E2E (demo) se menciona 24 unidades de Sopaipillas, pero la receta original rinde 12 unidades.",
+    "ms": 17301,
+    "tokens": 68,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿Hasta cuándo se pueden cambiar los invitados?",
+    "answer": "Hasta 4 días antes del evento sin recargo.",
+    "ms": 3446,
+    "tokens": 23,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿las sopaipillas llevan huevo?",
+    "answer": "No, las sopaipillas no llevan huevo. Según la ficha de alérgenos, no contienen huevo ni lácteos.",
+    "ms": 11093,
+    "tokens": 44,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿a qué temperatura debe estar el refrigerador?",
+    "answer": "El refrigerador debe estar entre 1 y 4 °C según el protocolo de higiene y cadena de frío.",
+    "ms": 13510,
+    "tokens": 38,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "qué lleva la receta de canapés de salmón",
+    "no_draft": "Tienes 1 receta con «canapes salmon»: Canapés de salmón."
+   },
+   {
+    "q": "a quién le compro el champiñón",
+    "answer": "El champiñón se compra en la Verdulería El Huerto (demo).",
+    "ms": 33756,
+    "tokens": 30,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "en qué viene el aceite vegetal",
+    "answer": "El aceite vegetal se usa para freír sopaipillas y empanadas, según la ficha de alérgenos y el protocolo de higiene. También se vende en bidón de 5 L por $11.990 en Distribuidora Ñielol (demo).",
+    "ms": 33894,
+    "tokens": 79,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿con cuánta anticipación hay que anular un evento?",
+    "answer": "Si el cliente anula con 7 días o más de anticipación, se devuelve el abono completo. Si anula entre 6 y 3 días antes, se devuelve la mitad del abono. Con menos de 72 horas de anticipación no se devuelve el abono, porque los insumos ya están comprados.",
+    "ms": 18685,
+    "tokens": 81,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "qué días despacha harinas cautín",
+    "no_draft": "Harinas Cautín (demo) despacha martes y jueves. Teléfono: +56 9 0000 0001."
+   }
+  ]
+ },
+ "D_frase_ejemplo_4b": {
+  "echo": 1,
+  "key_ok": 13,
+  "figures_bad": 0,
+  "n": 15,
+  "ms_p50": 26679,
+  "rows": [
+   {
+    "q": "¿a quién le compro el salmón?",
+    "answer": "El salmón lo compro a Distribuidora Ñielol (demo).",
+    "ms": 34135,
+    "tokens": 30,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿quién me vende la crema de leche?",
+    "answer": "La crema de leche te la vende Distribuidora Ñielol (demo).",
+    "ms": 26679,
+    "tokens": 32,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿de qué categoría es el comino?",
+    "answer": "El comino es de la categoría Especias.",
+    "ms": 17601,
+    "tokens": 22,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "con qué se hacen las brochetas de pollo",
+    "answer": "Con pechuga de pollo, pimentón rojo, champiñón, palito de brocheta, aceite vegetal y sal.",
+    "ms": 16629,
+    "tokens": 44,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "en qué presentación viene la masa de hojaldre",
+    "answer": "La masa de hojaldre viene en paquete de 1 kg.",
+    "ms": 28647,
+    "tokens": 27,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "el pan de coctel a quien se lo compro",
+    "answer": "El pan de cóctel lo compras a Verdulería El Huerto (demo).",
+    "ms": 27040,
+    "tokens": 31,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "cuánto rinde la receta de sopaipillas",
+    "answer": "La receta de sopaipillas rinde 12 unidades.",
+    "ms": 12802,
+    "tokens": 26,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿Hasta cuándo se pueden cambiar los invitados?",
+    "answer": "Hasta 4 días antes del evento se pueden cambiar los invitados.",
+    "ms": 17373,
+    "tokens": 26,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿las sopaipillas llevan huevo?",
+    "answer": "Las sopaipillas no llevan huevo.",
+    "ms": 12506,
+    "tokens": 22,
+    "echo": true,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿a qué temperatura debe estar el refrigerador?",
+    "answer": "El refrigerador debe estar entre 1 y 4 °C.",
+    "ms": 13088,
+    "tokens": 24,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "qué lleva la receta de canapés de salmón",
+    "no_draft": "Tienes 1 receta con «canapes salmon»: Canapés de salmón."
+   },
+   {
+    "q": "a quién le compro el champiñón",
+    "answer": "El champiñón lo compras a Verdulería El Huerto (demo).",
+    "ms": 34565,
+    "tokens": 30,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "en qué viene el aceite vegetal",
+    "answer": "El aceite vegetal viene en bidón de 5 L a $11.990 de Distribuidora Ñielol (demo).",
+    "ms": 28571,
+    "tokens": 44,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "¿con cuánta anticipación hay que anular un evento?",
+    "answer": "Para anular un evento, se debe hacer con al menos 7 días de anticipación para que se devuelva el abono completo. Si se anula entre 6 y 3 días antes, se devuelve la mitad del abono. Con menos de  72 horas de anticipación no se devuelve el abono.",
+    "ms": 17598,
+    "tokens": 80,
+    "echo": false,
+    "key_ok": true,
+    "figures_ok": true
+   },
+   {
+    "q": "qué días despacha harinas cautín",
+    "no_draft": "Harinas Cautín (demo) despacha martes y jueves. Teléfono: +56 9 0000 0001."
+   }
+  ]
+ }
+}
