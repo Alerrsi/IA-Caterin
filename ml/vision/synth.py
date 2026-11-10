@@ -21,6 +21,9 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter
 
 CLASSES = ["empanada", "canape", "brocheta"]
+# Con --recipe-classes las categorías se llaman como el `vision_class` de las recetas de demo (seed y demo_full),
+# así el conteo del modelo se une con el producto en la API.
+RECIPE_CLASSES = {"empanada": "empanada_pino", "canape": "canape_salmon", "brocheta": "brocheta_pollo"}
 
 
 def _tray(rnd: random.Random, w: int, h: int) -> Image.Image:
@@ -112,7 +115,9 @@ def main() -> None:
     ap.add_argument("--sessions", type=int, default=30)
     ap.add_argument("--per-session", type=int, default=5)
     ap.add_argument("--seed", type=int, default=2026)
+    ap.add_argument("--recipe-classes", action="store_true", help="nombrar las clases como las recetas de demo")
     args = ap.parse_args()
+    names = RECIPE_CLASSES if args.recipe_classes else {c: c for c in CLASSES}
 
     images_dir = args.out / "images"
     images_dir.mkdir(parents=True, exist_ok=True)
@@ -120,7 +125,7 @@ def main() -> None:
     coco: dict[str, list[dict[str, object]]] = {
         "images": [],
         "annotations": [],
-        "categories": [{"id": i + 1, "name": c} for i, c in enumerate(CLASSES)],
+        "categories": [{"id": i + 1, "name": names[c]} for i, c in enumerate(CLASSES)],
     }
     cat_id = {c: i + 1 for i, c in enumerate(CLASSES)}
     for s in range(args.sessions):

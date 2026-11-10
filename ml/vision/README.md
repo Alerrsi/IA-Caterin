@@ -2,6 +2,26 @@
 
 Datos y entrenamiento del detector (RF-DETR Nano → ONNX). La inferencia vive en `apps/api/app/modules/vision`.
 
+## Entrenar el modelo de prueba con GPU (un solo comando)
+
+En un equipo con GPU NVIDIA (o en Colab/Kaggle con GPU T4, después de clonar el repo):
+
+```bash
+bash ml/vision/train_gpu.sh                      # entorno, datos, entrenamiento (40 épocas), evaluación y zip
+bash ml/vision/install_model.sh ml/vision/runs/synth-recetas-nano-1/onnx   # en el equipo con Docker
+```
+
+- Genera bandejas **sintéticas** (`synth.py --recipe-classes`) con las clases de las recetas de demo
+  (`empanada_pino`, `canape_salmon`, `brocheta_pollo`), las divide por sesión con aumentos, entrena RF-DETR Nano,
+  exporta ONNX + `model.json` y lo evalúa con el mismo detector de la API: en el split de test (`eval_onnx.py`) y en
+  `fotos-prueba/` contra `conteos.csv` (`count_test_photos.py`).
+- Variables: `EPOCHS`, `BATCH`, `SESSIONS`, `PER_SESSION`, `AUGMENT`, `DATA`, `MODEL`, `SKIP_INSTALL=1`, `PYTHON`.
+- Deja `runs/<modelo>/modelo-<modelo>.zip`. El `.onnx` **no se sube al repo** (`.gitignore`): compartirlo por Drive o
+  como release. `install_model.sh` lo copia a `/data/models/vision/` de la API y la reinicia.
+- El tiempo de entrenamiento en GPU no está medido. En CPU el entrenamiento de prueba no terminó (`runs/smoke.log`).
+- Es un modelo para **probar la función**: reconoce dibujos, no fotos reales. Para el caso real se repite con fotos
+  de bandejas de la pyme (ver más abajo) y las métricas van al model card como del caso real solo entonces.
+
 ## Entorno
 
 ```bash

@@ -34,12 +34,13 @@ aquí **no** representan el caso real (AGENTS.md, F2 y §10). Para regenerarlas:
 `vision_model_unavailable` ("El conteo por foto no está disponible por ahora. Cuenta a mano.") y la pantalla ofrece
 contar a mano. Con estas fotos se puede probar ese camino: subir la foto, ingresar el conteo y confirmar.
 
-Para que cuente solo:
+Para que cuente solo (lo hace quien tenga GPU; detalle en `ml/vision/README.md`):
 
-1. Entrenar RF-DETR Nano con `ml/vision/colab_train.ipynb` en Colab o Kaggle con GPU. En un equipo sin GPU el
-   entrenamiento de prueba no terminó (`runs/smoke.log`). Para probar el pipeline sirven los datos sintéticos
-   (`synth.py`); para el caso real hacen falta fotos de bandejas de la pyme (ver `ml/vision/README.md`).
-2. Dejar `model.onnx` y `model.json` (clases en el orden del modelo) en la ruta de `VISION_MODEL_PATH`.
-3. Las clases del modelo deben coincidir con el `vision_class` de las recetas (por ejemplo `empanada_pino`). El
-   generador sintético usa clases genéricas (`empanada`, `canape`, `brocheta`): hay que renombrarlas al entrenar o
-   ajustar las recetas.
+```bash
+bash ml/vision/train_gpu.sh                                            # entrena y evalúa con estas fotos
+bash ml/vision/install_model.sh ml/vision/runs/synth-recetas-nano-1/onnx   # lo instala en la API
+```
+
+El modelo se entrena con las clases de las recetas de demo (`empanada_pino`, `canape_salmon`, `brocheta_pollo`), así
+el conteo se une con el producto en Aromos y en Llaima. `count_test_photos.py` compara lo que cuenta con
+`conteos.csv` usando el mismo detector de la API.

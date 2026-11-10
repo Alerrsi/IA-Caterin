@@ -24,6 +24,8 @@ Que al terminar una tanda de producción la emprendedora saque una foto a la ban
 - [x] El ONNX se registra en `models.lock.yaml` con su sha256. — **hecho**
 - [x] Medición de latencia de punta a punta en el endpoint. — **hecho (con foto de 12 MP sintética; repetir con JPEG real, T10)**
 
+- [ ] **Modelo de prueba entrenado (10-nov-2026, encargado a quien tenga GPU):** `bash ml/vision/train_gpu.sh` genera datos sintéticos con las clases de las recetas de demo, entrena RF-DETR Nano, exporta ONNX + `model.json` y lo evalúa contra `ml/vision/fotos-prueba/conteos.csv`. Después, `bash ml/vision/install_model.sh <carpeta onnx>` lo instala en la API. Hasta entonces `/vision/count` responde 503 y se cuenta a mano. Probado sin GPU: generar los datos, dividirlos, verificarlos y comparar con un detector simulado. El entrenamiento y el export **no se han corrido**.
+
 ## Criterios de aceptación
 - `POST /vision/count` con una foto de celular de 12 MP devuelve el conteo en p95 ≤ 2 s en el equipo de referencia (**propuesta**, se mide e informa aunque no alcance).
 - La corrección de la usuaria queda en `production_record` con el conteo detectado, el confirmado, la versión del modelo y las detecciones.
