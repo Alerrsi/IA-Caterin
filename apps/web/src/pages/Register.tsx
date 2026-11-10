@@ -42,9 +42,10 @@ export default function Register() {
     form.pyme.trim().length >= 2 && form.name.trim().length >= 2 && form.email.includes('@') && form.password.length >= 10
 
   return (
-    <main className="mx-auto w-full max-w-md px-4 pb-16 pt-10">
-      <h1 className="text-4xl font-bold text-brand">{t.appName}</h1>
-      <h2 className="mb-6 mt-2 text-2xl font-bold text-stone-900">{t.register.title}</h2>
+    <main className="flex min-h-dvh items-start justify-center bg-surface-container px-4 py-10 md:items-center">
+      <div className="w-full max-w-md rounded-3xl border border-outline-variant bg-surface-container-lowest p-6 md:p-10">
+      <h1 className="text-3xl font-normal text-on-surface">{t.appName}</h1>
+      <h2 className="mb-6 mt-2 text-2xl font-medium text-on-surface">{t.register.title}</h2>
       <form onSubmit={submit} className="space-y-4" noValidate>
         <Field label={t.register.pyme}>
           <input className={inputClass} autoComplete="organization" value={form.pyme} onChange={set('pyme')} />
@@ -80,10 +81,11 @@ export default function Register() {
         </Button>
       </form>
       <p className="mt-6 text-center">
-        <a href="#/" className="inline-block min-h-12 py-3 text-lg font-semibold text-brand underline underline-offset-4">
+        <a href="#/" className="inline-block min-h-12 py-3 text-lg font-medium text-primary underline underline-offset-4">
           {t.register.toLogin}
         </a>
       </p>
+    </div>
     </main>
   )
 }

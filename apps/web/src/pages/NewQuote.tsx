@@ -186,8 +186,8 @@ export default function NewQuote({ portal = false }: { portal?: boolean }) {
 
   if (step === 'paste') {
     return (
-      <Page title={t.quote.title} onBack={() => navigate('/')}>
-        <p className="mb-3 font-semibold text-stone-700">{t.quote.step1}</p>
+      <Page title={t.quote.title} onBack={() => navigate('/')} size="narrow">
+        <p className="mb-3 font-medium text-on-surface-variant">{t.quote.step1}</p>
         <Field label={portal ? t.portal.pasteLabel : t.quote.pasteLabel}>
           <textarea
             className={`${inputClass} min-h-40`}
@@ -217,8 +217,8 @@ export default function NewQuote({ portal = false }: { portal?: boolean }) {
 
   return (
     <Page title={t.quote.title} onBack={() => setStep('paste')}>
-      <p className="font-semibold text-stone-700">{t.quote.step2}</p>
-      <p className="mb-4 text-stone-700">{t.quote.reviewHint}</p>
+      <p className="font-medium text-on-surface-variant">{t.quote.step2}</p>
+      <p className="mb-4 text-on-surface-variant">{t.quote.reviewHint}</p>
       {notice && (
         <div className="mb-4">
           <Alert kind="warning">{notice}</Alert>
@@ -247,12 +247,12 @@ export default function NewQuote({ portal = false }: { portal?: boolean }) {
         </div>
       </div>
 
-      <h2 className="mb-2 mt-6 text-xl font-bold text-stone-900">{t.quote.products}</h2>
-      <ul className="space-y-4">
+      <h2 className="mb-2 mt-6 text-xl font-medium text-on-surface">{t.quote.products}</h2>
+      <ul className="grid items-start gap-4 lg:grid-cols-2">
         {lines.map((line, idx) => (
-          <li key={line.key} className="rounded-2xl bg-white p-4 shadow-sm" data-testid="order-line">
+          <li key={line.key} className="rounded-xl bg-surface-container-lowest p-4 border border-outline-variant" data-testid="order-line">
             {line.requested_name && (
-              <p className="mb-2 text-sm text-stone-600">
+              <p className="mb-2 text-sm text-on-surface-variant">
                 {portal ? t.portal.asked(line.requested_name) : t.quote.asked(line.requested_name)}
               </p>
             )}

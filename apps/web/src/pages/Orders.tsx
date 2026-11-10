@@ -83,25 +83,25 @@ export default function Orders() {
         <>
           {requests.length > 0 && (
             <section aria-labelledby="requests-title" className="mb-8">
-              <h2 id="requests-title" className="text-xl font-bold text-stone-900">
+              <h2 id="requests-title" className="text-xl font-medium text-on-surface">
                 {t.orders.requestsTitle} ({requests.length})
               </h2>
-              <p className="mb-3 text-stone-700">{t.orders.requestsHint}</p>
-              <ul className="space-y-4">
+              <p className="mb-3 text-on-surface-variant">{t.orders.requestsHint}</p>
+              <ul className="grid items-start gap-4 lg:grid-cols-2">
                 {requests.map((o) => (
-                  <li key={o.id} className="rounded-2xl border-2 border-sky-700 bg-white p-4 shadow-sm" data-testid="request">
+                  <li key={o.id} className="rounded-xl border border-info bg-surface-container-lowest p-4" data-testid="request">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <p className="text-lg font-bold">{o.customer_name}</p>
-                        <p className="text-stone-700">
+                        <p className="text-lg font-medium">{o.customer_name}</p>
+                        <p className="text-on-surface-variant">
                           {o.event_date ? formatDate(o.event_date) : t.orders.noDate}
                           {o.submitted_at && ` · ${t.orders.sentOn(formatDate(o.submitted_at))}`}
                         </p>
                       </div>
                       <StatusChip status={o.status}>{t.orders.status[o.status]}</StatusChip>
                     </div>
-                    <p className="mt-2 text-stone-700">{linesText(o)}</p>
-                    {o.notes && <p className="mt-1 text-stone-700">{t.orders.customerNotes(o.notes)}</p>}
+                    <p className="mt-2 text-on-surface-variant">{linesText(o)}</p>
+                    {o.notes && <p className="mt-1 text-on-surface-variant">{t.orders.customerNotes(o.notes)}</p>}
                     <div className="mt-3 flex gap-3">
                       {o.last_quote_id && (
                         <Button variant="secondary" className="flex-1" onClick={() => navigate(`/cotizaciones/${o.last_quote_id}`)}>
@@ -135,23 +135,23 @@ export default function Orders() {
               </ul>
             </section>
           )}
-          {requests.length > 0 && others.length > 0 && <h2 className="mb-3 text-xl font-bold">{t.orders.otherOrders}</h2>}
+          {requests.length > 0 && others.length > 0 && <h2 className="mb-3 text-xl font-medium">{t.orders.otherOrders}</h2>}
           {others.length === 0 && requests.length === 0 ? (
             <p>{t.orders.empty}</p>
           ) : (
-            <ul className="space-y-4">
+            <ul className="grid items-start gap-4 lg:grid-cols-2">
               {others.map((o) => (
-                <li key={o.id} className="rounded-2xl bg-white p-4 shadow-sm">
+                <li key={o.id} className="rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <p className="text-lg font-bold">{o.customer_name}</p>
-                      <p className="text-stone-700">{o.event_date ? formatDate(o.event_date) : t.orders.noDate}</p>
-                      {o.from_customer && <p className="text-sm text-stone-600">{t.orders.fromCustomer}</p>}
+                      <p className="text-lg font-medium">{o.customer_name}</p>
+                      <p className="text-on-surface-variant">{o.event_date ? formatDate(o.event_date) : t.orders.noDate}</p>
+                      {o.from_customer && <p className="text-sm text-on-surface-variant">{t.orders.fromCustomer}</p>}
                     </div>
                     <StatusChip status={o.status}>{t.orders.status[o.status]}</StatusChip>
                   </div>
-                  <p className="mt-2 text-stone-700">{linesText(o)}</p>
-                  {o.owner_message && <p className="mt-1 text-sm text-stone-600">«{o.owner_message}»</p>}
+                  <p className="mt-2 text-on-surface-variant">{linesText(o)}</p>
+                  {o.owner_message && <p className="mt-1 text-sm text-on-surface-variant">«{o.owner_message}»</p>}
                   <div className="mt-3 flex gap-3">
                     {o.last_quote_id && (
                       <Button variant="secondary" className="flex-1" onClick={() => navigate(`/cotizaciones/${o.last_quote_id}`)}>

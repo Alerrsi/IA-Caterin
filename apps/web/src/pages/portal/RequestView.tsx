@@ -61,14 +61,14 @@ export default function RequestView({ id }: { id: string }) {
     <Page title={t.portal.requestTitle} onBack={() => navigate('/')}>
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <StatusChip status={req.status}>{t.portal.status[req.status]}</StatusChip>
-        {req.event_date && <span className="text-stone-700">{t.portal.eventDate(formatDate(req.event_date))}</span>}
-        {req.guests && <span className="text-stone-700">· {t.portal.guests(req.guests)}</span>}
+        {req.event_date && <span className="text-on-surface-variant">{t.portal.eventDate(formatDate(req.event_date))}</span>}
+        {req.guests && <span className="text-on-surface-variant">· {t.portal.guests(req.guests)}</span>}
       </div>
 
       {req.owner_message && (
         <div className="mb-4">
           <Alert kind="info">
-            <p className="font-semibold">{t.portal.ownerMessage}</p>
+            <p className="font-medium">{t.portal.ownerMessage}</p>
             <p>{req.owner_message}</p>
           </Alert>
         </div>
@@ -89,38 +89,23 @@ export default function RequestView({ id }: { id: string }) {
         </div>
       )}
 
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
+        <aside className="space-y-4 lg:sticky lg:top-6 lg:col-start-2 lg:row-start-1">
       {q?.is_complete && (
-        <section className="rounded-2xl bg-white p-5 shadow-sm" aria-label={t.view.total}>
-          <p className="text-stone-700">{t.view.total}</p>
-          <p className="text-4xl font-bold text-stone-900" data-testid="request-total">
+        <section className="rounded-xl bg-surface-container-lowest p-5 border border-outline-variant" aria-label={t.view.total}>
+          <p className="text-on-surface-variant">{t.view.total}</p>
+          <p className="text-4xl font-normal text-on-surface" data-testid="request-total">
             {formatCLP(q.total_clp)}
           </p>
-          <dl className="mt-3 grid grid-cols-2 gap-1 text-stone-800">
+          <dl className="mt-3 grid grid-cols-2 gap-1 text-on-surface">
             <dt>{t.view.net}</dt>
             <dd className="text-right">{formatCLP(q.net_clp)}</dd>
             <dt>{t.view.vat(q.vat_pct)}</dt>
             <dd className="text-right">{formatCLP(q.vat_clp)}</dd>
           </dl>
-          {q.valid_until && <p className="mt-2 text-sm text-stone-600">{t.view.validUntil(formatDate(q.valid_until))}</p>}
+          {q.valid_until && <p className="mt-2 text-sm text-on-surface-variant">{t.view.validUntil(formatDate(q.valid_until))}</p>}
         </section>
       )}
-
-      <h2 className="mb-2 mt-6 text-xl font-bold">{t.view.products}</h2>
-      <ul className="divide-y divide-stone-200 rounded-2xl bg-white shadow-sm">
-        {(q?.products ?? req.lines.map((l) => ({ ...l, unit_price_clp: null, subtotal_clp: null }))).map((p, i) => (
-          <li key={i} className="flex items-start justify-between gap-3 p-4">
-            <div>
-              <p className="font-semibold">{p.name}</p>
-              <p className="text-stone-700">
-                {p.qty} {p.unit_label}
-                {p.unit_price_clp !== null && ` · ${formatCLP(p.unit_price_clp)} ${t.view.unitPrice}`}
-              </p>
-            </div>
-            <p className="font-semibold">{p.subtotal_clp === null ? '—' : formatCLP(p.subtotal_clp)}</p>
-          </li>
-        ))}
-      </ul>
-      {req.notes && <p className="mt-2 text-stone-700">{t.orders.customerNotes(req.notes)}</p>}
 
       {error && (
         <div className="mt-4">
@@ -128,7 +113,7 @@ export default function RequestView({ id }: { id: string }) {
         </div>
       )}
 
-      <div className="mt-6 space-y-3">
+      <div className="space-y-3">
         {req.can_send && (
           <Button className="w-full" onClick={() => act('send')} disabled={busy !== null}>
             {busy === 'send' ? t.portal.sending : t.portal.send(pyme?.name ?? '')}
@@ -149,6 +134,27 @@ export default function RequestView({ id }: { id: string }) {
             {t.portal.cancel}
           </Button>
         )}
+      </div>
+        </aside>
+        <div className="min-w-0 lg:col-start-1 lg:row-start-1">
+      <h2 className="mb-2 text-lg font-medium">{t.view.products}</h2>
+      <ul className="divide-y divide-outline-variant rounded-xl bg-surface-container-lowest border border-outline-variant">
+        {(q?.products ?? req.lines.map((l) => ({ ...l, unit_price_clp: null, subtotal_clp: null }))).map((p, i) => (
+          <li key={i} className="flex items-start justify-between gap-3 p-4">
+            <div>
+              <p className="font-medium">{p.name}</p>
+              <p className="text-on-surface-variant">
+                {p.qty} {p.unit_label}
+                {p.unit_price_clp !== null && ` · ${formatCLP(p.unit_price_clp)} ${t.view.unitPrice}`}
+              </p>
+            </div>
+            <p className="font-medium">{p.subtotal_clp === null ? '—' : formatCLP(p.subtotal_clp)}</p>
+          </li>
+        ))}
+      </ul>
+      {req.notes && <p className="mt-2 text-on-surface-variant">{t.orders.customerNotes(req.notes)}</p>}
+
+        </div>
       </div>
     </Page>
   )

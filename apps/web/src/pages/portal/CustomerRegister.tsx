@@ -37,8 +37,9 @@ export default function CustomerRegister({ code }: { code: string }) {
   }
 
   return (
-    <main className="mx-auto w-full max-w-md px-4 pt-10">
-      <h1 className="text-3xl font-bold text-brand">{t.portal.registerTitle}</h1>
+    <main className="flex min-h-dvh items-start justify-center bg-surface-container px-4 py-10 md:items-center">
+      <div className="w-full max-w-md rounded-3xl border border-outline-variant bg-surface-container-lowest p-6 md:p-10">
+      <h1 className="text-2xl font-normal text-on-surface">{t.portal.registerTitle}</h1>
       {badLink ? (
         <div className="mt-6">
           <Alert>{t.portal.badLink}</Alert>
@@ -47,7 +48,7 @@ export default function CustomerRegister({ code }: { code: string }) {
         <Spinner label={t.loading} />
       ) : (
         <>
-          <p className="mb-6 mt-1 text-stone-700">{t.portal.registerFor(pyme.name)}</p>
+          <p className="mb-6 mt-1 text-on-surface-variant">{t.portal.registerFor(pyme.name)}</p>
           <form onSubmit={submit} className="space-y-4" noValidate>
             <Field label={t.register.name}>
               <input className={inputClass} value={form.name} onChange={set('name')} autoComplete="name" required />
@@ -85,10 +86,11 @@ export default function CustomerRegister({ code }: { code: string }) {
         </>
       )}
       <p className="mt-6 text-center">
-        <a href="#/" className="inline-block min-h-12 py-3 text-lg font-semibold text-brand underline underline-offset-4">
+        <a href="#/" className="inline-block min-h-12 py-3 text-lg font-medium text-primary underline underline-offset-4">
           {t.register.toLogin}
         </a>
       </p>
+    </div>
     </main>
   )
 }

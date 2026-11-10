@@ -95,7 +95,7 @@ export default function Inventory() {
       <Button className="mb-4 w-full" onClick={() => navigate('/inventario/nuevo')}>
         {t.inventory.newItem}
       </Button>
-      <label htmlFor="inventory-search" className="mb-1 block font-semibold text-stone-800">
+      <label htmlFor="inventory-search" className="mb-1 block font-medium text-on-surface">
         {t.inventory.search}
       </label>
       <input
@@ -110,7 +110,7 @@ export default function Inventory() {
       <label className="mt-3 flex min-h-12 items-center gap-3 text-lg">
         <input
           type="checkbox"
-          className="h-6 w-6 accent-orange-700"
+          className="h-6 w-6 accent-primary"
           checked={onlyLow}
           onChange={(e) => setOnlyLow(e.target.checked)}
         />
@@ -120,7 +120,7 @@ export default function Inventory() {
         <label className="flex min-h-12 items-center gap-3 text-lg">
           <input
             type="checkbox"
-            className="h-6 w-6 accent-orange-700"
+            className="h-6 w-6 accent-primary"
             checked={onlyNoPrice}
             onChange={(e) => setOnlyNoPrice(e.target.checked)}
           />
@@ -139,30 +139,30 @@ export default function Inventory() {
       ) : items.length === 0 ? (
         <p className="mt-4">{t.inventory.empty}</p>
       ) : (
-        <ul className="mt-4 space-y-3">
+        <ul className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {items.map((ing) => (
-            <li key={ing.id} className="rounded-2xl bg-white p-4 shadow-sm">
+            <li key={ing.id} className="rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
               <div className="flex items-center gap-3">
                 <button
                   type="button"
                   onClick={() => navigate(`/inventario/${ing.id}`)}
-                  className="min-h-12 min-w-0 flex-1 rounded-xl text-left focus-visible:ring-4 focus-visible:ring-orange-300"
+                  className="min-h-12 min-w-0 flex-1 rounded-xl text-left focus-visible:ring-4 focus-visible:ring-primary/40"
                 >
-                  <span className="block text-lg font-bold text-stone-900">{ing.name}</span>
-                  <span className="block text-stone-800">{formatStock(ing.stock_qty, ing.base_unit)}</span>
+                  <span className="block text-lg font-medium text-on-surface">{ing.name}</span>
+                  <span className="block text-on-surface">{formatStock(ing.stock_qty, ing.base_unit)}</span>
                   {ing.is_low && (
-                    <span className="mt-1 inline-block rounded-full bg-amber-100 px-2 py-0.5 text-sm font-semibold text-amber-950">
+                    <span className="mt-1 inline-block rounded-full bg-warning-container px-2 py-0.5 text-sm font-medium text-on-warning-container">
                       {t.inventory.low}
                       {ing.min_stock_qty && ` · ${t.inventory.min(formatStock(ing.min_stock_qty, ing.base_unit))}`}
                     </span>
                   )}
                   {priced && !priced.has(ing.id) && (
-                    <span className="mt-1 ml-1 inline-block rounded-full bg-red-100 px-2 py-0.5 text-sm font-semibold text-red-900">
+                    <span className="mt-1 ml-1 inline-block rounded-full bg-error-container px-2 py-0.5 text-sm font-medium text-on-error-container">
                       {t.inventory.noPrice}
                     </span>
                   )}
                   {pendingIds.has(ing.id) && (
-                    <span className="mt-1 ml-1 inline-block rounded-full bg-stone-200 px-2 py-0.5 text-sm font-semibold text-stone-900">
+                    <span className="mt-1 ml-1 inline-block rounded-full bg-surface-container-highest px-2 py-0.5 text-sm font-medium text-on-surface">
                       {t.inventory.pendingBadge}
                     </span>
                   )}

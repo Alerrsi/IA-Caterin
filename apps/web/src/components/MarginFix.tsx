@@ -40,9 +40,9 @@ export function MarginFix({ onSaved }: { onSaved: () => void | Promise<void> }) 
   }
 
   return (
-    <form onSubmit={submit} className="space-y-3 rounded-2xl border-l-4 border-amber-600 bg-amber-50 p-4" noValidate>
-      <p className="font-bold text-amber-950">{t.marginFix.title}</p>
-      <p className="text-amber-950">{t.marginFix.body}</p>
+    <form onSubmit={submit} className="space-y-3 rounded-xl border-l-4 border-warning bg-warning-container p-4" noValidate>
+      <p className="font-medium text-on-warning-container">{t.marginFix.title}</p>
+      <p className="text-on-warning-container">{t.marginFix.body}</p>
       <Field label={t.marginFix.label}>
         <input className={inputClass} inputMode="decimal" value={value} onChange={(e) => setValue(e.target.value)} />
       </Field>

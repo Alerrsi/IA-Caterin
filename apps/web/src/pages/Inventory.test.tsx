@@ -69,7 +69,7 @@ test('lista con stock legible, bajo el mínimo y búsqueda sin tildes', async ()
   expect(screen.queryByText('Sal')).not.toBeInTheDocument()
   await user.clear(screen.getByLabelText('Buscar insumo'))
   await user.click(screen.getByLabelText('Solo lo que falta'))
-  expect(screen.getAllByRole('listitem')).toHaveLength(1)
+  expect(within(screen.getByRole('main')).getAllByRole('listitem')).toHaveLength(1) // sin contar el menú
 })
 
 test('sumar encola el movimiento, lo envía con Idempotency-Key y actualiza el stock', async () => {

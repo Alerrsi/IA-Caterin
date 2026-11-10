@@ -1,28 +1,66 @@
 import { loadAllIngredients, type Ingredient, type OrderOut } from '../api'
 import { useAuth } from '../auth'
-import { Button } from '../components/ui'
+import { Icon, type IconName } from '../components/Icon'
 import { t } from '../i18n'
 import { useCached } from '../offline/cache'
 import { navigate } from '../router'
 
-function BigAction({ label, hint, onClick }: { label: string; hint: string; onClick: () => void }) {
+/** Acceso principal: tarjeta MD3 con ícono. La primera ("Cotizar") va destacada con el contenedor primario. */
+function ActionCard({
+  label,
+  hint,
+  icon,
+  onClick,
+  featured = false,
+}: {
+  label: string
+  hint: string
+  icon: IconName
+  onClick: () => void
+  featured?: boolean
+}) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="block w-full rounded-2xl border-2 border-brand bg-white p-5 text-left shadow-sm hover:bg-orange-50 focus-visible:ring-4 focus-visible:ring-orange-300"
+      className={`flex h-full w-full items-start gap-4 rounded-xl p-5 text-left transition hover:shadow-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 ${
+        featured
+          ? 'bg-primary-container text-on-primary-container'
+          : 'border border-outline-variant bg-surface-container-lowest text-on-surface'
+      }`}
     >
-      <span className="block text-xl font-bold text-brand">{label}</span>
-      <span className="mt-1 block text-stone-700">{hint}</span>
+      <span
+        className={`inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${
+          featured ? 'bg-primary text-on-primary' : 'bg-secondary-container text-on-secondary-container'
+        }`}
+      >
+        <Icon name={icon} />
+      </span>
+      <span>
+        <span className="block text-lg font-medium">{label}</span>
+        <span className={`mt-1 block ${featured ? '' : 'text-on-surface-variant'}`}>{hint}</span>
+      </span>
     </button>
   )
 }
 
-function SmallAction({ label, onClick }: { label: string; onClick: () => void }) {
+function AlertRow({ text, tone, onClick }: { text: string; tone: 'warning' | 'info' | 'plain'; onClick: () => void }) {
+  const styles = {
+    warning: 'bg-warning-container text-on-warning-container',
+    info: 'bg-info-container text-on-info-container',
+    plain: 'text-on-surface hover:bg-on-surface/8',
+  }[tone]
   return (
-    <Button variant="secondary" className="w-full" onClick={onClick}>
-      {label}
-    </Button>
+    <li>
+      <button
+        type="button"
+        onClick={onClick}
+        className={`flex min-h-12 w-full items-center rounded-lg px-4 text-left text-base font-medium focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 ${styles}`}
+      >
+        {tone === 'warning' && '⚠ '}
+        {text}
+      </button>
+    </li>
   )
 }
 
@@ -30,48 +68,32 @@ function SmallAction({ label, onClick }: { label: string; onClick: () => void })
 function Alerts() {
   const ingredients = useCached<Ingredient[]>('ingredients', loadAllIngredients)
   const orders = useCached<OrderOut[]>('orders:upcoming', '/orders?upcoming_days=7')
+  const requested = useCached<OrderOut[]>('orders:requested', '/orders?status=requested').value?.data.length
   const low = ingredients.value?.data.filter((i) => i.is_active && i.is_low).length
   const upcoming = orders.value?.data.filter((o) => o.status === 'draft' || o.status === 'confirmed').length
-  const requested = useCached<OrderOut[]>('orders:requested', '/orders?status=requested').value?.data.length
   if (low === undefined && upcoming === undefined) return null
   return (
-    <section aria-labelledby="alerts-title" className="mb-6 rounded-2xl bg-white p-4 shadow-sm">
-      <h2 id="alerts-title" className="mb-2 text-lg font-bold text-stone-900">
+    <section aria-labelledby="alerts-title" className="rounded-xl border border-outline-variant bg-surface-container-lowest p-4 md:p-5">
+      <h2 id="alerts-title" className="mb-3 text-base font-medium text-on-surface-variant">
         {t.home.alertsTitle}
       </h2>
       <ul className="space-y-2">
-        {low !== undefined && (
-          <li>
-            <button
-              type="button"
-              onClick={() => navigate('/inventario')}
-              className={`min-h-12 w-full rounded-xl px-3 text-left text-lg font-semibold underline-offset-4 hover:underline focus-visible:ring-4 focus-visible:ring-orange-300 ${low > 0 ? 'bg-amber-50 text-amber-950' : 'text-stone-800'}`}
-            >
-              {low > 0 ? `⚠ ${t.home.lowStock(low)}` : t.home.noLowStock}
-            </button>
-          </li>
-        )}
         {requested !== undefined && requested > 0 && (
-          <li>
-            <button
-              type="button"
-              onClick={() => navigate('/pedidos')}
-              className="min-h-12 w-full rounded-xl bg-sky-50 px-3 text-left text-lg font-semibold text-sky-950 underline-offset-4 hover:underline focus-visible:ring-4 focus-visible:ring-orange-300"
-            >
-              {t.home.requests(requested)}
-            </button>
-          </li>
+          <AlertRow text={t.home.requests(requested)} tone="info" onClick={() => navigate('/pedidos')} />
+        )}
+        {low !== undefined && (
+          <AlertRow
+            text={low > 0 ? t.home.lowStock(low) : t.home.noLowStock}
+            tone={low > 0 ? 'warning' : 'plain'}
+            onClick={() => navigate('/inventario')}
+          />
         )}
         {upcoming !== undefined && (
-          <li>
-            <button
-              type="button"
-              onClick={() => navigate('/pedidos')}
-              className="min-h-12 w-full rounded-xl px-3 text-left text-lg font-semibold text-stone-800 underline-offset-4 hover:underline focus-visible:ring-4 focus-visible:ring-orange-300"
-            >
-              {upcoming > 0 ? t.home.upcoming(upcoming) : t.home.noUpcoming}
-            </button>
-          </li>
+          <AlertRow
+            text={upcoming > 0 ? t.home.upcoming(upcoming) : t.home.noUpcoming}
+            tone="plain"
+            onClick={() => navigate('/pedidos')}
+          />
         )}
       </ul>
     </section>
@@ -79,30 +101,38 @@ function Alerts() {
 }
 
 export default function Home() {
-  const { user, pyme, logout } = useAuth()
+  const { user, pyme } = useAuth()
   const owner = user?.role === 'owner'
   return (
-    <main className="mx-auto w-full max-w-xl px-4 pb-16 pt-6">
-      <p className="text-stone-700">{pyme?.name}</p>
-      <h1 className="mb-6 text-3xl font-bold text-brand">{t.home.hello(user?.full_name.split(' ')[0] ?? '')}</h1>
-      <Alerts />
-      <div className="space-y-4">
-        <BigAction label={t.home.quote} hint={t.home.quoteHint} onClick={() => navigate('/cotizar')} />
-        <BigAction label={t.home.vision} hint={t.home.visionHint} onClick={() => navigate('/foto')} />
-        <BigAction label={t.home.inventory} hint={t.home.inventoryHint} onClick={() => navigate('/inventario')} />
-        <BigAction label={t.home.assistant} hint={t.home.assistantHint} onClick={() => navigate('/preguntar')} />
+    <main className="mx-auto w-full max-w-6xl px-4 pb-24 pt-4 md:px-8 md:pt-6 lg:pb-12">
+      <p className="text-on-surface-variant">{pyme?.name}</p>
+      <h1 className="mb-6 text-3xl font-normal text-on-surface md:text-4xl">
+        {t.home.hello(user?.full_name.split(' ')[0] ?? '')}
+      </h1>
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="lg:order-2">
+          <Alerts />
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:col-span-2 lg:order-1">
+          <div className="sm:col-span-2">
+            <ActionCard featured icon="quote" label={t.home.quote} hint={t.home.quoteHint} onClick={() => navigate('/cotizar')} />
+          </div>
+          <ActionCard icon="camera" label={t.home.vision} hint={t.home.visionHint} onClick={() => navigate('/foto')} />
+          <ActionCard icon="inventory" label={t.home.inventory} hint={t.home.inventoryHint} onClick={() => navigate('/inventario')} />
+          <ActionCard icon="chat" label={t.home.assistant} hint={t.home.assistantHint} onClick={() => navigate('/preguntar')} />
+          <ActionCard icon="orders" label={t.home.orders} hint={t.home.ordersHint} onClick={() => navigate('/pedidos')} />
+          <ActionCard icon="recipes" label={t.home.recipes} hint={t.home.recipesHint} onClick={() => navigate('/recetas')} />
+          {owner && (
+            <ActionCard icon="upload" label={t.home.imports} hint={t.home.importsHint} onClick={() => navigate('/importar')} />
+          )}
+          {owner && (
+            <ActionCard icon="settings" label={t.home.settings} hint={t.home.settingsHint} onClick={() => navigate('/ajustes')} />
+          )}
+          {owner && (
+            <ActionCard icon="metrics" label={t.home.metrics} hint={t.home.metricsHint} onClick={() => navigate('/metricas')} />
+          )}
+        </div>
       </div>
-      <h2 className="mb-3 mt-8 text-lg font-bold text-stone-900">{t.home.more}</h2>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <SmallAction label={t.home.orders} onClick={() => navigate('/pedidos')} />
-        <SmallAction label={t.home.recipes} onClick={() => navigate('/recetas')} />
-        {owner && <SmallAction label={t.home.imports} onClick={() => navigate('/importar')} />}
-        {owner && <SmallAction label={t.home.settings} onClick={() => navigate('/ajustes')} />}
-        {owner && <SmallAction label={t.home.metrics} onClick={() => navigate('/metricas')} />}
-      </div>
-      <Button variant="ghost" className="mt-8" onClick={() => logout()}>
-        {t.home.logout}
-      </Button>
     </main>
   )
 }

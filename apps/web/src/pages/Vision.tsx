@@ -33,7 +33,7 @@ function objectUrl(blob: Blob): string | null {
 }
 
 const fileButton =
-  'flex min-h-14 w-full cursor-pointer items-center justify-center rounded-2xl px-4 py-3 text-xl font-bold focus-within:ring-4 focus-within:ring-orange-300'
+  'flex min-h-14 w-full cursor-pointer items-center justify-center rounded-full px-6 py-3 text-lg font-medium focus-within:ring-4 focus-within:ring-primary/40'
 
 function PhotoInput({ label, capture, onFile, primary }: { label: string; capture?: boolean; onFile: (f: File) => void; primary?: boolean }) {
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +43,7 @@ function PhotoInput({ label, capture, onFile, primary }: { label: string; captur
   }
   return (
     <label
-      className={`${fileButton} ${primary ? 'bg-brand text-white hover:bg-brand-dark' : 'border-2 border-brand bg-white text-brand hover:bg-orange-50'}`}
+      className={`${fileButton} ${primary ? 'bg-primary text-on-primary hover:bg-primary/90' : 'border border-outline bg-transparent text-primary hover:bg-primary/8'}`}
     >
       {label}
       <input
@@ -59,13 +59,13 @@ function PhotoInput({ label, capture, onFile, primary }: { label: string; captur
 
 function Stepper({ name, value, onChange }: { name: string; value: number; onChange: (n: number) => void }) {
   const btn =
-    'min-h-14 min-w-14 rounded-xl border-2 border-brand bg-white text-3xl font-bold text-brand focus-visible:ring-4 focus-visible:ring-orange-300 disabled:border-stone-300 disabled:text-stone-400'
+    'min-h-14 min-w-14 rounded-full border border-outline bg-transparent text-3xl font-medium text-primary focus-visible:ring-4 focus-visible:ring-primary/40 disabled:border-outline-variant disabled:text-on-surface/40'
   return (
     <div className="flex items-center gap-3">
       <button type="button" className={btn} aria-label={t.vision.decrease(name)} disabled={value <= 0} onClick={() => onChange(Math.max(0, value - 1))}>
         −
       </button>
-      <span className="min-w-12 text-center text-3xl font-bold tabular-nums" aria-live="polite">
+      <span className="min-w-12 text-center text-3xl font-medium tabular-nums" aria-live="polite">
         {value}
       </span>
       <button type="button" className={btn} aria-label={t.vision.increase(name)} onClick={() => onChange(value + 1)}>
@@ -253,7 +253,7 @@ export default function Vision() {
 
   if (stage === 'done') {
     return (
-      <Page title={t.vision.title} onBack={() => navigate('/')}>
+      <Page title={t.vision.title} onBack={() => navigate('/')} size="narrow">
         <div className="space-y-4">
           <Alert kind="info">{doneMsg}</Alert>
           <StarSurvey context="vision" />
@@ -266,15 +266,15 @@ export default function Vision() {
   }
 
   return (
-    <Page title={t.vision.title} onBack={() => navigate('/')}>
+    <Page title={t.vision.title} onBack={() => navigate('/')} size="narrow">
       <div className="space-y-4">
         {!online && <Alert kind="warning">{t.vision.offline}</Alert>}
         {error && <Alert>{error}</Alert>}
         {info && <Alert kind="info">{info}</Alert>}
 
         {pending.length > 0 && stage === 'start' && !photo && (
-          <section className="rounded-2xl bg-white p-4 shadow-sm">
-            <p className="mb-3 font-semibold">{t.vision.pendingPhotos(pending.length)}</p>
+          <section className="rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
+            <p className="mb-3 font-medium">{t.vision.pendingPhotos(pending.length)}</p>
             <div className="flex gap-2">
               <Button className="flex-1" disabled={!online} onClick={() => void countPending()}>
                 {t.vision.countNow}
@@ -288,7 +288,7 @@ export default function Vision() {
 
         {stage === 'start' && !photo && (
           <>
-            <p className="text-lg text-stone-700">{t.vision.intro}</p>
+            <p className="text-lg text-on-surface-variant">{t.vision.intro}</p>
             <PhotoInput label={t.vision.takePhoto} capture primary onFile={onFile} />
             <PhotoInput label={t.vision.choosePhoto} onFile={onFile} />
           </>
@@ -315,16 +315,16 @@ export default function Vision() {
 
         {stage === 'review' && lines.length > 0 && (
           <section className="space-y-3">
-            <h2 className="text-xl font-bold">{t.vision.result}</h2>
+            <h2 className="text-xl font-medium">{t.vision.result}</h2>
             {lines.map((l, i) => {
               const name = l.recipeName ?? l.visionClass
               return (
-                <div key={l.visionClass} className="space-y-3 rounded-2xl bg-white p-4 shadow-sm">
+                <div key={l.visionClass} className="space-y-3 rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
                   {l.recipeName ? (
-                    <p className="text-lg font-bold">{l.recipeName}</p>
+                    <p className="text-lg font-medium">{l.recipeName}</p>
                   ) : (
                     <>
-                      <p className="font-semibold text-stone-800">{t.vision.unknownProduct(l.visionClass)}</p>
+                      <p className="font-medium text-on-surface">{t.vision.unknownProduct(l.visionClass)}</p>
                       <RecipeSelect
                         label={t.vision.product}
                         recipes={finals}
@@ -335,7 +335,7 @@ export default function Vision() {
                       />
                     </>
                   )}
-                  <p className="text-stone-700">{t.vision.detected(l.detected)}</p>
+                  <p className="text-on-surface-variant">{t.vision.detected(l.detected)}</p>
                   <Stepper name={name} value={l.qty} onChange={(qty) => setLine(i, { qty })} />
                 </div>
               )
@@ -347,10 +347,10 @@ export default function Vision() {
         )}
 
         {(stage === 'start' || stage === 'review') && (
-          <section className="rounded-2xl bg-white p-4 shadow-sm">
+          <section className="rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
             {manualOpen ? (
               <div className="space-y-3">
-                <h2 className="text-xl font-bold">{t.vision.manualTitle}</h2>
+                <h2 className="text-xl font-medium">{t.vision.manualTitle}</h2>
                 <RecipeSelect
                   label={t.vision.product}
                   recipes={finals}

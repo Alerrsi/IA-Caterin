@@ -21,8 +21,8 @@ function query(period: PeriodKey): string {
 
 function Card({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="rounded-2xl bg-white p-5 shadow-sm" aria-label={title}>
-      <h2 className="mb-2 text-xl font-bold">{title}</h2>
+    <section className="rounded-xl bg-surface-container-lowest p-5 border border-outline-variant" aria-label={title}>
+      <h2 className="mb-2 text-xl font-medium">{title}</h2>
       {children}
     </section>
   )
@@ -31,21 +31,21 @@ function Card({ title, children }: { title: string; children: ReactNode }) {
 /** Aviso de n bajo. Con n = 0 no se muestra: ahí ya dice "Sin datos". */
 function LowN({ n, show, min }: { n: number; show: boolean; min: number }) {
   if (!show || n === 0) return null
-  return <p className="mt-1 text-sm font-semibold text-amber-900">{t.metrics.lowN(min)}</p>
+  return <p className="mt-1 text-sm font-medium text-on-warning-container">{t.metrics.lowN(min)}</p>
 }
 
 function StatRow({ label, stat, min, format }: { label: string; stat: MetricStat; min: number; format: (v: number | null) => string }) {
   return (
     <div className="py-2">
       <div className="flex items-baseline justify-between gap-2">
-        <span className="text-stone-800">{label}</span>
+        <span className="text-on-surface">{label}</span>
         {stat.value === null ? (
-          <span className="shrink-0 text-lg text-stone-600">{t.metrics.noData}</span>
+          <span className="shrink-0 text-lg text-on-surface-variant">{t.metrics.noData}</span>
         ) : (
-          <span className="shrink-0 text-2xl font-bold text-stone-900">{format(stat.value)}</span>
+          <span className="shrink-0 text-2xl font-medium text-on-surface">{format(stat.value)}</span>
         )}
       </div>
-      <p className="text-sm text-stone-600">{t.metrics.n(stat.n)}</p>
+      <p className="text-sm text-on-surface-variant">{t.metrics.n(stat.n)}</p>
       <LowN n={stat.n} show={stat.low_n} min={min} />
     </div>
   )
@@ -54,7 +54,7 @@ function StatRow({ label, stat, min, format }: { label: string; stat: MetricStat
 function measured(range: { first_measured_on: string | null; last_measured_on: string | null }) {
   if (!range.first_measured_on || !range.last_measured_on) return null
   return (
-    <p className="text-sm text-stone-600">
+    <p className="text-sm text-on-surface-variant">
       {t.metrics.measuredBetween(formatDate(range.first_measured_on), formatDate(range.last_measured_on))}
     </p>
   )
@@ -103,7 +103,7 @@ function BaselineForm({ onSaved }: { onSaved: () => void }) {
 
   return (
     <form onSubmit={submit} className="space-y-3" noValidate>
-      <p className="text-stone-700">{t.metrics.baselineHint}</p>
+      <p className="text-on-surface-variant">{t.metrics.baselineHint}</p>
       <Field label={t.metrics.task}>
         <select className={inputClass} value={task} onChange={(e) => setTask(e.target.value as typeof task)}>
           <option value="quote">{t.metrics.tasks.quote}</option>
@@ -197,7 +197,7 @@ export default function Metrics() {
   const min = summary?.low_n_threshold ?? 5
   return (
     <Page title={t.metrics.title} onBack={() => navigate('/')}>
-      <p className="mb-3 text-stone-700">{t.metrics.intro}</p>
+      <p className="mb-3 text-on-surface-variant">{t.metrics.intro}</p>
       <Field label={t.metrics.period}>
         <select className={inputClass} value={period} onChange={(e) => setPeriod(e.target.value as PeriodKey)}>
           {(['7', '30', '90', 'all'] as const).map((k) => (
@@ -221,13 +221,13 @@ export default function Metrics() {
         )
       ) : (
         <div className="mt-4 space-y-4">
-          <p className="font-semibold text-stone-800" data-testid="metrics-period">
+          <p className="font-medium text-on-surface" data-testid="metrics-period">
             {t.metrics.periodLabel(summary.period.date_from && formatDate(summary.period.date_from), formatDate(summary.period.date_to))}
           </p>
 
           {summary.warnings.length > 0 && (
             <Alert kind="warning">
-              <p className="font-bold">{t.metrics.warnings}</p>
+              <p className="font-medium">{t.metrics.warnings}</p>
               <ul className="ml-5 list-disc">
                 {summary.warnings.map((w) => (
                   <li key={w}>{w}</li>
@@ -237,12 +237,12 @@ export default function Metrics() {
           )}
 
           <Card title={t.metrics.satisfaction}>
-            <p className="text-3xl font-bold text-stone-900">
+            <p className="text-3xl font-medium text-on-surface">
               {summary.satisfaction.mean_stars === null
                 ? t.metrics.noData
                 : t.metrics.stars(formatQty(summary.satisfaction.mean_stars.toFixed(2)))}
             </p>
-            <p className="text-sm text-stone-600">{t.metrics.n(summary.satisfaction.n)}</p>
+            <p className="text-sm text-on-surface-variant">{t.metrics.n(summary.satisfaction.n)}</p>
             <LowN n={summary.satisfaction.n} show={summary.satisfaction.low_n} min={min} />
           </Card>
 
@@ -261,20 +261,20 @@ export default function Metrics() {
           <Card title={t.metrics.assistant}>
             <table className="w-full text-left">
               <thead>
-                <tr className="text-stone-600">
-                  <th className="py-1 font-semibold" scope="col"></th>
-                  <th className="py-1 font-semibold" scope="col">n</th>
-                  <th className="py-1 text-right font-semibold" scope="col">{t.metrics.p50}</th>
-                  <th className="py-1 text-right font-semibold" scope="col">{t.metrics.p95}</th>
+                <tr className="text-on-surface-variant">
+                  <th className="py-1 font-medium" scope="col"></th>
+                  <th className="py-1 font-medium" scope="col">n</th>
+                  <th className="py-1 text-right font-medium" scope="col">{t.metrics.p50}</th>
+                  <th className="py-1 text-right font-medium" scope="col">{t.metrics.p95}</th>
                 </tr>
               </thead>
               <tbody>
                 {summary.assistant.levels.map((lv) => (
-                  <tr key={lv.level} className="border-t border-stone-200">
-                    <th scope="row" className="py-2 font-semibold">
+                  <tr key={lv.level} className="border-t border-outline-variant">
+                    <th scope="row" className="py-2 font-medium">
                       {t.metrics.level(lv.level)}
                     </th>
-                    <td className={lv.low_n ? 'text-amber-900' : ''}>{lv.n}</td>
+                    <td className={lv.low_n ? 'text-on-warning-container' : ''}>{lv.n}</td>
                     <td className="text-right">{formatMs(lv.p50_ms)}</td>
                     <td className="text-right">{formatMs(lv.p95_ms)}</td>
                   </tr>
@@ -287,10 +287,10 @@ export default function Metrics() {
             ].map(({ label, s }) => (
               <div key={label} className="mt-3">
                 <div className="flex items-baseline justify-between gap-2">
-                  <span className="text-stone-800">{label}</span>
-                  <span className="text-2xl font-bold text-stone-900">{formatPct(s.pct)}</span>
+                  <span className="text-on-surface">{label}</span>
+                  <span className="text-2xl font-medium text-on-surface">{formatPct(s.pct)}</span>
                 </div>
-                <p className="text-sm text-stone-600">
+                <p className="text-sm text-on-surface-variant">
                   {t.metrics.ofTotal(s.n, s.total)} · {t.metrics.n(s.total)}
                 </p>
                 <LowN n={s.total} show={s.low_n} min={min} />
@@ -302,8 +302,8 @@ export default function Metrics() {
             {downloading ? t.metrics.downloading : t.metrics.download}
           </Button>
 
-          <details className="rounded-2xl bg-white p-4 shadow-sm">
-            <summary className="min-h-12 cursor-pointer py-2 text-xl font-bold">{t.metrics.baselineTitle}</summary>
+          <details className="rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
+            <summary className="min-h-12 cursor-pointer py-2 text-xl font-medium">{t.metrics.baselineTitle}</summary>
             <BaselineForm onSaved={load} />
           </details>
         </div>

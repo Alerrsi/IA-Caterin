@@ -49,8 +49,8 @@ function LineEditor({
   const chosen = ingredients.find((i) => i.id === line.ingredientId)
   const units = chosen ? ADJUST_UNITS[chosen.base_unit] : []
   return (
-    <fieldset className="space-y-3 rounded-2xl border-2 border-stone-200 bg-white p-4">
-      <legend className="px-1 font-bold text-stone-900">{t.recipeForm.line(n)}</legend>
+    <fieldset className="space-y-3 rounded-xl border border-outline-variant bg-surface-container-lowest p-4">
+      <legend className="px-1 font-medium text-on-surface">{t.recipeForm.line(n)}</legend>
       <Field label={t.recipeForm.search}>
         <input
           type="search"
@@ -189,7 +189,7 @@ export default function RecipeNew() {
   }
 
   return (
-    <Page title={t.recipeForm.title} onBack={() => navigate('/recetas')}>
+    <Page title={t.recipeForm.title} onBack={() => navigate('/recetas')} size="narrow">
       {!online && (
         <div className="mb-4">
           <Alert kind="warning">{t.sync.needsNetwork}</Alert>
@@ -233,7 +233,7 @@ export default function RecipeNew() {
           <label className="flex min-h-12 items-center gap-3 text-lg">
             <input
               type="checkbox"
-              className="h-6 w-6 shrink-0 accent-orange-800"
+              className="h-6 w-6 shrink-0 accent-primary"
               checked={finalProduct}
               onChange={(e) => setFinalProduct(e.target.checked)}
             />
@@ -250,7 +250,7 @@ export default function RecipeNew() {
               />
             </Field>
           )}
-          <h2 className="pt-2 text-lg font-bold text-stone-900">{t.recipeForm.lines}</h2>
+          <h2 className="pt-2 text-lg font-medium text-on-surface">{t.recipeForm.lines}</h2>
           {lines.map((l, i) => (
             <LineEditor
               key={l.key}

@@ -1,4 +1,5 @@
 import { AuthProvider, useAuth } from './auth'
+import { AppShell } from './components/AppShell'
 import { OfflineBanner, Spinner } from './components/ui'
 import { t } from './i18n'
 import Assistant from './pages/Assistant'
@@ -47,8 +48,14 @@ function Routes() {
     if (invite) return <CustomerRegister code={invite.code} />
     return matchPath('/registro', path) ? <Register /> : <Login />
   }
-  if (user?.role === 'customer') return <CustomerRoutes path={path} />
+  return (
+    <AppShell path={path}>
+      {user?.role === 'customer' ? <CustomerRoutes path={path} /> : <StaffRoutes path={path} />}
+    </AppShell>
+  )
+}
 
+function StaffRoutes({ path }: { path: string }) {
   const quote = matchPath('/cotizaciones/:id', path)
   if (quote) return <QuoteView key={quote.id} id={quote.id} />
   if (matchPath('/cotizar', path)) return <NewQuote />

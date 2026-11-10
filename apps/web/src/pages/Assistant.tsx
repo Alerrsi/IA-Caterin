@@ -27,22 +27,22 @@ interface Turn {
 
 function Answer({ turn, onAsk, onFeedback }: { turn: Turn; onAsk: (q: string) => void; onFeedback: (useful: boolean) => void }) {
   return (
-    <div className="rounded-2xl bg-white p-4 shadow-sm">
-      <p className="text-sm font-semibold text-stone-600">{t.assistant.me}</p>
+    <div className="rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
+      <p className="text-sm font-medium text-on-surface-variant">{t.assistant.me}</p>
       {turn.error ? (
         <Alert>{turn.error}</Alert>
       ) : (
         // Texto plano: React escapa todo, nunca se interpreta HTML del modelo (SECURITY, sección 3).
-        <p className="whitespace-pre-line text-lg text-stone-900">{turn.answer || (turn.pending ? t.assistant.thinking : '')}</p>
+        <p className="whitespace-pre-line text-lg text-on-surface">{turn.answer || (turn.pending ? t.assistant.thinking : '')}</p>
       )}
       {turn.sources.length > 0 && (
-        <p className="mt-2 text-sm text-stone-700">
+        <p className="mt-2 text-sm text-on-surface-variant">
           {t.assistant.source}: {turn.sources.map((s) => s.label).join(' · ')}
         </p>
       )}
       {!turn.pending && turn.options.length > 0 && (
         <div className="mt-3 space-y-2">
-          <p className="text-stone-700">{t.assistant.chooseOne}</p>
+          <p className="text-on-surface-variant">{t.assistant.chooseOne}</p>
           {turn.options.map((o) => (
             <Button key={o.question} variant="secondary" className="w-full text-left" onClick={() => onAsk(o.question)}>
               {o.label}
@@ -62,7 +62,7 @@ function Answer({ turn, onAsk, onFeedback }: { turn: Turn; onAsk: (q: string) =>
               </Button>
             </>
           ) : (
-            <p role="status" className="text-stone-700">
+            <p role="status" className="text-on-surface-variant">
               {t.assistant.thanks}
             </p>
           )}
@@ -138,9 +138,9 @@ export default function Assistant() {
   }
 
   return (
-    <Page title={t.assistant.title} onBack={() => navigate('/')}>
+    <Page title={t.assistant.title} onBack={() => navigate('/')} size="narrow">
       {!online && <Alert kind="warning">{t.assistant.offline}</Alert>}
-      {turns.length === 0 && <p className="mb-4 text-lg text-stone-700">{t.assistant.intro}</p>}
+      {turns.length === 0 && <p className="mb-4 text-lg text-on-surface-variant">{t.assistant.intro}</p>}
       {quick.length > 0 && (
         <section aria-label={t.assistant.quick} className="mb-4 flex flex-wrap gap-2">
           {quick.map((qa) => (
@@ -153,7 +153,7 @@ export default function Assistant() {
       <div aria-live="polite" className="space-y-4">
         {turns.map((turn) => (
           <div key={turn.id} className="space-y-2">
-            <p className="ml-8 rounded-2xl bg-orange-100 p-3 text-lg text-stone-900">
+            <p className="ml-8 rounded-xl bg-secondary-container p-3 text-lg text-on-surface">
               <span className="sr-only">{t.assistant.you}: </span>
               {turn.question}
             </p>
@@ -174,7 +174,7 @@ export default function Assistant() {
           placeholder={t.assistant.placeholder}
           maxLength={500}
           autoComplete="off"
-          className="min-h-12 min-w-0 flex-1 rounded-xl border-2 border-stone-400 px-3 text-lg focus:border-brand focus:outline-none"
+          className="min-h-12 min-w-0 flex-1 rounded-md border border-outline bg-surface-container-lowest px-4 text-base hover:border-on-surface focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
         />
         <Button type="submit" className="shrink-0" disabled={busy || !online || !question.trim()}>
           {t.assistant.send}

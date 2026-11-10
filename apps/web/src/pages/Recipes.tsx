@@ -35,7 +35,7 @@ export default function Recipes() {
       <Button className="mb-4 w-full" onClick={() => navigate('/recetas/nueva')}>
         {t.recipeForm.open}
       </Button>
-      <label htmlFor="recipes-search" className="mb-1 block font-semibold text-stone-800">
+      <label htmlFor="recipes-search" className="mb-1 block font-medium text-on-surface">
         {t.recipes.search}
       </label>
       <input
@@ -55,16 +55,16 @@ export default function Recipes() {
       ) : items.length === 0 ? (
         <p className="mt-4">{t.recipes.empty}</p>
       ) : (
-        <ul className="mt-4 space-y-3">
+        <ul className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {items.map((r) => (
             <li key={r.id}>
               <button
                 type="button"
                 onClick={() => navigate(`/recetas/${r.id}`)}
-                className="block min-h-12 w-full rounded-2xl bg-white p-4 text-left shadow-sm focus-visible:ring-4 focus-visible:ring-orange-300"
+                className="block min-h-12 w-full rounded-xl bg-surface-container-lowest p-4 text-left border border-outline-variant focus-visible:ring-4 focus-visible:ring-primary/40"
               >
-                <span className="block text-lg font-bold text-stone-900">{r.name}</span>
-                <span className="block text-stone-700">
+                <span className="block text-lg font-medium text-on-surface">{r.name}</span>
+                <span className="block text-on-surface-variant">
                   {r.yield_qty && t.recipes.yields(formatStock(r.yield_qty, r.yield_unit))}
                   {r.is_final_product && ` · ${t.recipes.finalProduct}`}
                 </span>

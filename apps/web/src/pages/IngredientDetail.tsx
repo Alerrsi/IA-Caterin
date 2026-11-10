@@ -51,26 +51,26 @@ export default function IngredientDetail({ id }: { id: string }) {
         )
       ) : (
         <>
-          <section className="rounded-2xl bg-white p-4 shadow-sm">
-            <p className="text-stone-700">{t.inventory.stock}</p>
-            <p className="text-3xl font-bold text-stone-900">{formatStock(ing.stock_qty, ing.base_unit)}</p>
+          <section className="rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
+            <p className="text-on-surface-variant">{t.inventory.stock}</p>
+            <p className="text-3xl font-medium text-on-surface">{formatStock(ing.stock_qty, ing.base_unit)}</p>
             {ing.min_stock_qty && (
-              <p className={ing.is_low ? 'font-semibold text-amber-900' : 'text-stone-700'}>
+              <p className={ing.is_low ? 'font-medium text-on-warning-container' : 'text-on-surface-variant'}>
                 {ing.is_low && `${t.inventory.low} · `}
                 {t.inventory.min(formatStock(ing.min_stock_qty, ing.base_unit))}
               </p>
             )}
             {ing.category && (
-              <p className="text-stone-700">
+              <p className="text-on-surface-variant">
                 {t.inventory.category}: {ing.category}
               </p>
             )}
             {pendingIds.has(ing.id) && (
-              <span className="mt-1 inline-block rounded-full bg-stone-200 px-2 py-0.5 text-sm font-semibold text-stone-900">
+              <span className="mt-1 inline-block rounded-full bg-surface-container-highest px-2 py-0.5 text-sm font-medium text-on-surface">
                 {t.inventory.pendingBadge}
               </span>
             )}
-            <h2 className="mt-4 font-semibold text-stone-800">{t.inventory.adjust}</h2>
+            <h2 className="mt-4 font-medium text-on-surface">{t.inventory.adjust}</h2>
             <div className="mt-2 flex gap-2">
               <Button variant="secondary" className="flex-1 text-2xl" aria-label={t.inventory.remove(ing.name)} onClick={() => setSign(-1)}>
                 −
@@ -86,23 +86,23 @@ export default function IngredientDetail({ id }: { id: string }) {
 
           <PriceSection ingredient={ing} />
 
-          <section className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
-            <h2 className="mb-2 text-lg font-bold text-stone-900">{t.inventory.history}</h2>
+          <section className="mt-4 rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
+            <h2 className="mb-2 text-lg font-medium text-on-surface">{t.inventory.history}</h2>
             {history.value ? (
               history.value.data.items.length === 0 ? (
                 <p>{t.inventory.noHistory}</p>
               ) : (
-                <ul className="divide-y divide-stone-200">
+                <ul className="divide-y divide-outline-variant">
                   {history.value.data.items.map((m) => (
                     <li key={m.id} className="flex justify-between gap-3 py-2">
                       <span>
-                        <span className="block font-semibold">{t.inventory.reasons[m.reason] ?? m.reason}</span>
-                        <span className="block text-sm text-stone-700">
+                        <span className="block font-medium">{t.inventory.reasons[m.reason] ?? m.reason}</span>
+                        <span className="block text-sm text-on-surface-variant">
                           {savedAtLabel(m.occurred_at)}
                           {m.note ? ` · ${m.note}` : ''}
                         </span>
                       </span>
-                      <span className={`shrink-0 font-semibold ${Number(m.delta_qty) < 0 ? 'text-red-800' : 'text-green-800'}`}>
+                      <span className={`shrink-0 font-medium ${Number(m.delta_qty) < 0 ? 'text-on-error-container' : 'text-on-success-container'}`}>
                         {Number(m.delta_qty) > 0 ? '+' : ''}
                         {formatStock(m.delta_qty, ing.base_unit)}
                       </span>
@@ -111,7 +111,7 @@ export default function IngredientDetail({ id }: { id: string }) {
                 </ul>
               )
             ) : history.error ? (
-              <p className="text-stone-700">{history.error.status === 0 ? t.inventory.historyOffline : history.error.userMessage}</p>
+              <p className="text-on-surface-variant">{history.error.status === 0 ? t.inventory.historyOffline : history.error.userMessage}</p>
             ) : (
               <Spinner label={t.loading} />
             )}

@@ -85,8 +85,8 @@ function PymeForm({ online }: { online: boolean }) {
 
   if (!pyme) return error ? <Alert>{error}</Alert> : <Spinner label={t.loading} />
   return (
-    <form onSubmit={submit} className="space-y-4 rounded-2xl bg-white p-4 shadow-sm" noValidate>
-      <h2 className="text-xl font-bold text-stone-900">{t.settings.pyme}</h2>
+    <form onSubmit={submit} className="space-y-4 rounded-xl bg-surface-container-lowest p-4 border border-outline-variant" noValidate>
+      <h2 className="text-xl font-medium text-on-surface">{t.settings.pyme}</h2>
       <Field label={t.settings.name}>
         <input className={inputClass} value={form.name} onChange={(e) => set('name')(e.target.value)} maxLength={120} />
       </Field>
@@ -105,7 +105,7 @@ function PymeForm({ online }: { online: boolean }) {
       <label className="flex min-h-12 items-center gap-3 text-lg">
         <input
           type="checkbox"
-          className="h-6 w-6 accent-orange-800"
+          className="h-6 w-6 accent-primary"
           checked={form.includesVat}
           onChange={(e) => set('includesVat')(e.target.checked)}
         />
@@ -113,7 +113,7 @@ function PymeForm({ online }: { online: boolean }) {
       </label>
       {error && <Alert>{error}</Alert>}
       {saved && <Alert kind="info">{t.settings.saved}</Alert>}
-      {!online && <p className="text-stone-700">{t.sync.needsNetwork}</p>}
+      {!online && <p className="text-on-surface-variant">{t.sync.needsNetwork}</p>}
       <Button type="submit" className="w-full" disabled={busy || !online}>
         {busy ? t.loading : t.settings.save}
       </Button>
@@ -158,17 +158,17 @@ function Team({ online }: { online: boolean }) {
 
   const ready = form.name.trim().length >= 2 && form.email.includes('@') && form.password.length >= 10
   return (
-    <section className="space-y-4 rounded-2xl bg-white p-4 shadow-sm">
-      <h2 className="text-xl font-bold text-stone-900">{t.settings.team}</h2>
+    <section className="space-y-4 rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
+      <h2 className="text-xl font-medium text-on-surface">{t.settings.team}</h2>
       {users === null ? (
         !error && <Spinner label={t.loading} />
       ) : (
-        <ul className="divide-y divide-stone-200">
+        <ul className="divide-y divide-outline-variant">
           {users.map((u) => (
             <li key={u.id} className="py-2">
-              <p className="font-semibold text-stone-900">{u.full_name}</p>
-              <p className="break-all text-stone-700">{u.email}</p>
-              <p className="text-sm text-stone-700">
+              <p className="font-medium text-on-surface">{u.full_name}</p>
+              <p className="break-all text-on-surface-variant">{u.email}</p>
+              <p className="text-sm text-on-surface-variant">
                 {t.settings.roles[u.role]}
                 {!u.is_active && ` · ${t.settings.inactive}`}
               </p>
@@ -176,8 +176,8 @@ function Team({ online }: { online: boolean }) {
           ))}
         </ul>
       )}
-      <form onSubmit={invite} className="space-y-3 border-t border-stone-200 pt-4" noValidate>
-        <h3 className="text-lg font-bold text-stone-900">{t.settings.invite}</h3>
+      <form onSubmit={invite} className="space-y-3 border-t border-outline-variant pt-4" noValidate>
+        <h3 className="text-lg font-medium text-on-surface">{t.settings.invite}</h3>
         <Field label={t.settings.inviteName}>
           <input className={inputClass} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
         </Field>
@@ -248,13 +248,13 @@ function CustomerPortal({ online }: { online: boolean }) {
 
   const link = code ? customerLink(code) : null
   return (
-    <section className="space-y-3 rounded-2xl bg-white p-4 shadow-sm">
-      <h2 className="text-xl font-bold text-stone-900">{t.settings.customersTitle}</h2>
-      <p className="text-stone-700">{t.settings.customersHint}</p>
+    <section className="space-y-3 rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
+      <h2 className="text-xl font-medium text-on-surface">{t.settings.customersTitle}</h2>
+      <p className="text-on-surface-variant">{t.settings.customersHint}</p>
       {code === undefined && !error && <Spinner label={t.loading} />}
       {link ? (
         <>
-          <p className="break-all rounded-xl bg-stone-100 p-3 font-mono text-base" data-testid="customer-link">
+          <p className="break-all rounded-xl bg-surface-container p-3 font-mono text-base" data-testid="customer-link">
             {link}
           </p>
           <div className="flex flex-wrap gap-3">
@@ -272,7 +272,7 @@ function CustomerPortal({ online }: { online: boolean }) {
       ) : (
         code === null && (
           <>
-            <p className="text-stone-700">{t.settings.customersOff}</p>
+            <p className="text-on-surface-variant">{t.settings.customersOff}</p>
             <Button className="w-full" onClick={() => change('POST')} disabled={busy || !online}>
               {t.settings.customersOpen}
             </Button>
@@ -293,10 +293,12 @@ export default function Settings() {
       {user?.role !== 'owner' ? (
         <Alert kind="info">{t.settings.ownerOnly}</Alert>
       ) : (
-        <div className="space-y-6">
+        <div className="grid items-start gap-6 lg:grid-cols-2">
           <PymeForm online={online} />
-          <CustomerPortal online={online} />
-          <Team online={online} />
+          <div className="space-y-6">
+            <CustomerPortal online={online} />
+            <Team online={online} />
+          </div>
         </div>
       )}
     </Page>

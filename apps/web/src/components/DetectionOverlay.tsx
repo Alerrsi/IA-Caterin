@@ -9,7 +9,7 @@ export function DetectionOverlay({
   boxes: { vision_class: string; box: [number, number, number, number] }[]
 }) {
   return (
-    <div className="relative w-full overflow-hidden rounded-2xl bg-stone-200">
+    <div className="relative w-full overflow-hidden rounded-xl bg-surface-container-highest">
       <img src={src} alt={alt} className="block h-auto w-full" />
       {boxes.map((d, i) => {
         const [x1, y1, x2, y2] = d.box
@@ -17,7 +17,7 @@ export function DetectionOverlay({
           <div
             key={i}
             aria-hidden="true"
-            className="absolute rounded border-2 border-brand bg-orange-500/10"
+            className="absolute rounded border-2 border-primary bg-primary/10"
             style={{
               left: `${x1 * 100}%`,
               top: `${y1 * 100}%`,

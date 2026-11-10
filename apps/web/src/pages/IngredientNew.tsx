@@ -66,7 +66,7 @@ export default function IngredientNew() {
   }
 
   return (
-    <Page title={t.ingredientForm.title} onBack={() => navigate('/inventario')}>
+    <Page title={t.ingredientForm.title} onBack={() => navigate('/inventario')} size="narrow">
       {!online && (
         <div className="mb-4">
           <Alert kind="warning">{t.ingredientForm.needsNetwork}</Alert>
@@ -83,14 +83,14 @@ export default function IngredientNew() {
           />
         </Field>
         <fieldset>
-          <legend className="mb-1 font-semibold text-stone-800">{t.ingredientForm.baseUnit}</legend>
+          <legend className="mb-1 font-medium text-on-surface">{t.ingredientForm.baseUnit}</legend>
           <div className="space-y-1">
             {BASES.map((b) => (
               <label key={b} className="flex min-h-12 items-center gap-3 text-lg">
                 <input
                   type="radio"
                   name="base-unit"
-                  className="h-6 w-6 accent-orange-700"
+                  className="h-6 w-6 accent-primary"
                   checked={base === b}
                   onChange={() => changeBase(b)}
                 />

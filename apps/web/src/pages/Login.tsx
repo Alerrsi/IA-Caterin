@@ -25,9 +25,10 @@ export default function Login() {
   }
 
   return (
-    <main className="mx-auto w-full max-w-md px-4 pt-10">
-      <h1 className="text-4xl font-bold text-brand">{t.appName}</h1>
-      <p className="mb-8 mt-1 text-stone-700">{t.tagline}</p>
+    <main className="flex min-h-dvh items-start justify-center bg-surface-container px-4 py-10 md:items-center">
+      <div className="w-full max-w-md rounded-3xl border border-outline-variant bg-surface-container-lowest p-6 md:p-10">
+      <h1 className="text-3xl font-normal text-on-surface">{t.appName}</h1>
+      <p className="mb-8 mt-1 text-on-surface-variant">{t.tagline}</p>
       <form onSubmit={submit} className="space-y-4" noValidate>
         <Field label={t.login.email}>
           <input
@@ -56,10 +57,11 @@ export default function Login() {
         </Button>
       </form>
       <p className="mt-6 text-center">
-        <a href="#/registro" className="inline-block min-h-12 py-3 text-lg font-semibold text-brand underline underline-offset-4">
+        <a href="#/registro" className="inline-block min-h-12 py-3 text-lg font-medium text-primary underline underline-offset-4">
           {t.register.link}
         </a>
       </p>
+    </div>
     </main>
   )
 }

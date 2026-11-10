@@ -46,8 +46,8 @@ export function PriceSection({ ingredient }: { ingredient: Ingredient }) {
   const [saved, setSaved] = useState(false)
 
   return (
-    <section className="mt-4 rounded-2xl bg-white p-4 shadow-sm" aria-labelledby={`prices-${ingredient.id}`}>
-      <h2 id={`prices-${ingredient.id}`} className="mb-2 text-lg font-bold text-stone-900">
+    <section className="mt-4 rounded-xl bg-surface-container-lowest p-4 border border-outline-variant" aria-labelledby={`prices-${ingredient.id}`}>
+      <h2 id={`prices-${ingredient.id}`} className="mb-2 text-lg font-medium text-on-surface">
         {t.priceForm.current}
       </h2>
       {saved && (
@@ -57,16 +57,16 @@ export function PriceSection({ ingredient }: { ingredient: Ingredient }) {
       )}
       {prices.value ? (
         prices.value.data.items.length === 0 ? (
-          <p className="text-stone-700">{t.priceForm.none}</p>
+          <p className="text-on-surface-variant">{t.priceForm.none}</p>
         ) : (
-          <ul className="divide-y divide-stone-200">
+          <ul className="divide-y divide-outline-variant">
             {prices.value.data.items.map((p) => (
               <li key={p.price_id} className="py-2">
-                <span className="block font-semibold">
+                <span className="block font-medium">
                   {p.supplier_name}
                   {p.is_best && ` · ${t.priceForm.best}`}
                 </span>
-                <span className="block text-stone-700">
+                <span className="block text-on-surface-variant">
                   {p.package_label}: {formatCLP(p.price_clp)} ({formatDate(p.price_date)}) ·{' '}
                   {t.priceForm.perRef(formatCLP(Math.round(Number(p.price_per_reference_clp))), p.reference_unit)}
                 </span>
@@ -75,7 +75,7 @@ export function PriceSection({ ingredient }: { ingredient: Ingredient }) {
           </ul>
         )
       ) : prices.error ? (
-        <p className="text-stone-700">{prices.error.status === 0 ? t.priceForm.needsNetwork : prices.error.userMessage}</p>
+        <p className="text-on-surface-variant">{prices.error.status === 0 ? t.priceForm.needsNetwork : prices.error.userMessage}</p>
       ) : (
         <Spinner label={t.loading} />
       )}
@@ -157,7 +157,7 @@ function PriceForm({ ingredient, onSaved, onCancel }: { ingredient: Ingredient; 
   }
 
   return (
-    <form onSubmit={save} className="mt-4 space-y-3 border-t-2 border-stone-200 pt-4" noValidate>
+    <form onSubmit={save} className="mt-4 space-y-3 border-t-2 border-outline-variant pt-4" noValidate>
       {active.length > 0 && (
         <Field label={t.priceForm.supplier}>
           <select className={inputClass} value={supplierId} onChange={(e) => setSupplierId(e.target.value)}>
@@ -205,7 +205,7 @@ function PriceForm({ ingredient, onSaved, onCancel }: { ingredient: Ingredient; 
       <label className="flex min-h-12 items-center gap-3 text-lg">
         <input
           type="checkbox"
-          className="h-6 w-6 shrink-0 accent-orange-800"
+          className="h-6 w-6 shrink-0 accent-primary"
           checked={vat}
           onChange={(e) => setVat(e.target.checked)}
         />

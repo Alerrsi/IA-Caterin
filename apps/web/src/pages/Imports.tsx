@@ -37,8 +37,8 @@ function RowSummary({ kind, row }: { kind: Kind; row: Row }) {
     const r = row as IngredientRow
     return (
       <>
-        <span className="font-semibold">{r.name}</span>
-        <span className="text-stone-700">
+        <span className="font-medium">{r.name}</span>
+        <span className="text-on-surface-variant">
           {' '}
           · {formatStock(r.stock_qty, r.base_unit as BaseUnit)}
           {r.category ? ` · ${r.category}` : ''}
@@ -49,8 +49,8 @@ function RowSummary({ kind, row }: { kind: Kind; row: Row }) {
   const r = row as PriceRow
   return (
     <>
-      <span className="font-semibold">{r.ingredient_name}</span>
-      <span className="text-stone-700">
+      <span className="font-medium">{r.ingredient_name}</span>
+      <span className="text-on-surface-variant">
         {' '}
         · {r.supplier_name}
         {r.supplier_is_new && ` (${t.imports.newSupplier})`} · {r.package_label} · {formatCLP(r.price_clp)}
@@ -132,28 +132,28 @@ export default function Imports() {
 
   if (user?.role !== 'owner') {
     return (
-      <Page title={t.imports.title} onBack={() => navigate('/')}>
+      <Page title={t.imports.title} onBack={() => navigate('/')} size="narrow">
         <Alert kind="info">{t.imports.ownerOnly}</Alert>
       </Page>
     )
   }
 
   return (
-    <Page title={t.imports.title} onBack={() => navigate('/')}>
+    <Page title={t.imports.title} onBack={() => navigate('/')} size="narrow">
       {!online && (
         <div className="mb-4">
           <Alert kind="warning">{t.sync.needsNetwork}</Alert>
         </div>
       )}
-      <form onSubmit={review} className="space-y-4 rounded-2xl bg-white p-4 shadow-sm">
+      <form onSubmit={review} className="space-y-4 rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
         <fieldset>
-          <legend className="mb-2 font-semibold text-stone-800">{t.imports.what}</legend>
+          <legend className="mb-2 font-medium text-on-surface">{t.imports.what}</legend>
           <div className="flex flex-wrap gap-2">
             {(['ingredients', 'prices'] as Kind[]).map((k) => (
               <label
                 key={k}
                 className={`flex min-h-12 cursor-pointer items-center gap-2 rounded-xl border-2 px-4 text-lg ${
-                  kind === k ? 'border-brand bg-orange-50 font-semibold text-brand' : 'border-stone-300'
+                  kind === k ? 'border-primary bg-surface-container font-medium text-primary' : 'border-outline'
                 }`}
               >
                 <input
@@ -162,7 +162,7 @@ export default function Imports() {
                   value={k}
                   checked={kind === k}
                   onChange={() => reset({ kind: k })}
-                  className="h-5 w-5 accent-orange-800"
+                  className="h-5 w-5 accent-primary"
                 />
                 {t.imports.kinds[k]}
               </label>
@@ -173,9 +173,9 @@ export default function Imports() {
           {t.imports.template}
         </Button>
         <div>
-          <p className="mb-1 font-semibold text-stone-800">{t.imports.file}</p>
+          <p className="mb-1 font-medium text-on-surface">{t.imports.file}</p>
           {/* Botón propio: el selector nativo muestra "Choose File" en inglés */}
-          <label className="flex min-h-12 w-full cursor-pointer items-center rounded-xl border-2 border-brand bg-white px-4 py-3 text-lg font-semibold text-brand hover:bg-orange-50 focus-within:ring-4 focus-within:ring-orange-300">
+          <label className="flex min-h-12 w-full cursor-pointer items-center rounded-full border border-outline bg-transparent px-6 py-3 text-base font-medium text-primary hover:bg-primary/8 focus-within:ring-4 focus-within:ring-primary/40">
             <span className="truncate">{file ? t.imports.chosen(file.name) : t.imports.chooseFile}</span>
             <input
               className="sr-only"
@@ -204,20 +204,20 @@ export default function Imports() {
 
       {preview && (
         <section className="mt-6 space-y-4" aria-live="polite">
-          <p className="text-lg font-semibold text-stone-900">{t.imports.summary(preview.valid.length, preview.total_rows)}</p>
+          <p className="text-lg font-medium text-on-surface">{t.imports.summary(preview.valid.length, preview.total_rows)}</p>
           {preview.valid.length > 0 && (
-            <ul className="divide-y divide-stone-200 rounded-2xl bg-white px-4 shadow-sm">
+            <ul className="divide-y divide-outline-variant rounded-xl bg-surface-container-lowest px-4 border border-outline-variant">
               {preview.valid.map((r) => (
                 <li key={r.row} className="py-2">
-                  <span className="text-sm text-stone-600">{t.imports.row(r.row)} · </span>
+                  <span className="text-sm text-on-surface-variant">{t.imports.row(r.row)} · </span>
                   <RowSummary kind={kind} row={r} />
                 </li>
               ))}
             </ul>
           )}
           {preview.errors.length > 0 && (
-            <div className="rounded-2xl border-l-4 border-amber-600 bg-amber-50 p-4 text-amber-950">
-              <h2 className="font-semibold">{t.imports.errors}</h2>
+            <div className="rounded-xl border-l-4 border-warning bg-warning-container p-4 text-on-warning-container">
+              <h2 className="font-medium">{t.imports.errors}</h2>
               <ul className="mt-2 space-y-1">
                 {preview.errors.map((e, i) => (
                   <li key={`${e.row}-${e.field}-${i}`}>

@@ -66,7 +66,7 @@ export function StockAdjust({
   }
 
   return (
-    <form onSubmit={save} className="mt-3 space-y-3 rounded-xl bg-orange-50 p-3">
+    <form onSubmit={save} className="mt-3 space-y-3 rounded-xl bg-surface-container p-3">
       {error && <Alert>{error}</Alert>}
       <div className="flex gap-2">
         <div className="min-w-0 flex-1">

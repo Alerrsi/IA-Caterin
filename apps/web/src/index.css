@@ -1,15 +1,56 @@
 @import 'tailwindcss';
 
+/*
+ * Material Design 3 con un esquema neutro (grises con un leve tono frío). Los nombres siguen los roles de color de
+ * MD3 (primary, surface-container, on-surface-variant…), así cada componente usa el rol y no un color fijo.
+ * Contraste AA verificado a mano para los pares texto/fondo que usa la app (on-* sobre su contenedor).
+ */
 @theme {
-  --color-brand: #9a3412;
-  --color-brand-dark: #7c2d12;
-  --color-cream: #fffbf5;
+  --color-primary: #3d4449;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #dde3e8;
+  --color-on-primary-container: #161c20;
+  --color-secondary: #565f66;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #e1e4e7;
+  --color-on-secondary-container: #191c1f;
+
+  --color-surface: #f8f9fa;
+  --color-surface-dim: #d8dadc;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f2f3f5;
+  --color-surface-container: #eceef0;
+  --color-surface-container-high: #e6e8ea;
+  --color-surface-container-highest: #e0e2e4;
+  --color-on-surface: #1a1c1e;
+  --color-on-surface-variant: #44474a;
+  --color-outline: #74777b;
+  --color-outline-variant: #c4c7ca;
+  --color-inverse-surface: #2e3133;
+  --color-inverse-on-surface: #eff1f3;
+
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #410002;
+  /* Estados que MD3 no define como rol: apagados para no romper la paleta neutra. */
+  --color-warning: #7a5900;
+  --color-warning-container: #f7e8c6;
+  --color-on-warning-container: #3a2b00;
+  --color-success-container: #d7e8d9;
+  --color-on-success-container: #0f2b16;
+  --color-info: #3e5a74;
+  --color-info-container: #dce5ee;
+  --color-on-info-container: #12212f;
+
+  --font-sans: Roboto, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
 }
 
 html {
-  font-size: 18px;
+  font-size: 17px;
 }
 body {
-  background: var(--color-cream);
-  color: #1c1917;
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }

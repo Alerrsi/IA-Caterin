@@ -71,3 +71,24 @@ Una app que la emprendedora use desde su celular con una mano, entre una tanda y
   - **Diálogo de conflicto** para catálogos editados sin señal: hoy, sin señal solo se envían movimientos, así que no aplica.
 - **Restos en la base de desarrollo:** las e2e dejan 1 `production_record` (1 empanada de pino), dos movimientos de "Sal" (+1 kg y −1 kg, el stock queda igual) y un pedido "Cliente E2E (demo)" por cada corrida de la e2e de cotización.
 - **Riesgos:** las fotos guardadas y la cola viven en el navegador. Si la usuaria borra los datos del sitio antes de volver la señal, se pierden. La guía de usuaria (T12) debe decirlo.
+
+## Rediseño con Material Design 3 (10-nov-2026, pedido del usuario)
+
+- **Colores neutros con roles de MD3** (`apps/web/src/index.css`): primary, secondary-container, surface-container,
+  on-surface-variant, outline y los demás. Las pantallas usan el rol, no un color fijo, así cambiar la paleta es
+  cambiar un solo archivo. Los avisos (advertencia, información, éxito) usan contenedores apagados para no romper la
+  paleta neutra.
+- **Componentes** (`components/ui.tsx`):
+  - botones MD3: relleno, tonal, delineado y de texto, con forma de píldora y 48 px de alto mínimo;
+  - campos de texto delineados, tarjetas delineadas, chips de estado y alertas con ícono.
+  - Íconos de Material Icons en SVG en línea (`components/Icon.tsx`), sin fuentes externas, para que la PWA siga
+    funcionando offline.
+- **Diseño de escritorio que se adapta al celular** (`components/AppShell.tsx`):
+  - Desde 1024 px: cajón de navegación fijo a la izquierda, y contenido de hasta 1152 px con grillas (inicio como
+    panel, pedidos, inventario y recetas en columnas, cotización con el total y las acciones fijos a la derecha).
+  - Más angosto: barra superior con menú (cajón modal) y barra de navegación inferior con 4 destinos.
+  - Los formularios de una columna usan `Page size="narrow"`.
+- **Verificación:** tipos, lint y 76 pruebas de interfaz, más una revisión visual con capturas a 1440×900 y 390×844
+  (inicio, pedidos, inventario, ajustes y portal del cliente).
+- **Sin verificar:** las pruebas e2e con navegador (Playwright) después del rediseño, Lighthouse y el contraste medido
+  con herramienta (los pares de colores se eligieron con contraste AA, revisado a mano).
