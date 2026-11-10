@@ -98,9 +98,31 @@ Cada respuesta registra en `assistant_interaction`: nivel, intención, puntaje d
 - **Umbral provisional `0.65` y margen `0.03`** (`ASSISTANT_ROUTER_THRESHOLD`, `ASSISTANT_ROUTER_MARGIN`), elegidos con el barrido de `ml/evals/assistant/eval_router.py` para mantener el enrutamiento erróneo bajo 5 %. **No están calibrados** con un set reservado.
 - **Nivel 1 apagado por defecto** (`ASSISTANT_USE_LLM=false`): la calidad de redacción en español de Chile no está medida (T10). Funciona sin *streaming* y se probó solo con un LLM simulado, no con Ollama.
 - **Caché en memoria** por `(pyme_id, intención, pregunta normalizada, data_version de sus dominios, versión del catálogo, nivel, fecha)`; cubre niveles 0 y 1 y no guarda respuestas degradadas por LLM caído.
-- **Todavía no existen:** nivel 2 (documentos, pgvector, búsqueda híbrida), SSE, feedback y las intenciones `order_detail`, `order_feasibility`, `cash_summary` y `production_summary`. Hasta que exista `order_feasibility`, "¿me alcanza la harina para el pedido del sábado?" se enruta por error a pedidos próximos.
+- **Segunda entrega (9-nov-2026):** nivel 2, SSE, feedback y las intenciones `order_detail`, `order_feasibility` y `production_summary` (abajo). **Sigue sin existir `cash_summary`**: depende de la pregunta abierta 3 del índice (si el registro de caja entra al MVP) y hoy no hay cómo registrar movimientos.
 - **Resolución de entidades:** además de `rapidfuzz`, se desempata por cobertura del nombre ("empanadas de queso" gana a "Empanadas de pino"); con empate real se pregunta a la usuaria.
 
 ### Medido (equipo de referencia, base de desarrollo con datos de demo)
 - **Enrutador, set dorado de 51 casos** (`ml/evals/assistant/golden.yaml`, escrito por una persona antes de ver resultados): primera corrida **45/51 (88,2 %)** con 4 mal enrutados. Tras corregir reglas y subir el umbral: **47/51 (92,2 %)** con 1 mal enrutado. **La segunda cifra es optimista**: se afinó contra el mismo set. T10 debe armar un set reservado.
 - **Latencia del nivel 0** (`POST /assistant/ask`): p50 26 ms y p95 95 ms sin caché (n = 8, indicativo) y ~16 ms con caché; meta p95 ≤ 1,5 s.
+
+### Segunda entrega de T07 (9-nov-2026)
+
+- **Nivel 2.** Si la pregunta no calza con ninguna intención y la pyme tiene documentos, se hace una búsqueda híbrida: texto completo `spanish` **sin tildes** (`unaccent`; quien escribe "minimo" desde el celular encuentra "mínimo") y pgvector con `bge-m3`, fusionados por RRF. Se toman hasta `ASSISTANT_RAG_K` = 4 fragmentos (provisional); los que solo llegan por vector exigen similitud ≥ `ASSISTANT_RAG_MIN_SIMILARITY` = 0,45 (provisional, sin calibrar). Con el LLM apagado se muestra el mejor fragmento tal cual, citado (nivel 2 **extractivo**, sin LLM). Con el LLM encendido, este resume y cita. No se cachea. El reranker sigue sin implementarse (apagado por diseño hasta T10).
+- **Streaming con verificación en el camino.** El LLM redacta en *streaming* y el texto se entrega por palabras completas. Antes de mostrar cada trozo se verifican todas sus cifras: si aparece una que no está en el dato, se corta la generación y se envía `replace` con la plantilla, así que **la usuaria nunca ve la cifra inventada**. También se corta por `LLM_TIMEOUT_S`. Se registra `first_token_ms`.
+- **SSE** en el mismo `POST /assistant/ask` con `Accept: text/event-stream` (eventos `meta`, `delta`, `replace`, `done`; ver `docs/API.md`).
+- **Precedencia de reglas (`overrides` en `intents.yaml`).** Las intenciones nuevas comparten palabras con las viejas ("pedido", "comprar"). En vez de dejar el empate a la similitud, cada intención declara a cuáles les gana cuando sus reglas coinciden (p. ej. `order_feasibility` gana a `low_stock` en "¿qué tengo que comprar para el pedido del sábado?"). Es determinista y se revisa en el YAML.
+- **Métrica "sin LLM"** (T09): ahora cuenta las consultas en que **no se llamó** al LLM (`llm_model` nulo), lo que incluye el nivel 2 extractivo. Antes contaba solo el nivel 0.
+
+#### Medido (equipo de referencia, base de desarrollo con datos de demo)
+- **Enrutador, set dorado v2 (65 casos):** los 15 casos nuevos se escribieron **antes** de implementar las intenciones y sin mirar sus ejemplos; en la primera corrida se enrutaron bien los 15. Total **62/65 (95,4 %)**, con **0 enrutados a la intención equivocada** (los 3 que fallan quedan sin enrutar y piden aclaración). Salvedad: los casos y los ejemplos los escribió la misma persona; T10 sigue necesitando un set reservado con frases reales.
+- **El benchmark de punta a punta encontró dos reglas demasiado amplias**, que se corrigieron: "¿Con cuánta anticipación **hay que** anular un evento?" caía en pedidos próximos y después en stock. Ese caso se agregó al set dorado **después** de corregirlo (no cuenta como ciego).
+- **Latencia por SSE** (`ml/evals/assistant/bench_levels.py`; API con `ASSISTANT_USE_LLM=true` y sin caché; `qwen3:4b` y `bge-m3` en Ollama 0.40.15; n pequeño, indicativo):
+
+| Nivel | n | Primer texto p50 / p95 | Completa p50 / p95 | Meta (propuesta) |
+|-------|---|------------------------|--------------------|------------------|
+| 0 | 15 | 11 / 13 ms | 13 / 19 ms | p95 ≤ 1,5 s ✔ |
+| 1 | 5 | 1,3 / 1,9 s | 5,1 / 6,5 s | primer texto ≤ 3 s ✔; completa p95 ≤ 15 s ✔ |
+| 2 | 10 | 1,7 / **6,6 s** | 4,7 / 8,6 s | primer texto ≤ 3 s **✘ en p95** (una corrida lenta); completa ✔ |
+
+  El p95 del primer texto del nivel 2 **no cumple** la meta propuesta de 3 s, con n = 10. Las causas probables (sin confirmar) son la búsqueda con embeddings más un prompt más largo, que no reutiliza el prefijo en caché. Hay que repetir la medición con más casos en T10 antes de cambiar nada.
+- **Calidad de redacción:** con la mitigación JSON, las respuestas medidas salieron en español, cortas y con las cifras del dato. **No hay evaluación humana todavía** (T10), así que `ASSISTANT_USE_LLM` sigue en `false` por defecto.

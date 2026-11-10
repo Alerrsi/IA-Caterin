@@ -20,6 +20,7 @@ Licencias de los modelos y dependencias principales. Revisado el 9-nov-2026. Las
 |------------|----------|
 | PostgreSQL | PostgreSQL License |
 | pgvector | PostgreSQL License |
+| `unaccent` (contrib de PostgreSQL, búsqueda sin tildes) | PostgreSQL License |
 | Ollama | MIT |
 | Caddy (T11) | Apache-2.0 |
 
@@ -28,7 +29,7 @@ Licencias de los modelos y dependencias principales. Revisado el 9-nov-2026. Las
 | Paquete | Licencia |
 |---------|----------|
 | FastAPI, Pydantic, pydantic-settings, SQLAlchemy, Alembic, pgvector (Python), argon2-cffi, PyJWT, openpyxl, RapidFuzz, PyYAML | MIT |
-| Uvicorn, HTTPX | BSD-3-Clause |
+| Uvicorn, HTTPX, pypdf (lectura de PDF para el asistente) | BSD-3-Clause |
 | ReportLab | BSD |
 | python-multipart | Apache-2.0 |
 | psycopg 3 | **LGPL-3.0**: se usa como biblioteca sin modificarla, lo que la LGPL permite en proyectos con otra licencia |

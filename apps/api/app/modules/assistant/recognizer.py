@@ -38,6 +38,8 @@ def recognize(text: str, catalog: Catalog, threshold: float, min_margin: float) 
     sims = {i.name: _similarity(q, i) for i in catalog.intents}
     ranked = sorted(sims, key=lambda n: -sims[n])
     hits = [i.name for i in catalog.intents if any(re.search(p, q) for p in i.keywords)]
+    beaten = {o for n in hits for o in catalog.by_name(n).overrides}
+    hits = [n for n in hits if n not in beaten] or hits  # la regla más específica gana (`overrides`)
     if hits:  # una regla clara enruta directo; si coinciden varias, desempata la similitud
         best = max(hits, key=lambda n: sims[n])
         others = [sims[n] for n in hits if n != best]

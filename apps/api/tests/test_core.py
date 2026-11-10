@@ -78,3 +78,14 @@ def test_settings_defaults_and_env(monkeypatch: pytest.MonkeyPatch) -> None:
     assert s.llm_timeout_s == 12.5
     assert s.cors_origins == ["https://a.cl"]
     assert s.jwt_access_ttl_min == 15
+
+
+def test_answer_field_decoder_handles_split_escapes() -> None:
+    from app.core.llm import AnswerFieldDecoder
+
+    raw = '{\n  "respuesta": "Cuesta $9.156 \\"con IVA\\".\\nOjo: ma\\u00f1ana"\n}'
+    for size in (1, 2, 3, 7, len(raw)):
+        dec = AnswerFieldDecoder()
+        text = "".join(dec.feed(raw[i : i + size]) for i in range(0, len(raw), size))
+        assert text == 'Cuesta $9.156 "con IVA".\nOjo: mañana'
+    assert AnswerFieldDecoder().feed('{"respuesta": "a"} basura "b"') == "a"

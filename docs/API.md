@@ -124,10 +124,31 @@ El historial de producciones (`GET /vision/productions`) queda pendiente. El mod
 ### assistant (T07)
 | Método | Ruta | Descripción |
 |--------|------|-------------|
-| POST | `/assistant/ask` | `{ "question": "...", "quick_action": null }` → `{answer, level, intent, status, sources, options, fallback_reason, cache_hit, latency_ms, interaction_id}`. `level` 0 = sin LLM (plantilla con datos reales); 1 = redactada por el LLM con el dato ya resuelto, solo si `ASSISTANT_USE_LLM=true` y la intención lo permite. `status`: `ok`, `no_data`, `ambiguous` (hay `options` para elegir), `missing_entity` o `unrecognized` (`options` = intenciones probables). Una cifra que el LLM agregue descarta su texto y se entrega el nivel 0 (`fallback_reason: figures_mismatch`); sin LLM, `llm_unavailable`. Intenciones: stock de un insumo, qué me falta, costo de una receta, pedidos próximos, mejor precio, datos de un proveedor |
+| POST | `/assistant/ask` | `{ "question": "...", "quick_action": null }` → `{answer, level, intent, status, sources, options, fallback_reason, cache_hit, latency_ms, interaction_id}`. Con `Accept: text/event-stream` responde en *streaming* (SSE, abajo) |
 | GET | `/assistant/quick-actions` | Botones de preguntas frecuentes; se envían como `quick_action` y entran directo al nivel 0 |
+| POST | `/assistant/feedback` | `{interaction_id, useful: true\|false}` → 204. 404 `interaction_not_found` si no existe o es de otra pyme |
 
-Pendiente de T07: respuesta en *streaming* (SSE), `POST /assistant/feedback`, `/documents` y el nivel 2 (RAG sobre documentos).
+- `level`: **0** = plantilla con datos reales, sin LLM; **1** = el LLM redactó con el dato ya resuelto (solo con `ASSISTANT_USE_LLM=true` y si la intención lo permite); **2** = desde los documentos subidos: el fragmento citado tal cual o, con el LLM encendido, un resumen que cita (`sources` trae archivo, página, hoja o filas).
+- `status`: `ok`, `no_data`, `ambiguous` (hay `options` para elegir), `missing_entity` o `unrecognized` (`options` = intenciones probables).
+- `fallback_reason`: `figures_mismatch` (el LLM puso una cifra que no está en el dato), `llm_unavailable`, `llm_timeout`, `llm_invalid` (respuesta vacía) o `no_intent`. En todos los casos se entrega la respuesta determinista.
+- Intenciones: stock de un insumo, qué me falta, costo de una receta, pedidos próximos, qué lleva un pedido, si alcanza el stock para un pedido, mejor precio, datos de un proveedor y producción registrada. Falta "¿cómo va la caja?" (pregunta abierta 3 del índice).
+- El nivel 2 se usa cuando la pregunta no calza con ninguna intención y hay fragmentos que coinciden; no se cachea.
+
+**SSE** (`Accept: text/event-stream`). Los errores (401, 404, 422) se responden antes de abrir el stream, como JSON *problem details*. Eventos, en orden:
+
+| Evento | `data` | Qué hace la interfaz |
+|--------|--------|----------------------|
+| `meta` | `{intent, status, drafting, sources, options, cache_hit}` | Muestra fuentes y botones de inmediato; `drafting: true` = viene texto del LLM |
+| `delta` | `{text}` | Agrega el texto. Llega por palabras completas y **cada cifra ya está verificada** |
+| `replace` | `{text, fallback_reason}` | El texto del LLM se descartó: reemplazar todo lo mostrado por `text` (la plantilla) |
+| `done` | Igual que la respuesta JSON | Respuesta final; trae `interaction_id` para el feedback |
+
+### documents (T07, nivel 2 del asistente)
+| Método | Ruta | Rol | Descripción |
+|--------|------|-----|-------------|
+| GET | `/documents` | ambas | Documentos de la pyme: `{id, filename, mime_type, size_bytes, index_status, chunks, has_embeddings, created_at}` |
+| POST | `/documents` | dueña | Multipart `file`: PDF, Excel (`.xlsx`), CSV, TXT o MD (≤ `DOCUMENT_MAX_UPLOAD_MB`, 10 MB). Se fragmenta (por página, hoja o grupo de filas) y se indexa. Si los embeddings no responden, queda buscable solo por texto (`has_embeddings: false`). 409 `document_exists` (mismo archivo), 413 `file_too_large`, 415 `unsupported_document`, 422 `unreadable_document` o `empty_document` |
+| DELETE | `/documents/{id}` | dueña | Borra el documento, sus fragmentos y el archivo |
 
 ### metrics (T09)
 | Método | Ruta | Quién | Descripción |

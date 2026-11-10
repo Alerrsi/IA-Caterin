@@ -3,9 +3,10 @@
 import io
 import json
 from collections.abc import Iterator
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import pytest
 from fastapi.testclient import TestClient
@@ -411,3 +412,75 @@ def test_feedback_is_saved_and_isolated(client: TestClient, demo: dict) -> None:
         f"{API}/assistant/feedback", headers=intruder.headers, json={"interaction_id": iid, "useful": True}
     )
     assert other.status_code == 404
+
+
+# --------------------------------------------------------------------------- pedidos y producción
+
+
+def test_order_detail_by_customer_and_by_date(client: TestClient, demo: dict) -> None:  # type: ignore[type-arg]
+    out = ask(client, demo["owner"], "¿Qué lleva el pedido del matrimonio?")
+    assert out["intent"] == "order_detail" and out["status"] == "ok"
+    assert "20 docenas de Empanadas de queso" in out["answer"] and "240 unidades de Brochetas de pollo" in out["answer"]
+    by_date = ask(client, demo["owner"], "¿Qué lleva el pedido de pasado mañana?")
+    assert by_date["status"] == "ok" and "Sopaipillas" in by_date["answer"] and "borrador" in by_date["answer"]
+
+
+def test_order_detail_asks_which_one_and_skips_cancelled(client: TestClient, demo: dict) -> None:  # type: ignore[type-arg]
+    out = ask(client, demo["owner"], "¿Qué lleva el encargo?")
+    assert out["intent"] == "order_detail" and out["status"] == "ambiguous"
+    labels = " ".join(o["label"] for o in out["options"])
+    assert "demo A" in labels and "demo B" in labels
+    assert "demo E" not in labels and "demo D" not in labels  # cancelado y ya entregado
+
+
+def test_order_feasibility_matches_the_quote_calculator(client: TestClient, demo: dict) -> None:  # type: ignore[type-arg]
+    from app.core.tenancy import open_tenant_session
+    from app.db.models import Order
+    from app.modules.quotes import service as quotes
+
+    out = ask(client, demo["owner"], "¿Me alcanza para el pedido del matrimonio?")
+    assert out["intent"] == "order_feasibility" and out["status"] == "ok"
+    with open_tenant_session(demo["pid"]) as s:
+        order = s.scalars(select(Order).where(Order.customer_name.like("%matrimonio%"))).one()
+        short = [r.ingredient.name for r in quotes.stock_check(s, order).ingredients if r.to_buy_qty > 0]
+    if short:
+        assert "no te alcanza" in out["answer"] and all(n in out["answer"] for n in short[:8])
+    else:
+        assert "te alcanza" in out["answer"]
+    assert "solo este pedido" in out["answer"]
+
+
+def test_order_feasibility_for_one_ingredient(client: TestClient, demo: dict) -> None:  # type: ignore[type-arg]
+    out = ask(client, demo["owner"], "¿Me alcanza la harina para el pedido del matrimonio?")
+    assert out["intent"] == "order_feasibility" and "Harina sin polvos" in out["answer"]
+    assert "Queso" not in out["answer"]  # solo el insumo preguntado
+
+
+def produce(client: TestClient, demo: dict, name: str, qty: int) -> None:  # type: ignore[type-arg]
+    rid = demo["db"].scalars(select(Recipe.id).where(Recipe.name == name, Recipe.pyme_id == demo["pid"])).one()
+    r = client.post(
+        f"{API}/vision/productions", headers=demo["owner"], json={"recipe_id": str(rid), "confirmed_qty": qty}
+    )
+    assert r.status_code == 201, r.text
+
+
+def test_production_summary_and_cache_invalidation(
+    client: TestClient,
+    demo: dict,  # type: ignore[type-arg]
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # La producción se agrupa por día en America/Santiago, como en la API real (el seed usa la fecha del servidor).
+    monkeypatch.setattr(assistant_router, "_today", lambda: datetime.now(ZoneInfo("America/Santiago")).date())
+    assert ask(client, demo["owner"], "¿Cuánto produje hoy?")["status"] == "no_data"
+    produce(client, demo, "Empanadas de pino", 24)
+    produce(client, demo, "Canapés de salmón", 12)
+    out = ask(client, demo["owner"], "¿Cuánto produje hoy?")
+    assert out["intent"] == "production_summary" and out["cache_hit"] is False
+    assert (
+        out["answer"].startswith("Hoy registraste 24 unidades de Empanadas de pino")
+        and "(2 registros)" in out["answer"]
+    )
+    produce(client, demo, "Empanadas de pino", 6)
+    only = ask(client, demo["owner"], "¿Cuántas empanadas de pino hice hoy?")
+    assert "30 unidades de Empanadas de pino" in only["answer"] and "Canapés" not in only["answer"]
+    assert ask(client, demo["owner"], "¿Cuánto produje ayer?")["status"] == "no_data"

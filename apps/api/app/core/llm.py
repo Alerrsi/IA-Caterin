@@ -3,6 +3,9 @@
 Ningún módulo llama a Ollama ni a otro proveedor directo: todo pasa por `LLMProvider`.
 - `OllamaProvider`: por defecto, `qwen3:4b` local, thinking desactivado. `chat_json` (salida JSON con schema,
   para extraer) y `chat_stream` (texto en *streaming*, para redactar en los niveles 1 y 2 del asistente).
+  `chat_stream` también pide JSON (`{"respuesta": "..."}`) y entrega el valor a medida que llega: medido el
+  9-nov-2026 con Ollama 0.40.15, `qwen3:4b` (ficha: thinking por defecto, contexto 262144) escribe su
+  razonamiento en inglés dentro del texto aunque se mande `think: false`; la gramática JSON lo impide.
 - `FakeProvider`: para pruebas (respuestas programadas).
 - `DisabledProvider`: sin LLM; los módulos degradan (p. ej. formulario manual en F3).
 """
@@ -33,6 +36,54 @@ class LLMResult:
     latency_ms: int
     tokens_out: int | None = None
     prompt_ms: int | None = None
+
+
+ANSWER_SCHEMA = {"type": "object", "properties": {"respuesta": {"type": "string"}}, "required": ["respuesta"]}
+_ESCAPES = {"n": "\n", "t": "\t", "r": "", "b": "", "f": "", "/": "/", "\\": "\\", '"': '"'}
+
+
+class AnswerFieldDecoder:
+    """Saca, a medida que llega, el texto del único campo string de `{"respuesta": "..."}`.
+
+    Recibe trozos arbitrarios (una secuencia de escape puede venir partida) y devuelve solo el texto nuevo.
+    """
+
+    def __init__(self) -> None:
+        self._state = "key"  # key -> colon -> value -> done
+        self._escape = False
+        self._unicode: str | None = None
+
+    def feed(self, chunk: str) -> str:
+        out: list[str] = []
+        for ch in chunk:
+            if self._state == "key":
+                self._state = "colon" if ch == ":" else "key"
+            elif self._state == "colon":
+                self._state = "value" if ch == '"' else "colon"
+            elif self._state == "value":
+                self._value_char(ch, out)
+        return "".join(out)
+
+    def _value_char(self, ch: str, out: list[str]) -> None:
+        if self._unicode is not None:
+            self._unicode += ch
+            if len(self._unicode) == 4:
+                code = int(self._unicode, 16) if all(c in "0123456789abcdefABCDEF" for c in self._unicode) else 0
+                if code and not 0xD800 <= code <= 0xDFFF:  # los pares sustitutos (emojis) se omiten
+                    out.append(chr(code))
+                self._unicode = None
+        elif self._escape:
+            self._escape = False
+            if ch == "u":
+                self._unicode = ""
+            else:
+                out.append(_ESCAPES.get(ch, ch))
+        elif ch == "\\":
+            self._escape = True
+        elif ch == '"':
+            self._state = "done"
+        else:
+            out.append(ch)
 
 
 @dataclass
@@ -104,10 +155,12 @@ class OllamaProvider:
             "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
             "stream": True,
             "think": False,
+            "format": ANSWER_SCHEMA,  # ver el docstring del módulo: evita que el razonamiento se cuele
             "keep_alive": self.keep_alive,
             "options": {"temperature": temperature, "num_predict": num_predict, "num_ctx": 4096},
         }
         stats.model = self.name
+        decoder = AnswerFieldDecoder()
         start = time.perf_counter()
         try:
             with httpx.stream("POST", f"{self.base_url}/api/chat", json=payload, timeout=self.timeout_s) as resp:
@@ -116,7 +169,7 @@ class OllamaProvider:
                     if not line:
                         continue
                     data = json.loads(line)
-                    if piece := data.get("message", {}).get("content", ""):
+                    if piece := decoder.feed(data.get("message", {}).get("content", "")):
                         yield piece
                     if data.get("done"):
                         stats.tokens_out = data.get("eval_count")

@@ -26,7 +26,7 @@ intents:
     domains: [inventory]
     allow_level1: false
     keywords:
-      - '\b(cuanto|cuanta|cuantos|cuantas)\b.*\b(queda|quedan|tengo|hay)\b'
+      - '\b(cuanto|cuanta|cuantos|cuantas)\b.*\b(queda|quedan|tengo|hay(?! que\b))\b'
       - '\bstock (de|del)\b'
     examples:
       - "¿Cuánta harina me queda?"
@@ -95,7 +95,7 @@ intents:
     keywords:
       - '\b(que|cuantos|cuales)\b.*\bpedidos?\b'
       - '\bpedidos? (de|para|del|que)\b'
-      - '\b(tengo|hay)\b.*\b(pedidos?|eventos?|encargos?)\b'
+      - '\b(tengo|hay(?! que\b))\b.*\b(pedidos?|eventos?|encargos?)\b'  # "hay que anular un evento" no es esto
       - '\b(pedidos?|eventos?|encargos?)\b.*\b(tengo|hay|vienen)\b'
     examples:
       - "¿Qué pedidos tengo esta semana?"
@@ -150,4 +150,71 @@ intents:
       - "¿Qué día llega el pedido de Molino Sur?"
       - "¿Cómo contacto a Distribuidora Lago?"
       - "correo del proveedor de harina"
+    template: "{answer}"
+
+  - name: order_detail
+    description: Qué lleva un pedido
+    query: get_order
+    domains: [orders, recipes]
+    allow_level1: false
+    overrides: [upcoming_orders, stock_of_item]
+    keywords:
+      - '\b(que|lo que) (lleva|trae|incluye|tiene)\b.*\b(pedido|encargo|evento)\b'
+      - '\bdetalle (del|de)\b.*\b(pedido|encargo|evento)\b'
+      - '\b(pidieron|encargaron)\b'
+    examples:
+      - "¿Qué trae el encargo del domingo?"
+      - "detalle del pedido para mañana"
+      - "¿Qué me pidieron para el evento del viernes?"
+      - "¿Cuántas docenas encargaron para el matrimonio?"
+      - "¿Qué productos tiene el pedido de don Luis?"
+      - "muéstrame el pedido del cumpleaños"
+      - "¿Qué incluye el evento de la empresa?"
+      - "¿Qué hay que preparar para el encargo de la señora Rosa?"
+      - "¿Qué lleva el encargo de mañana?"
+    template: "{answer}"
+
+  - name: order_feasibility
+    description: Si el stock alcanza para un pedido
+    query: check_order_stock
+    domains: [orders, recipes, inventory]
+    allow_level1: true
+    overrides: [low_stock, upcoming_orders, stock_of_item, order_detail]
+    keywords:
+      - '\balcanz(a|o|ara|amos|aria)\b'
+      - '\b(tengo|tenemos|hay) (todo|suficiente|lo necesario|lo que necesito)\b'
+      - '\bfalta algo\b'
+      - '\b(comprar|falta|faltan|necesito)\b.*\bpara (el|la|los) (pedido|encargo|evento|matrimonio|boda|cumpleanos)\b'
+    examples:
+      - "¿Me alcanza el stock para el pedido del domingo?"
+      - "¿Tengo suficiente queso para el encargo de mañana?"
+      - "¿Me alcanzan los insumos para el evento de la empresa?"
+      - "¿Qué necesito comprar para el pedido de don Luis?"
+      - "¿Hay todo lo necesario para el matrimonio del sábado?"
+      - "¿Me falta algún insumo para el encargo del viernes?"
+      - "¿Alcanzo con lo que hay en la bodega para el cumpleaños?"
+      - "revisa si me alcanza para el pedido de la señora Rosa"
+      - "¿Me falta algo para el encargo de mañana?"
+    template: "{answer}"
+
+  - name: production_summary
+    description: Cuánto se produjo en un periodo
+    query: get_production
+    domains: [production, recipes]
+    allow_level1: false
+    overrides: [stock_of_item, upcoming_orders, recipe_cost]
+    keywords:
+      - '\b(hice|hicimos|produje|produjimos|preparamos|prepare|salieron|horneamos|hornee)\b'
+      - '\bproduccion\b'
+      - '\bcuant[oa]s?\b.*\b(hechas|hechos)\b'
+    examples:
+      - "¿Cuántas empanadas horneamos hoy?"
+      - "producción de la semana"
+      - "¿Cuánto preparamos ayer?"
+      - "¿Cuántos canapés llevo hechos hoy?"
+      - "¿Qué produje la semana pasada?"
+      - "resumen de producción del mes"
+      - "¿Cuántas bandejas salieron ayer?"
+      - "¿Cuántas brochetas hicimos esta semana?"
+      - "¿Cuánto llevo producido hoy?"
     template: "{answer}"

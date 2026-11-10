@@ -7,21 +7,29 @@ salen de los servicios de T04/T05, nunca de un LLM. Si no hay dato, lo dice.
 import uuid
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 from typing import Any, Literal
+from zoneinfo import ZoneInfo
 
-from sqlalchemy import select
+from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
+from app.core.dates import parse_event_date
+from app.core.errors import ProblemError
 from app.core.money import format_clp
 from app.core.units import BASE_UNIT_LABELS, format_decimal, human_qty
 from app.db.enums import BaseUnit, OrderStatus
-from app.db.models import Ingredient, Order, Recipe, Supplier
+from app.db.models import Ingredient, Order, ProductionRecord, Recipe, Supplier
 from app.modules.assistant.entities import find_entity
-from app.modules.assistant.parsing import WEEKDAYS_LONG, fmt_date, parse_qty, parse_range
+from app.modules.assistant.parsing import WEEKDAYS_LONG, fmt_date, parse_past_range, parse_qty, parse_range
+from app.modules.quotes import service as quotes
+from app.modules.quotes.calculator import ORDER_UNIT_LABELS, QuoteCalculationError
 from app.modules.recipes import service as recipes
 from app.modules.suppliers import service as suppliers
+
+TZ = ZoneInfo("America/Santiago")
+ACTIVE_ORDERS = (OrderStatus.DRAFT, OrderStatus.CONFIRMED)
 
 MAX_LIST = 8
 Status = Literal["ok", "no_data", "ambiguous", "missing_entity"]
@@ -182,6 +190,149 @@ def get_supplier(db: Session, text: str, today: date) -> QueryResult:
     return QueryResult("ok", " ".join(parts), _src("suppliers", "tus proveedores"), {"supplier": sup.name})
 
 
+# --------------------------------------------------------------------------- un pedido en particular
+
+
+def _when(o: Order) -> str:
+    return fmt_date(o.event_date) if o.event_date else "sin fecha"
+
+
+def _order_label(o: Order) -> str:
+    return f"{o.customer_name} ({_when(o)})"
+
+
+def _find_order(
+    db: Session, text: str, today: date, ask: Callable[[Order], str]
+) -> tuple[Order | None, QueryResult | None]:
+    """Pedido próximo del que habla la pregunta: por nombre del cliente, por fecha o el único que hay.
+    Si no queda claro, ofrece opciones (nunca adivina)."""
+    stmt = (
+        select(Order)
+        .where(Order.status.in_(ACTIVE_ORDERS), or_(Order.event_date.is_(None), Order.event_date >= today))
+        .order_by(Order.event_date.nulls_last(), Order.created_at)
+        .limit(50)
+    )
+    orders = list(db.scalars(stmt))
+    src = _src("orders", "tus pedidos")
+    if not orders:
+        return None, QueryResult("no_data", "No tienes pedidos próximos.", src)
+
+    def choose(cands: list[Order], msg: str) -> QueryResult:
+        opts = [{"label": _order_label(o), "question": ask(o)} for o in cands[:4]]
+        return QueryResult("ambiguous", msg, src, options=opts)
+
+    by_name = find_entity(text, {o.id: o.customer_name for o in orders})
+    if by_name.match:
+        return next(o for o in orders if o.id == by_name.match.id), None
+    named = [o for o in orders if o.id in {c.id for c in by_name.suggestions}]
+    day = parse_event_date(text, today)
+    if day is not None:
+        same = [o for o in (named or orders) if o.event_date == day]
+        if len(same) == 1:
+            return same[0], None
+        if not same:
+            return None, QueryResult("no_data", f"No tienes pedidos para el {fmt_date(day)}.", src)
+        return None, choose(same, f"El {fmt_date(day)} tienes {len(same)} pedidos. ¿Cuál?")
+    if named:
+        return None, choose(named, "¿De cuál pedido me hablas?")
+    if len(orders) == 1:
+        return orders[0], None
+    return None, choose(orders, "¿De cuál pedido me hablas? Estos son los próximos.")
+
+
+def _line_name(db: Session, recipe_id: uuid.UUID | None, requested: str) -> str:
+    r = db.get(Recipe, recipe_id) if recipe_id else None
+    return r.name if r else requested
+
+
+def get_order(db: Session, text: str, today: date) -> QueryResult:
+    order, ask = _find_order(db, text, today, lambda o: f"¿Qué lleva el pedido de {o.customer_name} del {_when(o)}?")
+    if order is None:
+        return ask  # type: ignore[return-value]
+    parts = []
+    for line in order.lines:
+        singular, plural = ORDER_UNIT_LABELS[line.unit]
+        unit = singular if line.qty == 1 else plural
+        parts.append(f"{format_decimal(line.qty)} {unit} de {_line_name(db, line.recipe_id, line.requested_name)}")
+    extra = f", {order.guests} personas" if order.guests else ""
+    head = f"El pedido de {order.customer_name} para el {_when(order)} ({ORDER_STATUS_ES[order.status]}{extra})"
+    body = f" lleva: {'; '.join(parts)}." if parts else " todavía no tiene productos."
+    ent = {"order": str(order.id), "customer": order.customer_name}
+    return QueryResult("ok", head + body, _src("orders", "tus pedidos"), ent)
+
+
+def check_order_stock(db: Session, text: str, today: date) -> QueryResult:
+    order, ask = _find_order(
+        db, text, today, lambda o: f"¿Me alcanza para el pedido de {o.customer_name} del {_when(o)}?"
+    )
+    if order is None:
+        return ask  # type: ignore[return-value]
+    src = _src("orders", "tu pedido, tus recetas y tu inventario de hoy")
+    ent = {"order": str(order.id), "customer": order.customer_name}
+    who = f"el pedido de {order.customer_name} ({_when(order)})"
+    try:
+        result = quotes.stock_check(db, order)
+    except ProblemError as exc:
+        return QueryResult("no_data", f"No puedo revisar {who}: {exc.detail or exc.title}.", src, ent)
+    except QuoteCalculationError as exc:
+        return QueryResult("no_data", f"No puedo revisar {who}: {exc}.", src, ent)
+    rows = result.ingredients
+    only = find_entity(text, {r.ingredient.id: r.ingredient.name for r in rows})
+    if only.match:  # "¿me alcanza la harina para...?": solo ese insumo
+        rows = [r for r in rows if r.ingredient.id == only.match.id]
+    short = [r for r in rows if r.to_buy_qty > 0]
+    note = " Ojo: cuenta solo este pedido, no los otros que usen el mismo stock."
+    if not short:
+        what = rows[0].ingredient.name if only.match and rows else "lo que tienes en stock"
+        return QueryResult("ok", f"Para {who} te alcanza con {what}." + note, src, ent)
+    lines = [
+        f"{r.ingredient.name}: faltan {human_qty(r.to_buy_qty, r.ingredient.base_unit)} "
+        f"(necesitas {human_qty(r.required_qty, r.ingredient.base_unit)} y tienes "
+        f"{human_qty(r.stock_used_qty, r.ingredient.base_unit)})"
+        for r in short[:MAX_LIST]
+    ]
+    more = f" y {len(short) - MAX_LIST} más" if len(short) > MAX_LIST else ""
+    text_out = f"Para {who} no te alcanza. " + "; ".join(lines) + more + "." + note
+    return QueryResult("ok", text_out, src, ent)
+
+
+# --------------------------------------------------------------------------- producción (F2)
+
+
+def get_production(db: Session, text: str, today: date) -> QueryResult:
+    start, end, label = parse_past_range(text, today)
+    lo = datetime.combine(start, time.min, TZ)
+    hi = datetime.combine(end + timedelta(days=1), time.min, TZ)
+    rows = db.execute(
+        select(ProductionRecord.recipe_id, func.sum(ProductionRecord.confirmed_qty), func.count())
+        .where(ProductionRecord.created_at >= lo, ProductionRecord.created_at < hi)
+        .group_by(ProductionRecord.recipe_id)
+    ).all()
+    src = _src("production", "tus registros de producción")
+    ent = {"from": start.isoformat(), "to": end.isoformat()}
+    made = {r.id: r for r in db.scalars(select(Recipe).where(Recipe.id.in_([row[0] for row in rows])))}
+    only = find_entity(text, {rid: r.name for rid, r in made.items()})
+    if only.match:
+        rows = [row for row in rows if row[0] == only.match.id]
+    if not rows:
+        return QueryResult("no_data", f"No tienes producción registrada {_period(label)}.", src, ent)
+    rows = sorted(rows, key=lambda row: -int(row[1]))
+    parts = []
+    for rid, qty, _n in rows[:MAX_LIST]:
+        r = made[rid]
+        unit = "unidades" if r.yield_unit == BaseUnit.UNIT else BASE_UNIT_LABELS[r.yield_unit]
+        parts.append(f"{format_decimal(Decimal(qty))} {unit} de {r.name}")
+    records = sum(int(row[2]) for row in rows)
+    head = _period(label)
+    return QueryResult(
+        "ok", f"{head[0].upper()}{head[1:]} registraste " + "; ".join(parts) + f" ({records} registros).", src, ent
+    )
+
+
+def _period(label: str) -> str:
+    return label if label in ("hoy", "ayer") else f"en {label}"
+
+
 def _join(items: list[str]) -> str:
     return items[0] if len(items) == 1 else ", ".join(items[:-1]) + " y " + items[-1]
 
@@ -193,4 +344,7 @@ QUERIES: dict[str, Callable[[Session, str, date], QueryResult]] = {
     "list_upcoming_orders": list_upcoming_orders,
     "compare_prices": compare_prices,
     "get_supplier": get_supplier,
+    "get_order": get_order,
+    "check_order_stock": check_order_stock,
+    "get_production": get_production,
 }

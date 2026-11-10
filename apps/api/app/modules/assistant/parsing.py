@@ -58,3 +58,21 @@ def parse_range(text: str, today: date) -> tuple[date, date, str]:
         label = {0: "hoy", 1: "mañana"}.get((one - today).days, fmt_date(one))
         return one, one, label
     return today, today + timedelta(days=7), "los próximos 7 días"
+
+
+def parse_past_range(text: str, today: date) -> tuple[date, date, str]:
+    """Rango hacia atrás (producción ya hecha). Sin indicación, hoy."""
+    t = _norm(text)
+    monday = today - timedelta(days=today.weekday())
+    if re.search(r"\bayer\b", t):
+        y = today - timedelta(days=1)
+        return y, y, "ayer"
+    if re.search(r"\b(semana pasada|la otra semana)\b", t):
+        return monday - timedelta(days=7), monday - timedelta(days=1), "la semana pasada"
+    if re.search(r"\b(esta semana|la semana)\b", t):
+        return monday, today, "esta semana"
+    if re.search(r"\b(este mes|el mes)\b", t):
+        return today.replace(day=1), today, "este mes"
+    if m := re.search(r"\bultimos (\d{1,2}) dias\b", t):
+        return today - timedelta(days=int(m[1]) - 1), today, f"los últimos {m[1]} días"
+    return today, today, "hoy"

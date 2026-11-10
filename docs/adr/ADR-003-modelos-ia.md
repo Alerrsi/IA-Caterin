@@ -100,11 +100,18 @@ Límite de esta verificación: se leyó el campo de licencia de los metadatos y 
 - `keep_alive` largo (p. ej. 30 min o `-1` en producción) para no pagar los 7.4 s de carga en cada consulta.
 - Extracción con `format` = JSON schema generado desde el modelo Pydantic.
 
+## Medido en T07 (9-nov-2026, equipo de referencia i5-8250U, Ollama 0.40.15 en Docker)
+
+- **`bge-m3` servido por Ollama** (`/api/embed`): consulta de una frase p50 **62 ms**, p95 **70 ms** (n = 20), 12 pasajes en 3,5 s y primera llamada 5,2 s (carga del modelo). Más rápido que los 156 ms de `sentence-transformers`; vectores de 1024 dimensiones, como fija la migración. Se ratifica servirlo con Ollama.
+- **`qwen3:4b` mezcla su razonamiento con la respuesta en *streaming*.** La ficha del tag en este Ollama dice *thinking* por defecto y contexto de 262144. Con `think: false`, Ollama deja de separar el campo `thinking`, pero el modelo igual escribe su razonamiento **en inglés** dentro del texto ("Okay, let's see. The user is asking…"). El verificador de cifras no lo detecta, porque solo repite números del dato. **Mitigación aplicada:** `chat_stream` también pide salida JSON (`{"respuesta": "..."}`) y entrega el valor a medida que llega; con la gramática no hay espacio para el razonamiento. Así, las respuestas medidas salieron limpias y en español, de unos 40 tokens.
+- Esto refuerza la evaluación pendiente de **`qwen3:4b-instruct`** (variante sin *thinking*): si redacta igual de bien, evita depender de la gramática JSON para que no se cuele el razonamiento.
+- Latencia de punta a punta del asistente por nivel: ver ADR-005 y `ml/evals/assistant/bench_levels.json`.
+
 ## Pruebas pendientes (las ejecuta T10)
 
 1. Corregir el script (RAM por nombre exacto, tokens generados, detalle de fallos) y repetir `llm` con `qwen3:4b`, `qwen3:4b-instruct` y Gemma 4 E4B, con más casos de extracción (≥ 20).
 2. Agregar la evaluación de redacción en español de Chile con revisión humana (rúbrica en T10).
-3. Medir `bge-m3` servido por Ollama frente a `sentence-transformers`.
+3. ~~Medir `bge-m3` servido por Ollama frente a `sentence-transformers`.~~ Hecho en T07 (arriba).
 4. Repetir embeddings con ≥ 50 preguntas sobre documentos reales o sintéticos realistas, con y sin reranker.
 5. Calibrar el umbral del enrutador de intenciones (ADR-005).
 6. Medir el detector de punta a punta (decodificar JPEG, preprocesar, inferir, postprocesar) con el modelo ajustado y en el VPS objetivo.

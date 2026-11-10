@@ -219,6 +219,18 @@ def _snapshot(result: QuoteResult) -> dict[str, Any]:
     return snap
 
 
+def stock_check(db: Session, order: Order) -> QuoteResult:
+    """Insumos que pide el pedido frente al stock de hoy, con las mismas reglas de merma que la cotización.
+
+    Solo mira cantidades (el margen no influye). No guarda nada. Lanza ProblemError o QuoteCalculationError
+    si el pedido no se puede calcular. Lo usa el asistente ("¿me alcanza para el pedido del sábado?")."""
+    pyme = db.get(Pyme, db.info["pyme_id"])
+    assert pyme is not None  # noqa: S101
+    products, ingredients, options = _load_inputs(db, order)
+    params = QuoteParams(Decimal(0), pyme.vat_pct, pyme.default_waste_pct, use_stock=True)
+    return calculate_quote(products, ingredients, options, params)
+
+
 def create_quote(db: Session, user: CurrentUser, order_id: uuid.UUID, data: QuoteCreate, today: date) -> Quote:
     order = get_order(db, order_id)
     if order.status == OrderStatus.CANCELLED:

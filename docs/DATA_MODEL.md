@@ -220,7 +220,7 @@ Sub-recetas (una receta que usa otra, p. ej. "masa"): **fuera del MVP**. Si apar
 | `document_id` | FK, `ON DELETE CASCADE` | |
 | `ordinal` | int | Posición dentro del documento |
 | `text` | text | |
-| `tsv` | tsvector (columna generada, `to_tsvector('spanish', text)`), índice GIN | Búsqueda de texto completo |
+| `tsv` | tsvector (columna generada, `to_tsvector('spanish', caterin_unaccent(text))`), índice GIN | Búsqueda de texto completo **sin tildes** ("minimo" encuentra "mínimo"); `caterin_unaccent` envuelve `unaccent` como IMMUTABLE |
 | `embedding` | vector(1024), índice HNSW (coseno) | **Dimensión fija en la migración** |
 | `embedding_model` | text | P. ej. `BAAI/bge-m3` |
 | `embedding_version` | text | Revisión del `models.lock.yaml` |
@@ -243,7 +243,8 @@ Cumple la regla de trazabilidad: cada respuesta guarda las consultas usadas y su
 | `fallback_reason` | text, nullable | `llm_timeout`, `llm_down`, `numbers_mismatch`… |
 | `llm_model` | text, nullable | |
 | `tokens_out` | int, nullable | |
-| `latency_ms`, `first_token_ms` | int | |
+| `latency_ms`, `first_token_ms` | int | `first_token_ms`: hasta el primer texto del LLM ya verificado (solo niveles 1 y 2) |
+| `feedback` | smallint nulo, `CHECK IN (-1, 1)` | 👍 (1) o 👎 (-1) de la usuaria (`POST /assistant/feedback`) |
 
 ### Evento de métrica (`metric_event`) [MVP]
 | Campo | Tipo | Nota |
@@ -265,7 +266,7 @@ La intención `get_cash_summary` ("¿cómo va la caja?") necesita algún dato de
 | `reference_type`, `reference_id` | nullable | P. ej. cotización aceptada |
 
 ### Versión de datos (`data_version`) [propuesta]
-`(pyme_id, domain)` → `version` (bigint). `domain` ∈ `inventory`, `recipes`, `suppliers`, `orders`, `cash`, `documents`. Cada escritura relevante lo incrementa en la misma transacción; la caché del asistente lo usa en su clave (ADR-005).
+`(pyme_id, domain)` → `version` (bigint). `domain` ∈ `inventory`, `recipes`, `suppliers`, `orders`, `cash`, `documents`, `production` (este último se incrementa al confirmar una producción de F2). Cada escritura relevante lo incrementa en la misma transacción; la caché del asistente lo usa en su clave (ADR-005).
 
 ## 4. Reglas de multi-tenancy
 

@@ -1,0 +1,57 @@
+{
+  "measured_at": "2026-11-10 01:16",
+  "runs": 5,
+  "levels": {
+    "0": {
+      "n": 15,
+      "fallbacks": [],
+      "first_text_ms": {
+        "p50": 11,
+        "p95": 13
+      },
+      "total_ms": {
+        "p50": 13,
+        "p95": 19
+      },
+      "example_answers": [
+        "Harinas Cautín (demo) despacha martes y jueves. Teléfono: +56 9 0000 0001.",
+        "No tienes insumos bajo el mínimo.",
+        "Te quedan 18 kg de Harina sin polvos."
+      ]
+    },
+    "1": {
+      "n": 5,
+      "fallbacks": [],
+      "first_text_ms": {
+        "p50": 1333,
+        "p95": 1879
+      },
+      "total_ms": {
+        "p50": 5085,
+        "p95": 6480
+      },
+      "example_answers": [
+        "La docena de empanadas de queso cuesta $9.156, con IVA y los precios vigentes.",
+        "La docena de empanadas de queso cuesta $9.156, incluyendo IVA y los precios vigentes."
+      ]
+    },
+    "2": {
+      "n": 10,
+      "fallbacks": [],
+      "first_text_ms": {
+        "p50": 1694,
+        "p95": 6648
+      },
+      "total_ms": {
+        "p50": 4737,
+        "p95": 8597
+      },
+      "example_answers": [
+        "Devoluciones: se aceptan hasta 48 horas después de la entrega, con la boleta y el producto refrigerado.",
+        "Hasta 48 horas después de la entrega, con la boleta y el producto refrigerado.",
+        "Se puede anular sin costo hasta 72 horas antes.",
+        "Un evento se puede anular sin costo hasta 72 horas antes."
+      ]
+    }
+  }
+}
