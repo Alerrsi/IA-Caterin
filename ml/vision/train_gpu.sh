@@ -41,7 +41,7 @@ if [[ "${SKIP_INSTALL:-0}" != "1" ]]; then
   # rfdetr trae torch; si tu CUDA necesita otra build de torch, instálala antes con el índice de pytorch.org.
   "$VENV/bin/pip" install -q -r requirements.txt "rfdetr[train,onnx]==1.12.0"
 fi
-PY="$VENV/bin/python"
+PY="$(cd "$VENV" && pwd)/bin/python"  # absoluta: el paso "Paquete" cambia de carpeta
 "$PY" -c "import torch; print('torch', torch.__version__, '| CUDA:', torch.cuda.is_available())"
 
 step "Datos sintéticos con las clases de las recetas (empanada_pino, canape_salmon, brocheta_pollo)"

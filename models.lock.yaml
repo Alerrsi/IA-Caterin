@@ -58,3 +58,17 @@ models:
     license: Apache-2.0
     upstream: roboflow/rf-detr 1.12.0 (RF-DETR Nano) ajustado 30 épocas, semilla 42, dataset snacks-v1 (dataset_sha256 13d2f7be…)
     required: false
+
+  # Modelo de PRUEBA entrenado con bandejas SINTÉTICAS (synth.py) y las clases de las recetas de demo, para que
+  # "Contar con foto" cuente ml/vision/fotos-prueba. No sirve para fotos reales. Se genera con
+  # `bash ml/vision/train_gpu.sh` y se instala con `bash ml/vision/install_model.sh <carpeta onnx>`.
+  # El .onnx (116 MB) no va al repo: se comparte por Drive o como release de GitHub.
+  - id: synth-recetas-nano-1
+    role: vision_detector_test
+    source: onnx
+    path: ml/vision/runs/synth-recetas-nano-1/onnx/model.onnx
+    sha256: 69ad76d854daccce273173b254557c13e39291b4335ca69acfa84bae97b4828f
+    size_bytes: 115843525
+    license: Apache-2.0
+    upstream: roboflow/rf-detr 1.12.0 (RF-DETR Nano) ajustado 40 épocas, semilla 42, dataset synth-recetas-v1 (dataset_sha256 ed1a125c…)
+    required: false

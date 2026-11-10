@@ -38,6 +38,29 @@ Límites: la foto de 12 MP es una imagen ampliada (0.5 MB), mucho más liviana d
 celular (3 a 5 MB); repetir con fotos reales. El benchmark
 anterior (169 ms) medía solo la inferencia con una imagen aleatoria; este valor incluye decodificar, preprocesar y postprocesar.
 
+## Segundo modelo de prueba: `synth-recetas-nano-1` (bandejas sintéticas)
+
+> **Datos SINTÉTICOS.** Bandejas dibujadas por `synth.py`, no fotos. Sirve para que "Contar con foto" cuente las
+> fotos de `ml/vision/fotos-prueba/` y se una con las recetas de demo. **Sus métricas no representan el caso real.**
+
+- RF-DETR Nano, `rfdetr` 1.12.0, 40 épocas, batch 2, semilla 42, ONNX de entrada 384×384. sha256 `69ad76d8…`
+  (completo en `models.lock.yaml`).
+- Clases: `empanada_pino`, `canape_salmon`, `brocheta_pollo` (las `vision_class` de las recetas de demo).
+- Dataset `synth-recetas-v1` (`dataset_sha256` ed1a125c…): 60 sesiones × 6 bandejas, 2 copias aumentadas;
+  756 train / 54 valid / 54 test, repartidos por sesión (sin fuga).
+- Entrenado el 10-nov-2026 con `bash ml/vision/train_gpu.sh` (`BATCH=2`) en una NVIDIA RTX 2050 de 4 GB, torch
+  2.15.0 + CUDA 13.2, Python 3.14, en unos 57 minutos.
+
+| Medición | Resultado |
+|----------|-----------|
+| Validación (última época, EMA): mAP50 / mAP50:95 | 0.999 / 0.982 |
+| Test (54 bandejas), umbral 0.5, conteo exacto por clase | empanada 100 %, canapé 100 %, brocheta 98 % (error medio 0.02) |
+| `fotos-prueba` (12 fotos, `count_test_photos.py`) | 11/12 con conteo exacto; error abs. medio 0.08 por foto. Falla `07_mixta_oscura.jpg` (4 canapés en vez de 3) |
+| Latencia en test (`eval_onnx.py`, CPU del mismo equipo) | p50 225 ms, p95 305 ms |
+
+Las cifras casi perfectas se explican porque train y test salen del mismo generador: **no son una estimación de
+cómo contará fotos reales.** No hay mAP en test ni matriz de confusión de este modelo (`evaluate.py` no se corrió).
+
 ## Límites y uso previsto
 - Para validar el pipeline y la interfaz. No usar sus conteos como producto.
 - Recomendación de foto (para el modelo real): desde arriba, productos separados y sin apilar, fondo liso.
