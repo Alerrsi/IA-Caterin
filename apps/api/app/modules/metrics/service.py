@@ -213,14 +213,20 @@ def _satisfaction(db: Session, window: Window, scope: Scope) -> Satisfaction:
     )
 
 
-def _assistant_rows(db: Session, window: Window, scope: Scope) -> list[tuple[int, int, str | None]]:
+AssistantRow = tuple[int, int, str | None, str | None]  # nivel, latencia, motivo de degradación, modelo LLM
+
+
+def _assistant_rows(db: Session, window: Window, scope: Scope) -> list[AssistantRow]:
     stmt = select(
-        AssistantInteraction.level, AssistantInteraction.latency_ms, AssistantInteraction.fallback_reason
+        AssistantInteraction.level,
+        AssistantInteraction.latency_ms,
+        AssistantInteraction.fallback_reason,
+        AssistantInteraction.llm_model,
     ).where(*window.clause(AssistantInteraction.created_at), *scope.clause(AssistantInteraction.pyme_id))
-    return [(r[0], r[1], r[2]) for r in db.execute(stmt).all()]
+    return [(r[0], r[1], r[2], r[3]) for r in db.execute(stmt).all()]
 
 
-def _assistant(rows: list[tuple[int, int, str | None]]) -> Assistant:
+def _assistant(rows: list[AssistantRow]) -> Assistant:
     levels = []
     for level in ASSISTANT_LEVELS:
         lat = [r[1] for r in rows if r[0] == level]
@@ -239,7 +245,7 @@ def _assistant(rows: list[tuple[int, int, str | None]]) -> Assistant:
     return Assistant(
         total=total,
         levels=levels,
-        without_llm=_share(sum(1 for r in rows if r[0] == 0), total),
+        without_llm=_share(sum(1 for r in rows if r[3] is None), total),  # no se llamó al LLM
         degraded=_share(sum(1 for r in rows if r[2]), total),
     )
 

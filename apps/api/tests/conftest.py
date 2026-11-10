@@ -10,6 +10,7 @@ os.environ["DATABASE_URL"] = os.environ.get(
     "TEST_DATABASE_URL", "postgresql+psycopg://caterin:caterin_dev@postgres:5432/caterin_test"
 )
 os.environ["LLM_PROVIDER"] = "fake"
+os.environ["EMBEDDINGS_PROVIDER"] = "fake"  # nunca llamar a Ollama desde las pruebas
 os.environ["REFRESH_COOKIE_SECURE"] = "false"  # TestClient usa http
 
 from collections.abc import Iterator

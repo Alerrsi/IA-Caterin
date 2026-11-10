@@ -87,3 +87,4 @@ class DataDomain(StrEnum):
     ORDERS = "orders"
     CASH = "cash"
     DOCUMENTS = "documents"
+    PRODUCTION = "production"

@@ -31,6 +31,16 @@ class Settings(BaseSettings):
     assistant_router_margin: float = 0.03
     assistant_use_llm: bool = False  # nivel 1 apagado hasta validar la calidad de redacción en T10
     assistant_cache_size: int = 512
+    # Nivel 2 (RAG sobre documentos). `k` y la similitud mínima son PROVISIONALES hasta T10.
+    assistant_rag_k: int = 4
+    assistant_rag_min_similarity: float = 0.45
+    document_max_upload_mb: int = 10
+
+    # Embeddings (ADR-003): bge-m3 servido por Ollama, 1024 dimensiones (fijas en la migración).
+    embeddings_provider: Literal["ollama", "fake", "disabled"] = "ollama"
+    embedding_model: str = "bge-m3"
+    embedding_version: str = "bge-m3-ollama-1"  # cambiarla exige reindexar los documentos
+    embedding_timeout_s: float = 30.0
 
     vision_model_path: Path = Path("/data/models/vision/model.onnx")  # junto a model.json
     vision_threshold: float = 0.5

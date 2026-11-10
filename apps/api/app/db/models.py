@@ -440,7 +440,10 @@ class DocumentChunk(TenantMixin, Base):
     document_id: Mapped[uuid.UUID] = mapped_column()
     ordinal: Mapped[int] = mapped_column(Integer)
     text: Mapped[str] = mapped_column(Text)
-    tsv: Mapped[Any] = mapped_column(TSVECTOR, Computed("to_tsvector('spanish', text)", persisted=True))
+    # Sin tildes en ambos lados: "minimo" encuentra "mínimo" (migración a1bfdccff932).
+    tsv: Mapped[Any] = mapped_column(
+        TSVECTOR, Computed("to_tsvector('spanish', caterin_unaccent(text))", persisted=True)
+    )
     embedding: Mapped[Any] = mapped_column(Vector(EMBEDDING_DIM), nullable=True)
     embedding_model: Mapped[str] = mapped_column(String(80))
     embedding_version: Mapped[str] = mapped_column(String(40))
@@ -483,11 +486,15 @@ class AssistantInteraction(TenantMixin, Base):
     latency_ms: Mapped[int] = mapped_column(Integer)
     first_token_ms: Mapped[int | None] = mapped_column(Integer)
     intents_version: Mapped[str | None] = mapped_column(String(20))
+    feedback: Mapped[int | None] = mapped_column(SmallInteger)  # 1 = útil, -1 = no útil (la usuaria)
 
     __table_args__ = tenant_args(
         "assistant_interaction",
         ("user_id", "app_user", "CASCADE"),
-        extra=(Index("ix_assistant_interaction_pyme_created", "pyme_id", "created_at"),),
+        extra=(
+            Index("ix_assistant_interaction_pyme_created", "pyme_id", "created_at"),
+            CheckConstraint("feedback IS NULL OR feedback IN (-1, 1)", name="feedback_range"),
+        ),
     )
 
 

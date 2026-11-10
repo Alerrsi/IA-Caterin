@@ -94,7 +94,7 @@ def _interaction(
             level=level,
             latency_ms=latency_ms,
             fallback_reason=fallback,
-            **kw,
+            **{"llm_model": "fake-llm" if level in (1, 2) else None, **kw},
         )
     )
 
@@ -330,7 +330,8 @@ def test_summary_matches_direct_sql(client: TestClient, two: tuple[Tenant, Tenan
         assert levels[level]["p95_ms"] == stats.rounded(Decimal(str(p95)), 0)
 
     pct_no_llm = one(
-        "SELECT count(*) FILTER (WHERE level = 0) * 100.0 / count(*) FROM assistant_interaction WHERE pyme_id = :p"
+        "SELECT count(*) FILTER (WHERE llm_model IS NULL) * 100.0 / count(*) FROM assistant_interaction"
+        " WHERE pyme_id = :p"
     )
     pct_degraded = one(
         "SELECT count(*) FILTER (WHERE fallback_reason IS NOT NULL) * 100.0 / count(*)"

@@ -5,7 +5,9 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from app.core.data_version import bump
 from app.core.errors import ProblemError, not_found
+from app.db.enums import DataDomain
 from app.db.models import ProductionRecord, Recipe
 from app.modules.vision.detector import Detection
 from app.modules.vision.schemas import CountLine, ProductionCreate
@@ -52,6 +54,7 @@ def confirm_production(
         client_op_id=client_op_id,
     )
     db.add(record)
+    bump(db, DataDomain.PRODUCTION)  # invalida la caché del asistente ("¿cuánto produje hoy?")
     try:
         db.commit()
     except IntegrityError:  # otra solicitud con la misma clave ganó la carrera

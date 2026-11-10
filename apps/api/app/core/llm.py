@@ -1,7 +1,8 @@
 """Acceso al LLM detrás de una interfaz (AGENTS.md, sección 4; ADR-003).
 
 Ningún módulo llama a Ollama ni a otro proveedor directo: todo pasa por `LLMProvider`.
-- `OllamaProvider`: por defecto, `qwen3:4b` local, thinking desactivado, salida JSON con schema.
+- `OllamaProvider`: por defecto, `qwen3:4b` local, thinking desactivado. `chat_json` (salida JSON con schema,
+  para extraer) y `chat_stream` (texto en *streaming*, para redactar en los niveles 1 y 2 del asistente).
 - `FakeProvider`: para pruebas (respuestas programadas).
 - `DisabledProvider`: sin LLM; los módulos degradan (p. ej. formulario manual en F3).
 """
@@ -9,7 +10,7 @@ Ningún módulo llama a Ollama ni a otro proveedor directo: todo pasa por `LLMPr
 import json
 import logging
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Iterator
 from dataclasses import dataclass, field
 from functools import lru_cache
 from typing import Any, Protocol
@@ -34,6 +35,15 @@ class LLMResult:
     prompt_ms: int | None = None
 
 
+@dataclass
+class StreamStats:
+    """Lo llena `chat_stream` al terminar (si el consumidor corta antes, `tokens_out` queda en None)."""
+
+    model: str = ""
+    tokens_out: int | None = None
+    prompt_ms: int | None = None
+
+
 class LLMProvider(Protocol):
     name: str
 
@@ -41,6 +51,12 @@ class LLMProvider(Protocol):
         self, system: str, user: str, schema: dict[str, Any], *, num_predict: int = 300, temperature: float = 0.1
     ) -> LLMResult:
         """Una llamada con salida JSON restringida por `schema`."""
+        ...
+
+    def chat_stream(
+        self, system: str, user: str, stats: StreamStats, *, num_predict: int = 120, temperature: float = 0.2
+    ) -> Iterator[str]:
+        """Una llamada en texto; entrega los trozos a medida que llegan. Lanza `LLMUnavailableError`."""
         ...
 
 
@@ -80,6 +96,36 @@ class OllamaProvider:
             prompt_ms=int((data.get("prompt_eval_duration") or 0) / 1e6) or None,
         )
 
+    def chat_stream(
+        self, system: str, user: str, stats: StreamStats, *, num_predict: int = 120, temperature: float = 0.2
+    ) -> Iterator[str]:
+        payload = {
+            "model": self.name,
+            "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
+            "stream": True,
+            "think": False,
+            "keep_alive": self.keep_alive,
+            "options": {"temperature": temperature, "num_predict": num_predict, "num_ctx": 4096},
+        }
+        stats.model = self.name
+        start = time.perf_counter()
+        try:
+            with httpx.stream("POST", f"{self.base_url}/api/chat", json=payload, timeout=self.timeout_s) as resp:
+                resp.raise_for_status()
+                for line in resp.iter_lines():
+                    if not line:
+                        continue
+                    data = json.loads(line)
+                    if piece := data.get("message", {}).get("content", ""):
+                        yield piece
+                    if data.get("done"):
+                        stats.tokens_out = data.get("eval_count")
+                        stats.prompt_ms = int((data.get("prompt_eval_duration") or 0) / 1e6) or None
+        except (httpx.HTTPError, OSError, ValueError) as exc:
+            raise LLMUnavailableError(type(exc).__name__) from exc
+        latency = int((time.perf_counter() - start) * 1000)
+        logger.info("llm_stream", extra={"model": self.name, "latency_ms": latency, "tokens_out": stats.tokens_out})
+
 
 @dataclass
 class FakeProvider:
@@ -99,6 +145,21 @@ class FakeProvider:
         content = nxt(user) if callable(nxt) else nxt
         return LLMResult(content=content, model=self.name, latency_ms=1, tokens_out=len(content) // 4)
 
+    def chat_stream(
+        self, system: str, user: str, stats: StreamStats, *, num_predict: int = 120, temperature: float = 0.2
+    ) -> Iterator[str]:
+        """Entrega la respuesta programada palabra por palabra (con su espacio), como llegaría de Ollama."""
+        self.calls.append(user)
+        stats.model = self.name
+        if not self.responses:
+            raise LLMUnavailableError("sin respuestas programadas")
+        nxt = self.responses.pop(0)
+        content = nxt(user) if callable(nxt) else nxt
+        words = content.split(" ")
+        for i, word in enumerate(words):
+            yield word if i == len(words) - 1 else word + " "
+        stats.tokens_out = len(words)
+
 
 class DisabledProvider:
     name = "disabled"
@@ -106,6 +167,11 @@ class DisabledProvider:
     def chat_json(
         self, system: str, user: str, schema: dict[str, Any], *, num_predict: int = 300, temperature: float = 0.1
     ) -> LLMResult:
+        raise LLMUnavailableError("LLM desactivado por configuración")
+
+    def chat_stream(
+        self, system: str, user: str, stats: StreamStats, *, num_predict: int = 120, temperature: float = 0.2
+    ) -> Iterator[str]:
         raise LLMUnavailableError("LLM desactivado por configuración")
 
 

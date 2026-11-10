@@ -21,7 +21,10 @@ class Option(BaseModel):
 class AskOut(BaseModel):
     interaction_id: uuid.UUID | None = None
     answer: str
-    level: int = Field(description="0 = sin LLM; 1 = redactada por el LLM con el dato ya resuelto")
+    level: int = Field(
+        description="0 = plantilla sin LLM; 1 = el LLM redactó con el dato ya resuelto; 2 = desde documentos "
+        "(fragmento citado o resumen del LLM, ver `sources`)"
+    )
     intent: str | None
     status: str = Field(description="ok | no_data | ambiguous | missing_entity | unrecognized")
     sources: list[Source] = []
@@ -35,3 +38,8 @@ class QuickActionOut(BaseModel):
     id: str
     label: str
     question: str
+
+
+class FeedbackIn(BaseModel):
+    interaction_id: uuid.UUID
+    useful: bool

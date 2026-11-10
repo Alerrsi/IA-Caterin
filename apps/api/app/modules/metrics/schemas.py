@@ -105,7 +105,7 @@ class Share(BaseModel):
 class Assistant(BaseModel):
     total: int
     levels: list[LevelLatency]
-    without_llm: Share = Field(description="Resueltas en nivel 0 (no se llamó al LLM)")
+    without_llm: Share = Field(description="Resueltas sin llamar al LLM (nivel 0 y nivel 2 extractivo)")
     degraded: Share = Field(description="Con motivo de degradación (timeout, LLM caído, cifras que no cuadran…)")
 
 
