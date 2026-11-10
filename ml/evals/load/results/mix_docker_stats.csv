@@ -1,0 +1,49 @@
+22:58:43;caterin-api-1;10.19%;232.9MiB / 15.39GiB
+22:58:43;caterin-postgres-1;0.93%;87.11MiB / 15.39GiB
+22:58:43;caterin-web-1;0.00%;163.6MiB / 15.39GiB
+22:58:43;caterin-ollama-1;675.35%;5.464GiB / 15.39GiB222:59:06;caterin-api-1;5.92%;169.5MiB / 15.39GiB
+22:59:06;caterin-postgres-1;1.11%;89.14MiB / 15.39GiB
+22:59:06;caterin-web-1;0.00%;163.7MiB / 15.39GiB
+22:59:06;caterin-ollama-1;773.28%;5.491GiB / 15.39G22:22:59:28;caterin-api-1;1.36%;169.7MiB / 15.39GiB
+22:59:28;caterin-postgres-1;10.37%;89.75MiB / 15.39GiB
+22:59:28;caterin-web-1;140.88%;508.4MiB / 15.39GiB
+22:59:28;caterin-ollama-1;610.58%;5.468GiB / 15.22:59:22:59:50;caterin-api-1;2.73%;169.7MiB / 15.39GiB
+22:59:50;caterin-postgres-1;0.92%;89.76MiB / 15.39GiB
+22:59:50;caterin-web-1;333.79%;779.2MiB / 15.39GiB
+22:59:50;caterin-ollama-1;357.28%;5.469GiB / 15.22:59:23:00:12;caterin-api-1;55.37%;169.7MiB / 15.39GiB
+23:00:12;caterin-postgres-1;2.05%;89.77MiB / 15.39GiB
+23:00:12;caterin-web-1;0.00%;164MiB / 15.39GiB
+23:00:12;caterin-ollama-1;667.38%;5.493GiB / 1523:00:223:00:35;caterin-api-1;1.52%;169.8MiB / 15.39GiB
+23:00:35;caterin-postgres-1;10.24%;90.02MiB / 15.39GiB
+23:00:35;caterin-web-1;106.85%;406.3MiB / 15.39GiB
+23:00:35;caterin-ollama-1;613.60%;5.456GiB23:00:44;cat23:00:57;caterin-api-1;2.63%;169.8MiB / 15.39GiB
+23:00:57;caterin-postgres-1;0.41%;90.13MiB / 15.39GiB
+23:00:57;caterin-web-1;157.53%;357.4MiB / 15.39GiB
+23:00:57;caterin-ollama-1;562.10%;5.23:01:06;caterin-23:01:19;caterin-api-1;5.38%;169.9MiB / 15.39GiB
+23:01:19;caterin-postgres-1;1.53%;90.16MiB / 15.39GiB
+23:01:19;caterin-web-1;354.40%;699.6MiB / 15.39GiB
+23:01:19;caterin-ollama-1;436.60%;5.23:01:28;caterin-23:01:41;caterin-api-1;2.44%;170MiB / 15.39GiB
+23:01:41;caterin-postgres-1;0.37%;90.18MiB / 15.39GiB
+23:01:41;caterin-web-1;0.00%;164MiB / 15.39GiB
+23:01:41;caterin-ollama-1;635.44%;5.423:01:50;caterin-23:02:03;caterin-api-1;2.04%;171.1MiB / 15.39GiB
+23:02:03;caterin-postgres-1;0.29%;90.5MiB / 15.39GiB
+23:02:03;caterin-web-1;1.67%;182MiB / 15.39GiB
+23:02:03;caterin-ollama-1;413.94%;5.51Gi23:02:12;cate23:02:26;caterin-api-1;6.87%;172.1MiB / 15.39GiB
+23:02:26;caterin-postgres-1;1.34%;90.96MiB / 15.39GiB
+23:02:26;caterin-web-1;0.07%;165.6MiB / 15.39GiB
+23:02:26;caterin-ollama-1;587.21%;5.46GiB /23:02:35;c23:02:48;caterin-api-1;21.41%;180.3MiB / 15.39GiB
+23:02:48;caterin-postgres-1;1.79%;91.1MiB / 15.39GiB
+23:02:48;caterin-web-1;0.00%;165.6MiB / 15.39GiB
+23:02:48;caterin-ollama-1;676.19%;5.46GiB / 23:02:57;23:03:10;caterin-api-1;0.85%;172.2MiB / 15.39GiB
+23:03:10;caterin-postgres-1;8.57%;91.12MiB / 15.39GiB
+23:03:10;caterin-web-1;0.00%;165.6MiB / 15.39GiB
+23:03:10;caterin-ollama-1;691.05%;5.515GiB /23:03:19;c23:03:32;caterin-api-1;2.45%;172.4MiB / 15.39GiB
+23:03:32;caterin-postgres-1;1.14%;91.42MiB / 15.39GiB
+23:03:32;caterin-web-1;0.00%;165.6MiB / 15.39GiB
+23:03:32;caterin-ollama-1;764.25%;5.497GiB / 23:03:41;23:03:55;caterin-api-1;0.16%;172.4MiB / 15.39GiB
+23:03:55;caterin-postgres-1;0.01%;87.88MiB / 15.39GiB
+23:03:55;caterin-web-1;0.00%;165.6MiB / 15.39GiB
+23:03:55;caterin-ollama-1;404.26%;5.516GiB / 23:04:03;23:04:17;caterin-api-1;117.03%;203.4MiB / 15.39GiB
+23:04:17;caterin-postgres-1;9.79%;91.73MiB / 15.39GiB
+23:04:17;caterin-web-1;0.00%;165.6MiB / 15.39GiB
+23:04:17;caterin-ollama-1;540.13%;5.592GiB / 15.39GiB

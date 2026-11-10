@@ -1,0 +1,4 @@
+23:06:52;caterin-api-1;11.92%;262.7MiB / 15.39GiB
+23:06:52;caterin-postgres-1;10.30%;92.12MiB / 15.39GiB
+23:06:52;caterin-web-1;0.00%;165.6MiB / 15.39GiB
+23:06:52;caterin-ollama-1;636.50%;5.664GiB / 15.39GiB

@@ -16,6 +16,14 @@ Uso rápido:
        python bench_cpu.py detector --onnx output/inference_model.onnx --imgsz 384
 
 Cada comando agrega sus resultados a bench_results.json (--out para cambiar el nombre).
+
+Versión 2.0 (T10, 9-nov-2026), correcciones del ADR-003:
+  - RAM por nombre EXACTO del modelo en /api/ps (antes coincidía por prefijo: qwen3:4b y qwen3:8b se mezclaban).
+  - Tokens generados (eval_count) de cada respuesta, p50 y el detalle por pregunta.
+  - Extracción: qué campo falló en cada caso.
+  - Redacción en texto libre: marca respuestas con razonamiento filtrado ("Okay, let's…", <think>, inglés),
+    y mide también la variante JSON {"respuesta": "..."} que usa la app (apps/api/app/core/llm.py).
+  - Versión del script, carga del sistema (/proc/loadavg) antes y después de cada modelo.
 Cierra otros programas pesados mientras mides y conecta el cargador del notebook.
 
 LIMITES (importante para el ADR-003):
@@ -35,6 +43,8 @@ import time
 import unicodedata
 import urllib.error
 import urllib.request
+
+SCRIPT_VERSION = "2.0.0"
 
 # --------------------------------------------------------------------------- utilidades
 
@@ -78,12 +88,34 @@ def sysinfo():
     return info
 
 
+def loadavg():
+    try:
+        with open("/proc/loadavg", encoding="utf-8") as fh:
+            return [float(x) for x in fh.read().split()[:3]]
+    except OSError:
+        return None
+
+
+ENGLISH = {"the", "user", "is", "asking", "let", "me", "okay", "so", "need", "check", "wait", "data", "should", "answer"}
+
+
+def leaks_reasoning(text):
+    """True si la respuesta trae razonamiento en vez de (o antes de) la respuesta: <think>, "Okay, let's…",
+    o mucho vocabulario inglés. Heurística: sirve para detectar el problema, no para medir calidad."""
+    t = str(text).strip()
+    if "<think>" in t or t.lower().startswith(("okay", "let me", "alright", "hmm", "first,")):
+        return True
+    words = [w for w in norm(t).replace(",", " ").replace(".", " ").split() if w.isalpha()]
+    return bool(words) and sum(w in ENGLISH for w in words) / len(words) > 0.12
+
+
 def save(out, key, data):
     results = {}
     if os.path.exists(out):
         with open(out, encoding="utf-8") as fh:
             results = json.load(fh)
     results["system"] = sysinfo()
+    results["script_version"] = SCRIPT_VERSION
     results.setdefault(key, {}).update(data)
     with open(out, "w", encoding="utf-8") as fh:
         json.dump(results, fh, ensure_ascii=False, indent=2)
@@ -140,6 +172,7 @@ TOOL_CASES = [
     ("Cuéntame un chiste corto.", None, None, None),  # no debe llamar herramientas
 ]
 
+ANSWER_SCHEMA = {"type": "object", "properties": {"respuesta": {"type": "string"}}, "required": ["respuesta"]}
 ORDER_SCHEMA = {
     "type": "object",
     "properties": {
@@ -202,13 +235,26 @@ def args_of(call):
     return a if isinstance(a, dict) else {}
 
 
+def exact_name(model):
+    return model if ":" in model else model + ":latest"
+
+
+def ram_of(host, model):
+    """Memoria del modelo cargado, por nombre EXACTO (corrige la coincidencia por prefijo de la v1)."""
+    want = exact_name(model)
+    for m in post(host, "/api/ps").get("models", []):
+        if want in (m.get("name"), m.get("model")):
+            return {"ram_gb": round(m.get("size", 0) / 1e9, 2), "vram_gb": round(m.get("size_vram", 0) / 1e9, 2)}
+    return {"ram_gb": None, "note": f"{want} no aparece en /api/ps"}
+
+
 def bench_llm_model(host, model, repeats, num_ctx):
-    out = {}
+    out = {"script_version": SCRIPT_VERSION, "loadavg_before": loadavg()}
     warm = chat(host, model, [{"role": "user", "content": "Hola"}], num_predict=8, num_ctx=num_ctx)
     out["load_s"] = round((warm.get("load_duration") or 0) / 1e9, 2)
 
-    totals, tps, prefill = [], [], []
-    for _ in range(repeats):
+    totals, tps, prefill, tokens, leaks, detail = [], [], [], [], 0, []
+    for rep_i in range(repeats):
         for q in LAT_QUESTIONS:
             t0 = time.perf_counter()
             r = chat(host, model, [{"role": "system", "content": SYSTEM + "\n" + CONTEXT},
@@ -217,16 +263,43 @@ def bench_llm_model(host, model, repeats, num_ctx):
             if tok_per_s(r):
                 tps.append(tok_per_s(r))
             prefill.append((r.get("prompt_eval_duration") or 0) / 1e9)
+            tokens.append(r.get("eval_count") or 0)
+            text = r.get("message", {}).get("content", "")
+            leak = leaks_reasoning(text)
+            leaks += leak
+            if rep_i == 0:
+                detail.append({"pregunta": q, "tokens": r.get("eval_count"), "razonamiento_filtrado": leak,
+                               "inicio": text[:160]})
     out["latency_s"] = {"p50": round(pct(totals, 50), 1), "p95": round(pct(totals, 95), 1), "n": len(totals)}
     out["tokens_per_s_p50"] = round(pct(tps, 50), 1) if tps else None
     out["prompt_eval_s_p50"] = round(pct(prefill, 50), 2)
+    out["tokens_out"] = {"p50": pct(tokens, 50), "max": max(tokens) if tokens else None}
+    out["texto_libre"] = {"respuestas_con_razonamiento": leaks, "total": len(totals), "detalle": detail}
+
+    # Variante que usa la app: salida JSON {"respuesta": "..."} (impide que se cuele el razonamiento).
+    jtot, jtok, jleaks, jdetail = [], [], 0, []
+    for q in LAT_QUESTIONS:
+        t0 = time.perf_counter()
+        r = chat(host, model, [{"role": "system", "content": SYSTEM + " Responde en 2 o 3 frases.\n" + CONTEXT},
+                               {"role": "user", "content": q}], fmt=ANSWER_SCHEMA, num_predict=120, num_ctx=num_ctx)
+        jtot.append(time.perf_counter() - t0)
+        jtok.append(r.get("eval_count") or 0)
+        try:
+            answer = json.loads(r["message"]["content"]).get("respuesta", "")
+        except (ValueError, KeyError, AttributeError):
+            answer = ""
+        leak = leaks_reasoning(answer) or not answer
+        jleaks += leak
+        jdetail.append({"pregunta": q, "tokens": r.get("eval_count"), "razonamiento_o_vacia": leak,
+                        "respuesta": answer[:200]})
+    out["respuesta_json"] = {"latency_s_p50": round(pct(jtot, 50), 1), "tokens_p50": pct(jtok, 50),
+                             "razonamiento_o_vacia": jleaks, "total": len(jtot), "detalle": jdetail}
 
     try:
-        for m in post(host, "/api/ps").get("models", []):
-            if m.get("name", "").startswith(model.split(":")[0]):
-                out["ram_gb"] = round(m.get("size", 0) / 1e9, 1)
-    except Exception:
-        pass
+        out.update(ram_of(host, model))
+    except Exception as exc:  # noqa: BLE001
+        out["ram_gb"] = None
+        out["ram_error"] = str(exc)[:120]
 
     tool_ok, tool_detail = 0, []
     for text, want, key, kw in TOOL_CASES:
@@ -247,6 +320,7 @@ def bench_llm_model(host, model, repeats, num_ctx):
     out["tool_calling"] = {"ok": tool_ok, "total": len(TOOL_CASES), "detalle": tool_detail}
 
     got = total = 0
+    fallos = []
     for text, guests, items in EXTRACT_CASES:
         try:
             r = chat(host, model, [
@@ -257,18 +331,37 @@ def bench_llm_model(host, model, repeats, num_ctx):
             data = {}
         if guests is not None:
             total += 1
-            got += data.get("guests") == guests
+            if data.get("guests") == guests:
+                got += 1
+            else:
+                fallos.append({"caso": text[:50], "campo": "guests", "esperado": guests, "obtenido": data.get("guests")})
         for kw, qtys in items:
             total += 1
+            hit = None
             for it in data.get("items", []) or []:
                 try:
                     if kw in norm(it.get("name", "")) and float(it.get("quantity", -1)) in qtys:
-                        got += 1
+                        hit = it
                         break
                 except (TypeError, ValueError):
                     pass
-    out["extraccion"] = {"campos_ok": got, "campos_total": total}
+            if hit:
+                got += 1
+            else:
+                same = [it for it in data.get("items", []) or [] if kw in norm(it.get("name", ""))]
+                fallos.append({"caso": text[:50], "campo": f"item:{kw}", "esperado": sorted(qtys),
+                               "obtenido": same or "producto ausente"})
+    out["extraccion"] = {"campos_ok": got, "campos_total": total, "fallos": fallos}
+    out["loadavg_after"] = loadavg()
     return out
+
+
+def unload(host, model):
+    """Saca el modelo de la memoria (keep_alive 0) para medir el siguiente sin competir por RAM."""
+    try:
+        post(host, "/api/generate", {"model": model, "keep_alive": 0})
+    except Exception:  # noqa: BLE001
+        pass
 
 
 def cmd_llm(args):
@@ -281,6 +374,7 @@ def cmd_llm(args):
         except Exception as exc:  # noqa: BLE001
             results[model] = {"error": str(exc)[:200]}
             print("Falló:", exc)
+        unload(args.host, model)
     save(args.out, "llm", results)
 
 

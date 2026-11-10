@@ -1,0 +1,444 @@
+{
+  "set": "heldout.yaml",
+  "n": 64,
+  "max_wrong_rate": 0.05,
+  "current": {
+    "threshold": 0.65,
+    "margin": 0.03,
+    "n": 64,
+    "accuracy": 0.7656,
+    "coverage": 0.6562,
+    "wrong_rate": 0.0469,
+    "correct": 49,
+    "wrong": 3,
+    "via": {
+      "none": 22,
+      "keyword": 32,
+      "similarity": 10
+    },
+    "errors": [
+      {
+        "q": "oye cuanto aceite me va quedando en la bodega",
+        "expected": "stock_of_item",
+        "got": null,
+        "via": "none",
+        "score": 0.571
+      },
+      {
+        "q": "¿tengo leche todavía o se me acabó?",
+        "expected": "stock_of_item",
+        "got": "low_stock",
+        "via": "keyword",
+        "score": 1.0
+      },
+      {
+        "q": "kilos de harina que me quedan",
+        "expected": "stock_of_item",
+        "got": null,
+        "via": "none",
+        "score": 0.633
+      },
+      {
+        "q": "me quedara manteca pa las sopaipillas?",
+        "expected": "stock_of_item",
+        "got": null,
+        "via": "none",
+        "score": 0.59
+      },
+      {
+        "q": "existencias de zapallo",
+        "expected": "stock_of_item",
+        "got": null,
+        "via": "none",
+        "score": 0.462
+      },
+      {
+        "q": "hazme la lista de compras de lo que esta bajo",
+        "expected": "low_stock",
+        "got": null,
+        "via": "none",
+        "score": 0.59
+      },
+      {
+        "q": "que insumos ya estan en las ultimas",
+        "expected": "low_stock",
+        "got": null,
+        "via": "none",
+        "score": 0.597
+      },
+      {
+        "q": "avísame qué cosas están por acabarse",
+        "expected": "low_stock",
+        "got": null,
+        "via": "none",
+        "score": 0.559
+      },
+      {
+        "q": "cuanto gasto en materia prima pa 2 docenas de sopaipillas",
+        "expected": "recipe_cost",
+        "got": null,
+        "via": "none",
+        "score": 0.642
+      },
+      {
+        "q": "quien tiene el aceite mas economico",
+        "expected": "best_price",
+        "got": null,
+        "via": "none",
+        "score": 0.627
+      },
+      {
+        "q": "¿cuál es el precio más bajo de la leche?",
+        "expected": "best_price",
+        "got": null,
+        "via": "none",
+        "score": 0.597
+      },
+      {
+        "q": "que productos lleva el encargo del cumpleaños",
+        "expected": "order_detail",
+        "got": null,
+        "via": "none",
+        "score": 0.64
+      },
+      {
+        "q": "que pidio el cliente del coctel de oficina",
+        "expected": "order_detail",
+        "got": null,
+        "via": "none",
+        "score": 0.543
+      },
+      {
+        "q": "cuanto vendi el mes pasado",
+        "expected": null,
+        "got": "stock_of_item",
+        "via": "similarity",
+        "score": 0.692
+      },
+      {
+        "q": "cuanto es",
+        "expected": null,
+        "got": "stock_of_item",
+        "via": "similarity",
+        "score": 0.667
+      }
+    ]
+  },
+  "proposed": {
+    "threshold": 0.55,
+    "margin": 0.1,
+    "accuracy": 0.7656,
+    "coverage": 0.625,
+    "wrong_rate": 0.0312
+  },
+  "grid": [
+    {
+      "threshold": 0.4,
+      "margin": 0.0,
+      "accuracy": 0.7188,
+      "coverage": 0.9844,
+      "wrong_rate": 0.2812
+    },
+    {
+      "threshold": 0.4,
+      "margin": 0.03,
+      "accuracy": 0.8125,
+      "coverage": 0.7969,
+      "wrong_rate": 0.0938
+    },
+    {
+      "threshold": 0.4,
+      "margin": 0.05,
+      "accuracy": 0.8281,
+      "coverage": 0.7812,
+      "wrong_rate": 0.0781
+    },
+    {
+      "threshold": 0.4,
+      "margin": 0.1,
+      "accuracy": 0.7656,
+      "coverage": 0.625,
+      "wrong_rate": 0.0312
+    },
+    {
+      "threshold": 0.45,
+      "margin": 0.0,
+      "accuracy": 0.7188,
+      "coverage": 0.9844,
+      "wrong_rate": 0.2812
+    },
+    {
+      "threshold": 0.45,
+      "margin": 0.03,
+      "accuracy": 0.8125,
+      "coverage": 0.7969,
+      "wrong_rate": 0.0938
+    },
+    {
+      "threshold": 0.45,
+      "margin": 0.05,
+      "accuracy": 0.8281,
+      "coverage": 0.7812,
+      "wrong_rate": 0.0781
+    },
+    {
+      "threshold": 0.45,
+      "margin": 0.1,
+      "accuracy": 0.7656,
+      "coverage": 0.625,
+      "wrong_rate": 0.0312
+    },
+    {
+      "threshold": 0.5,
+      "margin": 0.0,
+      "accuracy": 0.75,
+      "coverage": 0.9375,
+      "wrong_rate": 0.2344
+    },
+    {
+      "threshold": 0.5,
+      "margin": 0.03,
+      "accuracy": 0.8125,
+      "coverage": 0.7969,
+      "wrong_rate": 0.0938
+    },
+    {
+      "threshold": 0.5,
+      "margin": 0.05,
+      "accuracy": 0.8281,
+      "coverage": 0.7812,
+      "wrong_rate": 0.0781
+    },
+    {
+      "threshold": 0.5,
+      "margin": 0.1,
+      "accuracy": 0.7656,
+      "coverage": 0.625,
+      "wrong_rate": 0.0312
+    },
+    {
+      "threshold": 0.55,
+      "margin": 0.0,
+      "accuracy": 0.8125,
+      "coverage": 0.8594,
+      "wrong_rate": 0.1562
+    },
+    {
+      "threshold": 0.55,
+      "margin": 0.03,
+      "accuracy": 0.8281,
+      "coverage": 0.7812,
+      "wrong_rate": 0.0781
+    },
+    {
+      "threshold": 0.55,
+      "margin": 0.05,
+      "accuracy": 0.8438,
+      "coverage": 0.7656,
+      "wrong_rate": 0.0625
+    },
+    {
+      "threshold": 0.55,
+      "margin": 0.1,
+      "accuracy": 0.7656,
+      "coverage": 0.625,
+      "wrong_rate": 0.0312
+    },
+    {
+      "threshold": 0.6,
+      "margin": 0.0,
+      "accuracy": 0.7969,
+      "coverage": 0.7344,
+      "wrong_rate": 0.0781
+    },
+    {
+      "threshold": 0.6,
+      "margin": 0.03,
+      "accuracy": 0.7969,
+      "coverage": 0.7188,
+      "wrong_rate": 0.0625
+    },
+    {
+      "threshold": 0.6,
+      "margin": 0.05,
+      "accuracy": 0.7969,
+      "coverage": 0.7188,
+      "wrong_rate": 0.0625
+    },
+    {
+      "threshold": 0.6,
+      "margin": 0.1,
+      "accuracy": 0.75,
+      "coverage": 0.6094,
+      "wrong_rate": 0.0312
+    },
+    {
+      "threshold": 0.65,
+      "margin": 0.0,
+      "accuracy": 0.7656,
+      "coverage": 0.6562,
+      "wrong_rate": 0.0469
+    },
+    {
+      "threshold": 0.65,
+      "margin": 0.03,
+      "accuracy": 0.7656,
+      "coverage": 0.6562,
+      "wrong_rate": 0.0469
+    },
+    {
+      "threshold": 0.65,
+      "margin": 0.05,
+      "accuracy": 0.7656,
+      "coverage": 0.6562,
+      "wrong_rate": 0.0469
+    },
+    {
+      "threshold": 0.65,
+      "margin": 0.1,
+      "accuracy": 0.75,
+      "coverage": 0.6094,
+      "wrong_rate": 0.0312
+    },
+    {
+      "threshold": 0.7,
+      "margin": 0.0,
+      "accuracy": 0.7344,
+      "coverage": 0.5625,
+      "wrong_rate": 0.0156
+    },
+    {
+      "threshold": 0.7,
+      "margin": 0.03,
+      "accuracy": 0.7344,
+      "coverage": 0.5625,
+      "wrong_rate": 0.0156
+    },
+    {
+      "threshold": 0.7,
+      "margin": 0.05,
+      "accuracy": 0.7344,
+      "coverage": 0.5625,
+      "wrong_rate": 0.0156
+    },
+    {
+      "threshold": 0.7,
+      "margin": 0.1,
+      "accuracy": 0.7188,
+      "coverage": 0.5469,
+      "wrong_rate": 0.0156
+    },
+    {
+      "threshold": 0.75,
+      "margin": 0.0,
+      "accuracy": 0.7031,
+      "coverage": 0.5312,
+      "wrong_rate": 0.0156
+    },
+    {
+      "threshold": 0.75,
+      "margin": 0.03,
+      "accuracy": 0.7031,
+      "coverage": 0.5312,
+      "wrong_rate": 0.0156
+    },
+    {
+      "threshold": 0.75,
+      "margin": 0.05,
+      "accuracy": 0.7031,
+      "coverage": 0.5312,
+      "wrong_rate": 0.0156
+    },
+    {
+      "threshold": 0.75,
+      "margin": 0.1,
+      "accuracy": 0.7031,
+      "coverage": 0.5312,
+      "wrong_rate": 0.0156
+    },
+    {
+      "threshold": 0.8,
+      "margin": 0.0,
+      "accuracy": 0.6875,
+      "coverage": 0.5156,
+      "wrong_rate": 0.0156
+    },
+    {
+      "threshold": 0.8,
+      "margin": 0.03,
+      "accuracy": 0.6875,
+      "coverage": 0.5156,
+      "wrong_rate": 0.0156
+    },
+    {
+      "threshold": 0.8,
+      "margin": 0.05,
+      "accuracy": 0.6875,
+      "coverage": 0.5156,
+      "wrong_rate": 0.0156
+    },
+    {
+      "threshold": 0.8,
+      "margin": 0.1,
+      "accuracy": 0.6875,
+      "coverage": 0.5156,
+      "wrong_rate": 0.0156
+    },
+    {
+      "threshold": 0.85,
+      "margin": 0.0,
+      "accuracy": 0.6719,
+      "coverage": 0.5,
+      "wrong_rate": 0.0156
+    },
+    {
+      "threshold": 0.85,
+      "margin": 0.03,
+      "accuracy": 0.6719,
+      "coverage": 0.5,
+      "wrong_rate": 0.0156
+    },
+    {
+      "threshold": 0.85,
+      "margin": 0.05,
+      "accuracy": 0.6719,
+      "coverage": 0.5,
+      "wrong_rate": 0.0156
+    },
+    {
+      "threshold": 0.85,
+      "margin": 0.1,
+      "accuracy": 0.6719,
+      "coverage": 0.5,
+      "wrong_rate": 0.0156
+    },
+    {
+      "threshold": 0.9,
+      "margin": 0.0,
+      "accuracy": 0.6719,
+      "coverage": 0.5,
+      "wrong_rate": 0.0156
+    },
+    {
+      "threshold": 0.9,
+      "margin": 0.03,
+      "accuracy": 0.6719,
+      "coverage": 0.5,
+      "wrong_rate": 0.0156
+    },
+    {
+      "threshold": 0.9,
+      "margin": 0.05,
+      "accuracy": 0.6719,
+      "coverage": 0.5,
+      "wrong_rate": 0.0156
+    },
+    {
+      "threshold": 0.9,
+      "margin": 0.1,
+      "accuracy": 0.6719,
+      "coverage": 0.5,
+      "wrong_rate": 0.0156
+    }
+  ]
+}

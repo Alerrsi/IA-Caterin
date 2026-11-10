@@ -1,0 +1,747 @@
+{
+  "measured_at": "2026-11-10 02:03",
+  "database": "caterin_eval",
+  "questions": 62,
+  "note": "Documentos y preguntas SINTÉTICOS (ml/evals/rag). Sin reranker (no está en Ollama).",
+  "results": [
+    {
+      "variant": "solo_texto",
+      "embedding_model": "disabled",
+      "documents": 9,
+      "chunks": 17,
+      "with_embeddings": false,
+      "index_seconds": 0.6,
+      "answerable": 50,
+      "recall_at_1": 0.86,
+      "recall_at_5": 1.0,
+      "mrr": 0.913,
+      "search_ms": {
+        "p50": 5,
+        "p95": 6
+      },
+      "sweep": [
+        {
+          "min_similarity": 0.3,
+          "k": 3,
+          "recall_at_k": 0.96,
+          "false_positives": 8,
+          "false_positives_text_only": 8,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 2.62
+        },
+        {
+          "min_similarity": 0.3,
+          "k": 4,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 8,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.18
+        },
+        {
+          "min_similarity": 0.3,
+          "k": 5,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 8,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.66
+        },
+        {
+          "min_similarity": 0.4,
+          "k": 3,
+          "recall_at_k": 0.96,
+          "false_positives": 8,
+          "false_positives_text_only": 8,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 2.62
+        },
+        {
+          "min_similarity": 0.4,
+          "k": 4,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 8,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.18
+        },
+        {
+          "min_similarity": 0.4,
+          "k": 5,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 8,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.66
+        },
+        {
+          "min_similarity": 0.45,
+          "k": 3,
+          "recall_at_k": 0.96,
+          "false_positives": 8,
+          "false_positives_text_only": 8,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 2.62
+        },
+        {
+          "min_similarity": 0.45,
+          "k": 4,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 8,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.18
+        },
+        {
+          "min_similarity": 0.45,
+          "k": 5,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 8,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.66
+        },
+        {
+          "min_similarity": 0.5,
+          "k": 3,
+          "recall_at_k": 0.96,
+          "false_positives": 8,
+          "false_positives_text_only": 8,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 2.62
+        },
+        {
+          "min_similarity": 0.5,
+          "k": 4,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 8,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.18
+        },
+        {
+          "min_similarity": 0.5,
+          "k": 5,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 8,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.66
+        },
+        {
+          "min_similarity": 0.6,
+          "k": 3,
+          "recall_at_k": 0.96,
+          "false_positives": 8,
+          "false_positives_text_only": 8,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 2.62
+        },
+        {
+          "min_similarity": 0.6,
+          "k": 4,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 8,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.18
+        },
+        {
+          "min_similarity": 0.6,
+          "k": 5,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 8,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.66
+        }
+      ],
+      "misses_at_1": [
+        {
+          "q": "que dia toca limpiar la campana",
+          "rank": 3,
+          "top": "protocolo-higiene.md"
+        },
+        {
+          "q": "con cuantos dias de anticipacion avisar las alergias",
+          "rank": 4,
+          "top": "preguntas-frecuentes-clientes.txt"
+        },
+        {
+          "q": "precio del queso crema en lacteos sur",
+          "rank": 2,
+          "top": "ficha-alergenos.md"
+        },
+        {
+          "q": "que dias despachan el yogur",
+          "rank": 2,
+          "top": "condiciones-harinas-cautin.md"
+        },
+        {
+          "q": "cuanto cuesta la mantequilla sin sal",
+          "rank": 2,
+          "top": "condiciones-harinas-cautin.md"
+        },
+        {
+          "q": "hacen eventos en villarrica",
+          "rank": 4,
+          "top": "protocolo-higiene.md"
+        },
+        {
+          "q": "como tienen que ir vestidos los garzones",
+          "rank": 3,
+          "top": "manual-garzones.pdf"
+        }
+      ],
+      "pyme_id": "5b56e56f-0114-470a-b7c6-ccae52dadcb9"
+    },
+    {
+      "variant": "bge-m3",
+      "embedding_model": "bge-m3",
+      "documents": 9,
+      "chunks": 17,
+      "with_embeddings": true,
+      "index_seconds": 18.08,
+      "answerable": 50,
+      "recall_at_1": 0.88,
+      "recall_at_5": 1.0,
+      "mrr": 0.933,
+      "search_ms": {
+        "p50": 226,
+        "p95": 643
+      },
+      "sweep": [
+        {
+          "min_similarity": 0.3,
+          "k": 3,
+          "recall_at_k": 1.0,
+          "false_positives": 11,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3
+        },
+        {
+          "min_similarity": 0.3,
+          "k": 4,
+          "recall_at_k": 1.0,
+          "false_positives": 11,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.98
+        },
+        {
+          "min_similarity": 0.3,
+          "k": 5,
+          "recall_at_k": 1.0,
+          "false_positives": 11,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 4.96
+        },
+        {
+          "min_similarity": 0.4,
+          "k": 3,
+          "recall_at_k": 1.0,
+          "false_positives": 10,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 2.94
+        },
+        {
+          "min_similarity": 0.4,
+          "k": 4,
+          "recall_at_k": 1.0,
+          "false_positives": 10,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.74
+        },
+        {
+          "min_similarity": 0.4,
+          "k": 5,
+          "recall_at_k": 1.0,
+          "false_positives": 10,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 4.44
+        },
+        {
+          "min_similarity": 0.45,
+          "k": 3,
+          "recall_at_k": 1.0,
+          "false_positives": 9,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 2.76
+        },
+        {
+          "min_similarity": 0.45,
+          "k": 4,
+          "recall_at_k": 1.0,
+          "false_positives": 9,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.44
+        },
+        {
+          "min_similarity": 0.45,
+          "k": 5,
+          "recall_at_k": 1.0,
+          "false_positives": 9,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 4
+        },
+        {
+          "min_similarity": 0.5,
+          "k": 3,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 2.66
+        },
+        {
+          "min_similarity": 0.5,
+          "k": 4,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.24
+        },
+        {
+          "min_similarity": 0.5,
+          "k": 5,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.74
+        },
+        {
+          "min_similarity": 0.6,
+          "k": 3,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 2.62
+        },
+        {
+          "min_similarity": 0.6,
+          "k": 4,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.18
+        },
+        {
+          "min_similarity": 0.6,
+          "k": 5,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.66
+        }
+      ],
+      "misses_at_1": [
+        {
+          "q": "puedo pagar a 30 dias al molino",
+          "rank": 2,
+          "top": "politica-anulaciones.md"
+        },
+        {
+          "q": "que dia toca limpiar la campana",
+          "rank": 2,
+          "top": "protocolo-higiene.md"
+        },
+        {
+          "q": "hasta cuando se paga el saldo del evento",
+          "rank": 3,
+          "top": "politica-anulaciones.md"
+        },
+        {
+          "q": "con cuantos dias de anticipacion avisar las alergias",
+          "rank": 3,
+          "top": "preguntas-frecuentes-clientes.txt"
+        },
+        {
+          "q": "cuanto cuesta la mantequilla sin sal",
+          "rank": 2,
+          "top": "condiciones-harinas-cautin.md"
+        },
+        {
+          "q": "como tienen que ir vestidos los garzones",
+          "rank": 2,
+          "top": "manual-garzones.pdf"
+        }
+      ],
+      "pyme_id": "d9508561-7861-42b3-892c-c6ca9af9ff67"
+    },
+    {
+      "variant": "qwen3-embedding-0.6b",
+      "embedding_model": "qwen3-embedding:0.6b",
+      "documents": 9,
+      "chunks": 17,
+      "with_embeddings": true,
+      "index_seconds": 44.73,
+      "answerable": 50,
+      "recall_at_1": 0.9,
+      "recall_at_5": 1.0,
+      "mrr": 0.947,
+      "search_ms": {
+        "p50": 238,
+        "p95": 1020
+      },
+      "sweep": [
+        {
+          "min_similarity": 0.3,
+          "k": 3,
+          "recall_at_k": 1.0,
+          "false_positives": 12,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3
+        },
+        {
+          "min_similarity": 0.3,
+          "k": 4,
+          "recall_at_k": 1.0,
+          "false_positives": 12,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 4
+        },
+        {
+          "min_similarity": 0.3,
+          "k": 5,
+          "recall_at_k": 1.0,
+          "false_positives": 12,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 4.94
+        },
+        {
+          "min_similarity": 0.4,
+          "k": 3,
+          "recall_at_k": 1.0,
+          "false_positives": 11,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 2.9
+        },
+        {
+          "min_similarity": 0.4,
+          "k": 4,
+          "recall_at_k": 1.0,
+          "false_positives": 11,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.64
+        },
+        {
+          "min_similarity": 0.4,
+          "k": 5,
+          "recall_at_k": 1.0,
+          "false_positives": 11,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 4.24
+        },
+        {
+          "min_similarity": 0.45,
+          "k": 3,
+          "recall_at_k": 1.0,
+          "false_positives": 9,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 2.8
+        },
+        {
+          "min_similarity": 0.45,
+          "k": 4,
+          "recall_at_k": 1.0,
+          "false_positives": 9,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.48
+        },
+        {
+          "min_similarity": 0.45,
+          "k": 5,
+          "recall_at_k": 1.0,
+          "false_positives": 9,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 4.04
+        },
+        {
+          "min_similarity": 0.5,
+          "k": 3,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 2.7
+        },
+        {
+          "min_similarity": 0.5,
+          "k": 4,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.34
+        },
+        {
+          "min_similarity": 0.5,
+          "k": 5,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.84
+        },
+        {
+          "min_similarity": 0.6,
+          "k": 3,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 2.62
+        },
+        {
+          "min_similarity": 0.6,
+          "k": 4,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.18
+        },
+        {
+          "min_similarity": 0.6,
+          "k": 5,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.66
+        }
+      ],
+      "misses_at_1": [
+        {
+          "q": "cuando hay que usar el furgon refrigerado",
+          "rank": 2,
+          "top": "protocolo-higiene.md"
+        },
+        {
+          "q": "hasta cuando se paga el saldo del evento",
+          "rank": 2,
+          "top": "politica-anulaciones.md"
+        },
+        {
+          "q": "con cuantos dias de anticipacion avisar las alergias",
+          "rank": 3,
+          "top": "preguntas-frecuentes-clientes.txt"
+        },
+        {
+          "q": "cuanto cuesta la mantequilla sin sal",
+          "rank": 2,
+          "top": "condiciones-harinas-cautin.md"
+        },
+        {
+          "q": "como tienen que ir vestidos los garzones",
+          "rank": 2,
+          "top": "manual-garzones.pdf"
+        }
+      ],
+      "pyme_id": "9b342045-af3d-4fd0-9229-a0a12bd6c937"
+    },
+    {
+      "variant": "qwen3-embedding-0.6b+instr",
+      "embedding_model": "qwen3-embedding:0.6b",
+      "documents": 9,
+      "chunks": 17,
+      "with_embeddings": true,
+      "index_seconds": 30.43,
+      "answerable": 50,
+      "recall_at_1": 0.9,
+      "recall_at_5": 1.0,
+      "mrr": 0.95,
+      "search_ms": {
+        "p50": 519,
+        "p95": 1979
+      },
+      "sweep": [
+        {
+          "min_similarity": 0.3,
+          "k": 3,
+          "recall_at_k": 1.0,
+          "false_positives": 11,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3
+        },
+        {
+          "min_similarity": 0.3,
+          "k": 4,
+          "recall_at_k": 1.0,
+          "false_positives": 11,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 4
+        },
+        {
+          "min_similarity": 0.3,
+          "k": 5,
+          "recall_at_k": 1.0,
+          "false_positives": 11,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 4.98
+        },
+        {
+          "min_similarity": 0.4,
+          "k": 3,
+          "recall_at_k": 1.0,
+          "false_positives": 10,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 2.92
+        },
+        {
+          "min_similarity": 0.4,
+          "k": 4,
+          "recall_at_k": 1.0,
+          "false_positives": 10,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.66
+        },
+        {
+          "min_similarity": 0.4,
+          "k": 5,
+          "recall_at_k": 1.0,
+          "false_positives": 10,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 4.26
+        },
+        {
+          "min_similarity": 0.45,
+          "k": 3,
+          "recall_at_k": 1.0,
+          "false_positives": 9,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 2.74
+        },
+        {
+          "min_similarity": 0.45,
+          "k": 4,
+          "recall_at_k": 1.0,
+          "false_positives": 9,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.34
+        },
+        {
+          "min_similarity": 0.45,
+          "k": 5,
+          "recall_at_k": 1.0,
+          "false_positives": 9,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.84
+        },
+        {
+          "min_similarity": 0.5,
+          "k": 3,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 2.64
+        },
+        {
+          "min_similarity": 0.5,
+          "k": 4,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.22
+        },
+        {
+          "min_similarity": 0.5,
+          "k": 5,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.7
+        },
+        {
+          "min_similarity": 0.6,
+          "k": 3,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 2.62
+        },
+        {
+          "min_similarity": 0.6,
+          "k": 4,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.18
+        },
+        {
+          "min_similarity": 0.6,
+          "k": 5,
+          "recall_at_k": 1.0,
+          "false_positives": 8,
+          "false_positives_text_only": 0,
+          "unanswerable": 12,
+          "avg_fragments_answerable": 3.66
+        }
+      ],
+      "misses_at_1": [
+        {
+          "q": "que dia toca limpiar la campana",
+          "rank": 2,
+          "top": "protocolo-higiene.md"
+        },
+        {
+          "q": "con cuantos dias de anticipacion avisar las alergias",
+          "rank": 2,
+          "top": "preguntas-frecuentes-clientes.txt"
+        },
+        {
+          "q": "cuanto cuesta la mantequilla sin sal",
+          "rank": 2,
+          "top": "condiciones-harinas-cautin.md"
+        },
+        {
+          "q": "como tienen que ir vestidos los garzones",
+          "rank": 2,
+          "top": "manual-garzones.pdf"
+        },
+        {
+          "q": "cuantos invitados atiende cada garzon",
+          "rank": 2,
+          "top": "preguntas-frecuentes-clientes.txt"
+        }
+      ],
+      "pyme_id": "dfc48f77-667d-4e02-8884-11e1cb5e8762"
+    }
+  ]
+}

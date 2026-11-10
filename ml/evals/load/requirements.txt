@@ -1,0 +1,2 @@
+# Prueba de carga ligera (T10). Entorno aparte: python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
+locust==2.47.0  # MIT

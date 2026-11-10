@@ -1,0 +1,77 @@
+# Preguntas del eval de RAG (T10), escritas ANTES de medir. Documentos SINTÉTICOS en docs/.
+# `doc`: archivo que debe aparecer; `key`: texto (sin importar tildes ni mayúsculas) que debe contener el fragmento.
+# `doc: null` = la respuesta NO está en los documentos: lo correcto es no devolver fragmentos (o ninguno pertinente).
+version: "1"
+questions:
+  # condiciones-harinas-cautin.md
+  - {q: "¿cuál es el pedido mínimo de Harinas Cautín?", doc: condiciones-harinas-cautin.md, key: "pedido minimo es de $45.000"}
+  - {q: "hasta que hora se puede pedir harina para el despacho", doc: condiciones-harinas-cautin.md, key: "hasta las 18:00"}
+  - {q: "cuanto cobran por despachar a labranza", doc: condiciones-harinas-cautin.md, key: "cuesta $6.000"}
+  - {q: "despachan el sabado los de la harina?", doc: condiciones-harinas-cautin.md, key: "fines de semana"}
+  - {q: "puedo pagar a 30 dias al molino", doc: condiciones-harinas-cautin.md, key: "pagar a 30 dias"}
+  - {q: "que pasa si llega un saco de harina roto", doc: condiciones-harinas-cautin.md, key: "saco roto"}
+  - {q: "hay descuento por comprar muchos sacos", doc: condiciones-harinas-cautin.md, key: "7 % de descuento"}
+  - {q: "dias de reparto en padre las casas del proveedor de harina", doc: condiciones-harinas-cautin.md, key: "martes y jueves"}
+  # politica-anulaciones.md
+  - {q: "cuanto es el abono para reservar la fecha", doc: politica-anulaciones.md, key: "abono del 30 %"}
+  - {q: "si el cliente anula 5 dias antes cuanto le devuelvo", doc: politica-anulaciones.md, key: "mitad del abono"}
+  - {q: "se devuelve el abono si cancelan el dia antes", doc: politica-anulaciones.md, key: "menos de 72 horas"}
+  - {q: "hasta cuando pueden cambiar el numero de invitados", doc: politica-anulaciones.md, key: "4 dias antes"}
+  - {q: "plazo para reclamar por la calidad de la comida", doc: politica-anulaciones.md, key: "24 horas despues del evento"}
+  - {q: "anulacion con una semana de anticipacion", doc: politica-anulaciones.md, key: "abono completo"}
+  - {q: "aceptan aumentar los invitados a ultima hora", doc: politica-anulaciones.md, key: "hasta un 10 %"}
+  # ficha-alergenos.md
+  - {q: "las sopaipillas llevan huevo?", doc: ficha-alergenos.md, key: "no llevan huevo ni lacteos"}
+  - {q: "que alergenos tienen las empanadas de pino", doc: ficha-alergenos.md, key: "empanadas de pino: contienen gluten"}
+  - {q: "tienen canapes sin gluten", doc: ficha-alergenos.md, key: "galleta de arroz"}
+  - {q: "las brochetas tienen sesamo", doc: ficha-alergenos.md, key: "soya y sesamo"}
+  - {q: "pueden garantizar que no hay nueces", doc: ficha-alergenos.md, key: "frutos secos"}
+  - {q: "los mini quiches tienen lactosa", doc: ficha-alergenos.md, key: "mini quiches: contienen gluten, huevo y lacteos"}
+  - {q: "las aceitunas de las empanadas tienen cuesco", doc: ficha-alergenos.md, key: "aceituna con carozo"}
+  # receta-pie-de-limon.txt
+  - {q: "cuantas yemas lleva el relleno del pie de limon", doc: receta-pie-de-limon.txt, key: "4 yemas"}
+  - {q: "a que temperatura se hornea la masa del pie", doc: receta-pie-de-limon.txt, key: "15 minutos a 180"}
+  - {q: "se puede congelar el pie de limon", doc: receta-pie-de-limon.txt, key: "no se congela"}
+  - {q: "cuanta azucar lleva el merengue", doc: receta-pie-de-limon.txt, key: "200 g de azucar"}
+  - {q: "cuantas porciones salen del pie de limon", doc: receta-pie-de-limon.txt, key: "12 porciones"}
+  # protocolo-higiene.md
+  - {q: "a que temperatura tiene que estar el refri", doc: protocolo-higiene.md, key: "entre 1 y 4"}
+  - {q: "que color de tabla se usa para el pescado", doc: protocolo-higiene.md, key: "azul para pescado"}
+  - {q: "cada cuanto se cambia el aceite de la freidora", doc: protocolo-higiene.md, key: "cada 3 usos"}
+  - {q: "cuanto duran los rellenos cocidos en el refrigerador", doc: protocolo-higiene.md, key: "duran 3 dias"}
+  - {q: "cuando hay que usar el furgon refrigerado", doc: protocolo-higiene.md, key: "mas de 2 horas"}
+  - {q: "que dia toca limpiar la campana", doc: protocolo-higiene.md, key: "todos los lunes"}
+  # contrato-tipo-servicio.md
+  - {q: "hasta cuando se paga el saldo del evento", doc: contrato-tipo-servicio.md, key: "48 horas antes del evento"}
+  - {q: "cuanto se cobra la hora extra de garzon", doc: contrato-tipo-servicio.md, key: "$12.000"}
+  - {q: "que pasa si se rompe la vajilla prestada", doc: contrato-tipo-servicio.md, key: "valor de reposicion"}
+  - {q: "con cuantos dias de anticipacion avisar las alergias", doc: contrato-tipo-servicio.md, key: "al menos 5 dias antes"}
+  - {q: "si hay una emergencia sanitaria pierdo el abono", doc: contrato-tipo-servicio.md, key: "credito por 6 meses"}
+  # lista-precios-lacteos-sur.csv
+  - {q: "precio del queso crema en lacteos sur", doc: lista-precios-lacteos-sur.csv, key: "queso crema | 1,5 kg | 9.450"}
+  - {q: "que dias despachan el yogur", doc: lista-precios-lacteos-sur.csv, key: "solo miercoles"}
+  - {q: "cuanto cuesta la mantequilla sin sal", doc: lista-precios-lacteos-sur.csv, key: "2.490"}
+  # preguntas-frecuentes-clientes.txt
+  - {q: "cuantos bocados por persona para un coctel", doc: preguntas-frecuentes-clientes.txt, key: "12 bocados por invitado"}
+  - {q: "hacen eventos en villarrica", doc: preguntas-frecuentes-clientes.txt, key: "toda la region de la araucania"}
+  - {q: "que opciones vegetarianas tienen", doc: preguntas-frecuentes-clientes.txt, key: "brochetas de verduras"}
+  - {q: "con cuanta anticipacion pedir para 150 personas", doc: preguntas-frecuentes-clientes.txt, key: "al menos 15 dias"}
+  - {q: "dan factura?", doc: preguntas-frecuentes-clientes.txt, key: "la factura se pide"}
+  # manual-garzones.pdf
+  - {q: "como tienen que ir vestidos los garzones", doc: manual-garzones.pdf, key: "camisa blanca"}
+  - {q: "cuantos invitados atiende cada garzon", doc: manual-garzones.pdf, key: "maximo a 25 invitados"}
+  - {q: "como se reparten las propinas", doc: manual-garzones.pdf, key: "partes iguales"}
+  - {q: "por que lado se ofrecen las bandejas", doc: manual-garzones.pdf, key: "por la izquierda"}
+  # SIN respuesta en los documentos (no deben recuperar nada pertinente)
+  - {q: "cual es el rut de harinas cautin", doc: null}
+  - {q: "tienen menu para celiacos en matrimonios de 300 personas con barra de tragos", doc: null}
+  - {q: "quien gano el campeonato nacional", doc: null}
+  - {q: "cuanto cuesta el arriendo del local", doc: null}
+  - {q: "horario de atencion de la municipalidad", doc: null}
+  - {q: "precio del salmon ahumado por kilo", doc: null}
+  - {q: "tienen estacionamiento para los invitados", doc: null}
+  - {q: "cual es la clave del wifi", doc: null}
+  - {q: "venden tortas de cumpleanos con fondant", doc: null}
+  - {q: "como saco la patente de alcoholes", doc: null}
+  - {q: "cuantos litros de bebida por persona", doc: null}
+  - {q: "hacen delivery con drones", doc: null}
