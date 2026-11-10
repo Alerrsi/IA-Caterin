@@ -4,6 +4,7 @@ Cada una resuelve entidades en código y devuelve la respuesta de nivel 0 ya red
 salen de los servicios de T04/T05, nunca de un LLM. Si no hay dato, lo dice.
 """
 
+import re
 import uuid
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -23,6 +24,7 @@ from app.db.enums import BaseUnit, OrderStatus
 from app.db.models import Ingredient, Order, ProductionRecord, Recipe, Supplier
 from app.modules.assistant.entities import find_entity
 from app.modules.assistant.parsing import WEEKDAYS_LONG, fmt_date, parse_past_range, parse_qty, parse_range
+from app.modules.assistant.recognizer import normalize_question
 from app.modules.quotes import service as quotes
 from app.modules.quotes.calculator import ORDER_UNIT_LABELS, QuoteCalculationError
 from app.modules.recipes import service as recipes
@@ -173,21 +175,65 @@ def compare_prices(db: Session, text: str, today: date) -> QueryResult:
     return QueryResult("ok", out, src, {"item": cmp.ingredient_name})
 
 
+# Qué dato del proveedor se pide. Sin ninguno ("¿y Molino Sur?") se responde despacho y contacto completos.
+SUPPLIER_FIELDS: dict[str, re.Pattern[str]] = {
+    "email": re.compile(r"\b(correo|mail|email|e-mail)s?\b"),
+    "phone": re.compile(r"\b(telefono|fono|celular|numero|whatsapp|wsp|llamar)s?\b"),
+    "website": re.compile(r"\b(web|pagina|sitio|link|enlace)s?\b"),
+    "delivery": re.compile(r"\b(despach\w*|repart\w*|entreg\w*|llega\w*|dias?)\b"),
+}
+CONTACT = re.compile(r"\b(contacto|contactar|contactarlo|contactarla|ubicar)\b")
+FIELD_ES = {"email": "el correo", "phone": "el teléfono", "website": "la página web"}
+
+
+def _not_registered(items: list[str], name: str) -> str:
+    if len(items) == 1:
+        word = "registrada" if items[0].startswith("la ") else "registrado"
+        return f"No tengo {word} {items[0]} de {name}."
+    return f"No tengo registrados {', '.join(items[:-1])} ni {items[-1]} de {name}."
+
+
+def _supplier_fields(text: str) -> list[str]:
+    q = normalize_question(text)
+    asked = [f for f, rx in SUPPLIER_FIELDS.items() if rx.search(q)]
+    if CONTACT.search(q):
+        asked += [f for f in ("phone", "email", "website") if f not in asked]
+    return asked or ["delivery", "phone", "email", "website"]
+
+
 def get_supplier(db: Session, text: str, today: date) -> QueryResult:
     choices = {s.id: s.name for s in db.scalars(select(Supplier).where(Supplier.is_active))}
     found, ask = _resolve("supplier", text, choices, lambda n: f"¿Qué días despacha {n}?", "proveedor")
     if found is None:
         return ask  # type: ignore[return-value]
     sup = suppliers.get_supplier(db, found)
-    days = [WEEKDAYS_LONG[d - 1] for d in sorted(sup.delivery_days or []) if 1 <= d <= 7]
-    parts = [
-        f"{sup.name} despacha {_join(days)}." if days else f"No tengo registrados los días de despacho de {sup.name}."
-    ]
-    if sup.phone:
-        parts.append(f"Teléfono: {sup.phone}.")
-    if sup.email:
-        parts.append(f"Correo: {sup.email}.")
-    return QueryResult("ok", " ".join(parts), _src("suppliers", "tus proveedores"), {"supplier": sup.name})
+    asked = _supplier_fields(text)
+    explicit = asked != ["delivery", "phone", "email", "website"]
+    values = {"phone": sup.phone, "email": sup.email, "website": sup.website}
+    parts: list[str] = []
+    if "delivery" in asked:
+        days = [WEEKDAYS_LONG[d - 1] for d in sorted(sup.delivery_days or []) if 1 <= d <= 7]
+        parts.append(
+            f"{sup.name} despacha {_join(days)}."
+            if days
+            else f"No tengo registrados los días de despacho de {sup.name}."
+        )
+    labels = {"phone": "Teléfono", "email": "Correo", "website": "Página web"}
+    missing = [f for f in ("phone", "email", "website") if f in asked and not values[f]]
+    for f in ("phone", "email", "website"):
+        if f in asked and values[f]:
+            parts.append(
+                f"{labels[f]}: {values[f]}." if parts or not explicit else f"{labels[f]} de {sup.name}: {values[f]}."
+            )
+    if explicit and missing:  # se pidió ese dato y no está: se dice, no se cambia por otro
+        parts.append(_not_registered([FIELD_ES[f] for f in missing], sup.name))
+        if not any(values[f] for f in asked if f in values) and "delivery" not in asked:
+            have = [f"{labels[f].lower()} {values[f]}" for f in ("phone", "email", "website") if values[f]]
+            if have:
+                parts.append(f"Sí tengo su {_join(have)}.")
+    return QueryResult(
+        "ok", " ".join(parts), _src("suppliers", "tus proveedores"), {"supplier": sup.name, "asked": asked}
+    )
 
 
 # --------------------------------------------------------------------------- un pedido en particular

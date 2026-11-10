@@ -52,7 +52,7 @@ Además, las preguntas de una pyme de catering son pocas y repetitivas: ¿cuánt
 | `order_detail` | `get_order(order)` | "¿qué lleva el pedido del sábado?" | no |
 | `order_feasibility` | `check_order_stock(order)` | "¿me alcanza para el pedido del sábado?" | sí |
 | `best_price` | `compare_prices(item)` | "¿dónde está más barata la harina?" | sí |
-| `supplier_info` | `get_supplier(supplier)` | "¿qué días despacha Molino Sur?" | no |
+| `supplier_info` | `get_supplier(supplier)`: responde el dato pedido (despacho, teléfono, correo, web o contacto) y dice cuál no está registrado | "¿qué días despacha Molino Sur?", "¿cuál es el correo de Molino Sur?" | no |
 | `cash_summary` | `get_cash_summary(range)` | "¿cómo va la caja este mes?" | sí |
 | `production_summary` | `get_production(range)` | "¿cuántas empanadas hice hoy?" | no |
 

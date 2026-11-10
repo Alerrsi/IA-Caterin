@@ -138,7 +138,7 @@ intents:
     allow_level1: false
     keywords:
       - '\b(que dias|cuando|que dia)\b.*\b(despacha|reparte|entrega|llega)\b'
-      - '\b(telefono|numero|contacto|correo|mail|whatsapp)\b.*\b(de|del)\b'
+      - '\b(telefono|numero|contacto|correo|mail|email|whatsapp|web|pagina web|sitio web)\b.*\b(de|del)\b'
       - '\b(despacha|despachan|reparte|reparten)\b'
     examples:
       - "¿Qué días despacha Molino Sur?"
@@ -148,6 +148,8 @@ intents:
       - "¿Despachan los sábados en Molino Sur?"
       - "dame el número del proveedor de carnes"
       - "¿Qué día llega el pedido de Molino Sur?"
+      - "¿Cuál es el correo de Molino Sur?"
+      - "página web de Distribuidora Lago"
       - "¿Cómo contacto a Distribuidora Lago?"
       - "correo del proveedor de harina"
     template: "{answer}"

@@ -160,6 +160,19 @@ def test_best_price_and_supplier_info(client: TestClient, demo: dict) -> None:  
     assert sup["intent"] == "supplier_info" and "martes y jueves" in sup["answer"]
 
 
+def test_supplier_info_answers_the_field_asked(client: TestClient, demo: dict) -> None:  # type: ignore[type-arg]
+    """Si piden el correo de la verdulería no responde los días de despacho: dice que no tiene el correo."""
+    mail = ask(client, demo["owner"], "¿Cuál es el correo de la verdulería?")
+    assert mail["intent"] == "supplier_info"
+    assert mail["answer"] == "No tengo registrado el correo de Verdulería El Huerto (demo)."
+    phone = ask(client, demo["owner"], "teléfono de Harinas Cautín")
+    assert "+56 9 0000 0001" in phone["answer"] and "despacha" not in phone["answer"]
+    web = ask(client, demo["owner"], "página web de Harinas Cautín")
+    assert "No tengo registrada la página web" in web["answer"] and "+56 9 0000 0001" in web["answer"]
+    contact = ask(client, demo["owner"], "¿cuál es el contacto de la verdulería?")
+    assert "el teléfono, el correo ni la página web" in contact["answer"]
+
+
 def test_unrecognized_question_does_not_invent(client: TestClient, demo: dict) -> None:  # type: ignore[type-arg]
     out = ask(client, demo["owner"], "cuéntame un chiste")
     assert out["status"] == "unrecognized" and out["intent"] is None and out["level"] == 0

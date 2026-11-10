@@ -53,13 +53,13 @@ Detalle en `ml/evals/REPORT.md`. Todo con datos **sintéticos**.
   - comparación de embeddings con 50 preguntas;
   - rúbrica y planilla de revisión humana.
 - **Hecho, fuera del plan original:** el chat sobre documentos (nivel 2) **no respondía bien** aunque la búsqueda encontrara el documento: 27/50 preguntas bien respondidas. Se cambió a indexación por frase, con respuesta extractiva con confianza y reindexación de los documentos antiguos. Quedó en 49/50 en el set de ajuste y 28/31 en un set reservado escrito antes del cambio, con 2 respuestas seguras equivocadas en el reservado. Ver ADR-005.
+- **Hecho (10-nov):** `supplier_info` responde el dato pedido (correo, teléfono, página web, contacto o despacho). Si falta, lo dice ("No tengo registrado el correo de Verdulería El Huerto (demo).") en vez de responder los días de despacho.
 - **Parcial:**
   - LLM: `qwen3:4b` medido en limpio; `qwen3:4b-instruct` medido con la máquina cargada; Gemma 4 E4B sin medir.
   - Asistente de punta a punta con LLM (`eval_assistant.py`, escrito, sin correr).
   - Carga con LLM (cortada).
 - **Pendiente:**
   - repetir el nivel 2 con LLM en limpio, después de la corrección de las listas;
-  - la intención `supplier_info` no responde por el correo o el teléfono cuando no están: dice los días de despacho;
   - extractor con 20 pedidos reservados y 3 modelos (`eval_extractor.py`, listo);
   - reranker (`rerank_eval.py`, listo);
   - revisión humana de la redacción (2 personas del equipo);
