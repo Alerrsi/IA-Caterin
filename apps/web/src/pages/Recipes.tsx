@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Alert, Page, Spinner, inputClass } from '../components/ui'
+import { Alert, Button, Page, Spinner, inputClass } from '../components/ui'
 import { formatStock, type BaseUnit } from '../format'
 import { t } from '../i18n'
 import { useCached } from '../offline/cache'
@@ -32,6 +32,9 @@ export default function Recipes() {
           <Alert kind="info">{t.sync.staleData(savedAtLabel(value.savedAt))}</Alert>
         </div>
       )}
+      <Button className="mb-4 w-full" onClick={() => navigate('/recetas/nueva')}>
+        {t.recipeForm.open}
+      </Button>
       <label htmlFor="recipes-search" className="mb-1 block font-semibold text-stone-800">
         {t.recipes.search}
       </label>

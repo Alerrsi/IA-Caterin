@@ -51,6 +51,13 @@ export default function Inventory() {
   const { value, error, loading, setData, reload } = useCached<Ingredient[]>('ingredients', loadAllIngredients)
   const [query, setQuery] = useState('')
   const [onlyLow, setOnlyLow] = useState(false)
+  const [onlyNoPrice, setOnlyNoPrice] = useState(false)
+  // Precios vigentes de todos los insumos en una llamada: con eso se sabe cuáles no tienen precio.
+  const prices = useCached<{ ingredient_id: string }[]>('prices:current', '/prices')
+  const priced = useMemo(
+    () => (prices.value ? new Set(prices.value.data.map((p) => p.ingredient_id)) : null),
+    [prices.value],
+  )
   const [open, setOpen] = useState<{ id: string; sign: 1 | -1 } | null>(null)
   const [notice, setNotice] = useState<{ kind: 'info' | 'warning'; text: string } | null>(null)
   const pendingIds = usePendingIngredients()
@@ -60,8 +67,9 @@ export default function Inventory() {
     const q = plain(query)
     return (value?.data ?? [])
       .filter((i) => i.is_active && (!onlyLow || i.is_low) && (!q || plain(i.name).includes(q)))
+      .filter((i) => !onlyNoPrice || !priced || !priced.has(i.id))
       .sort((a, b) => a.name.localeCompare(b.name, 'es'))
-  }, [value, query, onlyLow])
+  }, [value, query, onlyLow, onlyNoPrice, priced])
 
   function applied(ing: Ingredient, deltaBase: number) {
     const updated = applyDelta(ing, deltaBase)
@@ -84,6 +92,9 @@ export default function Inventory() {
           <Alert kind={notice.kind}>{notice.text}</Alert>
         </div>
       )}
+      <Button className="mb-4 w-full" onClick={() => navigate('/inventario/nuevo')}>
+        {t.inventory.newItem}
+      </Button>
       <label htmlFor="inventory-search" className="mb-1 block font-semibold text-stone-800">
         {t.inventory.search}
       </label>
@@ -105,6 +116,17 @@ export default function Inventory() {
         />
         {t.inventory.onlyLow}
       </label>
+      {priced && (
+        <label className="flex min-h-12 items-center gap-3 text-lg">
+          <input
+            type="checkbox"
+            className="h-6 w-6 accent-orange-700"
+            checked={onlyNoPrice}
+            onChange={(e) => setOnlyNoPrice(e.target.checked)}
+          />
+          {t.inventory.onlyNoPrice}
+        </label>
+      )}
 
       {error && !value ? (
         <div className="mt-4">
@@ -132,6 +154,11 @@ export default function Inventory() {
                     <span className="mt-1 inline-block rounded-full bg-amber-100 px-2 py-0.5 text-sm font-semibold text-amber-950">
                       {t.inventory.low}
                       {ing.min_stock_qty && ` · ${t.inventory.min(formatStock(ing.min_stock_qty, ing.base_unit))}`}
+                    </span>
+                  )}
+                  {priced && !priced.has(ing.id) && (
+                    <span className="mt-1 ml-1 inline-block rounded-full bg-red-100 px-2 py-0.5 text-sm font-semibold text-red-900">
+                      {t.inventory.noPrice}
                     </span>
                   )}
                   {pendingIds.has(ing.id) && (

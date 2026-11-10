@@ -5,8 +5,10 @@ import Assistant from './pages/Assistant'
 import Home from './pages/Home'
 import Imports from './pages/Imports'
 import IngredientDetail from './pages/IngredientDetail'
+import IngredientNew from './pages/IngredientNew'
 import Inventory from './pages/Inventory'
 import RecipeDetail from './pages/RecipeDetail'
+import RecipeNew from './pages/RecipeNew'
 import Recipes from './pages/Recipes'
 import Register from './pages/Register'
 import Settings from './pages/Settings'
@@ -37,9 +39,11 @@ function Routes() {
   if (matchPath('/pedidos', path)) return <Orders />
   if (matchPath('/metricas', path)) return <Metrics />
   if (matchPath('/preguntar', path)) return <Assistant />
+  if (matchPath('/inventario/nuevo', path)) return <IngredientNew />
   const ingredient = matchPath('/inventario/:id', path)
   if (ingredient) return <IngredientDetail key={ingredient.id} id={ingredient.id} />
   if (matchPath('/inventario', path)) return <Inventory />
+  if (matchPath('/recetas/nueva', path)) return <RecipeNew />
   const recipe = matchPath('/recetas/:id', path)
   if (recipe) return <RecipeDetail key={recipe.id} id={recipe.id} />
   if (matchPath('/recetas', path)) return <Recipes />

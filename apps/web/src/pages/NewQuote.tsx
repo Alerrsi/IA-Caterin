@@ -11,6 +11,7 @@ import {
   type RecipeSummary,
   type Suggestion,
 } from '../api'
+import { MarginFix, isMarginRequired } from '../components/MarginFix'
 import { Alert, Button, Field, inputClass, Page, Spinner } from '../components/ui'
 import { formatQty, parseQtyInput } from '../format'
 import { t } from '../i18n'
@@ -54,6 +55,9 @@ export default function NewQuote() {
   const [source, setSource] = useState<'text' | 'form'>('form')
   const [extraction, setExtraction] = useState<Record<string, unknown> | null>(null)
   const [saving, setSaving] = useState(false)
+  // Si el pedido ya se guardó y lo que falló fue la cotización (p. ej. sin margen), se reintenta sin duplicarlo.
+  const [savedOrderId, setSavedOrderId] = useState<string | null>(null)
+  const [needsMargin, setNeedsMargin] = useState(false)
 
   useEffect(() => {
     api<RecipeSummary[]>('/recipes')
@@ -117,8 +121,10 @@ export default function NewQuote() {
     const parsed = lines.map((l) => parseQtyInput(l.qty))
     if (parsed.some((q) => q === null)) return setError(t.quote.badQty)
     setSaving(true)
+    let orderId = savedOrderId
     try {
-      const order = await post<OrderOut>('/orders', {
+      if (!orderId) {
+        const order = await post<OrderOut>('/orders', {
         customer_name: customer.trim(),
         event_date: eventDate || null,
         guests: guests ? Number(guests) : null,
@@ -131,12 +137,20 @@ export default function NewQuote() {
           qty: parsed[i],
           unit: l.unit,
         })),
-      })
-      const quote = await post<QuoteOut>(`/orders/${order.id}/quotes`, {})
+        })
+        orderId = order.id
+        setSavedOrderId(order.id)
+      }
+      const quote = await post<QuoteOut>(`/orders/${orderId}/quotes`, {})
       // Métrica T09: desde que se abrió esta pantalla hasta tener la cotización calculada.
       sendQuoteTiming({ started_at: startedAt.current, ended_at: new Date().toISOString(), quote_id: quote.id, source })
       navigate(`/cotizaciones/${quote.id}`)
     } catch (err) {
+      if (isMarginRequired(err)) {
+        setNeedsMargin(true)
+        return
+      }
+      setSavedOrderId(null) // otro error: si la usuaria corrige el pedido, se guarda de nuevo
       if (err instanceof ApiError && err.status === 403) setError(t.quote.ownerOnly)
       else setError(err instanceof ApiError ? err.userMessage : t.genericError)
     } finally {
@@ -286,6 +300,16 @@ export default function NewQuote() {
       {error && (
         <div className="mt-4">
           <Alert>{error}</Alert>
+        </div>
+      )}
+      {needsMargin && (
+        <div className="mt-4">
+          <MarginFix
+            onSaved={async () => {
+              setNeedsMargin(false)
+              await confirm()
+            }}
+          />
         </div>
       )}
       <Button className="mt-4 w-full" onClick={confirm} disabled={saving}>

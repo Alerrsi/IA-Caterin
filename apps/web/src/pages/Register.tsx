@@ -1,12 +1,13 @@
 import { useState, type FormEvent } from 'react'
-import { ApiError } from '../api'
+import { ApiError, patch } from '../api'
 import { useAuth } from '../auth'
 import { Alert, Button, Field, inputClass } from '../components/ui'
+import { parseQtyInput } from '../format'
 import { t } from '../i18n'
 
 export default function Register() {
   const { register } = useAuth()
-  const [form, setForm] = useState({ pyme: '', name: '', email: '', password: '' })
+  const [form, setForm] = useState({ pyme: '', name: '', email: '', password: '', margin: '' })
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const set = (field: keyof typeof form) => (e: { target: { value: string } }) =>
@@ -14,8 +15,13 @@ export default function Register() {
 
   async function submit(e: FormEvent) {
     e.preventDefault()
-    setBusy(true)
     setError(null)
+    // Margen opcional: sin él no se puede cotizar, pero no se inventa un valor por defecto.
+    const margin = form.margin.trim() ? parseQtyInput(form.margin) : null
+    if (form.margin.trim() && (margin === null || !(Number(margin) >= 0 && Number(margin) <= 100))) {
+      return setError(t.register.badMargin)
+    }
+    setBusy(true)
     try {
       await register({
         pyme_name: form.pyme.trim(),
@@ -23,6 +29,7 @@ export default function Register() {
         email: form.email.trim(),
         password: form.password,
       })
+      if (margin !== null) await patch('/pyme', { default_margin_pct: margin }).catch(() => undefined)
       window.location.hash = '#/'
     } catch (err) {
       setError(err instanceof ApiError ? err.userMessage : t.genericError)
@@ -63,6 +70,9 @@ export default function Register() {
             value={form.password}
             onChange={set('password')}
           />
+        </Field>
+        <Field label={t.register.margin} hint={t.register.marginHint}>
+          <input className={inputClass} inputMode="decimal" value={form.margin} onChange={set('margin')} />
         </Field>
         {error && <Alert>{error}</Alert>}
         <Button type="submit" className="w-full" disabled={busy || !ready}>

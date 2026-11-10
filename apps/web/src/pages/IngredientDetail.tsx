@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { loadAllIngredients, type Ingredient, type Movement } from '../api'
+import { PriceSection } from '../components/PriceForm'
 import { StockAdjust, applyDelta } from '../components/StockAdjust'
 import { Alert, Button, Page, Spinner } from '../components/ui'
 import { formatStock } from '../format'
@@ -82,6 +83,8 @@ export default function IngredientDetail({ id }: { id: string }) {
               <StockAdjust key={sign} ingredient={ing} sign={sign} onDone={applied} onCancel={() => setSign(null)} />
             )}
           </section>
+
+          <PriceSection ingredient={ing} />
 
           <section className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
             <h2 className="mb-2 text-lg font-bold text-stone-900">{t.inventory.history}</h2>

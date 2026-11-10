@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { api, ApiError, post, type OrderOut, type QuoteOut } from '../api'
+import { MarginFix, isMarginRequired } from '../components/MarginFix'
 import { Alert, Button, Page, Spinner } from '../components/ui'
 import { formatDate, formatQty } from '../format'
 import { t } from '../i18n'
@@ -9,6 +10,7 @@ export default function Orders() {
   const [orders, setOrders] = useState<OrderOut[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState<string | null>(null)
+  const [marginFor, setMarginFor] = useState<OrderOut | null>(null)
 
   useEffect(() => {
     api<OrderOut[]>('/orders')
@@ -19,11 +21,13 @@ export default function Orders() {
   async function quote(order: OrderOut) {
     setBusy(order.id)
     setError(null)
+    setMarginFor(null)
     try {
       const q = await post<QuoteOut>(`/orders/${order.id}/quotes`, {})
       navigate(`/cotizaciones/${q.id}`)
     } catch (err) {
-      if (err instanceof ApiError && err.status === 403) setError(t.quote.ownerOnly.split('.')[0] + '.')
+      if (isMarginRequired(err)) setMarginFor(order)
+      else if (err instanceof ApiError && err.status === 403) setError(t.quote.ownerOnly.split('.')[0] + '.')
       else setError(err instanceof ApiError ? err.userMessage : t.genericError)
     } finally {
       setBusy(null)
@@ -32,6 +36,11 @@ export default function Orders() {
 
   return (
     <Page title={t.orders.title} onBack={() => navigate('/')}>
+      {marginFor && (
+        <div className="mb-4">
+          <MarginFix onSaved={() => quote(marginFor)} />
+        </div>
+      )}
       {error && (
         <div className="mb-4">
           <Alert>{error}</Alert>

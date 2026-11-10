@@ -1,16 +1,23 @@
 import { useEffect, useState } from 'react'
-import { api, apiBlob, ApiError, patch, post, type QuoteOut, type ShoppingList } from '../api'
+import { api, apiBlob, ApiError, loadAllIngredients, patch, post, type Ingredient, type QuoteOut, type ShoppingList } from '../api'
+import { MarginFix, isMarginRequired } from '../components/MarginFix'
 import { StarSurvey } from '../components/StarSurvey'
 import { Alert, Button, Page, Spinner } from '../components/ui'
 import { formatCLP, formatDate, formatQty, formatWeekdays } from '../format'
 import { t } from '../i18n'
+import { useCached } from '../offline/cache'
 import { navigate } from '../router'
+import { plain } from './Inventory'
 
 export default function QuoteView({ id }: { id: string }) {
   const [quote, setQuote] = useState<QuoteOut | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState<string | null>(null)
   const [shopping, setShopping] = useState<ShoppingList | null>(null)
+  const [needsMargin, setNeedsMargin] = useState(false)
+  // La API da los nombres de los insumos sin precio: se resuelven contra el inventario guardado para enlazarlos.
+  const ingredients = useCached<Ingredient[]>('ingredients', loadAllIngredients)
+  const idByName = new Map((ingredients.value?.data ?? []).map((i) => [plain(i.name), i.id]))
 
   const fail = (err: unknown) => setError(err instanceof ApiError ? err.userMessage : t.genericError)
 
@@ -25,9 +32,11 @@ export default function QuoteView({ id }: { id: string }) {
     try {
       const next = await post<QuoteOut>(`/orders/${quote.order_id}/quotes`, {})
       setShopping(null)
+      setNeedsMargin(false)
       navigate(`/cotizaciones/${next.id}`)
     } catch (err) {
-      fail(err)
+      if (isMarginRequired(err)) setNeedsMargin(true)
+      else fail(err)
     } finally {
       setBusy(null)
     }
@@ -88,6 +97,31 @@ export default function QuoteView({ id }: { id: string }) {
           <Alert kind="warning">
             <p className="font-bold">{t.view.incompleteTitle}</p>
             <p>{t.view.incompleteBody(quote.missing_prices.join(', '))}</p>
+            {quote.missing_prices.some((n) => idByName.has(plain(n))) && (
+              <>
+                <p className="mt-2 font-semibold">{t.view.missingLinksTitle}</p>
+                <ul className="mt-1 flex flex-wrap gap-2">
+                  {quote.missing_prices.map((name) => {
+                    const ingId = idByName.get(plain(name))
+                    return ingId ? (
+                      <li key={name}>
+                        <Button
+                          variant="secondary"
+                          aria-label={t.view.addPriceFor(name)}
+                          onClick={() => navigate(`/inventario/${ingId}`)}
+                        >
+                          {name}
+                        </Button>
+                      </li>
+                    ) : (
+                      <li key={name} className="self-center">
+                        {name}
+                      </li>
+                    )
+                  })}
+                </ul>
+              </>
+            )}
           </Alert>
         </div>
       )}
@@ -127,6 +161,11 @@ export default function QuoteView({ id }: { id: string }) {
       {error && (
         <div className="mt-4">
           <Alert>{error}</Alert>
+        </div>
+      )}
+      {needsMargin && (
+        <div className="mt-4">
+          <MarginFix onSaved={recalc} />
         </div>
       )}
 
