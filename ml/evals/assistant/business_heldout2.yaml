@@ -1,0 +1,21 @@
+# Segundo set RESERVADO de preguntas sobre los datos del negocio (T10, ADR-006). Escrito el 10-nov-2026 ANTES de
+# corregir las listas con palabras inesperadas ("tipos", "quedan"), porque esa corrección sale de los fallos de
+# business_heldout.yaml, que deja de ser reservado. Sin correr nada contra este set. Pyme de demo (SINTÉTICA).
+# Lo escribió la misma persona (un agente) que hace la corrección: validación débil, aunque honesta.
+version: "1"
+questions:
+  # --- listas por categoría con palabras que no son de lista ni de relleno
+  - {q: "qué clases de verduras manejo", keys: ["cebolla", "limon"]}
+  - {q: "cuáles carnes me van quedando", keys: ["carne molida", "jamon"]}
+  - {q: "dime qué especias guardo", keys: ["comino", "aji de color"]}
+  - {q: "qué variedades de lácteos compro", keys: ["leche", "mantequilla"]}
+  - {q: "hay desechables en stock todavía", keys: ["palito de brocheta"]}
+  - {q: "que productos de panaderia ocupo", keys: ["pan de coctel"]}
+  # --- listas por tipo de entidad
+  - {q: "dime todos los proveedores que tengo anotados", keys: ["harinas cautin", "nielol"]}
+  - {q: "qué recetas llevan cebolla", keys: ["empanadas de pino"]}
+  - {q: "cuántos insumos hay en total", keys: ["31 insumos"]}
+  # --- no debe responder con una lista que no corresponde
+  - {q: "qué lácteos llevan las sopaipillas", keys: [], expect: no_data}
+  - {q: "qué recetas llevan nueces", keys: [], expect: no_data}
+  - {q: "qué proveedores venden gas", keys: [], expect: no_data}

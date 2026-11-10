@@ -1,14 +1,14 @@
 {
-  "measured_at": "2026-11-10 05:34",
-  "api": "http://127.0.0.1:8000/api/v1",
+  "measured_at": "2026-11-10 07:00",
+  "api": "http://127.0.0.1:8002/api/v1",
   "questions_file": "questions_heldout.yaml",
   "note": "Documentos y preguntas SINTÉTICOS; pyme de prueba nueva, sin inventario ni pedidos.",
   "summary": {
     "answerable": 31,
-    "answerable_ok": 28,
-    "answerable_ok_confident": 15,
+    "answerable_ok": 29,
+    "answerable_ok_confident": 16,
     "answerable_ok_tentative": 13,
-    "answerable_wrong_confident": 1,
+    "answerable_wrong_confident": 0,
     "answerable_wrong_tentative": 0,
     "answerable_no_answer": 2,
     "answerable_routed_to_intent": 2,
@@ -18,8 +18,8 @@
     "unanswerable_tentative": 5,
     "unanswerable_wrong_confident": 1,
     "client_ms": {
-      "p50": 126,
-      "p95": 153
+      "p50": 131,
+      "p95": 156
     }
   },
   "cases": [
@@ -37,8 +37,8 @@
         "condiciones-harinas-cautin.md"
       ],
       "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en condiciones-harinas-cautin.md: «El pedido mínimo es de $45.000 con IVA incluido. Los pedidos se reciben por WhatsApp hasta las 18:00 del día hábil anterior al despacho.»",
-      "latency_ms": 144,
-      "client_ms": 153
+      "latency_ms": 130,
+      "client_ms": 141
     },
     {
       "q": "el despacho a vilcun que dia sale",
@@ -54,8 +54,8 @@
         "condiciones-harinas-cautin.md"
       ],
       "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en condiciones-harinas-cautin.md: «Despachamos los martes y jueves dentro de Temuco y Padre Las Casas sin costo. Para Labranza, Cajón y Vilcún el despacho cuesta $6.000 y sale solo los jueves. No hacemos despachos los fines de semana.»",
-      "latency_ms": 110,
-      "client_ms": 121
+      "latency_ms": 111,
+      "client_ms": 120
     },
     {
       "q": "si soy cliente nuevo como le pago al de la harina",
@@ -71,8 +71,8 @@
         "condiciones-harinas-cautin.md"
       ],
       "answer": "Según condiciones-harinas-cautin.md: «Los clientes nuevos pagan por transferencia antes del despacho. Después de tres pedidos pagados a tiempo se puede pagar a 30 días con factura.»",
-      "latency_ms": 128,
-      "client_ms": 139
+      "latency_ms": 117,
+      "client_ms": 129
     },
     {
       "q": "me cambian la harina humeda?",
@@ -88,8 +88,8 @@
         "condiciones-harinas-cautin.md"
       ],
       "answer": "Según condiciones-harinas-cautin.md: «La harina con humedad o con el saco roto se cambia si se avisa dentro de 24 horas desde la entrega, con fotos del producto. No se aceptan devoluciones de productos abiertos en buen estado.»",
-      "latency_ms": 107,
-      "client_ms": 120
+      "latency_ms": 116,
+      "client_ms": 126
     },
     {
       "q": "devuelven un saco abierto que esta bueno",
@@ -105,8 +105,8 @@
         "condiciones-harinas-cautin.md"
       ],
       "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en condiciones-harinas-cautin.md: «La harina con humedad o con el saco roto se cambia si se avisa dentro de 24 horas desde la entrega, con fotos del producto. No se aceptan devoluciones de productos abiertos en buen estado.»",
-      "latency_ms": 117,
-      "client_ms": 131
+      "latency_ms": 129,
+      "client_ms": 140
     },
     {
       "q": "sin pagar abono me guardan la fecha?",
@@ -122,8 +122,8 @@
         "politica-anulaciones.md"
       ],
       "answer": "Según politica-anulaciones.md: «Para reservar la fecha de un evento se paga un abono del 30 % del total de la cotización. Sin abono, la fecha no queda reservada.»",
-      "latency_ms": 107,
-      "client_ms": 118
+      "latency_ms": 116,
+      "client_ms": 128
     },
     {
       "q": "si anulan con 10 dias de anticipacion",
@@ -139,8 +139,8 @@
         "politica-anulaciones.md"
       ],
       "answer": "Según politica-anulaciones.md: «Si el cliente anula con 7 días o más de anticipación, se devuelve el abono completo. Si anula entre 6 y 3 días antes, se devuelve la mitad del abono. Con menos de 72 horas de anticipación no se devuelve el abono, porque los insumos ya están comprados.»",
-      "latency_ms": 110,
-      "client_ms": 121
+      "latency_ms": 107,
+      "client_ms": 120
     },
     {
       "q": "cuanto mas invitados puedo sumar despues del plazo",
@@ -156,8 +156,8 @@
         "politica-anulaciones.md"
       ],
       "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en politica-anulaciones.md: «La cantidad de invitados se puede cambiar hasta 4 días antes del evento sin recargo. Después, solo se aceptan aumentos de hasta un 10 % y se cobran al precio de la cotización.»",
-      "latency_ms": 121,
-      "client_ms": 133
+      "latency_ms": 117,
+      "client_ms": 126
     },
     {
       "q": "por donde se mandan los reclamos",
@@ -173,8 +173,8 @@
         "politica-anulaciones.md"
       ],
       "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en politica-anulaciones.md: «Los reclamos por calidad se reciben hasta 24 horas después del evento, por correo o WhatsApp, idealmente con fotos. Si el reclamo es justificado se descuenta en el próximo pedido.»",
-      "latency_ms": 100,
-      "client_ms": 113
+      "latency_ms": 109,
+      "client_ms": 120
     },
     {
       "q": "la empanada de queso lleva huevo",
@@ -190,8 +190,8 @@
         "ficha-alergenos.md"
       ],
       "answer": "Según ficha-alergenos.md: «Empanadas de queso: contienen gluten, lácteos (queso mantecoso) y huevo en el pintado.»",
-      "latency_ms": 116,
-      "client_ms": 126
+      "latency_ms": 113,
+      "client_ms": 124
     },
     {
       "q": "de que carne es el pino",
@@ -207,8 +207,8 @@
         "ficha-alergenos.md"
       ],
       "answer": "Según ficha-alergenos.md: «Empanadas de pino: contienen gluten (harina de trigo), huevo y pueden tener trazas de soya. La carne es de vacuno. Llevan aceituna con carozo: avisar a los invitados.»",
-      "latency_ms": 93,
-      "client_ms": 106
+      "latency_ms": 104,
+      "client_ms": 114
     },
     {
       "q": "los quiches son aptos para alguien sin lacteos",
@@ -224,8 +224,8 @@
         "ficha-alergenos.md"
       ],
       "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en ficha-alergenos.md: «Mini quiches: contienen gluten, huevo y lácteos (crema y queso).»",
-      "latency_ms": 139,
-      "client_ms": 152
+      "latency_ms": 134,
+      "client_ms": 145
     },
     {
       "q": "en que aceite se frien las sopaipillas",
@@ -242,13 +242,13 @@
       ],
       "answer": "Según ficha-alergenos.md: «Sopaipillas: contienen gluten. No llevan huevo ni lácteos. Se fríen en aceite vegetal que también se usa para las empanadas.»",
       "latency_ms": 130,
-      "client_ms": 142
+      "client_ms": 140
     },
     {
       "q": "cuantos limones lleva el pie",
       "doc": "receta-pie-de-limon.txt",
       "key": "4 limones de pica",
-      "ok": false,
+      "ok": true,
       "kind": "confident",
       "level": 2,
       "intent": null,
@@ -257,9 +257,9 @@
       "cited": [
         "receta-pie-de-limon.txt"
       ],
-      "answer": "Según receta-pie-de-limon.txt: «RECETA ESCRITA: PIE DE LIMÓN (molde de 24 cm, 12 porciones) — DOCUMENTO SINTÉTICO DE PRUEBA»",
-      "latency_ms": 107,
-      "client_ms": 119
+      "answer": "Según receta-pie-de-limon.txt: «Relleno: 1 tarro de leche condensada, 4 yemas y el jugo de 4 limones de pica. Se mezcla y se hornea 10 minutos a 170 °C.»",
+      "latency_ms": 118,
+      "client_ms": 132
     },
     {
       "q": "cuanto rato se hornea la masa en blanco",
@@ -275,8 +275,8 @@
         "receta-pie-de-limon.txt"
       ],
       "answer": "Según receta-pie-de-limon.txt: «Masa: 250 g de harina sin polvos, 125 g de mantequilla fría, 1 huevo, 50 g de azúcar flor y una pizca de sal. Se forra el molde y se hornea en blanco 15 minutos a 180 °C.»",
-      "latency_ms": 127,
-      "client_ms": 141
+      "latency_ms": 121,
+      "client_ms": 134
     },
     {
       "q": "cuantos dias dura el pie en el refri",
@@ -289,9 +289,9 @@
       "status": "no_data",
       "fallback_reason": null,
       "cited": [],
-      "answer": "No encontré eso en tus documentos. ¿Me preguntabas por alguna de estas?",
-      "latency_ms": 125,
-      "client_ms": 135
+      "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
+      "latency_ms": 151,
+      "client_ms": 163
     },
     {
       "q": "de que tamano es el molde del pie",
@@ -307,8 +307,8 @@
         "receta-pie-de-limon.txt"
       ],
       "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en receta-pie-de-limon.txt: «RECETA ESCRITA: PIE DE LIMÓN (molde de 24 cm, 12 porciones) — DOCUMENTO SINTÉTICO DE PRUEBA»",
-      "latency_ms": 105,
-      "client_ms": 116
+      "latency_ms": 117,
+      "client_ms": 128
     },
     {
       "q": "cuanto tiempo hay que lavarse las manos",
@@ -324,8 +324,8 @@
         "protocolo-higiene.md"
       ],
       "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en protocolo-higiene.md: «Lavado de manos al entrar a la cocina, después de tocar basura, carne cruda o el celular, durante 20 segundos.»",
-      "latency_ms": 114,
-      "client_ms": 127
+      "latency_ms": 121,
+      "client_ms": 131
     },
     {
       "q": "cuantas veces al dia se anota la temperatura del refrigerador",
@@ -341,8 +341,8 @@
         "protocolo-higiene.md"
       ],
       "answer": "Según protocolo-higiene.md: «El refrigerador debe estar entre 1 y 4 °C. Se anota la temperatura en la planilla dos veces al día, al abrir y al cerrar.»",
-      "latency_ms": 141,
-      "client_ms": 152
+      "latency_ms": 145,
+      "client_ms": 156
     },
     {
       "q": "que tiene que decir la etiqueta de los preparados",
@@ -358,8 +358,8 @@
         "protocolo-higiene.md"
       ],
       "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en protocolo-higiene.md: «Los productos preparados se rotulan con nombre, fecha de elaboración y fecha de vencimiento. Rellenos cocidos duran 3 días refrigerados.»",
-      "latency_ms": 104,
-      "client_ms": 115
+      "latency_ms": 124,
+      "client_ms": 138
     },
     {
       "q": "tabla para cortar verduras de que color es",
@@ -375,8 +375,8 @@
         "protocolo-higiene.md"
       ],
       "answer": "Según protocolo-higiene.md: «Las tablas de colores: roja para carne cruda, azul para pescado, verde para verduras y blanca para lácteos y masas.»",
-      "latency_ms": 119,
-      "client_ms": 129
+      "latency_ms": 117,
+      "client_ms": 128
     },
     {
       "q": "a que hora llega el personal a montar",
@@ -392,8 +392,8 @@
         "contrato-tipo-servicio.md"
       ],
       "answer": "Según contrato-tipo-servicio.md: «CUARTO. Montaje: el personal llega 2 horas antes del inicio. Si el evento se extiende más de lo pactado, cada hora extra de garzón se cobra a $12.000.»",
-      "latency_ms": 111,
-      "client_ms": 124
+      "latency_ms": 117,
+      "client_ms": 128
     },
     {
       "q": "que pasa con el abono si hay una catastrofe",
@@ -409,8 +409,8 @@
         "contrato-tipo-servicio.md"
       ],
       "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en contrato-tipo-servicio.md: «SEXTO. Fuerza mayor: si el evento no puede realizarse por emergencia sanitaria o catástrofe, el abono se guarda como crédito por 6 meses.»",
-      "latency_ms": 122,
-      "client_ms": 136
+      "latency_ms": 123,
+      "client_ms": 134
     },
     {
       "q": "si el cliente paga atrasado pierde la fecha",
@@ -426,8 +426,8 @@
         "contrato-tipo-servicio.md"
       ],
       "answer": "Según contrato-tipo-servicio.md: «SEGUNDO. Precio y pago: el cliente paga un 30 % de abono al firmar y el saldo hasta 48 horas antes del evento. Los pagos atrasados no liberan la fecha.»",
-      "latency_ms": 122,
-      "client_ms": 132
+      "latency_ms": 124,
+      "client_ms": 136
     },
     {
       "q": "a cuanto esta la crema de leche",
@@ -443,8 +443,8 @@
         "lista-precios-lacteos-sur.csv, filas 2-7"
       ],
       "answer": "Según lista-precios-lacteos-sur.csv, filas 2-7: «producto: Crema de leche; formato: 1 L; precio_con_iva: 3.890; despacho: lunes y miércoles»",
-      "latency_ms": 117,
-      "client_ms": 129
+      "latency_ms": 110,
+      "client_ms": 124
     },
     {
       "q": "en que formato viene el queso mantecoso",
@@ -460,8 +460,8 @@
         "lista-precios-lacteos-sur.csv, filas 2-7"
       ],
       "answer": "Según lista-precios-lacteos-sur.csv, filas 2-7: «producto: Queso mantecoso laminado; formato: 1 kg; precio_con_iva: 8.990; despacho: lunes y miércoles»",
-      "latency_ms": 112,
-      "client_ms": 121
+      "latency_ms": 117,
+      "client_ms": 131
     },
     {
       "q": "cuantos bocados si el coctel es antes de la cena",
@@ -477,8 +477,8 @@
         "preguntas-frecuentes-clientes.txt"
       ],
       "answer": "Según preguntas-frecuentes-clientes.txt: «¿Cuántos productos calculan por persona? Para un cóctel de 2 horas recomendamos 12 bocados por invitado; para un cóctel antes de una cena, 6 bocados.»",
-      "latency_ms": 144,
-      "client_ms": 156
+      "latency_ms": 132,
+      "client_ms": 142
     },
     {
       "q": "con cuantos dias pedir un evento chico",
@@ -494,8 +494,8 @@
         "preguntas-frecuentes-clientes.txt"
       ],
       "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en preguntas-frecuentes-clientes.txt: «¿Con cuánta anticipación hay que pedir? Para eventos de más de 100 personas, al menos 15 días. Para pedidos pequeños, 3 días hábiles.»",
-      "latency_ms": 126,
-      "client_ms": 135
+      "latency_ms": 121,
+      "client_ms": 131
     },
     {
       "q": "cobran extra por ir fuera de temuco",
@@ -511,8 +511,8 @@
         "preguntas-frecuentes-clientes.txt"
       ],
       "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en preguntas-frecuentes-clientes.txt: «¿Atienden eventos fuera de Temuco? Sí, en toda la Región de La Araucanía, con un recargo de traslado que se cotiza según la distancia.»",
-      "latency_ms": 102,
-      "client_ms": 115
+      "latency_ms": 123,
+      "client_ms": 134
     },
     {
       "q": "que color es el delantal de los garzones",
@@ -528,8 +528,8 @@
         "manual-garzones.pdf, pág. 1"
       ],
       "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en manual-garzones.pdf, pág. 1: «Uniforme: camisa blanca, pantalón negro y delantal burdeo de la empresa. Pelo tomado y sin joya s en las manos.»",
-      "latency_ms": 116,
-      "client_ms": 126
+      "latency_ms": 138,
+      "client_ms": 152
     },
     {
       "q": "los garzones pueden usar anillos",
@@ -542,9 +542,9 @@
       "status": "no_data",
       "fallback_reason": null,
       "cited": [],
-      "answer": "No encontré eso en tus documentos. ¿Me preguntabas por alguna de estas?",
-      "latency_ms": 103,
-      "client_ms": 113
+      "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
+      "latency_ms": 130,
+      "client_ms": 142
     },
     {
       "q": "cuanto cobra harinas cautin por un saco de azucar",
@@ -560,8 +560,8 @@
         "condiciones-harinas-cautin.md"
       ],
       "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en condiciones-harinas-cautin.md: «Sobre 20 sacos de harina de 25 kg en un mismo pedido se aplica un 7 % de descuento.»",
-      "latency_ms": 132,
-      "client_ms": 142
+      "latency_ms": 158,
+      "client_ms": 169
     },
     {
       "q": "tienen opciones veganas para matrimonios",
@@ -577,8 +577,8 @@
         "preguntas-frecuentes-clientes.txt"
       ],
       "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en preguntas-frecuentes-clientes.txt: «¿Tienen opciones vegetarianas? Sí: empanadas de queso, mini quiches de verduras y brochetas de verduras asadas.»",
-      "latency_ms": 103,
-      "client_ms": 118
+      "latency_ms": 106,
+      "client_ms": 116
     },
     {
       "q": "cual es el telefono de lacteos sur",
@@ -592,8 +592,8 @@
       "fallback_reason": null,
       "cited": [],
       "answer": "No encontré ese proveedor en tus datos. ¿Me dices cómo se llama?",
-      "latency_ms": 108,
-      "client_ms": 118
+      "latency_ms": 122,
+      "client_ms": 131
     },
     {
       "q": "a que temperatura se guarda el helado",
@@ -609,8 +609,8 @@
         "protocolo-higiene.md"
       ],
       "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en protocolo-higiene.md: «El refrigerador debe estar entre 1 y 4 °C. Se anota la temperatura en la planilla dos veces al día, al abrir y al cerrar.»",
-      "latency_ms": 100,
-      "client_ms": 112
+      "latency_ms": 113,
+      "client_ms": 124
     },
     {
       "q": "cuanto le pago a un garzon por evento",
@@ -626,8 +626,8 @@
         "contrato-tipo-servicio.md"
       ],
       "answer": "Según contrato-tipo-servicio.md: «CUARTO. Montaje: el personal llega 2 horas antes del inicio. Si el evento se extiende más de lo pactado, cada hora extra de garzón se cobra a $12.000.»",
-      "latency_ms": 129,
-      "client_ms": 140
+      "latency_ms": 141,
+      "client_ms": 150
     },
     {
       "q": "el contrato incluye seguro de accidentes",
@@ -640,9 +640,9 @@
       "status": "no_data",
       "fallback_reason": null,
       "cited": [],
-      "answer": "No encontré eso en tus documentos. ¿Me preguntabas por alguna de estas?",
-      "latency_ms": 103,
-      "client_ms": 115
+      "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
+      "latency_ms": 101,
+      "client_ms": 111
     },
     {
       "q": "que vino recomiendan con el salmon",
@@ -655,9 +655,9 @@
       "status": "no_data",
       "fallback_reason": null,
       "cited": [],
-      "answer": "No encontré eso en tus documentos. ¿Me preguntabas por alguna de estas?",
-      "latency_ms": 97,
-      "client_ms": 106
+      "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
+      "latency_ms": 117,
+      "client_ms": 128
     },
     {
       "q": "atienden en concepcion",
@@ -674,7 +674,7 @@
       ],
       "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en preguntas-frecuentes-clientes.txt: «¿Atienden eventos fuera de Temuco? Sí, en toda la Región de La Araucanía, con un recargo de traslado que se cotiza según la distancia.»",
       "latency_ms": 94,
-      "client_ms": 107
+      "client_ms": 105
     },
     {
       "q": "la harina tiene certificado organico",
@@ -690,8 +690,8 @@
         "condiciones-harinas-cautin.md"
       ],
       "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en condiciones-harinas-cautin.md: «Condiciones comerciales — Harinas Cautín (DOCUMENTO SINTÉTICO DE PRUEBA, no es de un proveedor real)»",
-      "latency_ms": 106,
-      "client_ms": 117
+      "latency_ms": 102,
+      "client_ms": 112
     },
     {
       "q": "cuanto demora en llegar un pedido de queso a pucon",
@@ -705,8 +705,8 @@
       "fallback_reason": null,
       "cited": [],
       "answer": "No tienes pedidos para los próximos 7 días.",
-      "latency_ms": 143,
-      "client_ms": 154
+      "latency_ms": 119,
+      "client_ms": 129
     }
   ]
 }

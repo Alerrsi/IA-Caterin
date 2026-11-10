@@ -1,22 +1,22 @@
 {
-  "measured_at": "2026-11-10 06:29",
+  "measured_at": "2026-11-10 06:59",
   "api": "http://127.0.0.1:8002/api/v1",
   "questions_file": "business_heldout.yaml",
   "note": "Pyme de demo SINTÉTICA; preguntas escritas antes de implementar (business_questions.yaml).",
   "summary": {
     "with_answer": 15,
-    "with_answer_ok": 13,
+    "with_answer_ok": 15,
     "no_data": 3,
     "no_data_ok": 2,
     "confident_wrong": 1,
     "by_level": {
-      "0": 9,
-      "2": 9
+      "0": 11,
+      "2": 7
     },
     "llm_fallbacks": 0,
     "client_ms": {
-      "p50": 120,
-      "max": 308
+      "p50": 42,
+      "max": 251
     }
   },
   "cases": [
@@ -37,7 +37,7 @@
       "sources": [
         "tu inventario"
       ],
-      "client_ms": 39
+      "client_ms": 46
     },
     {
       "q": "qué cosas tengo registradas en bodega",
@@ -55,7 +55,7 @@
       "sources": [
         "tu inventario"
       ],
-      "client_ms": 32
+      "client_ms": 48
     },
     {
       "q": "muéstrame los proveedores",
@@ -74,7 +74,7 @@
       "sources": [
         "tus proveedores"
       ],
-      "client_ms": 18
+      "client_ms": 19
     },
     {
       "q": "que tipos de pescado hay",
@@ -82,15 +82,17 @@
         "salmon ahumado"
       ],
       "expect": null,
-      "ok": false,
-      "confident": false,
-      "level": 2,
+      "ok": true,
+      "confident": true,
+      "level": 0,
       "intent": null,
-      "status": "no_data",
+      "status": "ok",
       "fallback_reason": null,
-      "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
-      "sources": [],
-      "client_ms": 205
+      "answer": "Tienes 1 insumo de Pescados: Salmón ahumado (2,5 kg).",
+      "sources": [
+        "tu inventario"
+      ],
+      "client_ms": 38
     },
     {
       "q": "cuantas recetas tengo cargadas",
@@ -108,7 +110,7 @@
       "sources": [
         "tus recetas"
       ],
-      "client_ms": 23
+      "client_ms": 28
     },
     {
       "q": "qué recetas usan queso crema",
@@ -126,7 +128,7 @@
       "sources": [
         "tus recetas"
       ],
-      "client_ms": 19
+      "client_ms": 20
     },
     {
       "q": "listame lo de panadería",
@@ -154,17 +156,17 @@
         "aceite vegetal"
       ],
       "expect": null,
-      "ok": false,
-      "confident": false,
-      "level": 2,
+      "ok": true,
+      "confident": true,
+      "level": 0,
       "intent": null,
       "status": "ok",
       "fallback_reason": null,
-      "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en tu inventario: Pasas: «Insumo: Pasas. Categoría: Abarrotes. Stock: 500 g. Lo vende: Verdulería El Huerto (demo), bolsa 500 g a $2.490 (precio del 02/11/2026).»",
+      "answer": "Tienes 8 insumos de Abarrotes: Aceite vegetal (5 L); Aceituna negra (200 unidades); Azúcar (5 kg); Harina sin polvos (18 kg); Manteca (2 kg); Pasas (500 g); Polvos de hornear (250 g); Sal (3 kg).",
       "sources": [
-        "tu inventario: Pasas"
+        "tu inventario"
       ],
-      "client_ms": 225
+      "client_ms": 30
     },
     {
       "q": "qué recetas llevan pollo",
@@ -182,7 +184,7 @@
       "sources": [
         "tus recetas"
       ],
-      "client_ms": 17
+      "client_ms": 21
     },
     {
       "q": "a quién le compro el salmón",
@@ -200,7 +202,7 @@
       "sources": [
         "tu inventario: Salmón ahumado"
       ],
-      "client_ms": 200
+      "client_ms": 187
     },
     {
       "q": "cuánto rinde la receta de sopaipillas",
@@ -218,7 +220,7 @@
       "sources": [
         "tus recetas: Sopaipillas"
       ],
-      "client_ms": 229
+      "client_ms": 206
     },
     {
       "q": "el champiñón en qué formato lo venden",
@@ -236,7 +238,7 @@
       "sources": [
         "tu inventario: Champiñón"
       ],
-      "client_ms": 293
+      "client_ms": 229
     },
     {
       "q": "qué días despacha la verdulería",
@@ -254,7 +256,7 @@
       "sources": [
         "tus proveedores"
       ],
-      "client_ms": 20
+      "client_ms": 16
     },
     {
       "q": "de qué categoría son los palitos de brocheta",
@@ -272,7 +274,7 @@
       "sources": [
         "tu inventario: Palito de brocheta"
       ],
-      "client_ms": 271
+      "client_ms": 251
     },
     {
       "q": "qué lleva el pie de limón",
@@ -290,7 +292,7 @@
       "sources": [
         "tus recetas: Pie de limón"
       ],
-      "client_ms": 308
+      "client_ms": 179
     },
     {
       "q": "qué proveedor vende carbón",
@@ -304,7 +306,7 @@
       "fallback_reason": null,
       "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
       "sources": [],
-      "client_ms": 218
+      "client_ms": 178
     },
     {
       "q": "qué recetas llevan mariscos",
@@ -318,7 +320,7 @@
       "fallback_reason": null,
       "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
       "sources": [],
-      "client_ms": 223
+      "client_ms": 191
     },
     {
       "q": "cuál es el correo de la verdulería",

@@ -1,6 +1,7 @@
 {
-  "measured_at": "2026-11-10 06:29",
+  "measured_at": "2026-11-10 06:59",
   "api": "http://127.0.0.1:8002/api/v1",
+  "questions_file": "business_questions.yaml",
   "note": "Pyme de demo SINTÉTICA; preguntas escritas antes de implementar (business_questions.yaml).",
   "summary": {
     "with_answer": 18,
@@ -14,8 +15,8 @@
     },
     "llm_fallbacks": 0,
     "client_ms": {
-      "p50": 159,
-      "max": 333
+      "p50": 144,
+      "max": 291
     }
   },
   "cases": [
@@ -55,7 +56,7 @@
       "sources": [
         "tu inventario"
       ],
-      "client_ms": 42
+      "client_ms": 37
     },
     {
       "q": "muéstrame todas mis recetas",
@@ -74,7 +75,7 @@
       "sources": [
         "tus recetas"
       ],
-      "client_ms": 66
+      "client_ms": 24
     },
     {
       "q": "¿cuántos proveedores tengo?",
@@ -92,7 +93,7 @@
       "sources": [
         "tus proveedores"
       ],
-      "client_ms": 55
+      "client_ms": 22
     },
     {
       "q": "qué lácteos tengo",
@@ -111,7 +112,7 @@
       "sources": [
         "tu inventario"
       ],
-      "client_ms": 117
+      "client_ms": 112
     },
     {
       "q": "¿qué recetas llevan huevo?",
@@ -148,7 +149,7 @@
       "sources": [
         "tu inventario"
       ],
-      "client_ms": 38
+      "client_ms": 35
     },
     {
       "q": "lista de carnes",
@@ -167,7 +168,7 @@
       "sources": [
         "tu inventario"
       ],
-      "client_ms": 38
+      "client_ms": 31
     },
     {
       "q": "dame el listado de especias",
@@ -185,7 +186,7 @@
       "sources": [
         "tu inventario"
       ],
-      "client_ms": 31
+      "client_ms": 29
     },
     {
       "q": "¿qué desechables tengo?",
@@ -203,7 +204,7 @@
       "sources": [
         "tu inventario"
       ],
-      "client_ms": 36
+      "client_ms": 30
     },
     {
       "q": "¿quién me vende la crema de leche?",
@@ -221,7 +222,7 @@
       "sources": [
         "tu inventario: Crema de leche"
       ],
-      "client_ms": 333
+      "client_ms": 291
     },
     {
       "q": "¿de qué categoría es el comino?",
@@ -239,7 +240,7 @@
       "sources": [
         "tu inventario: Comino"
       ],
-      "client_ms": 229
+      "client_ms": 235
     },
     {
       "q": "con qué se hacen las brochetas de pollo",
@@ -257,7 +258,7 @@
       "sources": [
         "tus recetas: Brochetas de pollo"
       ],
-      "client_ms": 258
+      "client_ms": 215
     },
     {
       "q": "qué ingredientes usan las empanadas de queso",
@@ -275,7 +276,7 @@
       "sources": [
         "tus recetas: Empanadas de queso"
       ],
-      "client_ms": 268
+      "client_ms": 250
     },
     {
       "q": "en qué presentación viene la masa de hojaldre",
@@ -293,7 +294,7 @@
       "sources": [
         "tu inventario: Masa de hojaldre"
       ],
-      "client_ms": 245
+      "client_ms": 203
     },
     {
       "q": "dónde compro tomate cherry",
@@ -311,7 +312,7 @@
       "sources": [
         "tu inventario: Tomate cherry"
       ],
-      "client_ms": 201
+      "client_ms": 177
     },
     {
       "q": "que productos me vende la distribuidora ñielol",
@@ -329,7 +330,7 @@
       "sources": [
         "tus proveedores: Distribuidora Ñielol (demo)"
       ],
-      "client_ms": 260
+      "client_ms": 255
     },
     {
       "q": "el pan de coctel a quien se lo compro",
@@ -347,7 +348,7 @@
       "sources": [
         "tu inventario: Pan de cóctel"
       ],
-      "client_ms": 240
+      "client_ms": 241
     },
     {
       "q": "¿qué proveedor me vende vino?",
@@ -363,7 +364,7 @@
       "sources": [
         "tus proveedores: Distribuidora Ñielol (demo)"
       ],
-      "client_ms": 216
+      "client_ms": 208
     },
     {
       "q": "¿cuánto vendí el mes pasado?",
@@ -377,7 +378,7 @@
       "fallback_reason": null,
       "answer": "¿A cuál insumo te refieres?",
       "sources": [],
-      "client_ms": 16
+      "client_ms": 12
     },
     {
       "q": "¿qué recetas llevan chocolate?",
@@ -391,7 +392,7 @@
       "fallback_reason": null,
       "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
       "sources": [],
-      "client_ms": 216
+      "client_ms": 206
     },
     {
       "q": "dame el rut de la verdulería",
@@ -405,7 +406,7 @@
       "fallback_reason": null,
       "answer": "No encontré eso en tus datos ni en tus documentos. ¿Me preguntabas por alguna de estas?",
       "sources": [],
-      "client_ms": 237
+      "client_ms": 255
     }
   ]
 }

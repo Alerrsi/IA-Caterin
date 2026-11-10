@@ -58,7 +58,8 @@ Detalle en `ml/evals/REPORT.md`. Todo con datos **sintéticos**.
   - Asistente de punta a punta con LLM (`eval_assistant.py`, escrito, sin correr).
   - Carga con LLM (cortada).
 - **Pendiente:**
-  - nuevo set reservado de listas (filtros con palabras inesperadas) y repetir la latencia del nivel 2 con LLM en limpio;
+  - repetir el nivel 2 con LLM en limpio, después de la corrección de las listas;
+  - la intención `supplier_info` no responde por el correo o el teléfono cuando no están: dice los días de despacho;
   - extractor con 20 pedidos reservados y 3 modelos (`eval_extractor.py`, listo);
   - reranker (`rerank_eval.py`, listo);
   - revisión humana de la redacción (2 personas del equipo);
@@ -75,14 +76,15 @@ Las intenciones fijas se quedaban cortas: "¿qué elementos hay en el inventario
 - `AGENTS.md` actualizado.
 
 Resultado con `eval_business.py`:
-- sin LLM: 18/18 y 4/4 en el set de ajuste; 13/15 y 2/3 en el reservado, con 1 respuesta segura equivocada;
-- con LLM: ver `ml/evals/REPORT.md`, sección 1b. Las listas dependen de palabras de relleno: es una debilidad conocida, con propuesta.
+- sin LLM: 18/18 y 4/4 en el set de ajuste; 13/15 y 2/3 en el primer reservado.
+- **Corrección de las listas** (filtros obligatorios y opcionales, y categoría por palabra): 15/15 en el primer reservado, ya gastado, y **9/9** en un reservado nuevo escrito antes de corregir.
+- Con LLM: ver `ml/evals/REPORT.md`, sección 1b; no se repitió después de la corrección.
 
 Estado local al subir:
 - en el `.env` de desarrollo de quien subió el cambio está `ASSISTANT_USE_LLM=true`; el valor por defecto sigue en `false`;
 - la pyme de demo de esa base tiene cargados los 9 documentos sintéticos de `ml/evals/rag/docs`.
 
-Verificado antes de subir (10-nov): `ruff`, `mypy app` y `pytest -m "not llm"` (237 pasan, 1 `xfail`; cobertura 96 %); `alembic upgrade head`, `downgrade -1` y `upgrade head` sin errores.
+Verificado antes de subir (10-nov): `ruff`, `mypy app` y `pytest -m "not llm"` (238 pasan, 1 `xfail`; cobertura 96 %); `alembic upgrade head`, `downgrade -1` y `upgrade head` sin errores.
 
 ## Resumen de cierre
 (se completa al terminar)

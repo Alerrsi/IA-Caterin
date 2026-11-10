@@ -86,9 +86,26 @@ Por eso se escribió `business_heldout.yaml` (18 preguntas nuevas) **sin volver 
 | Reservado, con LLM | 12/15 (13/15 en revisión manual) | 2/3 | 3 | ver nota |
 
 - **Antes de este cambio, ninguna de estas preguntas tenía respuesta.** La pregunta que lo motivó, "Que elementos existen actualmente dentro del inventario", responde ahora "Tienes 31 insumos: Aceite vegetal (5 L); …" en ~40 ms.
-- **Fallos del reservado (sin LLM):**
-  - "que tipos de pescado hay" y "que abarrotes me quedan": "tipos" y "quedan" quedan como términos de filtro, la lista sale vacía y la pregunta pasa al RAG. **Las listas dependen de una lista de palabras de relleno**, y una palabra inesperada las rompe. Propuesta, a medir con otro set: si la pregunta nombra una categoría y los términos extra no calzan con nada, responder la lista de la categoría.
-  - "cuál es el correo de la verdulería": la toma la intención `supplier_info`, que responde los días de despacho (limitación de la intención).
+- **Fallos del primer reservado (sin LLM):**
+  - "que tipos de pescado hay" y "que abarrotes me quedan": "tipos" y "quedan" quedaban como términos de filtro, la lista salía vacía y la pregunta pasaba al RAG. Las listas dependían de una lista fija de palabras de relleno. **Corregido** (ver "Corrección de las listas").
+  - "cuál es el correo de la verdulería": la toma la intención `supplier_info`, que responde los días de despacho. Es una limitación de la intención y sigue sin corregir.
+
+**Corrección de las listas (10-nov).**
+- Los términos que van después de "lleva", "usa", "contiene", "incluye", "vende" o "con" son **obligatorios**: si no calzan, no hay lista y la pregunta sigue al RAG. Así, "¿qué recetas llevan nueces?" nunca devuelve todas las recetas.
+- El resto de los términos son **opcionales**: filtran solo si calzan con alguna ficha. "tipos" y "quedan" ya no rompen la lista.
+- La categoría se reconoce por la palabra o su singular/plural, no por la raíz de 5 letras. Así se corrige una regresión que apareció en el set de ajuste: "dame el rut de la verdulería" listaba las verduras.
+
+Como sale de los fallos del primer reservado, ese set queda gastado. Se escribió `business_heldout2.yaml` (12 preguntas) **antes** de la corrección.
+
+| Set (sin LLM, después de la corrección) | Con respuesta: bien | Sin dato: bien | Seguras y equivocadas |
+|------------------------------------------|---------------------|----------------|------------------------|
+| Ajuste (`business_questions.yaml`) | 18/18 | 4/4 | 0 |
+| Primer reservado (ya gastado) | 15/15 (antes 13/15) | 2/3 | 1 (correo, intención) |
+| **Reservado nuevo** (`business_heldout2.yaml`) | **9/9** | 2/3 | 1 |
+
+- En el reservado nuevo, la "segura equivocada" es "qué lácteos llevan las sopaipillas". Se esperaba "no hay dato", pero respondió desde la ficha de alérgenos ("No llevan huevo ni lácteos"), que es **correcto**. La etiqueta del set no lo consideró.
+- El chat sobre documentos no retrocedió: 49/50 y 12/12 en el ajuste, y 29/31 y 9/10 en el reservado (`chat_results*.json`).
+- **Límite que queda:** la negación ("insumos **sin** precio") no se maneja en las listas.
 - **Con LLM:**
   - La comparación exacta de claves no acepta paráfrasis: "bandeja de 500 g", "paquete de 1 kg" están bien en la revisión manual.
   - "que abarrotes me quedan" recibió una **lista parcial** redactada por el LLM. Es el riesgo que motiva las listas en código.
@@ -112,7 +129,7 @@ Por eso se escribió `business_heldout.yaml` (18 preguntas nuevas) **sin volver 
 
 ## 3. Cobertura de pruebas de la API
 
-`pytest --cov` dentro del contenedor de la API (10-nov): **96 % en total**, con 215 pruebas que pasan. Después del RAG por frase y de las fichas del negocio (10-nov): **237 pruebas que pasan y 1 `xfail`**, con lint y tipos limpios, y **96 %** de cobertura total. Los módulos nuevos están entre 96 y 100 %: `knowledge/cards.py` 96 %, `knowledge/service.py` 97 %, `knowledge/lists.py` 100 %, `documents/sentences.py` 100 % y `assistant/passages.py` 99 %.
+`pytest --cov` dentro del contenedor de la API (10-nov): **96 % en total**, con 215 pruebas que pasan. Después del RAG por frase y de las fichas del negocio (10-nov): **238 pruebas que pasan y 1 `xfail`**, con lint y tipos limpios, y **96 %** de cobertura total. Los módulos nuevos están entre 96 y 100 %: `knowledge/cards.py` 96 %, `knowledge/service.py` 97 %, `knowledge/lists.py` 100 %, `documents/sentences.py` 100 % y `assistant/passages.py` 99 %.
 
 | Módulo | Cobertura | Meta |
 |--------|-----------|------|

@@ -202,3 +202,17 @@ def test_open_question_with_llm_gets_the_cards_as_data(
     prompt = fake.calls[-1]
     assert 'fuente="tu' in prompt and "Crema de leche" in prompt  # fichas como datos, delimitadas y citadas
     assert any(s["kind"] == "knowledge" for s in out["sources"])
+
+
+def test_unexpected_words_do_not_break_lists_but_required_filters_do(client: TestClient, demo: dict) -> None:  # type: ignore[type-arg]
+    pescado = ask(client, demo["owner"], "que tipos de pescado hay")["answer"]
+    assert pescado.startswith("Tienes 1 insumo de Pescados: Salmón ahumado")  # "tipos" no filtra
+    abarrotes = ask(client, demo["owner"], "que abarrotes me quedan")["answer"]
+    assert abarrotes.startswith("Tienes ") and "Azúcar" in abarrotes and "Aceite vegetal" in abarrotes
+    proveedores = ask(client, demo["owner"], "dime todos los proveedores que tengo anotados")["answer"]
+    assert proveedores.startswith("Tienes 3 proveedores:")
+    # Lo que va después de "llevan" es obligatorio: sin coincidencias no hay lista (sigue el RAG).
+    nueces = ask(client, demo["owner"], "qué recetas llevan nueces")
+    assert not nueces["answer"].startswith("Tienes ")
+    # "verdulería" no es la categoría "Verduras" (antes la raíz "verdu" las confundía).
+    assert not ask(client, demo["owner"], "dame el rut de la verdulería")["answer"].startswith("Tienes ")

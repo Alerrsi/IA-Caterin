@@ -1,0 +1,239 @@
+{
+  "measured_at": "2026-11-10 06:59",
+  "api": "http://127.0.0.1:8002/api/v1",
+  "questions_file": "business_heldout2.yaml",
+  "note": "Pyme de demo SINTÉTICA; preguntas escritas antes de implementar (business_questions.yaml).",
+  "summary": {
+    "with_answer": 9,
+    "with_answer_ok": 9,
+    "no_data": 3,
+    "no_data_ok": 2,
+    "confident_wrong": 1,
+    "by_level": {
+      "0": 9,
+      "2": 3
+    },
+    "llm_fallbacks": 0,
+    "client_ms": {
+      "p50": 72,
+      "max": 303
+    }
+  },
+  "cases": [
+    {
+      "q": "qué clases de verduras manejo",
+      "keys": [
+        "cebolla",
+        "limon"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 8 insumos de Verduras: Cebolla (8 kg); Champiñón (1 kg); Ciboulette (50 g); Eneldo (50 g); Limón (30 unidades); Pimentón rojo (1,5 kg); Tomate cherry (150 unidades); Zapallo (3 kg).",
+      "sources": [
+        "tu inventario"
+      ],
+      "client_ms": 74
+    },
+    {
+      "q": "cuáles carnes me van quedando",
+      "keys": [
+        "carne molida",
+        "jamon"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 3 insumos de Carnes: Carne molida (6 kg); Jamón (1 kg); Pechuga de pollo (4 kg).",
+      "sources": [
+        "tu inventario"
+      ],
+      "client_ms": 75
+    },
+    {
+      "q": "dime qué especias guardo",
+      "keys": [
+        "comino",
+        "aji de color"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 2 insumos de Especias: Ají de color (300 g); Comino (200 g).",
+      "sources": [
+        "tu inventario"
+      ],
+      "client_ms": 69
+    },
+    {
+      "q": "qué variedades de lácteos compro",
+      "keys": [
+        "leche",
+        "mantequilla"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 6 insumos de Lácteos y huevos: Crema de leche (3 L); Huevo (90 unidades); Leche (4 L); Mantequilla (1 kg); Queso crema (2 kg); Queso mantecoso (3 kg).",
+      "sources": [
+        "tu inventario"
+      ],
+      "client_ms": 75
+    },
+    {
+      "q": "hay desechables en stock todavía",
+      "keys": [
+        "palito de brocheta"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 1 insumo de Desechables con «stock»: Palito de brocheta (300 unidades).",
+      "sources": [
+        "tu inventario"
+      ],
+      "client_ms": 60
+    },
+    {
+      "q": "que productos de panaderia ocupo",
+      "keys": [
+        "pan de coctel"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 2 insumos de Panadería: Masa de hojaldre (2 kg); Pan de cóctel (100 unidades).",
+      "sources": [
+        "tu inventario"
+      ],
+      "client_ms": 39
+    },
+    {
+      "q": "dime todos los proveedores que tengo anotados",
+      "keys": [
+        "harinas cautin",
+        "nielol"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 3 proveedores: Distribuidora Ñielol (demo); Harinas Cautín (demo); Verdulería El Huerto (demo).",
+      "sources": [
+        "tus proveedores"
+      ],
+      "client_ms": 22
+    },
+    {
+      "q": "qué recetas llevan cebolla",
+      "keys": [
+        "empanadas de pino"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 1 receta con «cebolla»: Empanadas de pino.",
+      "sources": [
+        "tus recetas"
+      ],
+      "client_ms": 23
+    },
+    {
+      "q": "cuántos insumos hay en total",
+      "keys": [
+        "31 insumos"
+      ],
+      "expect": null,
+      "ok": true,
+      "confident": true,
+      "level": 0,
+      "intent": "stock_of_item",
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Tienes 31 insumos: Aceite vegetal (5 L); Aceituna negra (200 unidades); Ají de color (300 g); Azúcar (5 kg); Carne molida (6 kg); Cebolla (8 kg); Champiñón (1 kg); Ciboulette (50 g); Comino (200 g); Crema de leche (3 L); Eneldo (50 g); Harina sin polvos (18 kg); Huevo (90 unidades); Jamón (1 kg); Leche (4 L); Limón (30 unidades); Manteca (2 kg); Mantequilla (1 kg); Masa de hojaldre (2 kg); Palito de brocheta (300 unidades); Pan de cóctel (100 unidades); Pasas (500 g); Pechuga de pollo (4 kg); Pimentón rojo (1,5 kg); Polvos de hornear (250 g); Queso crema (2 kg); Queso mantecoso (3 kg); Sal (3 kg); Salmón ahumado (2,5 kg); Tomate cherry (150 unidades); Zapallo (3 kg).",
+      "sources": [
+        "tu inventario"
+      ],
+      "client_ms": 56
+    },
+    {
+      "q": "qué lácteos llevan las sopaipillas",
+      "keys": [],
+      "expect": "no_data",
+      "ok": false,
+      "confident": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "Según ficha-alergenos.md: «Sopaipillas: contienen gluten. No llevan huevo ni lácteos. Se fríen en aceite vegetal que también se usa para las empanadas.»",
+      "sources": [
+        "ficha-alergenos.md"
+      ],
+      "client_ms": 303
+    },
+    {
+      "q": "qué recetas llevan nueces",
+      "keys": [],
+      "expect": "no_data",
+      "ok": true,
+      "confident": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en ficha-alergenos.md: «Toda la cocina manipula frutos secos (nueces en los queques), así que ningún producto puede garantizarse libre de trazas de frutos secos.»",
+      "sources": [
+        "ficha-alergenos.md"
+      ],
+      "client_ms": 265
+    },
+    {
+      "q": "qué proveedores venden gas",
+      "keys": [],
+      "expect": "no_data",
+      "ok": true,
+      "confident": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en tus proveedores: Distribuidora Ñielol (demo): «Proveedor: Distribuidora Ñielol (demo). Despacha: martes, jueves. Teléfono: +56 9 0000 0002. Vende: Aceite vegetal (bidón 5 L, $11.990); Carne molida (bolsa 1 kg, $7.990); Crema de leche (caja 1 L, $3.990); Harina sin polvos (saco 25 kg, $22.500); Huevo (bandeja 30 unidades, $6.490); Jamón (paquete 1 kg, $8.990); Leche (caja 1 L, $1.090); Manteca…»",
+      "sources": [
+        "tus proveedores: Distribuidora Ñielol (demo)"
+      ],
+      "client_ms": 248
+    }
+  ]
+}

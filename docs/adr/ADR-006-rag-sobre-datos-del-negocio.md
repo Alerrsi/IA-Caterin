@@ -55,7 +55,12 @@ La regla "Datos estructurados (stock, costos, pedidos) se consultan por funcione
 - **Datos personales:** las fichas de pedidos incluyen el nombre del cliente, pero no su contacto (`customer_contact` queda fuera). Con Ollama local nada sale del servidor. Con un proveedor externo de LLM, esos nombres se enviarían en el prompt, así que hay que configurarlo y documentarlo (`SECURITY.md`).
 - **Multi-tenant:** `knowledge_card` y `knowledge_sync` llevan `pyme_id` y pasan por el filtro central de tenant. Hay pruebas de que una pyme no ve las fichas de otra.
 - **Riesgo de dato desactualizado:** la sincronización corre antes de cada búsqueda. Una escritura que no incremente `data_version` dejaría la ficha vieja. Las escrituras de inventario, recetas, proveedores y pedidos ya lo incrementan (T07).
-- **Límites:** el RAG sobre fichas sigue trayendo pocas fichas. Una pregunta de lista que el detector no reconozca recibe una respuesta parcial. Se mide con `ml/evals/assistant/business_questions.yaml` (`eval_business.py`).
+- **Filtros de las listas:**
+  - Lo que va después de "lleva", "usa", "contiene", "incluye", "vende" o "con" es obligatorio.
+  - El resto filtra solo si calza con alguna ficha.
+  - La categoría se reconoce por la palabra o su singular/plural.
+  - La negación ("sin precio") no se maneja.
+- **Límites:** el RAG sobre fichas sigue trayendo pocas fichas. Una pregunta de lista que el detector no reconozca recibe una respuesta parcial (con LLM, una lista incompleta). Se mide con `ml/evals/assistant/business_*.yaml` (`eval_business.py`, resultados en `ml/evals/REPORT.md`, sección 1b).
 
 ## Alternativas descartadas
 
