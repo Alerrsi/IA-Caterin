@@ -15,11 +15,11 @@ Que al terminar una tanda de producción la emprendedora saque una foto a la ban
 ## Entregables
 - [x] `ml/vision/README.md`: estructura del dataset (formato COCO), cómo agregar fotos, manifiesto con hash y versión. — **hecho**
 - [x] Script de división train/val/test **sin fuga** (fotos de la misma tanda o sesión van al mismo split). — **hecho**
-- [ ] Pre-etiquetado con Grounding DINO o Florence-2 → revisión humana (p. ej. con CVAT o Label Studio). — **NO: no hizo falta con Snacks (trae cajas); se escribe cuando haya fotos reales sin etiquetar (T10)**
-- [ ] Augmentations realistas: brillo y temperatura de color (luz de cocina), rotación y perspectiva (ángulo de celular), desenfoque leve. — **NO: se usó la configuración por defecto de RF-DETR, sin augmentations propias; revisar con fotos reales (T10)**
+- [ ] Pre-etiquetado con Grounding DINO o Florence-2 → revisión humana (p. ej. con CVAT o Label Studio). — **script listo (`prelabel.py`, Grounding DINO tiny); falta usarlo con fotos reales sin etiquetar (T10)**
+- [ ] Augmentations realistas: brillo y temperatura de color (luz de cocina), rotación y perspectiva (ángulo de celular), desenfoque leve. — **hecho como opción `dataset.py split --augment N` (`augment.py`, solo train, hereda la sesión); probado con datos sintéticos. `snacks-v1-nano-1` se entrenó sin ellas; reentrenar con fotos reales (T10)**
 - [x] Notebook o script de fine-tuning reproducible (semilla, versión del dataset) para Colab, Kaggle o local; export a ONNX. — **hecho (`train.py` + `colab_train.ipynb`, semilla y versión del dataset; el export a ONNX corrió en Colab)**
-- [ ] Curva de aprendizaje (rendimiento vs. número de imágenes por clase). — **NO: exige varios entrenamientos con distinta cantidad de fotos reales (T10)**
-- [ ] `ml/vision/MODEL_CARD.md`: datos, métricas por clase (mAP50, mAP50:95, error absoluto medio de conteo, % de fotos con conteo exacto), matriz de confusión, latencia en CPU, límites, licencias. — **parcial: datos, conteo por clase, latencia y límites; faltan mAP, matriz de confusión y umbral objetivo (T10)**
+- [ ] Curva de aprendizaje (rendimiento vs. número de imágenes por clase). — **script listo (`learning_curve.py`, rehace el manifiesto de cada subconjunto); falta correrlo en GPU con fotos reales (T10)**
+- [ ] `ml/vision/MODEL_CARD.md`: datos, métricas por clase (mAP50, mAP50:95, error absoluto medio de conteo, % de fotos con conteo exacto), matriz de confusión, latencia en CPU, límites, licencias. — **parcial: datos, conteo por clase, latencia y límites. `evaluate.py` ya calcula AP50, AP50:95 y la matriz de confusión con el detector de la API; falta correrlo con el modelo entrenado y fijar el umbral objetivo (T10)**
 - [x] `modules/vision`: carga del ONNX al iniciar, `POST /vision/count` (EXIF eliminado, redimensión, inferencia, umbral, conteo por clase ↔ `recipe.vision_class`), `POST /vision/productions` (confirmación idempotente con la corrección), `GET /vision/model`. — **hecho (el historial `GET /vision/productions` no estaba en esta lista y queda pendiente hasta que la PWA lo pida)**
 - [x] El ONNX se registra en `models.lock.yaml` con su sha256. — **hecho**
 - [x] Medición de latencia de punta a punta en el endpoint. — **hecho (con foto de 12 MP sintética; repetir con JPEG real, T10)**
@@ -51,3 +51,9 @@ Que al terminar una tanda de producción la emprendedora saque una foto a la ban
 **Qué quedó pendiente (traspasado a T10, depende de la pregunta 6 del índice).** Fotos reales de una pyme: reentrenar, mAP por clase, matriz de confusión, curva de aprendizaje, umbral objetivo de precisión y latencia con JPEG de celular y en el VPS. También pre-etiquetado y augmentations propias, e historial `GET /vision/productions`.
 
 **Riesgos.** Las cifras de precisión son de fotos de internet con pocos objetos y **no predicen** el desempeño sobre bandejas reales; con apilado o superposición pueden ser peores. Hasta tener fotos reales el criterio de precisión de F2 no está demostrado. Para usar el modelo en Docker hay que copiar `model.onnx` y `model.json` al volumen en `/data/models/vision/` (los pesos no se commitean).
+
+**Actualización (9-nov-2026).** Se integraron scripts que estaban fuera del repo, adaptados al detector y al
+`train.py` actuales: `augment.py` (opción `--augment` de `dataset.py split`), `evaluate.py` (mAP y matriz de
+confusión), `learning_curve.py`, `prelabel.py`, `synth.py` (dataset sintético de bandejas, solo para probar el
+pipeline) y `bench_count.py`. Probados de punta a punta con datos sintéticos y el ONNX diminuto de las pruebas:
+las cifras de esa prueba no significan nada y no se reportan. Sigue pendiente lo mismo que antes, con fotos reales.

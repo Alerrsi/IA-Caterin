@@ -59,3 +59,31 @@ def test_version_is_not_overwritten(tmp_path: Path) -> None:
     dataset.split(raw, tmp_path / "v1", 1)
     with pytest.raises(SystemExit):
         dataset.split(raw, tmp_path / "v1", 1)
+
+
+def test_augment_only_train_keeps_session_and_boxes(tmp_path: Path) -> None:
+    pil = pytest.importorskip("PIL.Image")
+    raw = make_raw(tmp_path, {f"s{i}": 2 for i in range(10)})
+    for f in (raw / "images").iterdir():
+        pil.new("RGB", (64, 48), (200, 150, 90)).save(f, "JPEG")
+    data = json.loads((raw / "annotations.json").read_text())
+    for im, a in zip(data["images"], data["annotations"], strict=True):
+        im.update(width=64, height=48)
+        a["bbox"] = [20, 14, 24, 20]
+    (raw / "annotations.json").write_text(json.dumps(data))
+
+    m = dataset.split(raw, tmp_path / "v1", 42, augment_copies=2)
+    assert dataset.check(tmp_path / "v1") == []
+    assert m["augment_copies"] == 2
+    train = json.loads((tmp_path / "v1" / "train" / "_annotations.coco.json").read_text())
+    originals = [i for i in train["images"] if "augmented_from" not in i]
+    copies = [i for i in train["images"] if "augmented_from" in i]
+    assert len(copies) == 2 * len(originals)
+    by_name = {i["file_name"]: i for i in originals}
+    assert all(c["session"] == by_name[c["augmented_from"]]["session"] for c in copies)
+    ids = {i["id"] for i in train["images"]}
+    assert len(ids) == len(train["images"])
+    assert all(a["image_id"] in ids and a["bbox"][2] > 0 and a["bbox"][3] > 0 for a in train["annotations"])
+    for name in ("valid", "test"):
+        split = json.loads((tmp_path / "v1" / name / "_annotations.coco.json").read_text())
+        assert not any("augmented_from" in i for i in split["images"])

@@ -5,8 +5,12 @@ Entrada:  data/raw/annotations.json (COCO) + data/raw/images/. Cada imagen lleva
 Salida:   data/<version>/{train,valid,test}/ con sus imágenes y `_annotations.coco.json` (layout de RF-DETR)
           y `manifest.json` con semilla, conteos y sha256 de cada archivo.
 
-Uso:  python dataset.py split --version v1 --seed 42
+Uso:  python dataset.py split --version v1 --seed 42 [--augment 2]
       python dataset.py check data/v1
+
+`--augment N` agrega N copias aumentadas de cada foto de **train** (luz de cocina, ángulo de celular,
+desenfoque; ver augment.py). Cada copia hereda la sesión de su original, así que no hay fuga hacia
+valid/test. Es lo único que necesita Pillow y NumPy; sin `--augment` basta la librería estándar.
 """
 
 import argparse
@@ -45,7 +49,36 @@ def assign_sessions(sizes: dict[str, int], seed: int) -> dict[str, str]:
     return out
 
 
-def split(raw: Path, out: Path, seed: int) -> dict[str, Any]:
+def augment_train(d: Path, imgs: list[dict[str, Any]], anns: list[dict[str, Any]], copies: int, seed: int) -> None:
+    """Agrega en `d` (y en `imgs`/`anns`, en el lugar) `copies` versiones aumentadas de cada imagen."""
+    from PIL import Image
+
+    from augment import augment
+
+    next_img = max((i["id"] for i in imgs), default=0) + 1
+    next_ann = max((a["id"] for a in anns), default=0) + 1
+    by_img: dict[int, list[dict[str, Any]]] = defaultdict(list)
+    for a in anns:
+        by_img[a["image_id"]].append(a)
+    for im in list(imgs):
+        src = Image.open(d / im["file_name"])
+        stem, ext = Path(im["file_name"]).stem, Path(im["file_name"]).suffix
+        own = by_img[im["id"]]
+        for k in range(copies):
+            img, boxes = augment(src, [tuple(a["bbox"]) for a in own], seed * 100_003 + im["id"] * 101 + k)
+            name = f"{stem}_aug{k}{ext}"
+            img.save(d / name, quality=90)
+            imgs.append({**im, "id": next_img, "file_name": name, "augmented_from": im["file_name"]})
+            for a, box in zip(own, boxes, strict=True):
+                if box[2] <= 0 or box[3] <= 0:
+                    continue  # el objeto salió del cuadro con la transformación
+                bbox = [round(float(v), 1) for v in box]
+                anns.append({**a, "id": next_ann, "image_id": next_img, "bbox": bbox, "area": round(bbox[2] * bbox[3], 1)})
+                next_ann += 1
+            next_img += 1
+
+
+def split(raw: Path, out: Path, seed: int, augment_copies: int = 0) -> dict[str, Any]:
     coco = json.loads((raw / "annotations.json").read_text())
     images = coco["images"]
     missing = [i["file_name"] for i in images if "session" not in i]
@@ -66,14 +99,15 @@ def split(raw: Path, out: Path, seed: int) -> dict[str, Any]:
         ids = {i["id"] for i in imgs}
         for i in imgs:
             shutil.copy2(raw / "images" / i["file_name"], d / i["file_name"])
+        sub_anns = [a for a in coco["annotations"] if a["image_id"] in ids]
+        if name == "train" and augment_copies > 0:
+            augment_train(d, imgs, sub_anns, augment_copies, seed)
+        for i in imgs:
             files[f"{name}/{i['file_name']}"] = sha256_file(d / i["file_name"])
-        sub = {
-            "images": imgs,
-            "annotations": [a for a in coco["annotations"] if a["image_id"] in ids],
-            "categories": coco["categories"],
-        }
+        sub = {"images": imgs, "annotations": sub_anns, "categories": coco["categories"]}
         (d / "_annotations.coco.json").write_text(json.dumps(sub, ensure_ascii=False))
     manifest = build_manifest(out, seed, files)
+    manifest["augment_copies"] = augment_copies
     (out / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2))
     return manifest
 
@@ -121,11 +155,12 @@ def main() -> None:
     sp.add_argument("--raw", type=Path, default=Path("data/raw"))
     sp.add_argument("--version", required=True)
     sp.add_argument("--seed", type=int, default=42)
+    sp.add_argument("--augment", type=int, default=0, help="copias aumentadas por foto de train (0 = ninguna)")
     ck = sub.add_parser("check")
     ck.add_argument("dataset", type=Path)
     args = ap.parse_args()
     if args.cmd == "split":
-        m = split(args.raw, Path("data") / args.version, args.seed)
+        m = split(args.raw, Path("data") / args.version, args.seed, args.augment)
         print(json.dumps({k: v for k, v in m.items() if k != "files"}, ensure_ascii=False, indent=2))
     else:
         problems = check(args.dataset)

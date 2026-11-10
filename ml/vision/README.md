@@ -44,6 +44,10 @@ cd ml/vision
 .venv/bin/python -m pytest test_dataset.py
 ```
 
+`dataset.py split --augment N` agrega N copias aumentadas de cada foto de train (`augment.py`: brillo y temperatura
+de color de luz de cocina, rotación y perspectiva leves de celular, espejo, desenfoque leve). Las copias heredan
+la sesión de su original y nunca van a valid/test; el manifiesto registra `augment_copies`.
+
 `split` nunca sobrescribe una versión: para cambiar los datos se crea `v2`. El `dataset_sha256` del manifiesto
 identifica los datos exactos con que se entrenó un modelo y va en el model card.
 
@@ -60,6 +64,25 @@ Mientras no haya fotos de una pyme real se usa Snacks (Open Images, CC BY; cooki
 La "sesión" es el autor de la foto, para que un mismo fotógrafo no quede repartido entre splits. Son fotos de
 comida de internet, no bandejas de una cocina: sirven para validar el pipeline, y el model card debe decirlo.
 Sus métricas no se presentan como del caso real (AGENTS.md §10). Atribución en `THIRD_PARTY_NOTICES.md`.
+
+También hay un generador **sintético** de bandejas (empanadas, canapés, brochetas dibujados) para probar el
+pipeline completo sin descargar nada. No son fotos reales y sus métricas tampoco se presentan como del caso real:
+
+```bash
+.venv/bin/python synth.py --out data/raw-synth-v1 --sessions 30 --per-session 5
+.venv/bin/python dataset.py split --raw data/raw-synth-v1 --version synth-v1 --augment 2
+```
+
+## Pre-etiquetado (cuando haya fotos reales)
+
+`prelabel.py` sugiere cajas con Grounding DINO tiny (Apache 2.0, se descarga de Hugging Face) a partir de un
+texto por clase y escribe un COCO para importar en CVAT o Label Studio. **Una persona revisa y corrige todas las
+cajas**; nada de esto va a producción. Necesita `torch` y `transformers` (mejor en Colab):
+
+```bash
+python prelabel.py --images fotos/tanda-01 --out fotos/tanda-01/prelabel.coco.json \
+    --classes empanada canape --prompts "empanada" "canapé . bocadito" --revision <commit de HF>
+```
 
 ## Entrenar y evaluar
 
@@ -78,13 +101,30 @@ ONNX). Se baja esa carpeta y se evalúa en tu equipo con el **mismo código que 
 ```
 
 Reporta, por clase y por umbral (0.3, 0.5, 0.7), el error absoluto medio de conteo y el % de fotos con conteo
-exacto, más la latencia de punta a punta en esa CPU. mAP50 y mAP50:95 salen del log de entrenamiento de RF-DETR.
+exacto, más la latencia de punta a punta en esa CPU. `evaluate.py` (mismos argumentos) calcula además AP50 y
+AP50:95 por clase y la matriz de confusión (IoU ≥ 0.5, con la fila/columna "fondo"), con el mismo detector:
+
+```bash
+.venv/bin/python evaluate.py --model runs/snacks-v1-nano-1/onnx --dataset data/snacks-v1 --out runs/snacks-v1-nano-1/eval.json
+```
+
+Curva de aprendizaje (varios entrenamientos con N fotos de train y el mismo test; en GPU):
+
+```bash
+python learning_curve.py --dataset data/snacks-v1 --sizes 25 50 100 200 --epochs 10 --out runs/curve-snacks-v1
+```
+
+Latencia de `POST /vision/count` con la API corriendo y fotos sintéticas de 12 MP (mide latencia, no precisión):
+
+```bash
+.venv/bin/python bench_count.py --email duena.aromos@demo.local --password caterin-demo-2026   # -> runs/bench_count.json
+```
 
 Para usar el modelo en la API: copiar `model.onnx` y `model.json` a la carpeta de `VISION_MODEL_PATH`
 (por defecto `/data/models/vision/`).
 
 ## Pendiente
 
-Pre-etiquetado (solo hará falta con fotos reales), augmentations propias, curva de aprendizaje y `MODEL_CARD.md`.
-Falta correr el entrenamiento: el formato de salida del ONNX se verificó leyendo el código de `rfdetr` 1.12.0 y
-con un modelo de juguete, no con un modelo entrenado.
+Con fotos reales (T10): pre-etiquetar y revisar, reentrenar con `--augment`, correr `evaluate.py` y
+`learning_curve.py`, y completar `MODEL_CARD.md` (mAP, matriz de confusión, umbral objetivo). Los scripts ya
+están probados con datos sintéticos y el ONNX diminuto de las pruebas de la API, no con un modelo entrenado.
