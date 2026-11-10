@@ -19,6 +19,10 @@ ADR-007 (pedido del usuario del 10-nov-2026). Mismo motor de cotización que la 
 - [x] Dueña: `POST /orders/{id}/accept` y `/reject` con mensaje; enlace del portal en `POST/DELETE /pyme/customer-code`.
 - [x] Web: registro `#/cliente/<código>`, "Mis cotizaciones", cotizar (misma pantalla que la dueña, en modo portal),
   detalle con enviar, PDF y anular; para la dueña, solicitudes en Pedidos, aviso en el inicio y enlace en Ajustes.
+- [x] (10-nov) El cliente elige a qué pyme cotizar (directorio de pymes con portal abierto); una cuenta por pyme con
+  el mismo correo; "Mis cotizaciones" junta todas. Registro también sin enlace, eligiendo del directorio.
+- [x] (10-nov) Panel de la dueña: la lista de pedidos ya no corta las solicitudes ni los próximos (antes, con más de
+  200 pedidos, quedaban fuera los más lejanos); la tarjeta muestra total cotizado, invitados y contacto.
 
 ## Criterios de aceptación
 - Un cliente no entra a ninguna ruta de la pyme: `tests/test_portal.py::test_customer_cannot_use_any_staff_route`.
@@ -27,8 +31,8 @@ ADR-007 (pedido del usuario del 10-nov-2026). Mismo motor de cotización que la 
 - Con un precio faltante, el cliente no ve montos y la dueña no puede aceptar sin una cotización completa.
 
 ## Pruebas requeridas
-- API: `apps/api/tests/test_portal.py` (19 pruebas).
-- Web: `apps/web/src/pages/portal/Portal.test.tsx` (6 pruebas).
+- API: `apps/api/tests/test_portal.py` (22 pruebas, incluidas las de varias pymes).
+- Web: `apps/web/src/pages/portal/Portal.test.tsx` (8 pruebas).
 
 ## Fuera de alcance
 - Correo o WhatsApp saliente para avisar al cliente de la respuesta.

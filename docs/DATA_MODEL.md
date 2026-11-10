@@ -67,7 +67,7 @@ Leyenda: **[MVP]** son las entidades exigidas en `AGENTS.md` (sección 7.1). **[
 ### Usuario (`app_user`) [MVP]
 | Campo | Tipo | Nota |
 |-------|------|------|
-| `email` | citext, único global | Login |
+| `email` | citext | Login. Único en todo el sistema para el equipo; un cliente del portal tiene una cuenta por pyme con el mismo correo (único por pyme, ADR-007) |
 | `full_name` | text | |
 | `password_hash` | text | Argon2id |
 | `role` | enum `owner` \| `collaborator` \| `customer` | Dueña / colaboradora / cliente del portal (ADR-007) |

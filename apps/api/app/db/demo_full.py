@@ -1127,7 +1127,7 @@ class Builder:
         for i, outcome in enumerate(plan):
             c = self.customers[i % len(self.customers)]
             cu = CurrentUser(c.id, pid, Role.CUSTOMER, c.email, c.full_name)
-            db = open_tenant_session(pid, c.id)
+            db = get_sessionmaker()()  # el portal usa una sesión sin tenant y escribe en la de la pyme elegida
             try:
                 lines = [
                     OrderLineIn(recipe_id=self.recipes[p].id, qty=q, unit=u)
@@ -1135,6 +1135,7 @@ class Builder:
                     for q, u in [self._line_for(p)]
                 ]
                 data = RequestCreate(
+                    pyme_id=pid,
                     event_date=self.today + timedelta(days=self.rng.randint(5, 45)),
                     guests=self.rng.choice([20, 30, 50, 80]),
                     lines=lines,
@@ -1142,12 +1143,12 @@ class Builder:
                         [None, "Es para un cumpleaños sorpresa (SINTÉTICO)", "¿Pueden despachar a Labranza?"]
                     ),
                 )
-                order = portal.create_request(db, cu, data, self.today)
+                order_id = portal.create_request(db, cu, data, self.today)
                 if outcome == "cancelled":
-                    portal.send_request(db, cu, order.id)
-                    portal.cancel_request(db, cu, order.id)
+                    portal.send_request(db, cu, order_id)
+                    portal.cancel_request(db, cu, order_id)
                 elif outcome != "customer_draft":
-                    portal.send_request(db, cu, order.id)
+                    portal.send_request(db, cu, order_id)
             finally:
                 db.close()
             if outcome in ("accepted", "rejected"):
@@ -1158,7 +1159,7 @@ class Builder:
                         if outcome == "accepted"
                         else "Esa fecha ya está tomada, lo sentimos (SINTÉTICO)."
                     )
-                    quotes.decide_request(staff, order.id, outcome == "accepted", msg)
+                    quotes.decide_request(staff, order_id, outcome == "accepted", msg)
                 finally:
                     staff.close()
 

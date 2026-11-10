@@ -42,6 +42,20 @@ acepta la solicitud.
 5. **Trazabilidad:** el pedido guarda `customer_user_id`, `submitted_at`, `decided_at` y `owner_message`. La
    cotización guarda, como siempre, precios, supuestos y quién la generó (el cliente o la dueña).
 
+## El cliente elige la pyme (10-nov-2026, pedido del usuario)
+
+- **Directorio:** el cliente ve las pymes con el portal abierto (más las que ya usa) y elige a cuál cotizar; los
+  productos y precios son los de esa pyme. Se registra con el enlace de una pyme o eligiéndola del directorio
+  (`GET /portal/directory`, público: solo nombre y comuna de las pymes que abrieron su portal).
+- **Una cuenta por pyme con el mismo correo:** la primera vez que cotiza a una pyme se le crea una cuenta en ella
+  (`app_user`, rol `customer`, misma contraseña). Así cada pedido sigue perteneciendo a una sola pyme y el
+  aislamiento no cambia. El correo del equipo sigue siendo único en todo el sistema; el de un cliente es único por
+  pyme (migración `7cd8acbbfff0`). Al entrar se usa su cuenta más antigua y "Mis cotizaciones" junta las de todas.
+- **Escrituras:** el portal lee con una sesión sin tenant, filtrando siempre por las cuentas del cliente o por la pyme
+  elegida, y escribe con una sesión de tenant de esa pyme.
+- **Límite:** si el cliente cambiara su contraseña en una pyme, las demás cuentas no se enteran (hoy no hay cambio de
+  contraseña para clientes).
+
 ## Consecuencias
 
 - **Seguridad:** el riesgo principal es que un cliente vea datos internos. Se mitiga con el bloqueo central y con

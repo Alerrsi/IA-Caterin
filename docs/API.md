@@ -117,16 +117,18 @@ Todas las respuestas de error usan `application/problem+json`:
 | POST | `/orders/{id}/accept` | dueña | Acepta la solicitud de un cliente (`requested`): pedido `confirmed`, última cotización `accepted`. `{"message"?}` lo ve el cliente. 409 `quote_incomplete` sin cotización completa; 409 `not_a_request` si no es una solicitud pendiente |
 | POST | `/orders/{id}/reject` | dueña | Rechaza la solicitud: pedido `cancelled`, cotización `rejected`, con mensaje opcional |
 
-Los pedidos `customer_draft` (cotizados por un cliente sin enviar) no aparecen en `/orders` ni se pueden abrir por id. Los estados `customer_draft` y `requested` no se pueden poner con POST o PATCH (422). `OrderOut` trae `from_customer`, `submitted_at` y `owner_message`.
+Los pedidos `customer_draft` (cotizados por un cliente sin enviar) no aparecen en `/orders` ni se pueden abrir por id. Los estados `customer_draft` y `requested` no se pueden poner con POST o PATCH (422). `OrderOut` trae `from_customer`, `submitted_at`, `owner_message` y `last_quote_total_clp` (total de la última cotización si está completa). `GET /orders` lista primero las solicitudes por responder, luego los pedidos próximos (del más cercano al más lejano), los sin fecha y al final los pasados: el tope de 200 corta historia vieja, no lo pendiente.
 
 ### portal (ADR-007, T13)
 | Método | Ruta | Quién | Descripción |
 |--------|------|-------|-------------|
-| GET | `/portal/pymes/{code}` | público | Nombre y comuna de la pyme del enlace. 404 `portal_code_not_found` |
-| POST | `/portal/register` | público | `{code, full_name, email, password}` → cuenta de cliente y sesión (como `/auth/login`). 409 `email_taken` |
-| GET | `/portal/products` | cliente | Recetas activas marcadas como producto final (id, nombre, unidad de rendimiento) |
-| POST | `/portal/extract` | cliente | Igual que `/orders/extract`, solo con sus productos. Tope `PORTAL_EXTRACT_PER_HOUR` por cliente y hora → 429 `too_many_reads` |
-| GET/POST | `/portal/requests` | cliente | Sus cotizaciones guardadas / guardar un pedido nuevo y cotizarlo con el margen de la pyme (queda `customer_draft`) |
+| GET | `/portal/directory` | público | Pymes con el portal abierto (id, nombre, comuna), para elegir al registrarse |
+| GET | `/portal/pymes/{code}` | público | La pyme del enlace. 404 `portal_code_not_found` |
+| POST | `/portal/register` | público | `{code o pyme_id, full_name, email, password}` → cuenta de cliente y sesión (como `/auth/login`). 409 `email_taken` (también si ya es cliente: entra y elige la pyme) |
+| GET | `/portal/pymes` | cliente | Pymes a las que puede cotizar: portal abierto o ya usadas (`joined`) |
+| GET | `/portal/products?pyme_id=` | cliente | Productos de esa pyme: recetas activas marcadas como producto final. 404 `pyme_not_available` si la pyme no tiene portal abierto ni lo conoce |
+| POST | `/portal/extract` | cliente | `{text, pyme_id}`: igual que `/orders/extract`, con los productos de esa pyme. Tope `PORTAL_EXTRACT_PER_HOUR` por cliente y hora → 429 `too_many_reads` |
+| GET/POST | `/portal/requests` | cliente | Sus cotizaciones en todas sus pymes (con `pyme_name`) / guardar un pedido para `pyme_id` y cotizarlo con el margen de esa pyme (queda `customer_draft`). La primera vez crea su cuenta en esa pyme |
 | GET | `/portal/requests/{id}` | cliente | Detalle: líneas, precio al cliente (sin costos), `price_pending` (`margin_required` \| `missing_prices` \| `cannot_calculate`), mensaje de la pyme |
 | POST | `/portal/requests/{id}/quote` | cliente | Recalcula con los precios de hoy (solo sin enviar) |
 | POST | `/portal/requests/{id}/send` | cliente | La envía a la pyme (`requested`) |

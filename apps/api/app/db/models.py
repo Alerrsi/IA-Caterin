@@ -80,13 +80,21 @@ class Pyme(TimestampMixin, Base):
 class User(TenantMixin, Base):
     __tablename__ = "app_user"
 
-    email: Mapped[str] = mapped_column(CITEXT, unique=True)
+    email: Mapped[str] = mapped_column(CITEXT)
     full_name: Mapped[str] = mapped_column(String(120))
     password_hash: Mapped[str] = mapped_column(String(255))
     role: Mapped[Role] = mapped_column(str_enum(Role, "role"))
     is_active: Mapped[bool] = mapped_column(Boolean, server_default=sql_text("true"))
 
-    __table_args__ = tenant_args("app_user")
+    # El correo del equipo es único en todo el sistema. Un cliente del portal (ADR-007) tiene una cuenta por cada pyme
+    # a la que cotiza, con el mismo correo: única por pyme.
+    __table_args__ = tenant_args(
+        "app_user",
+        extra=(
+            UniqueConstraint("pyme_id", "email", name="uq_app_user_pyme_email"),
+            Index("uq_app_user_staff_email", "email", unique=True, postgresql_where=sql_text("role <> 'customer'")),
+        ),
+    )
 
 
 class RefreshToken(TenantMixin, Base):

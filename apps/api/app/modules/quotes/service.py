@@ -5,7 +5,7 @@ from datetime import UTC, date, datetime, timedelta
 from decimal import Decimal
 from typing import Any
 
-from sqlalchemy import func, select
+from sqlalchemy import case, func, select
 from sqlalchemy.orm import Session
 
 from app.core.data_version import bump
@@ -78,10 +78,25 @@ def build_lines(db: Session, lines: list[OrderLineIn]) -> list[OrderLine]:
 
 def list_orders(db: Session, status: OrderStatus | None, upcoming_days: int | None, today: date) -> list[Order]:
     # Lo que un cliente cotizó y no envió es suyo: la pyme no lo ve (ADR-007).
+    # Orden útil para la pyme y estable con el tope de 200: primero las solicitudes de clientes por responder, luego
+    # los pedidos que vienen (del más próximo al más lejano), luego los sin fecha y al final los pasados (del más
+    # reciente al más antiguo). Así el tope corta historia vieja, nunca lo pendiente.
+    upcoming = Order.event_date >= today
+    group = case(
+        (Order.status == OrderStatus.REQUESTED, 0),
+        (upcoming, 1),
+        (Order.event_date.is_(None), 2),
+        else_=3,
+    )
     stmt = (
         select(Order)
         .where(Order.status != OrderStatus.CUSTOMER_DRAFT)
-        .order_by(Order.event_date.asc().nulls_last(), Order.created_at.desc())
+        .order_by(
+            group,
+            case((upcoming, Order.event_date), else_=None).asc().nulls_last(),
+            Order.event_date.desc().nulls_last(),
+            Order.created_at.desc(),
+        )
     )
     if status:
         stmt = stmt.where(Order.status == status)
@@ -143,9 +158,10 @@ def order_out(db: Session, order: Order) -> OrderOut:
         lines.append(line)
     out.lines = lines
     out.from_customer = order.customer_user_id is not None
-    out.last_quote_id = db.scalar(
-        select(Quote.id).where(Quote.order_id == order.id).order_by(Quote.version.desc()).limit(1)
-    )
+    last = latest_quote(db, order.id)
+    if last is not None:
+        out.last_quote_id = last.id
+        out.last_quote_total_clp = int(last.total_clp) if last.is_complete else None
     return out
 
 

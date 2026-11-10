@@ -3,7 +3,7 @@ import { vi } from 'vitest'
 type Handler = (body: unknown) => { status?: number; body?: unknown } | undefined
 export type Routes = Record<string, Handler>
 
-export const calls: { method: string; path: string; body: unknown }[] = []
+export const calls: { method: string; path: string; body: unknown; url?: string }[] = []
 
 /** Simula la API: claves "METHOD /ruta" (sin /api/v1). Rutas no definidas responden 404. */
 export function mockApi(routes: Routes) {
@@ -13,7 +13,7 @@ export function mockApi(routes: Routes) {
     const method = (init?.method ?? 'GET').toUpperCase()
     const path = url.replace(/^.*\/api\/v1/, '').split('?')[0]
     const body = init?.body && typeof init.body === 'string' ? JSON.parse(init.body) : undefined
-    calls.push({ method, path, body })
+    calls.push({ method, path, body, url })
     const handler = routes[`${method} ${path}`]
     const result = handler ? handler(body) : { status: 404, body: { code: 'not_found', title: 'No encontrado' } }
     const status = result?.status ?? 200

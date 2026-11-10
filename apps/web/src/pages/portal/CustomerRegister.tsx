@@ -1,14 +1,19 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { api, ApiError } from '../../api'
+import { api, ApiError, type PortalPyme } from '../../api'
 import { useAuth } from '../../auth'
 import { Alert, Button, Field, inputClass, Spinner } from '../../components/ui'
 import { t } from '../../i18n'
 import { navigate } from '../../router'
 
-/** Registro de un cliente con el enlace que comparte la pyme (#/cliente/<código>). */
-export default function CustomerRegister({ code }: { code: string }) {
+/**
+ * Registro de un cliente: con el enlace que comparte una pyme (#/cliente/<código>) o eligiendo una pyme del
+ * directorio (#/cliente). Después puede cotizar a cualquier pyme con el portal abierto.
+ */
+export default function CustomerRegister({ code }: { code?: string }) {
   const { registerCustomer } = useAuth()
   const [pyme, setPyme] = useState<{ name: string } | null>(null)
+  const [directory, setDirectory] = useState<PortalPyme[] | null>(null)
+  const [pymeId, setPymeId] = useState('')
   const [badLink, setBadLink] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', password: '' })
   const [error, setError] = useState<string | null>(null)
@@ -17,8 +22,18 @@ export default function CustomerRegister({ code }: { code: string }) {
     setForm((f) => ({ ...f, [field]: e.target.value }))
 
   useEffect(() => {
-    api<{ name: string }>(`/portal/pymes/${encodeURIComponent(code)}`)
-      .then(setPyme)
+    if (code) {
+      api<{ name: string }>(`/portal/pymes/${encodeURIComponent(code)}`)
+        .then(setPyme)
+        .catch(() => setBadLink(true))
+      return
+    }
+    api<PortalPyme[]>('/portal/directory')
+      .then((list) => {
+        setDirectory(list)
+        setPymeId(list[0]?.id ?? '')
+        setPyme({ name: '' })
+      })
       .catch(() => setBadLink(true))
   }, [code])
 
@@ -27,7 +42,12 @@ export default function CustomerRegister({ code }: { code: string }) {
     setError(null)
     setBusy(true)
     try {
-      await registerCustomer({ code, full_name: form.name.trim(), email: form.email.trim(), password: form.password })
+      await registerCustomer({
+        ...(code ? { code } : { pyme_id: pymeId }),
+        full_name: form.name.trim(),
+        email: form.email.trim(),
+        password: form.password,
+      })
       navigate('/')
     } catch (err) {
       setError(err instanceof ApiError ? err.userMessage : t.genericError)
@@ -48,8 +68,23 @@ export default function CustomerRegister({ code }: { code: string }) {
         <Spinner label={t.loading} />
       ) : (
         <>
-          <p className="mb-6 mt-1 text-on-surface-variant">{t.portal.registerFor(pyme.name)}</p>
-          <form onSubmit={submit} className="space-y-4" noValidate>
+          {code && <p className="mb-6 mt-1 text-on-surface-variant">{t.portal.registerFor(pyme.name)}</p>}
+          <form onSubmit={submit} className={`space-y-4 ${code ? '' : 'mt-6'}`} noValidate>
+            {!code &&
+              (directory && directory.length === 0 ? (
+                <Alert kind="info">{t.portal.noPymes}</Alert>
+              ) : (
+                <Field label={t.portal.registerChoose}>
+                  <select className={inputClass} value={pymeId} onChange={(e) => setPymeId(e.target.value)}>
+                    {(directory ?? []).map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name}
+                        {p.commune ? ` · ${p.commune}` : ''}
+                      </option>
+                    ))}
+                  </select>
+                </Field>
+              ))}
             <Field label={t.register.name}>
               <input className={inputClass} value={form.name} onChange={set('name')} autoComplete="name" required />
             </Field>
@@ -78,7 +113,7 @@ export default function CustomerRegister({ code }: { code: string }) {
             <Button
               type="submit"
               className="w-full"
-              disabled={busy || form.name.trim().length < 2 || !form.email || form.password.length < 10}
+              disabled={busy || (!code && !pymeId) || form.name.trim().length < 2 || !form.email || form.password.length < 10}
             >
               {busy ? t.register.submitting : t.register.submit}
             </Button>

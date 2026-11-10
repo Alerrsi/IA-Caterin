@@ -46,6 +46,7 @@ function Routes() {
   if (status === 'anonymous') {
     const invite = matchPath('/cliente/:code', path)
     if (invite) return <CustomerRegister code={invite.code} />
+    if (matchPath('/cliente', path)) return <CustomerRegister />
     return matchPath('/registro', path) ? <Register /> : <Login />
   }
   return (

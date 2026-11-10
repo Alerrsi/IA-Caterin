@@ -1,8 +1,13 @@
-"""Portal de clientes (ADR-007): el cliente final cotiza con el mismo motor que la dueña, guarda sus
-cotizaciones y las envía a la pyme, que las acepta o rechaza.
+"""Portal de clientes (ADR-007): el cliente final elige una pyme, cotiza con el mismo motor que la dueña, guarda sus
+cotizaciones y las envía a esa pyme, que las acepta o rechaza.
+
+Cuentas: un cliente tiene una cuenta (`app_user` con rol `customer`) en cada pyme a la que cotiza, con el mismo
+correo y la misma contraseña. Así cada pedido sigue siendo de una sola pyme y el aislamiento entre pymes no cambia.
+La cuenta en una pyme nueva se crea sola la primera vez que el cliente le cotiza (si esa pyme tiene el portal abierto).
 
 Reglas:
-- El cliente solo ve lo suyo: cada consulta filtra por `customer_user_id` (además del filtro de tenant).
+- El cliente solo ve lo suyo: las consultas filtran por sus cuentas (`customer_user_id`), y lo que escribe en una
+  pyme pasa por una sesión de tenant de esa pyme.
 - Solo ve precios al cliente: nunca costos, margen, insumos, proveedores ni stock.
 - El precio lo calcula `quotes.service.create_quote` (código determinista, ADR-002) con el margen de la pyme.
 - Mientras no lo envía, el pedido queda en `customer_draft` y la pyme no lo ve.
@@ -12,18 +17,20 @@ import threading
 import time
 import uuid
 from collections import defaultdict, deque
+from collections.abc import Iterator
+from contextlib import contextmanager
 from datetime import UTC, date, datetime
 from decimal import Decimal
 from typing import Any
 
-from sqlalchemy import select
+from sqlalchemy import ColumnElement, or_, select
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
 from app.core.data_version import bump
 from app.core.errors import ProblemError, not_found
 from app.core.security import hash_password
-from app.core.tenancy import CurrentUser
+from app.core.tenancy import CurrentUser, open_tenant_session
 from app.core.units import format_decimal
 from app.db.enums import DataDomain, OrderStatus, Role
 from app.db.models import Order, Pyme, Quote, Recipe, User
@@ -32,6 +39,7 @@ from app.modules.portal.schemas import (
     CustomerQuoteProduct,
     CustomerRegisterIn,
     PendingReason,
+    PortalPymeOut,
     ProductOut,
     RequestCreate,
     RequestLineOut,
@@ -45,6 +53,71 @@ CANCELLABLE = (OrderStatus.CUSTOMER_DRAFT, OrderStatus.REQUESTED)
 # Errores del cálculo que no impiden guardar la solicitud: la pyme pone el precio al recibirla.
 PRICE_LATER = {"margin_required", "quote_calculation"}
 
+# `db` en este módulo es una sesión SIN tenant (get_db): toda consulta filtra explícitamente por las cuentas del
+# cliente o por la pyme elegida. Las escrituras se hacen en una sesión de tenant de esa pyme (`_tenant`).
+
+
+@contextmanager
+def _tenant(account: CurrentUser) -> Iterator[Session]:
+    session = open_tenant_session(account.pyme_id, account.id)
+    try:
+        yield session
+    finally:
+        session.close()
+
+
+def _cu(user: User) -> CurrentUser:
+    return CurrentUser(user.id, user.pyme_id, user.role, user.email, user.full_name)
+
+
+# --------------------------------------------------------------------------- pymes y cuentas
+
+
+def accounts(db: Session, me: CurrentUser) -> dict[uuid.UUID, CurrentUser]:
+    """Las cuentas activas del cliente, por pyme (mismo correo)."""
+    rows = db.scalars(select(User).where(User.email == me.email, User.role == Role.CUSTOMER, User.is_active))
+    return {u.pyme_id: _cu(u) for u in rows}
+
+
+def directory(db: Session, me: CurrentUser | None = None) -> list[PortalPymeOut]:
+    """Pymes a las que se puede cotizar: las con el portal abierto y, para un cliente, también las que ya usa."""
+    joined = set(accounts(db, me)) if me else set()
+    cond: ColumnElement[bool] = Pyme.customer_code.is_not(None)
+    if joined:
+        cond = or_(cond, Pyme.id.in_(joined))
+    rows = db.scalars(select(Pyme).where(cond).order_by(Pyme.name))
+    return [PortalPymeOut(id=p.id, name=p.name, commune=p.commune, joined=p.id in joined) for p in rows]
+
+
+def _pyme_for(db: Session, me: CurrentUser, pyme_id: uuid.UUID | None) -> Pyme:
+    pid = pyme_id or me.pyme_id
+    pyme = db.get(Pyme, pid)
+    if pyme is None or (pyme.customer_code is None and pid not in accounts(db, me)):
+        raise ProblemError(404, "pyme_not_available", "Esa pyme no recibe cotizaciones en línea")
+    return pyme
+
+
+def account_in(db: Session, me: CurrentUser, pyme_id: uuid.UUID | None) -> CurrentUser:
+    """La cuenta del cliente en esa pyme; la crea (mismo correo y contraseña) si es la primera vez que le cotiza."""
+    pyme = _pyme_for(db, me, pyme_id)
+    mine = accounts(db, me)
+    if pyme.id in mine:
+        return mine[pyme.id]
+    source = db.get(User, me.id)
+    if source is None:  # pragma: no cover - la sesión ya validó la cuenta
+        raise not_found("user_not_found")
+    user = User(
+        pyme_id=pyme.id,
+        email=source.email,
+        full_name=source.full_name,
+        password_hash=source.password_hash,
+        role=Role.CUSTOMER,
+    )
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    return _cu(user)
+
 
 # --------------------------------------------------------------------------- registro
 
@@ -57,9 +130,19 @@ def pyme_by_code(db: Session, code: str) -> Pyme:
 
 
 def register_customer(db: Session, data: CustomerRegisterIn) -> User:
-    pyme = pyme_by_code(db, data.code)
-    taken = db.scalar(select(User.id).where(User.email == data.email).execution_options(skip_tenant_filter=True))
-    if taken is not None:
+    if data.code:
+        pyme = pyme_by_code(db, data.code)
+    else:
+        found = db.get(Pyme, data.pyme_id)
+        if found is None or found.customer_code is None:
+            raise ProblemError(404, "pyme_not_available", "Esa pyme no recibe cotizaciones en línea")
+        pyme = found
+    existing = db.scalar(select(User.role).where(User.email == data.email).limit(1))
+    if existing == Role.CUSTOMER:
+        raise ProblemError(
+            409, "email_taken", "Ya tienes una cuenta de cliente", "Inicia sesión: desde ahí eliges a qué pyme cotizar."
+        )
+    if existing is not None:
         raise ProblemError(409, "email_taken", "Ese correo ya tiene una cuenta", "Prueba iniciar sesión.")
     user = User(
         pyme_id=pyme.id,
@@ -76,17 +159,17 @@ def register_customer(db: Session, data: CustomerRegisterIn) -> User:
 
 # --------------------------------------------------------------------------- límite de lecturas con LLM
 
-_extract_calls: dict[uuid.UUID, deque[float]] = defaultdict(deque)
+_extract_calls: dict[str, deque[float]] = defaultdict(deque)
 _extract_lock = threading.Lock()
 
 
-def check_extract_quota(user_id: uuid.UUID, now: float | None = None) -> None:
-    """Pedidos leídos con el LLM por cliente y hora. En memoria del proceso: alcanza para un servidor con un
+def check_extract_quota(key: uuid.UUID | str, now: float | None = None) -> None:
+    """Pedidos leídos con el LLM por cliente (correo) y hora. En memoria del proceso: alcanza para un servidor con un
     solo proceso (el despliegue del MVP); con varios, cada uno lleva su cuenta (ver ADR-007)."""
     limit = get_settings().portal_extract_per_hour
     now = time.monotonic() if now is None else now
     with _extract_lock:
-        calls = _extract_calls[user_id]
+        calls = _extract_calls[str(key)]
         while calls and now - calls[0] > 3600:
             calls.popleft()
         if len(calls) >= limit:
@@ -99,111 +182,132 @@ def check_extract_quota(user_id: uuid.UUID, now: float | None = None) -> None:
 # --------------------------------------------------------------------------- productos y solicitudes
 
 
-def products(db: Session) -> list[ProductOut]:
-    """Productos que se pueden pedir: recetas activas marcadas como producto final (no las preparaciones base)."""
-    rows = db.scalars(select(Recipe).where(Recipe.is_active, Recipe.is_final_product).order_by(Recipe.name))
+def products(db: Session, me: CurrentUser, pyme_id: uuid.UUID | None) -> list[ProductOut]:
+    """Productos que se pueden pedir a esa pyme: recetas activas marcadas como producto final (no las bases)."""
+    pyme = _pyme_for(db, me, pyme_id)
+    rows = db.scalars(
+        select(Recipe).where(Recipe.pyme_id == pyme.id, Recipe.is_active, Recipe.is_final_product).order_by(Recipe.name)
+    )
     return [ProductOut(id=r.id, name=r.name, yield_unit=r.yield_unit) for r in rows]
 
 
-def product_choices(db: Session) -> dict[uuid.UUID, str]:
-    return {p.id: p.name for p in products(db)}
+def product_choices(db: Session, me: CurrentUser, pyme_id: uuid.UUID | None) -> dict[uuid.UUID, str]:
+    return {p.id: p.name for p in products(db, me, pyme_id)}
 
 
-def _own(db: Session, user: CurrentUser, order_id: uuid.UUID) -> Order:
+def _locate(db: Session, me: CurrentUser, order_id: uuid.UUID) -> tuple[Order, CurrentUser]:
+    """El pedido y la cuenta del cliente en su pyme. 404 si no es de ninguna de sus cuentas."""
+    mine = accounts(db, me)
     order = db.get(Order, order_id)
-    if order is None or order.customer_user_id != user.id:
+    if order is None or order.pyme_id not in mine or order.customer_user_id != mine[order.pyme_id].id:
         raise not_found("request_not_found", "No encontramos esa cotización")
-    return order
+    return order, mine[order.pyme_id]
 
 
-def _try_quote(db: Session, user: CurrentUser, order: Order, today: date) -> None:
+def _try_quote(db: Session, account: CurrentUser, order_id: uuid.UUID, today: date) -> None:
     try:
-        quotes.create_quote(db, user, order.id, QuoteCreate(), today)
+        quotes.create_quote(db, account, order_id, QuoteCreate(), today)
     except ProblemError as exc:
         if exc.code not in PRICE_LATER:
             raise
         db.rollback()
 
 
-def create_request(db: Session, user: CurrentUser, data: RequestCreate, today: date) -> Order:
-    allowed = product_choices(db)
+def create_request(db: Session, me: CurrentUser, data: RequestCreate, today: date) -> uuid.UUID:
+    allowed = product_choices(db, me, data.pyme_id)
     if any(line.recipe_id not in allowed for line in data.lines):
-        raise ProblemError(422, "product_not_found", "Uno de los productos no está disponible")
-    order = Order(
-        customer_name=user.full_name,
-        customer_contact=user.email,
-        customer_user_id=user.id,
-        status=OrderStatus.CUSTOMER_DRAFT,
-        **data.model_dump(exclude={"lines"}),
-    )
-    db.add(order)
-    db.flush()
-    for line in quotes.build_lines(db, data.lines):
-        line.pyme_id, line.order_id = order.pyme_id, order.id
-        db.add(line)
-    bump(db, DataDomain.ORDERS)
-    db.commit()
-    db.refresh(order)
-    _try_quote(db, user, order, today)
-    return order
+        raise ProblemError(422, "product_not_found", "Uno de los productos no está disponible en esa pyme")
+    account = account_in(db, me, data.pyme_id)
+    with _tenant(account) as t:
+        order = Order(
+            customer_name=account.full_name,
+            customer_contact=account.email,
+            customer_user_id=account.id,
+            status=OrderStatus.CUSTOMER_DRAFT,
+            **data.model_dump(exclude={"lines", "pyme_id"}),
+        )
+        t.add(order)
+        t.flush()
+        for line in quotes.build_lines(t, data.lines):
+            line.pyme_id, line.order_id = order.pyme_id, order.id
+            t.add(line)
+        bump(t, DataDomain.ORDERS)
+        t.commit()
+        order_id = order.id
+        _try_quote(t, account, order_id, today)
+    return order_id
 
 
-def requote(db: Session, user: CurrentUser, order_id: uuid.UUID, today: date) -> Order:
+def requote(db: Session, me: CurrentUser, order_id: uuid.UUID, today: date) -> uuid.UUID:
     """Recalcula con los precios de hoy. Solo antes de enviarla: después el precio lo maneja la pyme."""
-    order = _own(db, user, order_id)
+    order, account = _locate(db, me, order_id)
     if order.status != OrderStatus.CUSTOMER_DRAFT:
         raise ProblemError(409, "already_sent", "Ya la enviaste: la pyme revisa el precio")
-    _try_quote(db, user, order, today)
-    return _own(db, user, order_id)
+    with _tenant(account) as t:
+        _try_quote(t, account, order_id, today)
+    return order_id
 
 
-def send_request(db: Session, user: CurrentUser, order_id: uuid.UUID) -> Order:
-    order = _own(db, user, order_id)
-    if order.status != OrderStatus.CUSTOMER_DRAFT:
-        raise ProblemError(409, "already_sent", "Esta cotización ya se envió")
-    order.status = OrderStatus.REQUESTED
-    order.submitted_at = datetime.now(UTC)
-    bump(db, DataDomain.ORDERS)
-    db.commit()
-    db.refresh(order)
-    return order
+def _set_status(db: Session, me: CurrentUser, order_id: uuid.UUID, allowed: tuple[OrderStatus, ...],
+                new: OrderStatus, error: ProblemError) -> uuid.UUID:  # fmt: skip
+    order, account = _locate(db, me, order_id)
+    if order.status not in allowed:
+        raise error
+    with _tenant(account) as t:
+        row = t.get(Order, order_id)
+        assert row is not None  # noqa: S101 - _locate ya lo encontró
+        row.status = new
+        if new == OrderStatus.REQUESTED:
+            row.submitted_at = datetime.now(UTC)
+        bump(t, DataDomain.ORDERS)
+        t.commit()
+    return order_id
 
 
-def cancel_request(db: Session, user: CurrentUser, order_id: uuid.UUID) -> Order:
-    order = _own(db, user, order_id)
-    if order.status not in CANCELLABLE:
-        raise ProblemError(409, "cannot_cancel", "La pyme ya respondió: para cambiarla, contáctala")
-    order.status = OrderStatus.CANCELLED
-    bump(db, DataDomain.ORDERS)
-    db.commit()
-    db.refresh(order)
-    return order
+def send_request(db: Session, me: CurrentUser, order_id: uuid.UUID) -> uuid.UUID:
+    error = ProblemError(409, "already_sent", "Esta cotización ya se envió")
+    return _set_status(db, me, order_id, (OrderStatus.CUSTOMER_DRAFT,), OrderStatus.REQUESTED, error)
 
 
-def list_requests(db: Session, user: CurrentUser) -> list[RequestSummary]:
+def cancel_request(db: Session, me: CurrentUser, order_id: uuid.UUID) -> uuid.UUID:
+    error = ProblemError(409, "cannot_cancel", "La pyme ya respondió: para cambiarla, contáctala")
+    return _set_status(db, me, order_id, CANCELLABLE, OrderStatus.CANCELLED, error)
+
+
+def list_requests(db: Session, me: CurrentUser) -> list[RequestSummary]:
+    mine = accounts(db, me)
+    if not mine:
+        return []
+    names = dict(db.execute(select(Pyme.id, Pyme.name).where(Pyme.id.in_(mine))).all())
     orders = db.scalars(
-        select(Order).where(Order.customer_user_id == user.id).order_by(Order.created_at.desc()).limit(100)
+        select(Order)
+        .where(Order.customer_user_id.in_([a.id for a in mine.values()]))
+        .order_by(Order.created_at.desc())
+        .limit(100)
     )
     out = []
     for o in orders:
         q = quotes.latest_quote(db, o.id)
-        names = ", ".join(_line_name(line.requested_name, line.qty, line.unit) for line in o.lines)
         out.append(
             RequestSummary(
                 id=o.id,
+                pyme_id=o.pyme_id,
+                pyme_name=names.get(o.pyme_id, ""),
                 status=o.status,
                 created_at=o.created_at,
                 submitted_at=o.submitted_at,
                 event_date=o.event_date,
-                products=names,
+                products=", ".join(_line_name(line.requested_name, line.qty, line.unit) for line in o.lines),
                 total_clp=int(q.total_clp) if q is not None and q.is_complete else None,
             )
         )
     return out
 
 
-def get_request(db: Session, user: CurrentUser, order_id: uuid.UUID) -> Order:
-    return _own(db, user, order_id)
+def get_request(db: Session, me: CurrentUser, order_id: uuid.UUID) -> RequestOut:
+    db.expire_all()  # lo pudo cambiar una sesión de tenant en esta misma solicitud
+    order, _account = _locate(db, me, order_id)
+    return request_out(db, order)
 
 
 def _qty(value: Any) -> str:
@@ -243,16 +347,18 @@ def customer_quote(quote: Quote) -> CustomerQuoteOut:
     )
 
 
-def request_out(db: Session, user: CurrentUser, order: Order) -> RequestOut:
+def request_out(db: Session, order: Order) -> RequestOut:
     quote = quotes.latest_quote(db, order.id)
     pending: PendingReason | None = None
+    pyme = db.get(Pyme, order.pyme_id)
     if quote is None:
-        pyme = db.get(Pyme, user.pyme_id)
         pending = "margin_required" if pyme is None or pyme.default_margin_pct is None else "cannot_calculate"
     elif not quote.is_complete:
         pending = "missing_prices"
     return RequestOut(
         id=order.id,
+        pyme_id=order.pyme_id,
+        pyme_name=pyme.name if pyme else "",
         status=order.status,
         created_at=order.created_at,
         submitted_at=order.submitted_at,
@@ -274,9 +380,11 @@ def request_out(db: Session, user: CurrentUser, order: Order) -> RequestOut:
     )
 
 
-def pdf_quote(db: Session, user: CurrentUser, order_id: uuid.UUID) -> tuple[Quote, Order]:
-    order = _own(db, user, order_id)
+def pdf_quote(db: Session, me: CurrentUser, order_id: uuid.UUID) -> tuple[Quote, Order, Pyme]:
+    order, _account = _locate(db, me, order_id)
+    pyme = db.get(Pyme, order.pyme_id)
+    assert pyme is not None  # noqa: S101
     quote = quotes.latest_quote(db, order.id)
     if quote is None or not quote.is_complete:
         raise ProblemError(409, "quote_incomplete", "Todavía no hay precio", "La pyme lo revisará al recibirla.")
-    return quote, order
+    return quote, order, pyme

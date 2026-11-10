@@ -8,7 +8,7 @@ import { navigate } from '../../router'
 
 /** Inicio del cliente del portal (ADR-007): sus cotizaciones guardadas y el botón para cotizar otra. */
 export default function PortalHome() {
-  const { user, pyme } = useAuth()
+  const { user } = useAuth()
   const [items, setItems] = useState<PortalRequestSummary[] | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -20,7 +20,7 @@ export default function PortalHome() {
 
   return (
     <Page title={t.portal.homeTitle}>
-      <p className="mb-4 text-on-surface-variant">{t.portal.hello(user?.full_name.split(' ')[0] ?? '', pyme?.name ?? '')}</p>
+      <p className="mb-4 text-on-surface-variant">{t.portal.hello(user?.full_name.split(' ')[0] ?? '')}</p>
       <button
         type="button"
         onClick={() => navigate('/cotizar')}
@@ -47,7 +47,8 @@ export default function PortalHome() {
                   <StatusChip status={r.status}>{t.portal.status[r.status]}</StatusChip>
                   <span className="text-lg font-medium">{r.total_clp === null ? t.portal.noTotal : formatCLP(r.total_clp)}</span>
                 </div>
-                <p className="mt-2 text-on-surface">{r.products}</p>
+                <p className="mt-2 text-sm font-medium text-on-surface-variant">{r.pyme_name}</p>
+                <p className="mt-1 text-on-surface">{r.products}</p>
                 <p className="mt-1 text-sm text-on-surface-variant">
                   {r.event_date ? t.portal.eventDate(formatDate(r.event_date)) : t.orders.noDate}
                 </p>

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { api, apiBlob, ApiError, post, type PortalRequest } from '../../api'
-import { useAuth } from '../../auth'
 import { Alert, Button, Page, Spinner, StatusChip } from '../../components/ui'
 import { formatCLP, formatDate } from '../../format'
 import { t } from '../../i18n'
@@ -8,7 +7,6 @@ import { navigate } from '../../router'
 
 /** Una cotización guardada del cliente: precio, PDF, enviar a la pyme y su respuesta (ADR-007). */
 export default function RequestView({ id }: { id: string }) {
-  const { pyme } = useAuth()
   const [req, setReq] = useState<PortalRequest | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState<string | null>(null)
@@ -59,6 +57,7 @@ export default function RequestView({ id }: { id: string }) {
   const q = req.quote
   return (
     <Page title={t.portal.requestTitle} onBack={() => navigate('/')}>
+      <p className="mb-2 text-lg text-on-surface">{req.pyme_name}</p>
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <StatusChip status={req.status}>{t.portal.status[req.status]}</StatusChip>
         {req.event_date && <span className="text-on-surface-variant">{t.portal.eventDate(formatDate(req.event_date))}</span>}
@@ -116,7 +115,7 @@ export default function RequestView({ id }: { id: string }) {
       <div className="space-y-3">
         {req.can_send && (
           <Button className="w-full" onClick={() => act('send')} disabled={busy !== null}>
-            {busy === 'send' ? t.portal.sending : t.portal.send(pyme?.name ?? '')}
+            {busy === 'send' ? t.portal.sending : t.portal.send(req.pyme_name)}
           </Button>
         )}
         {q?.is_complete && (

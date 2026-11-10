@@ -12,8 +12,15 @@ const customerSession = {
 }
 const anonymous = () => ({ status: 401, body: { code: 'unauthorized', title: 'Necesitas iniciar sesión' } })
 
+const pymes = [
+  { id: 'p1', name: 'Cocina Demo', commune: 'Temuco', joined: true },
+  { id: 'p2', name: 'Banquetería Lago', commune: 'Villarrica', joined: false },
+]
+
 const draft = {
   id: 'o9',
+  pyme_id: 'p1',
+  pyme_name: 'Cocina Demo',
   status: 'customer_draft',
   created_at: '2026-11-10T12:00:00Z',
   submitted_at: null,
@@ -76,6 +83,7 @@ test('el cliente cotiza con el formulario y guarda sin enviar', async () => {
   window.location.hash = '#/cotizar'
   mockApi({
     'POST /auth/refresh': () => ({ body: customerSession }),
+    'GET /portal/pymes': () => ({ body: pymes }),
     'GET /portal/products': () => ({ body: [{ id: 'r-pino', name: 'Empanadas de pino', yield_unit: 'unit' }] }),
     'POST /portal/requests': () => ({ status: 201, body: draft }),
     'GET /portal/requests/o9': () => ({ body: draft }),
@@ -91,6 +99,7 @@ test('el cliente cotiza con el formulario y guarda sin enviar', async () => {
   await user.click(screen.getByRole('button', { name: 'Ver precio y guardar' }))
   expect(await screen.findByTestId('request-total')).toHaveTextContent('$74.643')
   expect(calls.find((c) => c.path === '/portal/requests' && c.method === 'POST')?.body).toMatchObject({
+    pyme_id: 'p1',
     notes: 'sin cebolla',
     source: 'form',
     lines: [{ recipe_id: 'r-pino', qty: '5', unit: 'dozen' }],
@@ -156,4 +165,44 @@ test('la dueña ve la solicitud y la acepta con un mensaje', async () => {
   expect(await screen.findByText(/Solicitud aceptada/)).toBeInTheDocument()
   await waitFor(() => expect(screen.queryByTestId('request')).not.toBeInTheDocument())
   expect(calls.find((c) => c.path === '/orders/o9/accept')?.body).toEqual({ message: '¡Nos vemos!' })
+})
+
+test('el cliente elige a qué pyme cotizar y ve los productos de esa pyme', async () => {
+  window.location.hash = '#/cotizar'
+  mockApi({
+    'POST /auth/refresh': () => ({ body: customerSession }),
+    'GET /portal/pymes': () => ({ body: pymes }),
+    'GET /portal/products': () => ({ body: [{ id: 'r-x', name: 'Producto', yield_unit: 'unit' }] }),
+  })
+  const user = userEvent.setup()
+  render(<App />)
+  const select = await screen.findByLabelText(/A qué pyme le quieres cotizar/)
+  await waitFor(() => expect(select).toHaveValue('p1')) // por defecto, la de la sesión
+  await user.selectOptions(select, 'p2')
+  await waitFor(() =>
+    expect(calls.some((c) => c.method === 'GET' && c.path === '/portal/products' && c.url?.includes('pyme_id=p2'))).toBe(
+      true,
+    ),
+  )
+  await user.click(screen.getByRole('button', { name: 'Ingresar a mano' }))
+  expect(screen.getByText('Cotizando con Banquetería Lago')).toBeInTheDocument()
+})
+
+test('registro sin enlace: elige la pyme del directorio', async () => {
+  window.location.hash = '#/cliente'
+  mockApi({
+    'POST /auth/refresh': anonymous,
+    'GET /portal/directory': () => ({ body: pymes.map((p) => ({ ...p, joined: false })) }),
+    'POST /portal/register': () => ({ status: 201, body: customerSession }),
+    'GET /portal/requests': () => ({ body: [] }),
+  })
+  const user = userEvent.setup()
+  render(<App />)
+  await user.selectOptions(await screen.findByLabelText(/Elige la pyme/), 'p2')
+  await user.type(screen.getByLabelText('Tu nombre'), 'Ana Cliente')
+  await user.type(screen.getByLabelText('Correo'), 'ana@cliente.local')
+  await user.type(screen.getByLabelText(/^Contraseña/), 'clave-segura-123')
+  await user.click(screen.getByRole('button', { name: 'Crear cuenta' }))
+  expect(await screen.findByRole('heading', { name: 'Mis cotizaciones' })).toBeInTheDocument()
+  expect(calls.find((c) => c.path === '/portal/register')?.body).toMatchObject({ pyme_id: 'p2' })
 })

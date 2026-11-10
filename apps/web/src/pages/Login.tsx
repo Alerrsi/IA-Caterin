@@ -61,6 +61,11 @@ export default function Login() {
           {t.register.link}
         </a>
       </p>
+      <p className="text-center">
+        <a href="#/cliente" className="inline-block min-h-12 py-3 text-base font-medium text-primary underline underline-offset-4">
+          {t.portal.registerLink}
+        </a>
+      </p>
     </div>
     </main>
   )

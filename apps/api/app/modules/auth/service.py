@@ -88,7 +88,14 @@ def _check_rate_limit(db: Session, email: str, ip: str) -> None:
 
 def authenticate(db: Session, email: str, password: str, ip: str) -> User:
     _check_rate_limit(db, email, ip)
-    user = db.scalar(select(User).where(User.email == email))
+    # Un cliente del portal puede tener una cuenta por pyme con el mismo correo (ADR-007): se entra con la más
+    # antigua activa (todas comparten la contraseña) y el portal le muestra todas sus pymes.
+    user = db.scalar(
+        select(User)
+        .where(User.email == email)
+        .order_by(User.is_active.desc(), (User.role == Role.CUSTOMER).asc(), User.created_at)
+        .limit(1)
+    )
     ok = user is not None and user.is_active and verify_password(user.password_hash, password)
     if not ok or user is None:
         db.add(LoginAttempt(email=email, ip=ip))

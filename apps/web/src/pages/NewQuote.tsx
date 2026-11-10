@@ -7,6 +7,7 @@ import {
   type Extraction,
   type OrderOut,
   type OrderUnit,
+  type PortalPyme,
   type PortalRequest,
   type QuoteOut,
   type Suggestion,
@@ -15,7 +16,8 @@ import { MarginFix, isMarginRequired } from '../components/MarginFix'
 import { Alert, Button, Field, inputClass, Page, Spinner } from '../components/ui'
 import { formatQty, parseQtyInput } from '../format'
 import { t } from '../i18n'
-import { navigate } from '../router'
+import { useAuth } from '../auth'
+import { currentPath, navigate } from '../router'
 
 const UNITS: OrderUnit[] = ['unit', 'dozen', 'kg', 'g', 'l', 'ml']
 
@@ -54,6 +56,11 @@ export default function NewQuote({ portal = false }: { portal?: boolean }) {
   const [error, setError] = useState<string | null>(null)
   const [recipes, setRecipes] = useState<{ id: string; name: string }[]>([])
   const [notes, setNotes] = useState('')
+  // Portal: la pyme a la que se cotiza (sus productos y precios). Por defecto, la de la sesión.
+  const { pyme: sessionPyme } = useAuth()
+  const [pymes, setPymes] = useState<PortalPyme[] | null>(null)
+  const [pymeId, setPymeId] = useState<string>(() => new URLSearchParams(currentPath().split('?')[1]).get('pyme') ?? '')
+  const pymeName = pymes?.find((p) => p.id === pymeId)?.name ?? ''
   const [customer, setCustomer] = useState('')
   const [eventDate, setEventDate] = useState('')
   const [guests, setGuests] = useState('')
@@ -66,17 +73,33 @@ export default function NewQuote({ portal = false }: { portal?: boolean }) {
   const [needsMargin, setNeedsMargin] = useState(false)
 
   useEffect(() => {
-    api<{ id: string; name: string }[]>(portal ? '/portal/products' : '/recipes')
+    if (!portal) return
+    api<PortalPyme[]>('/portal/pymes')
+      .then((list) => {
+        setPymes(list)
+        setPymeId((cur) =>
+          list.some((p) => p.id === cur) ? cur : (list.find((p) => p.id === sessionPyme?.id) ?? list[0])?.id ?? '',
+        )
+      })
+      .catch((err) => setError(err instanceof ApiError ? err.userMessage : t.genericError))
+  }, [portal, sessionPyme?.id])
+
+  useEffect(() => {
+    if (portal && !pymeId) return
+    api<{ id: string; name: string }[]>(portal ? `/portal/products?pyme_id=${encodeURIComponent(pymeId)}` : '/recipes')
       .then(setRecipes)
       .catch((err) => setError(err instanceof ApiError ? err.userMessage : t.genericError))
-  }, [portal])
+  }, [portal, pymeId])
 
   async function read() {
     setReading(true)
     setError(null)
     setNotice(null)
     try {
-      const out = await post<Extraction>(portal ? '/portal/extract' : '/orders/extract', { text })
+      const out = await post<Extraction>(
+        portal ? '/portal/extract' : '/orders/extract',
+        portal ? { text, pyme_id: pymeId } : { text },
+      )
       setLines(
         out.lines.length
           ? out.lines.map((l) => ({
@@ -168,6 +191,7 @@ export default function NewQuote({ portal = false }: { portal?: boolean }) {
   async function saveRequest(parsed: string[]) {
     try {
       const req = await post<PortalRequest>('/portal/requests', {
+        pyme_id: pymeId,
         event_date: eventDate || null,
         guests: guests ? Number(guests) : null,
         notes: notes.trim() || null,
@@ -188,6 +212,25 @@ export default function NewQuote({ portal = false }: { portal?: boolean }) {
     return (
       <Page title={t.quote.title} onBack={() => navigate('/')} size="narrow">
         <p className="mb-3 font-medium text-on-surface-variant">{t.quote.step1}</p>
+        {portal && (
+          <div className="mb-4">
+            {pymes && pymes.length === 0 ? (
+              <Alert kind="info">{t.portal.noPymes}</Alert>
+            ) : (
+              <Field label={t.portal.choosePyme} hint={t.portal.choosePymeHint}>
+                <select className={inputClass} value={pymeId} onChange={(e) => setPymeId(e.target.value)}>
+                  {(pymes ?? []).map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name}
+                      {p.commune ? ` · ${p.commune}` : ''}
+                      {p.joined ? ` (${t.portal.joined})` : ''}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+            )}
+          </div>
+        )}
         <Field label={portal ? t.portal.pasteLabel : t.quote.pasteLabel}>
           <textarea
             className={`${inputClass} min-h-40`}
@@ -202,11 +245,11 @@ export default function NewQuote({ portal = false }: { portal?: boolean }) {
           {reading ? (
             <Spinner label={t.quote.reading} />
           ) : (
-            <Button className="w-full" onClick={read} disabled={text.trim().length < 3}>
+            <Button className="w-full" onClick={read} disabled={text.trim().length < 3 || (portal && !pymeId)}>
               {t.quote.read}
             </Button>
           )}
-          <Button variant="secondary" className="w-full" onClick={manual} disabled={reading}>
+          <Button variant="secondary" className="w-full" onClick={manual} disabled={reading || (portal && !pymeId)}>
             {t.quote.manual}
           </Button>
           {error && <Alert>{error}</Alert>}
@@ -218,6 +261,7 @@ export default function NewQuote({ portal = false }: { portal?: boolean }) {
   return (
     <Page title={t.quote.title} onBack={() => setStep('paste')}>
       <p className="font-medium text-on-surface-variant">{t.quote.step2}</p>
+      {portal && pymeName && <p className="font-medium text-on-surface">{t.portal.quotingWith(pymeName)}</p>}
       <p className="mb-4 text-on-surface-variant">{t.quote.reviewHint}</p>
       {notice && (
         <div className="mb-4">

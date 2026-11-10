@@ -69,6 +69,7 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
   const { user, pyme, logout } = useAuth()
   const [open, setOpen] = useState(false)
   const dests = destinations(user?.role)
+  const customer = user?.role === 'customer' // trabaja con varias pymes: no se muestra una sola
 
   useEffect(() => {
     if (!open) return
@@ -81,7 +82,7 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
     <div className="flex h-full flex-col px-3 py-4">
       <div className="px-4 pb-4">
         <p className="text-xl font-medium text-on-surface">{t.appName}</p>
-        <p className="truncate text-sm text-on-surface-variant">{pyme?.name}</p>
+        <p className="truncate text-sm text-on-surface-variant">{customer ? t.portal.portalName : pyme?.name}</p>
       </div>
       <nav aria-label={t.nav.label} className="flex-1 overflow-y-auto">
         <ul className="space-y-1">
@@ -125,7 +126,7 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
         {/* El título de la sección ya está en la pantalla: aquí va la app y la pyme, como en el cajón. */}
         <p className="min-w-0 flex-1 truncate">
           <span className="text-lg text-on-surface">{t.appName}</span>
-          <span className="ml-2 text-sm text-on-surface-variant">{pyme?.name}</span>
+          <span className="ml-2 text-sm text-on-surface-variant">{customer ? t.portal.portalName : pyme?.name}</span>
         </p>
       </header>
 

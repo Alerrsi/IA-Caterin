@@ -18,7 +18,7 @@ from sqlalchemy.orm import Session
 from app.core.config import get_settings
 from app.core.errors import ProblemError
 from app.core.llm import FakeProvider, get_llm
-from app.db.models import Order, Recipe
+from app.db.models import Order, Pyme, Recipe
 from app.db.seed import DEFAULT_DEMO_PASSWORD, seed
 from app.modules.portal import service
 from tests.helpers import PASSWORD, login
@@ -327,3 +327,80 @@ def test_order_table_keeps_customer_link(portal: dict[str, Any], client: TestCli
     order = db.get(Order, uuid.UUID(req["id"]))
     assert order is not None and str(order.customer_user_id) == portal["token_a"]["user"]["id"]
     assert order.customer_contact == "cliente.a@prueba.local"
+
+
+# --------------------------------------------------------------------------- varias pymes (el cliente elige)
+
+
+def test_customer_chooses_the_pyme_and_each_owner_sees_only_theirs(client: TestClient, portal: dict[str, Any]) -> None:
+    client.post(f"{API}/pyme/customer-code", headers=portal["lago"])  # Lago abre su portal
+    pymes = {p["name"]: p for p in client.get(f"{API}/portal/pymes", headers=portal["a"]).json()}
+    assert pymes["Cocina Los Aromos (demo)"]["joined"] and not pymes["Banquetería del Lago (demo)"]["joined"]
+    lago_id = pymes["Banquetería del Lago (demo)"]["id"]
+
+    products = client.get(f"{API}/portal/products", headers=portal["a"], params={"pyme_id": lago_id}).json()
+    assert [p["name"] for p in products] == ["Empanadas de queso"]  # solo los de Lago
+    body = {"pyme_id": lago_id, "lines": [{"recipe_id": products[0]["id"], "qty": "3", "unit": "dozen"}]}
+    to_lago = client.post(f"{API}/portal/requests", headers=portal["a"], json=body).json()
+    assert to_lago["pyme_name"] == "Banquetería del Lago (demo)" and to_lago["price_pending"] == "margin_required"
+    client.post(f"{API}/portal/requests/{to_lago['id']}/send", headers=portal["a"])
+    to_aromos = _request(client, portal["a"], portal["recipes"]["Empanadas de pino"])
+    client.post(f"{API}/portal/requests/{to_aromos['id']}/send", headers=portal["a"])
+
+    # Mis cotizaciones junta las dos pymes
+    mine = {r["id"]: r["pyme_name"] for r in client.get(f"{API}/portal/requests", headers=portal["a"]).json()}
+    assert mine == {to_lago["id"]: "Banquetería del Lago (demo)", to_aromos["id"]: "Cocina Los Aromos (demo)"}
+    # Cada dueña ve solo la que le enviaron, con el contacto del cliente
+    lago_orders = {o["id"]: o for o in client.get(f"{API}/orders?status=requested", headers=portal["lago"]).json()}
+    aromos_orders = {o["id"] for o in client.get(f"{API}/orders?status=requested", headers=portal["owner"]).json()}
+    assert set(lago_orders) == {to_lago["id"]} and aromos_orders == {to_aromos["id"]}
+    assert lago_orders[to_lago["id"]]["customer_contact"] == "cliente.a@prueba.local"
+    # El cliente ahora figura como de Lago, y su cuenta allá entra con la misma contraseña
+    pymes = {p["name"]: p for p in client.get(f"{API}/portal/pymes", headers=portal["a"]).json()}
+    assert pymes["Banquetería del Lago (demo)"]["joined"]
+    assert (
+        client.post(f"{API}/auth/login", json={"email": "cliente.a@prueba.local", "password": PASSWORD}).status_code
+        == 200
+    )
+    # Otro cliente no ve la solicitud enviada a Lago
+    assert client.get(f"{API}/portal/requests/{to_lago['id']}", headers=portal["b"]).status_code == 404
+
+
+def test_cannot_quote_to_a_pyme_with_closed_portal(client: TestClient, portal: dict[str, Any], db: Session) -> None:
+    lago_id = db.scalar(select(Pyme.id).where(Pyme.name == "Banquetería del Lago (demo)"))
+    names = {p["name"] for p in client.get(f"{API}/portal/pymes", headers=portal["a"]).json()}
+    assert "Banquetería del Lago (demo)" not in names  # portal cerrado: no aparece
+    resp = client.get(f"{API}/portal/products", headers=portal["a"], params={"pyme_id": str(lago_id)})
+    assert resp.status_code == 404 and resp.json()["code"] == "pyme_not_available"
+    recipe = db.scalar(select(Recipe.id).where(Recipe.pyme_id == lago_id))
+    body = {"pyme_id": str(lago_id), "lines": [{"recipe_id": str(recipe), "qty": "1"}]}
+    assert client.post(f"{API}/portal/requests", headers=portal["a"], json=body).status_code == 404
+
+
+def test_register_from_directory_and_email_rules(client: TestClient, portal: dict[str, Any]) -> None:
+    directory = client.get(f"{API}/portal/directory").json()
+    assert [p["name"] for p in directory] == ["Cocina Los Aromos (demo)"]  # solo las con portal abierto
+    ok = client.post(
+        f"{API}/portal/register",
+        json={
+            "pyme_id": directory[0]["id"],
+            "full_name": "Dora Directorio",
+            "email": "dora@prueba.local",
+            "password": PASSWORD,
+        },
+    )
+    assert ok.status_code == 201 and ok.json()["user"]["role"] == "customer"
+    again = client.post(
+        f"{API}/portal/register",
+        json={"code": portal["code"], "full_name": "Ana", "email": "cliente.a@prueba.local", "password": PASSWORD},
+    )
+    assert again.status_code == 409 and again.json()["title"] == "Ya tienes una cuenta de cliente"
+    staff = client.post(
+        f"{API}/auth/register",
+        json={"pyme_name": "Otra", "full_name": "Ana", "email": "cliente.a@prueba.local", "password": PASSWORD},
+    )
+    assert staff.status_code == 409  # un correo de cliente no se usa para una cuenta de pyme
+    no_pyme = client.post(
+        f"{API}/portal/register", json={"full_name": "Sin Pyme", "email": "x@prueba.local", "password": PASSWORD}
+    )
+    assert no_pyme.status_code == 422

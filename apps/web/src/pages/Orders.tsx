@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react'
 import { api, ApiError, post, type OrderOut, type QuoteOut } from '../api'
 import { MarginFix, isMarginRequired } from '../components/MarginFix'
 import { Alert, Button, Field, inputClass, Page, Spinner, StatusChip } from '../components/ui'
-import { formatDate, formatQty } from '../format'
+import { formatCLP, formatDate, formatQty } from '../format'
 import { t } from '../i18n'
 import { navigate } from '../router'
 
 const linesText = (o: OrderOut) =>
-  o.lines.map((l) => `${formatQty(l.qty)} ${t.units[l.unit]} ${l.recipe_name ?? l.requested_name}`).join(' · ')
+  o.lines
+    .map((l) => `${formatQty(l.qty)} ${(Number(l.qty) === 1 ? t.unitsOne : t.units)[l.unit]} ${l.recipe_name ?? l.requested_name}`)
+    .join(' · ')
 
 export default function Orders() {
   const [orders, setOrders] = useState<OrderOut[] | null>(null)
@@ -101,6 +103,20 @@ export default function Orders() {
                       <StatusChip status={o.status}>{t.orders.status[o.status]}</StatusChip>
                     </div>
                     <p className="mt-2 text-on-surface-variant">{linesText(o)}</p>
+                    <p className="mt-2 text-lg font-medium text-on-surface">
+                      {o.last_quote_total_clp != null
+                        ? t.orders.quotedTotal(formatCLP(o.last_quote_total_clp))
+                        : t.orders.noQuotedTotal}
+                    </p>
+                    {o.guests && <p className="text-on-surface-variant">{t.portal.guests(o.guests)}</p>}
+                    {o.customer_contact && (
+                      <p className="text-on-surface-variant">
+                        {t.orders.contact}:{' '}
+                        <a className="text-primary underline underline-offset-4" href={`mailto:${o.customer_contact}`}>
+                          {o.customer_contact}
+                        </a>
+                      </p>
+                    )}
                     {o.notes && <p className="mt-1 text-on-surface-variant">{t.orders.customerNotes(o.notes)}</p>}
                     <div className="mt-3 flex gap-3">
                       {o.last_quote_id && (

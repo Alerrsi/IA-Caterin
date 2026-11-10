@@ -129,6 +129,9 @@ class OrderOut(BaseModel):
     updated_at: datetime
     lines: list[OrderLineOut]
     last_quote_id: uuid.UUID | None = None
+    last_quote_total_clp: int | None = Field(
+        default=None, description="Total de la última cotización, si está completa"
+    )
     from_customer: bool = False  # lo pidió un cliente por el portal (ADR-007)
     submitted_at: datetime | None = None
     owner_message: str | None = None

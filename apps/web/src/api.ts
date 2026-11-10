@@ -218,6 +218,8 @@ export interface OrderOut {
   notes?: string | null
   lines: { id: string; recipe_name: string | null; requested_name: string; qty: string; unit: OrderUnit }[]
   last_quote_id: string | null
+  last_quote_total_clp?: number | null
+  customer_contact?: string | null
   from_customer?: boolean
   submitted_at?: string | null
   owner_message?: string | null
@@ -544,6 +546,13 @@ export async function registerAccount(body: {
 
 // --------------------------------------------------------------------------- portal de clientes (ADR-007)
 
+export interface PortalPyme {
+  id: string
+  name: string
+  commune: string | null
+  joined: boolean
+}
+
 export interface PortalProduct {
   id: string
   name: string
@@ -563,6 +572,8 @@ export interface CustomerQuote {
 
 export interface PortalRequest {
   id: string
+  pyme_id: string
+  pyme_name: string
   status: OrderStatus
   created_at: string
   submitted_at: string | null
@@ -580,6 +591,8 @@ export interface PortalRequest {
 
 export interface PortalRequestSummary {
   id: string
+  pyme_id: string
+  pyme_name: string
   status: OrderStatus
   created_at: string
   submitted_at: string | null
@@ -589,7 +602,8 @@ export interface PortalRequestSummary {
 }
 
 export async function registerCustomer(body: {
-  code: string
+  code?: string
+  pyme_id?: string
   full_name: string
   email: string
   password: string

@@ -5,7 +5,7 @@ import uuid
 from datetime import date, datetime
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from app.db.enums import BaseUnit, OrderSource, OrderStatus, OrderUnit
 from app.modules.auth.schemas import Email, PasswordStr
@@ -13,15 +13,33 @@ from app.modules.quotes.schemas import OrderLineIn
 
 
 class PortalPymeOut(BaseModel):
+    """Una pyme a la que el cliente puede cotizar (portal abierto, o ya le cotizó antes)."""
+
+    id: uuid.UUID
     name: str
     commune: str | None
+    joined: bool = Field(default=False, description="El cliente ya tiene cuenta en esta pyme")
 
 
 class CustomerRegisterIn(BaseModel):
-    code: str = Field(min_length=6, max_length=32, description="Código del enlace que comparte la pyme")
+    code: str | None = Field(default=None, min_length=6, max_length=32, description="Código del enlace de la pyme")
+    pyme_id: uuid.UUID | None = Field(default=None, description="O una pyme del directorio (GET /portal/directory)")
     full_name: str = Field(min_length=2, max_length=120)
     email: Email
     password: PasswordStr
+
+    @model_validator(mode="after")
+    def _one_pyme(self) -> "CustomerRegisterIn":
+        if self.code is None and self.pyme_id is None:
+            raise ValueError("Elige la pyme a la que quieres cotizar")
+        return self
+
+
+class PortalExtractIn(BaseModel):
+    text: str = Field(min_length=3, max_length=2000)
+    pyme_id: uuid.UUID | None = Field(
+        default=None, description="Pyme cuyos productos se usan; por defecto la de la sesión"
+    )
 
 
 class ProductOut(BaseModel):
@@ -31,6 +49,7 @@ class ProductOut(BaseModel):
 
 
 class RequestCreate(BaseModel):
+    pyme_id: uuid.UUID | None = Field(default=None, description="Pyme a la que se cotiza; por defecto la de la sesión")
     event_date: date | None = None
     guests: int | None = Field(default=None, ge=1, le=100_000)
     source: OrderSource = OrderSource.FORM
@@ -75,6 +94,8 @@ PendingReason = Literal["margin_required", "missing_prices", "cannot_calculate"]
 
 class RequestOut(BaseModel):
     id: uuid.UUID
+    pyme_id: uuid.UUID
+    pyme_name: str
     status: OrderStatus
     created_at: datetime
     submitted_at: datetime | None
@@ -92,6 +113,8 @@ class RequestOut(BaseModel):
 
 class RequestSummary(BaseModel):
     id: uuid.UUID
+    pyme_id: uuid.UUID
+    pyme_name: str
     status: OrderStatus
     created_at: datetime
     submitted_at: datetime | None
