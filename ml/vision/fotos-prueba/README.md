@@ -32,7 +32,8 @@ aquí **no** representan el caso real (AGENTS.md, F2 y §10). Para regenerarlas:
 
 **Ya hay un modelo de prueba entrenado: `synth-recetas-nano-1`.** Cuenta bien 11 de estas 12 fotos (falla
 `07_mixta_oscura.jpg`: 4 canapés en vez de 3); métricas en `ml/vision/MODEL_CARD.md`. El `.onnx` (116 MB) no está en
-el repo: hay que pedirlo al equipo o entrenarlo, y luego instalarlo en tu API.
+el repo: hay que pedirlo al equipo o entrenarlo, y luego instalarlo en tu API. Paso a paso en
+[../INSTALAR_MODELO.md](../INSTALAR_MODELO.md).
 
 Sin modelo instalado, la API responde 503 `vision_model_unavailable` ("El conteo por foto no está disponible por
 ahora. Cuenta a mano.") y la pantalla ofrece contar a mano. Con estas fotos se puede probar ese camino: subir la foto,

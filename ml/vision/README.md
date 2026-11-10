@@ -141,7 +141,8 @@ Latencia de `POST /vision/count` con la API corriendo y fotos sintéticas de 12 
 ```
 
 Para usar el modelo en la API: copiar `model.onnx` y `model.json` a la carpeta de `VISION_MODEL_PATH`
-(por defecto `/data/models/vision/`).
+(por defecto `/data/models/vision/`). Paso a paso, con verificación y problemas frecuentes, en
+[INSTALAR_MODELO.md](INSTALAR_MODELO.md).
 
 ## Pendiente
 
