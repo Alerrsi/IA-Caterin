@@ -128,11 +128,11 @@ El historial de producciones (`GET /vision/productions`) queda pendiente. El mod
 | GET | `/assistant/quick-actions` | Botones de preguntas frecuentes; se envían como `quick_action` y entran directo al nivel 0 |
 | POST | `/assistant/feedback` | `{interaction_id, useful: true\|false}` → 204. 404 `interaction_not_found` si no existe o es de otra pyme |
 
-- `level`: **0** = plantilla con datos reales, sin LLM; **1** = el LLM redactó con el dato ya resuelto (solo con `ASSISTANT_USE_LLM=true` y si la intención lo permite); **2** = desde los documentos subidos: el fragmento citado tal cual o, con el LLM encendido, un resumen que cita (`sources` trae archivo, página, hoja o filas).
+- `level`: **0** = plantilla con datos reales, sin LLM; **1** = el LLM redactó con el dato ya resuelto (solo con `ASSISTANT_USE_LLM=true` y si la intención lo permite); **2** = desde los documentos subidos: sin LLM, la frase (o su párrafo, si es corto) que mejor responde, citada; con el LLM encendido, un resumen que cita (`sources` trae archivo, página, hoja o filas). Según la confianza (ADR-005, calibrada en T10): alta → "Según X: «…»"; baja → "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en X: «…»"; muy baja → `status: no_data`, "No encontré eso en tus documentos." (con `options` si hay intenciones probables) y no se llama al LLM.
 - `status`: `ok`, `no_data`, `ambiguous` (hay `options` para elegir), `missing_entity` o `unrecognized` (`options` = intenciones probables).
 - `fallback_reason`: `figures_mismatch` (el LLM puso una cifra que no está en el dato), `llm_unavailable`, `llm_timeout`, `llm_invalid` (respuesta vacía) o `no_intent`. En todos los casos se entrega la respuesta determinista.
 - Intenciones: stock de un insumo, qué me falta, costo de una receta, pedidos próximos, qué lleva un pedido, si alcanza el stock para un pedido, mejor precio, datos de un proveedor y producción registrada. Falta "¿cómo va la caja?" (pregunta abierta 3 del índice).
-- El nivel 2 se usa cuando la pregunta no calza con ninguna intención y hay fragmentos que coinciden; no se cachea.
+- El nivel 2 se usa cuando la pregunta no calza con ninguna intención y hay fragmentos que coinciden, **o** cuando la intención no tiene el dato (`no_data`/`missing_entity`) y los documentos tienen algo parecido; no se cachea.
 
 **SSE** (`Accept: text/event-stream`). Los errores (401, 404, 422) se responden antes de abrir el stream, como JSON *problem details*. Eventos, en orden:
 

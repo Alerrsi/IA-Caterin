@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from sqlalchemy import delete as sa_delete
 from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
 
@@ -23,7 +24,15 @@ from app.core.errors import ProblemError, not_found
 from app.db.enums import DataDomain, IndexStatus
 from app.db.models import Document, DocumentChunk
 from app.modules.assistant.recognizer import normalize_question as normalize
-from app.modules.documents.parsing import MIME, DocumentParseError, parse
+from app.modules.documents.parsing import (
+    INDEX_UNIT,
+    MIME,
+    Chunk,
+    DocumentParseError,
+    embedding_text,
+    parse,
+    to_sentences,
+)
 from app.modules.documents.schemas import DocumentOut
 
 logger = logging.getLogger(__name__)
@@ -79,7 +88,7 @@ def upload(db: Session, emb: EmbeddingProvider, filename: str, data: bytes) -> D
     if db.scalar(select(Document.id).where(Document.sha256 == sha)) is not None:
         raise ProblemError(409, "document_exists", "Ya subiste este documento")
     try:
-        chunks = parse(name, data)
+        chunks = to_sentences(parse(name, data))
     except DocumentParseError as exc:
         raise ProblemError(422, "unreadable_document", "No pudimos leer el documento", str(exc)) from exc
     if not chunks:
@@ -100,19 +109,25 @@ def upload(db: Session, emb: EmbeddingProvider, filename: str, data: bytes) -> D
         index_status=IndexStatus.PENDING,
     )
     db.add(doc)
+    _index(db, emb, doc, chunks)
+    db.commit()
+    return _out(db, doc)
+
+
+def _index(db: Session, emb: EmbeddingProvider, doc: Document, chunks: list[Chunk]) -> None:
     vectors: list[list[float] | None] = [None] * len(chunks)
     try:
         for start in range(0, len(chunks), EMBED_BATCH):
             batch = chunks[start : start + EMBED_BATCH]
-            for i, v in enumerate(emb.embed([c.text for c in batch])):
+            for i, v in enumerate(emb.embed([embedding_text(c) for c in batch])):
                 vectors[start + i] = v
     except EmbeddingsUnavailableError:
-        logger.warning("document_embeddings_unavailable", extra={"document_id": str(doc_id)})
+        logger.warning("document_embeddings_unavailable", extra={"document_id": str(doc.id)})
         vectors = [None] * len(chunks)
     for i, (chunk, vec) in enumerate(zip(chunks, vectors, strict=True)):
         db.add(
             DocumentChunk(
-                document_id=doc_id,
+                document_id=doc.id,
                 ordinal=i,
                 text=chunk.text,
                 embedding=vec,
@@ -123,6 +138,27 @@ def upload(db: Session, emb: EmbeddingProvider, filename: str, data: bytes) -> D
         )
     doc.index_status = IndexStatus.INDEXED
     bump(db, DataDomain.DOCUMENTS)
+
+
+def needs_reindex(db: Session, doc_id: uuid.UUID) -> bool:
+    """Fragmentos de antes de la indexación por frase (`sentence-v1`), o sin vectores."""
+    rows = db.execute(
+        select(DocumentChunk.meta["unit"].astext, DocumentChunk.embedding.is_(None)).where(
+            DocumentChunk.document_id == doc_id
+        )
+    ).all()
+    return not rows or any(unit != INDEX_UNIT or no_vector for unit, no_vector in rows)
+
+
+def reindex(db: Session, emb: EmbeddingProvider, doc_id: uuid.UUID) -> DocumentOut:
+    """Vuelve a fragmentar y vectorizar un documento desde el archivo guardado (mismo `id`, mismas citas)."""
+    doc = db.get(Document, doc_id)
+    if doc is None:
+        raise not_found("document_not_found", "No encontramos ese documento")
+    data = (get_settings().storage_dir / doc.storage_path).read_bytes()
+    chunks = to_sentences(parse(doc.filename, data))
+    db.execute(sa_delete(DocumentChunk).where(DocumentChunk.document_id == doc.id))
+    _index(db, emb, doc, chunks)
     db.commit()
     return _out(db, doc)
 

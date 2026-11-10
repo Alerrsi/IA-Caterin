@@ -1,0 +1,58 @@
+# Set RESERVADO del chat sobre documentos (T10). Escrito el 10-nov-2026 ANTES de cambiar la respuesta extractiva
+# y el filtro de "no está en tus documentos", y sin correr nada contra él. Mismos documentos SINTÉTICOS de docs/,
+# preguntas nuevas (no copiadas de questions.yaml). No se ajusta el código mirando estos resultados: si se usa
+# para ajustar, deja de ser reservado. Limitación: lo escribió la misma persona (un agente) que hizo el cambio.
+# `doc`: archivo que debe citarse; `key`: texto (sin tildes ni mayúsculas) que debe aparecer en la respuesta.
+version: "1"
+questions:
+  # condiciones-harinas-cautin.md
+  - {q: "a que hora cierran los pedidos de harina", doc: condiciones-harinas-cautin.md, key: "hasta las 18:00"}
+  - {q: "el despacho a vilcun que dia sale", doc: condiciones-harinas-cautin.md, key: "solo los jueves"}
+  - {q: "si soy cliente nuevo como le pago al de la harina", doc: condiciones-harinas-cautin.md, key: "transferencia antes del despacho"}
+  - {q: "me cambian la harina humeda?", doc: condiciones-harinas-cautin.md, key: "dentro de 24 horas"}
+  - {q: "devuelven un saco abierto que esta bueno", doc: condiciones-harinas-cautin.md, key: "no se aceptan devoluciones"}
+  # politica-anulaciones.md
+  - {q: "sin pagar abono me guardan la fecha?", doc: politica-anulaciones.md, key: "no queda reservada"}
+  - {q: "si anulan con 10 dias de anticipacion", doc: politica-anulaciones.md, key: "abono completo"}
+  - {q: "cuanto mas invitados puedo sumar despues del plazo", doc: politica-anulaciones.md, key: "hasta un 10 %"}
+  - {q: "por donde se mandan los reclamos", doc: politica-anulaciones.md, key: "por correo o whatsapp"}
+  # ficha-alergenos.md
+  - {q: "la empanada de queso lleva huevo", doc: ficha-alergenos.md, key: "huevo en el pintado"}
+  - {q: "de que carne es el pino", doc: ficha-alergenos.md, key: "vacuno"}
+  - {q: "los quiches son aptos para alguien sin lacteos", doc: ficha-alergenos.md, key: "huevo y lacteos"}
+  - {q: "en que aceite se frien las sopaipillas", doc: ficha-alergenos.md, key: "aceite vegetal"}
+  # receta-pie-de-limon.txt
+  - {q: "cuantos limones lleva el pie", doc: receta-pie-de-limon.txt, key: "4 limones de pica"}
+  - {q: "cuanto rato se hornea la masa en blanco", doc: receta-pie-de-limon.txt, key: "15 minutos a 180"}
+  - {q: "cuantos dias dura el pie en el refri", doc: receta-pie-de-limon.txt, key: "hasta 3 dias"}
+  - {q: "de que tamano es el molde del pie", doc: receta-pie-de-limon.txt, key: "24 cm"}
+  # protocolo-higiene.md
+  - {q: "cuanto tiempo hay que lavarse las manos", doc: protocolo-higiene.md, key: "20 segundos"}
+  - {q: "cuantas veces al dia se anota la temperatura del refrigerador", doc: protocolo-higiene.md, key: "dos veces al dia"}
+  - {q: "que tiene que decir la etiqueta de los preparados", doc: protocolo-higiene.md, key: "fecha de elaboracion"}
+  - {q: "tabla para cortar verduras de que color es", doc: protocolo-higiene.md, key: "verde para verduras"}
+  # contrato-tipo-servicio.md
+  - {q: "a que hora llega el personal a montar", doc: contrato-tipo-servicio.md, key: "2 horas antes"}
+  - {q: "que pasa con el abono si hay una catastrofe", doc: contrato-tipo-servicio.md, key: "credito por 6 meses"}
+  - {q: "si el cliente paga atrasado pierde la fecha", doc: contrato-tipo-servicio.md, key: "no liberan la fecha"}
+  # lista-precios-lacteos-sur.csv
+  - {q: "a cuanto esta la crema de leche", doc: lista-precios-lacteos-sur.csv, key: "3.890"}
+  - {q: "en que formato viene el queso mantecoso", doc: lista-precios-lacteos-sur.csv, key: "1 kg"}
+  # preguntas-frecuentes-clientes.txt
+  - {q: "cuantos bocados si el coctel es antes de la cena", doc: preguntas-frecuentes-clientes.txt, key: "6 bocados"}
+  - {q: "con cuantos dias pedir un evento chico", doc: preguntas-frecuentes-clientes.txt, key: "3 dias habiles"}
+  - {q: "cobran extra por ir fuera de temuco", doc: preguntas-frecuentes-clientes.txt, key: "recargo de traslado"}
+  # manual-garzones.pdf
+  - {q: "que color es el delantal de los garzones", doc: manual-garzones.pdf, key: "burdeo"}
+  - {q: "los garzones pueden usar anillos", doc: manual-garzones.pdf, key: "sin joyas"}
+  # Sin respuesta en los documentos: lo correcto es decir que no está (no mostrar un fragmento).
+  - {q: "cuanto cobra harinas cautin por un saco de azucar", doc: null}
+  - {q: "tienen opciones veganas para matrimonios", doc: null}
+  - {q: "cual es el telefono de lacteos sur", doc: null}
+  - {q: "a que temperatura se guarda el helado", doc: null}
+  - {q: "cuanto le pago a un garzon por evento", doc: null}
+  - {q: "el contrato incluye seguro de accidentes", doc: null}
+  - {q: "que vino recomiendan con el salmon", doc: null}
+  - {q: "atienden en concepcion", doc: null}
+  - {q: "la harina tiene certificado organico", doc: null}
+  - {q: "cuanto demora en llegar un pedido de queso a pucon", doc: null}

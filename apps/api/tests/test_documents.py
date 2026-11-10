@@ -180,3 +180,22 @@ def test_parse_pdf_keeps_page_numbers() -> None:
     assert [c.meta["page"] for c in chunks] == [1, 2] and "72 horas" in chunks[0].text
     with pytest.raises(DocumentParseError):
         parse("roto.pdf", b"%PDF-1.4 basura")
+
+
+def test_reindex_turns_old_chunks_into_sentences(client: TestClient, owner: Tenant, sessions: list[Session]) -> None:
+    doc_id = uuid.UUID(upload(client, owner, "condiciones.txt", CONDITIONS.encode())["id"])
+    db = tenant(owner, sessions)
+    # Simula un documento subido antes de sentence-v1: un solo fragmento largo, sin `unit` en meta.
+    chunks = list(db.scalars(select(DocumentChunk).where(DocumentChunk.document_id == doc_id)))
+    for c in chunks[1:]:
+        db.delete(c)
+    chunks[0].text, chunks[0].meta = CONDITIONS, {}
+    db.commit()
+    assert service.needs_reindex(db, doc_id)
+    out = service.reindex(db, FakeEmbeddings(), doc_id)
+    assert out.chunks > 1 and out.has_embeddings and not service.needs_reindex(db, doc_id)
+    metas = list(db.scalars(select(DocumentChunk.meta).where(DocumentChunk.document_id == doc_id)))
+    assert all(m["unit"] == "sentence-v1" for m in metas)
+    intruder = register(client, "Otra Pyme", "otra@demo.local")
+    with pytest.raises(Exception, match="documento"):
+        service.reindex(tenant(intruder, sessions), FakeEmbeddings(), doc_id)  # otra pyme no lo ve

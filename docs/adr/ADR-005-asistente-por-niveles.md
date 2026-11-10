@@ -126,3 +126,36 @@ Cada respuesta registra en `assistant_interaction`: nivel, intención, puntaje d
 
   El p95 del primer texto del nivel 2 **no cumple** la meta propuesta de 3 s, con n = 10. Las causas probables (sin confirmar) son la búsqueda con embeddings más un prompt más largo, que no reutiliza el prefijo en caché. Hay que repetir la medición con más casos en T10 antes de cambiar nada.
 - **Calidad de redacción:** con la mitigación JSON, las respuestas medidas salieron en español, cortas y con las cifras del dato. **No hay evaluación humana todavía** (T10), así que `ASSISTANT_USE_LLM` sigue en `false` por defecto.
+
+## T10 (10-nov-2026): calibración del enrutador y nivel 2 que responde de verdad
+
+Detalle, comandos y JSON en `ml/evals/REPORT.md`. Todos los datos son **sintéticos** (frases escritas por el equipo y documentos de prueba); faltan frases y documentos reales de una pyme.
+
+### Umbral del enrutador: `0.55` y margen `0.10`
+
+- Calibrado con el set **reservado** `ml/evals/assistant/heldout.yaml` (64 frases nuevas, escritas antes de correr nada), con la regla fijada de antemano: el mayor acierto con enrutamiento erróneo ≤ 5 % (`calibrate_router.py`, `calibration.json`).
+- Con `0.65/0.03` (el provisional): acierto 49/64 (76,6 %), cobertura 65,6 %, **3 erróneos (4,7 %)**. Con `0.55/0.10`: el mismo acierto, cobertura 62,5 % y **2 erróneos (3,1 %)**. En el set dorado (ya afinado) pasa de 62/65 a 61/65, con 0 erróneos en ambos. La diferencia es de un caso: no es estadísticamente significativa. Se adopta por la regla declarada.
+- **Lectura importante:** en frases nuevas el acierto es 76,6 %, no el 95 % del set dorado. La mayoría de los fallos son preguntas de stock dichas de otra forma ("existencias de zapallo", "kilos de harina que me quedan") que quedan **sin enrutar** (piden aclaración, no responden otra cosa). Para mejorar hay que agregar ejemplos a `intents.yaml` y escribir **otro** set reservado, idealmente con frases de emprendedoras reales.
+
+### Nivel 2: indexación por frase y confianza
+
+**Problema medido** (`ml/evals/rag/eval_chat.py`, de punta a punta por `/assistant/ask`, LLM apagado): la búsqueda encontraba el documento correcto (recall@5 = 1,0 en `eval_rag.py`), pero la respuesta mostraba **los primeros 350 caracteres** de un fragmento de 700, y la frase que respondía solía venir después. Además, cualquier palabra en común ("precio") bastaba para mostrar un fragmento. Resultado: **27/50** preguntas bien respondidas y **3/12** preguntas sin respuesta bien manejadas (9 recibían un fragmento que no correspondía).
+
+**Cambio:**
+1. **Se indexa por frase** (`documents/sentences.py`, `parsing.to_sentences`, `meta.unit = "sentence-v1"`): cada frase o fila de planilla es una fila de `document_chunk`, con su **contexto** (título · sección · etiqueta del párrafo, que se antepone al texto que se vectoriza) y su **párrafo** (para mostrarlo si es corto). Los párrafos largos se cortan en fin de frase, no a la mitad. No hay cambio de esquema; `python -m app.modules.documents.reindex` migra los documentos antiguos.
+2. **Respuesta extractiva** (`assistant/passages.py`): entre las 8 mejores frases de la búsqueda híbrida se elige la de mayor `similitud + 0,25 × cobertura`, donde la cobertura es qué parte de los términos de la pregunta aparece en la frase, ponderada por lo raro de cada término (uno que no aparece en ninguna candidata, como "RUT", pesa mucho).
+3. **Confianza:** alta (puntaje ≥ 0,72 y cobertura ≥ 0,2) → "Según X: «…»"; baja (≥ 0,55) → "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en X: «…»"; si no, "No encontré eso en tus documentos" y **no se llama al LLM**. Los umbrales se calibraron solo con el set de ajuste (`calibrate_passages.py`): la pregunta sin respuesta con mayor puntaje llegó a 0,66, y 0,72 deja margen en vez de pegarse al borde.
+4. **Si una intención no tiene el dato** (`no_data`/`missing_entity`) y los documentos tienen algo parecido, responde el nivel 2 ("¿despachan el sábado los de la harina?" sin ese proveedor cargado).
+5. Con el LLM encendido, recibe el párrafo de cada frase con su contexto (prompts más cortos que con fragmentos de 700 caracteres).
+
+**Resultado (LLM apagado):**
+
+| Set | Con respuesta: bien respondidas (con confianza alta) | Seguras y equivocadas | Sin respuesta: bien manejadas | Latencia p50 / p95 |
+|-----|------------------------------------------------------|-----------------------|-------------------------------|--------------------|
+| Ajuste (`questions.yaml`), antes | 27/50 | — | 3/12 | 127 / 149 ms |
+| Ajuste, después | **49/50** (41) | **0** | **12/12** | 118 / 146 ms |
+| Reservado (`questions_heldout.yaml`), antes | 20/31 | — | 2/10 | 170 / 306 ms |
+| Reservado, después | **28/31** (15) | **2** | **9/10** | 126 / 153 ms |
+
+- El set reservado se escribió antes del cambio y no se usó para ajustar nada. **Generaliza peor que el set de ajuste** y tiene **2 respuestas seguras equivocadas**: "¿cuántos limones lleva el pie?" eligió el título del documento ("PIE DE LIMÓN…", que tiene las palabras del tema) y "¿cuánto le pago a un garzón por evento?" respondió con la hora extra de garzón ($12.000). Propuesta, a medir con un set reservado **nuevo**: que los títulos no compitan como respuesta cuando solo coinciden en el tema del documento, y subir el umbral de confianza alta.
+- Quedan sin resolver las preguntas que necesitan sinónimos o conocimiento externo ("cuesco"/"carozo", "anillos"/"joyas", "Villarrica" ⊂ La Araucanía). Ahí ayuda el LLM (nivel 2 redactado) o un reranker, que sigue sin evaluar en la imagen (ver REPORT).

@@ -17,6 +17,7 @@ OJO: cada cotización crea una versión nueva en la base de desarrollo (`quote`)
 import base64
 import os
 import random
+from pathlib import Path
 
 from locust import HttpUser, between, task
 
@@ -39,10 +40,14 @@ LEVEL1 = [  # intenciones con allow_level1: con ASSISTANT_USE_LLM=true las redac
     "¿Cuánto me cuestan 50 canapés de salmón?",
     "¿Dónde está más barata la mantequilla?",
 ]
-# PNG de 1x1: con el modelo cargado se cuenta; en desarrollo sin modelo la API responde 503 (se registra aparte).
+# Foto JPEG del split de test sintético de visión (ml/vision/data, no se commitea). Si no está, un PNG de 1x1,
+# que la API procesa en pocos ms: en ese caso la latencia de vision/count NO representa una foto real.
+# Se copia junto al locustfile porque el contenedor solo monta esta carpeta: cp <foto>.jpg bandeja.jpg
+PHOTO = Path(__file__).with_name("bandeja.jpg")
 PNG = base64.b64decode(
     "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
 )
+IMAGE = ("bandeja.jpg", PHOTO.read_bytes(), "image/jpeg") if PHOTO.exists() else ("bandeja.png", PNG, "image/png")
 
 
 class Duena(HttpUser):
@@ -91,7 +96,7 @@ class Duena(HttpUser):
             return
         with self.client.post(
             "/api/v1/vision/count",
-            files={"image": ("bandeja.png", PNG, "image/png")},
+            files={"image": IMAGE},
             name="vision/count",
             catch_response=True,
         ) as r:

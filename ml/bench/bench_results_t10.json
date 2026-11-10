@@ -1,0 +1,134 @@
+{
+  "system": {
+    "os": "Linux-6.12.115+deb13.1-amd64-x86_64-with-glibc2.41",
+    "python": "3.12.16",
+    "cpu": "Intel(R) Core(TM) i5-8250U CPU @ 1.60GHz",
+    "logical_cpus": 8
+  },
+  "script_version": "2.0.0",
+  "llm": {
+    "qwen3:4b": {
+      "script_version": "2.0.0",
+      "loadavg_before": [
+        4.28,
+        2.66,
+        2.12
+      ],
+      "load_s": 12.4,
+      "latency_s": {
+        "p50": 24.1,
+        "p95": 27.9,
+        "n": 12
+      },
+      "tokens_per_s_p50": 7.1,
+      "prompt_eval_s_p50": 1.22,
+      "tokens_out": {
+        "p50": 160.0,
+        "max": 160
+      },
+      "texto_libre": {
+        "respuestas_con_razonamiento": 12,
+        "total": 12,
+        "detalle": [
+          {
+            "pregunta": "¿Me alcanza la harina para las empanadas del pedido del sábado?",
+            "tokens": 160,
+            "razonamiento_filtrado": true,
+            "inicio": "Okay, let's see. The user is asking if the flour they have is enough for the Saturday order. Let me break this down.\n\nFirst, the current stock of flour is 18 kg"
+          },
+          {
+            "pregunta": "¿Qué pedidos tengo próximamente y para cuántas personas?",
+            "tokens": 160,
+            "razonamiento_filtrado": true,
+            "inicio": "Okay, let's see. The user is asking about the upcoming orders and how many people they are for. I need to check the data provided for the pyme.\n\nFirst, the pyme"
+          },
+          {
+            "pregunta": "Redáctame un mensaje corto de WhatsApp confirmando el anticipo del 50% a una clienta.",
+            "tokens": 160,
+            "razonamiento_filtrado": true,
+            "inicio": "Okay, I need to write a short WhatsApp message in Chilean Spanish confirming a 50% advance to a client. Let me think.\n\nFirst, the user is from a catering SME in"
+          },
+          {
+            "pregunta": "¿Qué proveedor despacha los martes y jueves?",
+            "tokens": 160,
+            "razonamiento_filtrado": true,
+            "inicio": "Okay, let's see. The user is asking which supplier dispatches on Tuesdays and Thursdays. The pyme is a catering business in Chile.\n\nFirst, I need to check the d"
+          }
+        ]
+      },
+      "respuesta_json": {
+        "latency_s_p50": 9.5,
+        "tokens_p50": 59.5,
+        "razonamiento_o_vacia": 0,
+        "total": 4,
+        "detalle": [
+          {
+            "pregunta": "¿Me alcanza la harina para las empanadas del pedido del sábado?",
+            "tokens": 108,
+            "razonamiento_o_vacia": false,
+            "respuesta": "No, no alcanza. Para 80 empanadas necesitas 600g x 80/12 = 4000g (4 kg) de harina. Tienes 18 kg, pero el pedido del sábado es el primero y necesitas 4 kg para las empanadas, además de otros ingredient"
+          },
+          {
+            "pregunta": "¿Qué pedidos tengo próximamente y para cuántas personas?",
+            "tokens": 76,
+            "razonamiento_o_vacia": false,
+            "respuesta": "Tienes dos pedidos próximos: sábado 22, cóctel para 50 personas (80 empanadas y 60 canapés) y viernes 28, matrimonio para 120 personas. ¡Espero que te vaya bien con los recursos!"
+          },
+          {
+            "pregunta": "Redáctame un mensaje corto de WhatsApp confirmando el anticipo del 50% a una clienta.",
+            "tokens": 43,
+            "razonamiento_o_vacia": false,
+            "respuesta": "Hola [Nombre], confirmamos el anticipo del 50% para tu pedido. ¡Gracias por confiar en nosotros! 🍽️"
+          },
+          {
+            "pregunta": "¿Qué proveedor despacha los martes y jueves?",
+            "tokens": 26,
+            "razonamiento_o_vacia": false,
+            "respuesta": "Distribuidora Araucanía despacha los martes y jueves."
+          }
+        ]
+      },
+      "ram_gb": 3.19,
+      "vram_gb": 0.0,
+      "tool_calling": {
+        "ok": 1,
+        "total": 4,
+        "detalle": [
+          {
+            "caso": "¿Cuánta harina me queda en bodega?",
+            "ok": false
+          },
+          {
+            "caso": "¿Cuánto cuesta producir la receta de empanadas de pino?",
+            "ok": false
+          },
+          {
+            "caso": "¿Qué pedidos tengo esta semana?",
+            "ok": false
+          },
+          {
+            "caso": "Cuéntame un chiste corto.",
+            "ok": true
+          }
+        ]
+      },
+      "extraccion": {
+        "campos_ok": 7,
+        "campos_total": 8,
+        "fallos": [
+          {
+            "caso": "Cotízame un cóctel para 120 personas: 240 brocheta",
+            "campo": "guests",
+            "esperado": 120,
+            "obtenido": null
+          }
+        ]
+      },
+      "loadavg_after": [
+        9.74,
+        5.93,
+        3.89
+      ]
+    }
+  }
+}

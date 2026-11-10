@@ -48,7 +48,8 @@ questions:
   - {q: "con cuantos dias de anticipacion avisar las alergias", doc: contrato-tipo-servicio.md, key: "al menos 5 dias antes"}
   - {q: "si hay una emergencia sanitaria pierdo el abono", doc: contrato-tipo-servicio.md, key: "credito por 6 meses"}
   # lista-precios-lacteos-sur.csv
-  - {q: "precio del queso crema en lacteos sur", doc: lista-precios-lacteos-sur.csv, key: "queso crema | 1,5 kg | 9.450"}
+  # key antes: "queso crema | 1,5 kg | 9.450"; la respuesta ya no muestra la fila cruda (10-nov, ver REPORT).
+  - {q: "precio del queso crema en lacteos sur", doc: lista-precios-lacteos-sur.csv, key: "9.450"}
   - {q: "que dias despachan el yogur", doc: lista-precios-lacteos-sur.csv, key: "solo miercoles"}
   - {q: "cuanto cuesta la mantequilla sin sal", doc: lista-precios-lacteos-sur.csv, key: "2.490"}
   # preguntas-frecuentes-clientes.txt

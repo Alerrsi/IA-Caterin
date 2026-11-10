@@ -27,8 +27,8 @@ class Settings(BaseSettings):
     storage_dir: Path = Path("/data")
 
     # Asistente (ADR-005). El umbral y el margen son PROVISIONALES: no están medidos, los calibra T10.
-    assistant_router_threshold: float = 0.65
-    assistant_router_margin: float = 0.03
+    assistant_router_threshold: float = 0.55
+    assistant_router_margin: float = 0.10
     assistant_use_llm: bool = False  # nivel 1 apagado hasta validar la calidad de redacción en T10
     assistant_cache_size: int = 512
     # Nivel 2 (RAG sobre documentos). `k` y la similitud mínima son PROVISIONALES hasta T10.

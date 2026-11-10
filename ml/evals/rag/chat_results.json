@@ -1,0 +1,1059 @@
+{
+  "measured_at": "2026-11-10 05:34",
+  "api": "http://127.0.0.1:8000/api/v1",
+  "questions_file": "questions.yaml",
+  "note": "Documentos y preguntas SINTÉTICOS; pyme de prueba nueva, sin inventario ni pedidos.",
+  "summary": {
+    "answerable": 50,
+    "answerable_ok": 49,
+    "answerable_ok_confident": 41,
+    "answerable_ok_tentative": 8,
+    "answerable_wrong_confident": 0,
+    "answerable_wrong_tentative": 0,
+    "answerable_no_answer": 1,
+    "answerable_routed_to_intent": 4,
+    "unanswerable": 12,
+    "unanswerable_ok": 12,
+    "unanswerable_said_not_found": 10,
+    "unanswerable_tentative": 2,
+    "unanswerable_wrong_confident": 0,
+    "client_ms": {
+      "p50": 118,
+      "p95": 146
+    }
+  },
+  "cases": [
+    {
+      "q": "¿cuál es el pedido mínimo de Harinas Cautín?",
+      "doc": "condiciones-harinas-cautin.md",
+      "key": "pedido minimo es de $45.000",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md"
+      ],
+      "answer": "Según condiciones-harinas-cautin.md: «El pedido mínimo es de $45.000 con IVA incluido. Los pedidos se reciben por WhatsApp hasta las 18:00 del día hábil anterior al despacho.»",
+      "latency_ms": 113,
+      "client_ms": 122
+    },
+    {
+      "q": "hasta que hora se puede pedir harina para el despacho",
+      "doc": "condiciones-harinas-cautin.md",
+      "key": "hasta las 18:00",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md"
+      ],
+      "answer": "Según condiciones-harinas-cautin.md: «El pedido mínimo es de $45.000 con IVA incluido. Los pedidos se reciben por WhatsApp hasta las 18:00 del día hábil anterior al despacho.»",
+      "latency_ms": 131,
+      "client_ms": 143
+    },
+    {
+      "q": "cuanto cobran por despachar a labranza",
+      "doc": "condiciones-harinas-cautin.md",
+      "key": "cuesta $6.000",
+      "ok": true,
+      "kind": "tentative",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md"
+      ],
+      "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en condiciones-harinas-cautin.md: «Despachamos los martes y jueves dentro de Temuco y Padre Las Casas sin costo. Para Labranza, Cajón y Vilcún el despacho cuesta $6.000 y sale solo los jueves. No hacemos despachos los fines de semana.»",
+      "latency_ms": 130,
+      "client_ms": 141
+    },
+    {
+      "q": "despachan el sabado los de la harina?",
+      "doc": "condiciones-harinas-cautin.md",
+      "key": "fines de semana",
+      "ok": true,
+      "kind": "tentative",
+      "level": 2,
+      "intent": "supplier_info",
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md"
+      ],
+      "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en condiciones-harinas-cautin.md: «Despachamos los martes y jueves dentro de Temuco y Padre Las Casas sin costo. Para Labranza, Cajón y Vilcún el despacho cuesta $6.000 y sale solo los jueves. No hacemos despachos los fines de semana.»",
+      "latency_ms": 139,
+      "client_ms": 149
+    },
+    {
+      "q": "puedo pagar a 30 dias al molino",
+      "doc": "condiciones-harinas-cautin.md",
+      "key": "pagar a 30 dias",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md"
+      ],
+      "answer": "Según condiciones-harinas-cautin.md: «Los clientes nuevos pagan por transferencia antes del despacho. Después de tres pedidos pagados a tiempo se puede pagar a 30 días con factura.»",
+      "latency_ms": 113,
+      "client_ms": 122
+    },
+    {
+      "q": "que pasa si llega un saco de harina roto",
+      "doc": "condiciones-harinas-cautin.md",
+      "key": "saco roto",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md"
+      ],
+      "answer": "Según condiciones-harinas-cautin.md: «La harina con humedad o con el saco roto se cambia si se avisa dentro de 24 horas desde la entrega, con fotos del producto. No se aceptan devoluciones de productos abiertos en buen estado.»",
+      "latency_ms": 123,
+      "client_ms": 135
+    },
+    {
+      "q": "hay descuento por comprar muchos sacos",
+      "doc": "condiciones-harinas-cautin.md",
+      "key": "7 % de descuento",
+      "ok": true,
+      "kind": "tentative",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md"
+      ],
+      "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en condiciones-harinas-cautin.md: «Sobre 20 sacos de harina de 25 kg en un mismo pedido se aplica un 7 % de descuento.»",
+      "latency_ms": 102,
+      "client_ms": 116
+    },
+    {
+      "q": "dias de reparto en padre las casas del proveedor de harina",
+      "doc": "condiciones-harinas-cautin.md",
+      "key": "martes y jueves",
+      "ok": true,
+      "kind": "tentative",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md"
+      ],
+      "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en condiciones-harinas-cautin.md: «Despachamos los martes y jueves dentro de Temuco y Padre Las Casas sin costo. Para Labranza, Cajón y Vilcún el despacho cuesta $6.000 y sale solo los jueves. No hacemos despachos los fines de semana.»",
+      "latency_ms": 136,
+      "client_ms": 146
+    },
+    {
+      "q": "cuanto es el abono para reservar la fecha",
+      "doc": "politica-anulaciones.md",
+      "key": "abono del 30 %",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "politica-anulaciones.md"
+      ],
+      "answer": "Según politica-anulaciones.md: «Para reservar la fecha de un evento se paga un abono del 30 % del total de la cotización. Sin abono, la fecha no queda reservada.»",
+      "latency_ms": 118,
+      "client_ms": 127
+    },
+    {
+      "q": "si el cliente anula 5 dias antes cuanto le devuelvo",
+      "doc": "politica-anulaciones.md",
+      "key": "mitad del abono",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "politica-anulaciones.md"
+      ],
+      "answer": "Según politica-anulaciones.md: «Si el cliente anula con 7 días o más de anticipación, se devuelve el abono completo. Si anula entre 6 y 3 días antes, se devuelve la mitad del abono. Con menos de 72 horas de anticipación no se devuelve el abono, porque los insumos ya están comprados.»",
+      "latency_ms": 148,
+      "client_ms": 157
+    },
+    {
+      "q": "se devuelve el abono si cancelan el dia antes",
+      "doc": "politica-anulaciones.md",
+      "key": "menos de 72 horas",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "politica-anulaciones.md"
+      ],
+      "answer": "Según politica-anulaciones.md: «Si el cliente anula con 7 días o más de anticipación, se devuelve el abono completo. Si anula entre 6 y 3 días antes, se devuelve la mitad del abono. Con menos de 72 horas de anticipación no se devuelve el abono, porque los insumos ya están comprados.»",
+      "latency_ms": 132,
+      "client_ms": 144
+    },
+    {
+      "q": "hasta cuando pueden cambiar el numero de invitados",
+      "doc": "politica-anulaciones.md",
+      "key": "4 dias antes",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": "supplier_info",
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "politica-anulaciones.md"
+      ],
+      "answer": "Según politica-anulaciones.md: «La cantidad de invitados se puede cambiar hasta 4 días antes del evento sin recargo. Después, solo se aceptan aumentos de hasta un 10 % y se cobran al precio de la cotización.»",
+      "latency_ms": 99,
+      "client_ms": 108
+    },
+    {
+      "q": "plazo para reclamar por la calidad de la comida",
+      "doc": "politica-anulaciones.md",
+      "key": "24 horas despues del evento",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "politica-anulaciones.md"
+      ],
+      "answer": "Según politica-anulaciones.md: «Los reclamos por calidad se reciben hasta 24 horas después del evento, por correo o WhatsApp, idealmente con fotos. Si el reclamo es justificado se descuenta en el próximo pedido.»",
+      "latency_ms": 111,
+      "client_ms": 121
+    },
+    {
+      "q": "anulacion con una semana de anticipacion",
+      "doc": "politica-anulaciones.md",
+      "key": "abono completo",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "politica-anulaciones.md"
+      ],
+      "answer": "Según politica-anulaciones.md: «Si el cliente anula con 7 días o más de anticipación, se devuelve el abono completo. Si anula entre 6 y 3 días antes, se devuelve la mitad del abono. Con menos de 72 horas de anticipación no se devuelve el abono, porque los insumos ya están comprados.»",
+      "latency_ms": 120,
+      "client_ms": 133
+    },
+    {
+      "q": "aceptan aumentar los invitados a ultima hora",
+      "doc": "politica-anulaciones.md",
+      "key": "hasta un 10 %",
+      "ok": true,
+      "kind": "tentative",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "politica-anulaciones.md"
+      ],
+      "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en politica-anulaciones.md: «La cantidad de invitados se puede cambiar hasta 4 días antes del evento sin recargo. Después, solo se aceptan aumentos de hasta un 10 % y se cobran al precio de la cotización.»",
+      "latency_ms": 113,
+      "client_ms": 124
+    },
+    {
+      "q": "las sopaipillas llevan huevo?",
+      "doc": "ficha-alergenos.md",
+      "key": "no llevan huevo ni lacteos",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "ficha-alergenos.md"
+      ],
+      "answer": "Según ficha-alergenos.md: «Sopaipillas: contienen gluten. No llevan huevo ni lácteos. Se fríen en aceite vegetal que también se usa para las empanadas.»",
+      "latency_ms": 100,
+      "client_ms": 110
+    },
+    {
+      "q": "que alergenos tienen las empanadas de pino",
+      "doc": "ficha-alergenos.md",
+      "key": "empanadas de pino: contienen gluten",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "ficha-alergenos.md"
+      ],
+      "answer": "Según ficha-alergenos.md: «Empanadas de pino: contienen gluten (harina de trigo), huevo y pueden tener trazas de soya. La carne es de vacuno. Llevan aceituna con carozo: avisar a los invitados.»",
+      "latency_ms": 110,
+      "client_ms": 119
+    },
+    {
+      "q": "tienen canapes sin gluten",
+      "doc": "ficha-alergenos.md",
+      "key": "galleta de arroz",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "ficha-alergenos.md"
+      ],
+      "answer": "Según ficha-alergenos.md: «Canapés de salmón: contienen pescado (salmón ahumado), lácteos (queso crema) y gluten en la galleta. Hay versión sin gluten con galleta de arroz, con aviso de 5 días.»",
+      "latency_ms": 90,
+      "client_ms": 113
+    },
+    {
+      "q": "las brochetas tienen sesamo",
+      "doc": "ficha-alergenos.md",
+      "key": "soya y sesamo",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "ficha-alergenos.md"
+      ],
+      "answer": "Según ficha-alergenos.md: «Brochetas de pollo: sin gluten y sin lácteos. La marinada lleva soya y sésamo.»",
+      "latency_ms": 87,
+      "client_ms": 98
+    },
+    {
+      "q": "pueden garantizar que no hay nueces",
+      "doc": "ficha-alergenos.md",
+      "key": "frutos secos",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "ficha-alergenos.md"
+      ],
+      "answer": "Según ficha-alergenos.md: «Toda la cocina manipula frutos secos (nueces en los queques), así que ningún producto puede garantizarse libre de trazas de frutos secos.»",
+      "latency_ms": 99,
+      "client_ms": 110
+    },
+    {
+      "q": "los mini quiches tienen lactosa",
+      "doc": "ficha-alergenos.md",
+      "key": "mini quiches: contienen gluten, huevo y lacteos",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "ficha-alergenos.md"
+      ],
+      "answer": "Según ficha-alergenos.md: «Mini quiches: contienen gluten, huevo y lácteos (crema y queso).»",
+      "latency_ms": 93,
+      "client_ms": 104
+    },
+    {
+      "q": "las aceitunas de las empanadas tienen cuesco",
+      "doc": "ficha-alergenos.md",
+      "key": "aceituna con carozo",
+      "ok": true,
+      "kind": "tentative",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "ficha-alergenos.md"
+      ],
+      "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en ficha-alergenos.md: «Empanadas de pino: contienen gluten (harina de trigo), huevo y pueden tener trazas de soya. La carne es de vacuno. Llevan aceituna con carozo: avisar a los invitados.»",
+      "latency_ms": 126,
+      "client_ms": 137
+    },
+    {
+      "q": "cuantas yemas lleva el relleno del pie de limon",
+      "doc": "receta-pie-de-limon.txt",
+      "key": "4 yemas",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "receta-pie-de-limon.txt"
+      ],
+      "answer": "Según receta-pie-de-limon.txt: «Relleno: 1 tarro de leche condensada, 4 yemas y el jugo de 4 limones de pica. Se mezcla y se hornea 10 minutos a 170 °C.»",
+      "latency_ms": 124,
+      "client_ms": 134
+    },
+    {
+      "q": "a que temperatura se hornea la masa del pie",
+      "doc": "receta-pie-de-limon.txt",
+      "key": "15 minutos a 180",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "receta-pie-de-limon.txt"
+      ],
+      "answer": "Según receta-pie-de-limon.txt: «Masa: 250 g de harina sin polvos, 125 g de mantequilla fría, 1 huevo, 50 g de azúcar flor y una pizca de sal. Se forra el molde y se hornea en blanco 15 minutos a 180 °C.»",
+      "latency_ms": 128,
+      "client_ms": 137
+    },
+    {
+      "q": "se puede congelar el pie de limon",
+      "doc": "receta-pie-de-limon.txt",
+      "key": "no se congela",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "receta-pie-de-limon.txt"
+      ],
+      "answer": "Según receta-pie-de-limon.txt: «Conservación: refrigerado hasta 3 días. No se congela porque el merengue se llora.»",
+      "latency_ms": 100,
+      "client_ms": 111
+    },
+    {
+      "q": "cuanta azucar lleva el merengue",
+      "doc": "receta-pie-de-limon.txt",
+      "key": "200 g de azucar",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "receta-pie-de-limon.txt"
+      ],
+      "answer": "Según receta-pie-de-limon.txt: «Merengue: 4 claras con 200 g de azúcar, a punto de nieve firme. Se dora con soplete o 5 minutos en el grill.»",
+      "latency_ms": 102,
+      "client_ms": 113
+    },
+    {
+      "q": "cuantas porciones salen del pie de limon",
+      "doc": "receta-pie-de-limon.txt",
+      "key": "12 porciones",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "receta-pie-de-limon.txt"
+      ],
+      "answer": "Según receta-pie-de-limon.txt: «RECETA ESCRITA: PIE DE LIMÓN (molde de 24 cm, 12 porciones) — DOCUMENTO SINTÉTICO DE PRUEBA»",
+      "latency_ms": 105,
+      "client_ms": 117
+    },
+    {
+      "q": "a que temperatura tiene que estar el refri",
+      "doc": "protocolo-higiene.md",
+      "key": "entre 1 y 4",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "protocolo-higiene.md"
+      ],
+      "answer": "Según protocolo-higiene.md: «El refrigerador debe estar entre 1 y 4 °C. Se anota la temperatura en la planilla dos veces al día, al abrir y al cerrar.»",
+      "latency_ms": 98,
+      "client_ms": 109
+    },
+    {
+      "q": "que color de tabla se usa para el pescado",
+      "doc": "protocolo-higiene.md",
+      "key": "azul para pescado",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "protocolo-higiene.md"
+      ],
+      "answer": "Según protocolo-higiene.md: «Las tablas de colores: roja para carne cruda, azul para pescado, verde para verduras y blanca para lácteos y masas.»",
+      "latency_ms": 107,
+      "client_ms": 117
+    },
+    {
+      "q": "cada cuanto se cambia el aceite de la freidora",
+      "doc": "protocolo-higiene.md",
+      "key": "cada 3 usos",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "protocolo-higiene.md"
+      ],
+      "answer": "Según protocolo-higiene.md: «La limpieza profunda de la campana y la freidora se hace todos los lunes. El aceite de fritura se cambia cada 3 usos o antes si oscurece.»",
+      "latency_ms": 120,
+      "client_ms": 129
+    },
+    {
+      "q": "cuanto duran los rellenos cocidos en el refrigerador",
+      "doc": "protocolo-higiene.md",
+      "key": "duran 3 dias",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "protocolo-higiene.md"
+      ],
+      "answer": "Según protocolo-higiene.md: «Los productos preparados se rotulan con nombre, fecha de elaboración y fecha de vencimiento. Rellenos cocidos duran 3 días refrigerados.»",
+      "latency_ms": 122,
+      "client_ms": 133
+    },
+    {
+      "q": "cuando hay que usar el furgon refrigerado",
+      "doc": "protocolo-higiene.md",
+      "key": "mas de 2 horas",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "protocolo-higiene.md"
+      ],
+      "answer": "Según protocolo-higiene.md: «Para transportar a un evento se usan cajas térmicas con unidades refrigerantes; un trayecto de más de 2 horas exige el furgón refrigerado.»",
+      "latency_ms": 115,
+      "client_ms": 124
+    },
+    {
+      "q": "que dia toca limpiar la campana",
+      "doc": "protocolo-higiene.md",
+      "key": "todos los lunes",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "protocolo-higiene.md"
+      ],
+      "answer": "Según protocolo-higiene.md: «La limpieza profunda de la campana y la freidora se hace todos los lunes. El aceite de fritura se cambia cada 3 usos o antes si oscurece.»",
+      "latency_ms": 95,
+      "client_ms": 107
+    },
+    {
+      "q": "hasta cuando se paga el saldo del evento",
+      "doc": "contrato-tipo-servicio.md",
+      "key": "48 horas antes del evento",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "contrato-tipo-servicio.md"
+      ],
+      "answer": "Según contrato-tipo-servicio.md: «SEGUNDO. Precio y pago: el cliente paga un 30 % de abono al firmar y el saldo hasta 48 horas antes del evento. Los pagos atrasados no liberan la fecha.»",
+      "latency_ms": 106,
+      "client_ms": 115
+    },
+    {
+      "q": "cuanto se cobra la hora extra de garzon",
+      "doc": "contrato-tipo-servicio.md",
+      "key": "$12.000",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "contrato-tipo-servicio.md"
+      ],
+      "answer": "Según contrato-tipo-servicio.md: «CUARTO. Montaje: el personal llega 2 horas antes del inicio. Si el evento se extiende más de lo pactado, cada hora extra de garzón se cobra a $12.000.»",
+      "latency_ms": 110,
+      "client_ms": 120
+    },
+    {
+      "q": "que pasa si se rompe la vajilla prestada",
+      "doc": "contrato-tipo-servicio.md",
+      "key": "valor de reposicion",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "contrato-tipo-servicio.md"
+      ],
+      "answer": "Según contrato-tipo-servicio.md: «QUINTO. Vajilla: la vajilla prestada que se rompa o se pierda se cobra al valor de reposición informado en la cotización.»",
+      "latency_ms": 117,
+      "client_ms": 125
+    },
+    {
+      "q": "con cuantos dias de anticipacion avisar las alergias",
+      "doc": "contrato-tipo-servicio.md",
+      "key": "al menos 5 dias antes",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "contrato-tipo-servicio.md"
+      ],
+      "answer": "Según contrato-tipo-servicio.md: «TERCERO. El cliente debe informar alergias y restricciones alimentarias por escrito al menos 5 días antes del evento.»",
+      "latency_ms": 136,
+      "client_ms": 145
+    },
+    {
+      "q": "si hay una emergencia sanitaria pierdo el abono",
+      "doc": "contrato-tipo-servicio.md",
+      "key": "credito por 6 meses",
+      "ok": true,
+      "kind": "tentative",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "contrato-tipo-servicio.md"
+      ],
+      "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en contrato-tipo-servicio.md: «SEXTO. Fuerza mayor: si el evento no puede realizarse por emergencia sanitaria o catástrofe, el abono se guarda como crédito por 6 meses.»",
+      "latency_ms": 118,
+      "client_ms": 128
+    },
+    {
+      "q": "precio del queso crema en lacteos sur",
+      "doc": "lista-precios-lacteos-sur.csv",
+      "key": "9.450",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "lista-precios-lacteos-sur.csv, filas 2-7"
+      ],
+      "answer": "Según lista-precios-lacteos-sur.csv, filas 2-7: «producto: Queso crema; formato: 1,5 kg; precio_con_iva: 9.450; despacho: lunes y miércoles»",
+      "latency_ms": 111,
+      "client_ms": 122
+    },
+    {
+      "q": "que dias despachan el yogur",
+      "doc": "lista-precios-lacteos-sur.csv",
+      "key": "solo miercoles",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": "supplier_info",
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "lista-precios-lacteos-sur.csv, filas 2-7"
+      ],
+      "answer": "Según lista-precios-lacteos-sur.csv, filas 2-7: «producto: Yogur natural; formato: 1 kg; precio_con_iva: 2.990; despacho: solo miércoles»",
+      "latency_ms": 108,
+      "client_ms": 117
+    },
+    {
+      "q": "cuanto cuesta la mantequilla sin sal",
+      "doc": "lista-precios-lacteos-sur.csv",
+      "key": "2.490",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "lista-precios-lacteos-sur.csv, filas 2-7"
+      ],
+      "answer": "Según lista-precios-lacteos-sur.csv, filas 2-7: «producto: Mantequilla sin sal; formato: 250 g; precio_con_iva: 2.490; despacho: lunes y miércoles»",
+      "latency_ms": 100,
+      "client_ms": 110
+    },
+    {
+      "q": "cuantos bocados por persona para un coctel",
+      "doc": "preguntas-frecuentes-clientes.txt",
+      "key": "12 bocados por invitado",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "preguntas-frecuentes-clientes.txt"
+      ],
+      "answer": "Según preguntas-frecuentes-clientes.txt: «¿Cuántos productos calculan por persona? Para un cóctel de 2 horas recomendamos 12 bocados por invitado; para un cóctel antes de una cena, 6 bocados.»",
+      "latency_ms": 123,
+      "client_ms": 134
+    },
+    {
+      "q": "hacen eventos en villarrica",
+      "doc": "preguntas-frecuentes-clientes.txt",
+      "key": "toda la region de la araucania",
+      "ok": false,
+      "kind": "none",
+      "level": 2,
+      "intent": null,
+      "status": "no_data",
+      "fallback_reason": null,
+      "cited": [],
+      "answer": "No encontré eso en tus documentos. ¿Me preguntabas por alguna de estas?",
+      "latency_ms": 105,
+      "client_ms": 112
+    },
+    {
+      "q": "que opciones vegetarianas tienen",
+      "doc": "preguntas-frecuentes-clientes.txt",
+      "key": "brochetas de verduras",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "preguntas-frecuentes-clientes.txt"
+      ],
+      "answer": "Según preguntas-frecuentes-clientes.txt: «¿Tienen opciones vegetarianas? Sí: empanadas de queso, mini quiches de verduras y brochetas de verduras asadas.»",
+      "latency_ms": 92,
+      "client_ms": 103
+    },
+    {
+      "q": "con cuanta anticipacion pedir para 150 personas",
+      "doc": "preguntas-frecuentes-clientes.txt",
+      "key": "al menos 15 dias",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "preguntas-frecuentes-clientes.txt"
+      ],
+      "answer": "Según preguntas-frecuentes-clientes.txt: «¿Con cuánta anticipación hay que pedir? Para eventos de más de 100 personas, al menos 15 días. Para pedidos pequeños, 3 días hábiles.»",
+      "latency_ms": 114,
+      "client_ms": 143
+    },
+    {
+      "q": "dan factura?",
+      "doc": "preguntas-frecuentes-clientes.txt",
+      "key": "la factura se pide",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "preguntas-frecuentes-clientes.txt"
+      ],
+      "answer": "Según preguntas-frecuentes-clientes.txt: «¿Entregan boleta o factura? Entregamos boleta electrónica; la factura se pide al confirmar el pedido con los datos de la empresa.»",
+      "latency_ms": 86,
+      "client_ms": 96
+    },
+    {
+      "q": "como tienen que ir vestidos los garzones",
+      "doc": "manual-garzones.pdf",
+      "key": "camisa blanca",
+      "ok": true,
+      "kind": "tentative",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "manual-garzones.pdf, pág. 1"
+      ],
+      "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en manual-garzones.pdf, pág. 1: «Uniforme: camisa blanca, pantalón negro y delantal burdeo de la empresa. Pelo tomado y sin joya s en las manos.»",
+      "latency_ms": 118,
+      "client_ms": 129
+    },
+    {
+      "q": "cuantos invitados atiende cada garzon",
+      "doc": "manual-garzones.pdf",
+      "key": "maximo a 25 invitados",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "manual-garzones.pdf, pág. 2"
+      ],
+      "answer": "Según manual-garzones.pdf, pág. 2: «Servicio: las bandejas se ofrecen por la izquierda y se retiran por la derecha. Cada garzón ati ende como máximo a 25 invitados en un cóctel.»",
+      "latency_ms": 114,
+      "client_ms": 122
+    },
+    {
+      "q": "como se reparten las propinas",
+      "doc": "manual-garzones.pdf",
+      "key": "partes iguales",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": "supplier_info",
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "manual-garzones.pdf, pág. 2"
+      ],
+      "answer": "Según manual-garzones.pdf, pág. 2: «Propinas: las propinas se juntan en un sobre y se reparten en partes iguales al final del event o.»",
+      "latency_ms": 104,
+      "client_ms": 114
+    },
+    {
+      "q": "por que lado se ofrecen las bandejas",
+      "doc": "manual-garzones.pdf",
+      "key": "por la izquierda",
+      "ok": true,
+      "kind": "confident",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "manual-garzones.pdf, pág. 2"
+      ],
+      "answer": "Según manual-garzones.pdf, pág. 2: «Servicio: las bandejas se ofrecen por la izquierda y se retiran por la derecha. Cada garzón ati ende como máximo a 25 invitados en un cóctel.»",
+      "latency_ms": 115,
+      "client_ms": 126
+    },
+    {
+      "q": "cual es el rut de harinas cautin",
+      "doc": null,
+      "key": null,
+      "ok": true,
+      "kind": "none",
+      "level": 2,
+      "intent": null,
+      "status": "no_data",
+      "fallback_reason": null,
+      "cited": [],
+      "answer": "No encontré eso en tus documentos. ¿Me preguntabas por alguna de estas?",
+      "latency_ms": 104,
+      "client_ms": 115
+    },
+    {
+      "q": "tienen menu para celiacos en matrimonios de 300 personas con barra de tragos",
+      "doc": null,
+      "key": null,
+      "ok": true,
+      "kind": "none",
+      "level": 2,
+      "intent": null,
+      "status": "no_data",
+      "fallback_reason": null,
+      "cited": [],
+      "answer": "No encontré eso en tus documentos. ¿Me preguntabas por alguna de estas?",
+      "latency_ms": 159,
+      "client_ms": 169
+    },
+    {
+      "q": "quien gano el campeonato nacional",
+      "doc": null,
+      "key": null,
+      "ok": true,
+      "kind": "none",
+      "level": 0,
+      "intent": null,
+      "status": "unrecognized",
+      "fallback_reason": "no_intent",
+      "cited": [],
+      "answer": "No estoy seguro de qué me preguntas. ¿Te refieres a alguna de estas?",
+      "latency_ms": 102,
+      "client_ms": 112
+    },
+    {
+      "q": "cuanto cuesta el arriendo del local",
+      "doc": null,
+      "key": null,
+      "ok": true,
+      "kind": "none",
+      "level": 2,
+      "intent": null,
+      "status": "no_data",
+      "fallback_reason": null,
+      "cited": [],
+      "answer": "No encontré eso en tus documentos. ¿Me preguntabas por alguna de estas?",
+      "latency_ms": 96,
+      "client_ms": 110
+    },
+    {
+      "q": "horario de atencion de la municipalidad",
+      "doc": null,
+      "key": null,
+      "ok": true,
+      "kind": "none",
+      "level": 2,
+      "intent": null,
+      "status": "no_data",
+      "fallback_reason": null,
+      "cited": [],
+      "answer": "No encontré eso en tus documentos. ¿Me preguntabas por alguna de estas?",
+      "latency_ms": 102,
+      "client_ms": 112
+    },
+    {
+      "q": "precio del salmon ahumado por kilo",
+      "doc": null,
+      "key": null,
+      "ok": true,
+      "kind": "none",
+      "level": 2,
+      "intent": null,
+      "status": "no_data",
+      "fallback_reason": null,
+      "cited": [],
+      "answer": "No encontré eso en tus documentos. ¿Me preguntabas por alguna de estas?",
+      "latency_ms": 100,
+      "client_ms": 110
+    },
+    {
+      "q": "tienen estacionamiento para los invitados",
+      "doc": null,
+      "key": null,
+      "ok": true,
+      "kind": "tentative",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "manual-garzones.pdf, pág. 1"
+      ],
+      "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en manual-garzones.pdf, pág. 1: «Llegada: presentarse 2 horas antes del inicio del evento para el montaje de mesas y estaciones.»",
+      "latency_ms": 98,
+      "client_ms": 110
+    },
+    {
+      "q": "cual es la clave del wifi",
+      "doc": null,
+      "key": null,
+      "ok": true,
+      "kind": "none",
+      "level": 0,
+      "intent": null,
+      "status": "unrecognized",
+      "fallback_reason": "no_intent",
+      "cited": [],
+      "answer": "No estoy seguro de qué me preguntas. ¿Te refieres a alguna de estas?",
+      "latency_ms": 88,
+      "client_ms": 98
+    },
+    {
+      "q": "venden tortas de cumpleanos con fondant",
+      "doc": null,
+      "key": null,
+      "ok": true,
+      "kind": "none",
+      "level": 0,
+      "intent": null,
+      "status": "unrecognized",
+      "fallback_reason": "no_intent",
+      "cited": [],
+      "answer": "No estoy seguro de qué me preguntas. ¿Te refieres a alguna de estas?",
+      "latency_ms": 99,
+      "client_ms": 107
+    },
+    {
+      "q": "como saco la patente de alcoholes",
+      "doc": null,
+      "key": null,
+      "ok": true,
+      "kind": "none",
+      "level": 2,
+      "intent": null,
+      "status": "no_data",
+      "fallback_reason": null,
+      "cited": [],
+      "answer": "No encontré eso en tus documentos. ¿Me preguntabas por alguna de estas?",
+      "latency_ms": 98,
+      "client_ms": 108
+    },
+    {
+      "q": "cuantos litros de bebida por persona",
+      "doc": null,
+      "key": null,
+      "ok": true,
+      "kind": "tentative",
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "preguntas-frecuentes-clientes.txt"
+      ],
+      "answer": "No estoy seguro de que esto responda tu pregunta. Lo más parecido que encontré en preguntas-frecuentes-clientes.txt: «¿Cuántos productos calculan por persona? Para un cóctel de 2 horas recomendamos 12 bocados por invitado; para un cóctel antes de una cena, 6 bocados.»",
+      "latency_ms": 104,
+      "client_ms": 115
+    },
+    {
+      "q": "hacen delivery con drones",
+      "doc": null,
+      "key": null,
+      "ok": true,
+      "kind": "none",
+      "level": 2,
+      "intent": null,
+      "status": "no_data",
+      "fallback_reason": null,
+      "cited": [],
+      "answer": "No encontré eso en tus documentos. ¿Me preguntabas por alguna de estas?",
+      "latency_ms": 86,
+      "client_ms": 97
+    }
+  ]
+}

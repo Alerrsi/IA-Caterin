@@ -1,0 +1,2885 @@
+{
+ "measured_at": "2026-11-10 05:32",
+ "set": "questions.yaml",
+ "answerable": 50,
+ "unanswerable": 12,
+ "candidates_per_question": 8,
+ "current": {
+  "shown_ok": 45,
+  "shown_ok_high": 27,
+  "confident_wrong": 0,
+  "unanswerable_none": 11,
+  "unanswerable_low": 1
+ },
+ "proposed": {
+  "coverage_weight": 0.25,
+  "high_min_score": 0.7,
+  "high_min_coverage": 0.0,
+  "low_min_score": 0.5,
+  "shown_ok": 50,
+  "shown_ok_high": 42,
+  "confident_wrong": 0,
+  "unanswerable_none": 7,
+  "unanswerable_low": 5
+ },
+ "top": [
+  {
+   "coverage_weight": 0.25,
+   "high_min_score": 0.7,
+   "high_min_coverage": 0.0,
+   "low_min_score": 0.5,
+   "shown_ok": 50,
+   "shown_ok_high": 42,
+   "confident_wrong": 0,
+   "unanswerable_none": 7,
+   "unanswerable_low": 5
+  },
+  {
+   "coverage_weight": 0.25,
+   "high_min_score": 0.7,
+   "high_min_coverage": 0.2,
+   "low_min_score": 0.5,
+   "shown_ok": 50,
+   "shown_ok_high": 42,
+   "confident_wrong": 0,
+   "unanswerable_none": 7,
+   "unanswerable_low": 5
+  },
+  {
+   "coverage_weight": 0.25,
+   "high_min_score": 0.7,
+   "high_min_coverage": 0.3,
+   "low_min_score": 0.5,
+   "shown_ok": 50,
+   "shown_ok_high": 42,
+   "confident_wrong": 0,
+   "unanswerable_none": 7,
+   "unanswerable_low": 5
+  },
+  {
+   "coverage_weight": 0.5,
+   "high_min_score": 0.85,
+   "high_min_coverage": 0.0,
+   "low_min_score": 0.5,
+   "shown_ok": 50,
+   "shown_ok_high": 38,
+   "confident_wrong": 0,
+   "unanswerable_none": 7,
+   "unanswerable_low": 5
+  },
+  {
+   "coverage_weight": 0.5,
+   "high_min_score": 0.85,
+   "high_min_coverage": 0.2,
+   "low_min_score": 0.5,
+   "shown_ok": 50,
+   "shown_ok_high": 38,
+   "confident_wrong": 0,
+   "unanswerable_none": 7,
+   "unanswerable_low": 5
+  },
+  {
+   "coverage_weight": 0.5,
+   "high_min_score": 0.85,
+   "high_min_coverage": 0.3,
+   "low_min_score": 0.5,
+   "shown_ok": 50,
+   "shown_ok_high": 38,
+   "confident_wrong": 0,
+   "unanswerable_none": 7,
+   "unanswerable_low": 5
+  },
+  {
+   "coverage_weight": 0.5,
+   "high_min_score": 0.85,
+   "high_min_coverage": 0.0,
+   "low_min_score": 0.55,
+   "shown_ok": 50,
+   "shown_ok_high": 38,
+   "confident_wrong": 0,
+   "unanswerable_none": 7,
+   "unanswerable_low": 5
+  },
+  {
+   "coverage_weight": 0.5,
+   "high_min_score": 0.85,
+   "high_min_coverage": 0.2,
+   "low_min_score": 0.55,
+   "shown_ok": 50,
+   "shown_ok_high": 38,
+   "confident_wrong": 0,
+   "unanswerable_none": 7,
+   "unanswerable_low": 5
+  },
+  {
+   "coverage_weight": 0.5,
+   "high_min_score": 0.85,
+   "high_min_coverage": 0.3,
+   "low_min_score": 0.55,
+   "shown_ok": 50,
+   "shown_ok_high": 38,
+   "confident_wrong": 0,
+   "unanswerable_none": 7,
+   "unanswerable_low": 5
+  },
+  {
+   "coverage_weight": 0.25,
+   "high_min_score": 0.7,
+   "high_min_coverage": 0.4,
+   "low_min_score": 0.5,
+   "shown_ok": 50,
+   "shown_ok_high": 37,
+   "confident_wrong": 0,
+   "unanswerable_none": 7,
+   "unanswerable_low": 5
+  }
+ ],
+ "note": "Documentos y preguntas SINTÉTICOS. Con 0 seguras equivocadas en el set de ajuste.",
+ "rows": [
+  {
+   "q": "¿cuál es el pedido mínimo de Harinas Cautín?",
+   "doc": "condiciones-harinas-cautin.md",
+   "cands": [
+    {
+     "sim": 0.77,
+     "cov": 0.8085563897229464,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.6293,
+     "cov": 0.5,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.5736,
+     "cov": 0.38288722055410723,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.544,
+     "cov": 0.28716541541558044,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.6361,
+     "cov": 0.40427819486147315,
+     "rank": 4,
+     "good": true
+    },
+    {
+     "sim": 0.5657,
+     "cov": 0.40427819486147315,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.4216,
+     "cov": 0.0,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.4659,
+     "cov": 0.21283458458441956,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "hasta que hora se puede pedir harina para el despacho",
+   "doc": "condiciones-harinas-cautin.md",
+   "cands": [
+    {
+     "sim": 0.6588,
+     "cov": 0.38282496782822467,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.5705,
+     "cov": 0.1085347527245469,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.5227,
+     "cov": 0.1085347527245469,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.5378,
+     "cov": 0.05426737636227345,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.5157,
+     "cov": 0.17666376523564437,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.4766,
+     "cov": 0.0,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.4778,
+     "cov": 0.12239638887337093,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.4573,
+     "cov": 0.12239638887337093,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "cuanto cobran por despachar a labranza",
+   "doc": "condiciones-harinas-cautin.md",
+   "cands": [
+    {
+     "sim": 0.4902,
+     "cov": 0.6460549712127345,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.4586,
+     "cov": 0.35394502878726564,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.3608,
+     "cov": 0.20761888361236505,
+     "rank": 2,
+     "good": true
+    },
+    {
+     "sim": 0.3784,
+     "cov": 0.20761888361236505,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.3782,
+     "cov": 0.35394502878726564,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.406,
+     "cov": 0.20761888361236505,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.3639,
+     "cov": 0.20761888361236505,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.3639,
+     "cov": 0.20761888361236505,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "despachan el sabado los de la harina?",
+   "doc": "condiciones-harinas-cautin.md",
+   "cands": [
+    {
+     "sim": 0.5815,
+     "cov": 0.3166115191662408,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.4787,
+     "cov": 0.3166115191662408,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.5608,
+     "cov": 0.3166115191662408,
+     "rank": 2,
+     "good": true
+    },
+    {
+     "sim": 0.4665,
+     "cov": 0.3166115191662408,
+     "rank": 3,
+     "good": true
+    },
+    {
+     "sim": 0.4856,
+     "cov": 0.172799030186942,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.4241,
+     "cov": 0.3166115191662408,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.4496,
+     "cov": 0.172799030186942,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.3765,
+     "cov": 0.172799030186942,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "puedo pagar a 30 dias al molino",
+   "doc": "condiciones-harinas-cautin.md",
+   "cands": [
+    {
+     "sim": 0.5658,
+     "cov": 0.6278806839723399,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.4857,
+     "cov": 0.1,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.459,
+     "cov": 0.0,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.4628,
+     "cov": 0.1,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.4812,
+     "cov": 0.18205953567234945,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.4437,
+     "cov": 0.18205953567234945,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.4342,
+     "cov": 0.18205953567234945,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.4169,
+     "cov": 0.18205953567234945,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "que pasa si llega un saco de harina roto",
+   "doc": "condiciones-harinas-cautin.md",
+   "cands": [
+    {
+     "sim": 0.6302,
+     "cov": 0.506825029710264,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.4923,
+     "cov": 0.0898011949043822,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.4144,
+     "cov": 0.0898011949043822,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.3874,
+     "cov": 0.0898011949043822,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.4618,
+     "cov": 0.0449005974521911,
+     "rank": 4,
+     "good": true
+    },
+    {
+     "sim": null,
+     "cov": 0.20851191740294087,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.4524,
+     "cov": 0.0449005974521911,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.0898011949043822,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "hay descuento por comprar muchos sacos",
+   "doc": "condiciones-harinas-cautin.md",
+   "cands": [
+    {
+     "sim": 0.5928,
+     "cov": 0.4271719383481265,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.4341,
+     "cov": 0.0,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.4185,
+     "cov": 0.23831319756465846,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.4641,
+     "cov": 0.0,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.4557,
+     "cov": 0.0,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.18885874078346804,
+     "rank": 5,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "dias de reparto en padre las casas del proveedor de harina",
+   "doc": "condiciones-harinas-cautin.md",
+   "cands": [
+    {
+     "sim": 0.5431,
+     "cov": 0.5200435272026718,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.4055,
+     "cov": 0.2719390619162596,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.4153,
+     "cov": 0.15326142874558754,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.4162,
+     "cov": 0.15326142874558754,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.3788,
+     "cov": 0.20801741088106868,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.3622,
+     "cov": 0.09850544661010642,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.3875,
+     "cov": 0.16793035647572524,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.3534,
+     "cov": 0.2080174108810687,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "cuanto es el abono para reservar la fecha",
+   "doc": "politica-anulaciones.md",
+   "cands": [
+    {
+     "sim": 0.5686,
+     "cov": 1.0,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.7196,
+     "cov": 1.0,
+     "rank": 1,
+     "good": true
+    },
+    {
+     "sim": 0.5678,
+     "cov": 0.24408928405777539,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.5525,
+     "cov": 0.39327572953860745,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.5272,
+     "cov": 0.39327572953860745,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.5208,
+     "cov": 0.39327572953860745,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.4824,
+     "cov": 0.0,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.4927,
+     "cov": 0.24408928405777539,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "si el cliente anula 5 dias antes cuanto le devuelvo",
+   "doc": "politica-anulaciones.md",
+   "cands": [
+    {
+     "sim": 0.7203,
+     "cov": 0.7783064797107512,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.7154,
+     "cov": 0.8071833911655858,
+     "rank": 1,
+     "good": true
+    },
+    {
+     "sim": 0.6651,
+     "cov": 0.30718339116558585,
+     "rank": 2,
+     "good": true
+    },
+    {
+     "sim": 0.5912,
+     "cov": 0.5,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.5459,
+     "cov": 0.17097974175267402,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.5324,
+     "cov": 0.7073267379580771,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.5333,
+     "cov": 0.09640830441720707,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.495,
+     "cov": 0.09640830441720707,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "se devuelve el abono si cancelan el dia antes",
+   "doc": "politica-anulaciones.md",
+   "cands": [
+    {
+     "sim": 0.7351,
+     "cov": 0.448126221524966,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.6811,
+     "cov": 0.25976168653212284,
+     "rank": 1,
+     "good": true
+    },
+    {
+     "sim": 0.7217,
+     "cov": 0.25976168653212284,
+     "rank": 2,
+     "good": true
+    },
+    {
+     "sim": 0.5491,
+     "cov": 0.10048953764693073,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.5515,
+     "cov": 0.10048953764693073,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.5102,
+     "cov": 0.28885407263977386,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.4941,
+     "cov": 0.10048953764693073,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.23332948070464976,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "hasta cuando pueden cambiar el numero de invitados",
+   "doc": "politica-anulaciones.md",
+   "cands": [
+    {
+     "sim": 0.7066,
+     "cov": 0.63403299349614,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.5601,
+     "cov": 0.18298350325192997,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.466,
+     "cov": 0.0,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.5066,
+     "cov": 0.18298350325192997,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.4318,
+     "cov": 0.18298350325192997,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.18298350325192997,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.5382,
+     "cov": 0.0,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "plazo para reclamar por la calidad de la comida",
+   "doc": "politica-anulaciones.md",
+   "cands": [
+    {
+     "sim": 0.6208,
+     "cov": 0.3982819619641427,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.4729,
+     "cov": 0.1779067137989243,
+     "rank": 1,
+     "good": true
+    },
+    {
+     "sim": 0.5609,
+     "cov": 0.0,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.5311,
+     "cov": 0.0,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.5187,
+     "cov": 0.0,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.5101,
+     "cov": 0.0,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.5055,
+     "cov": 0.0,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.5048,
+     "cov": 0.0,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "anulacion con una semana de anticipacion",
+   "doc": "politica-anulaciones.md",
+   "cands": [
+    {
+     "sim": 0.6954,
+     "cov": 0.5362104682953399,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.6639,
+     "cov": 0.4263980377873476,
+     "rank": 1,
+     "good": true
+    },
+    {
+     "sim": 0.5796,
+     "cov": 0.31658560727935536,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.46378953170466014,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.7004,
+     "cov": 0.21962486101598452,
+     "rank": 4,
+     "good": true
+    },
+    {
+     "sim": 0.6134,
+     "cov": 0.10981243050799226,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.5572,
+     "cov": 0.10981243050799226,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.5489,
+     "cov": 0.10981243050799226,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "aceptan aumentar los invitados a ultima hora",
+   "doc": "politica-anulaciones.md",
+   "cands": [
+    {
+     "sim": 0.4863,
+     "cov": 0.1352279570274043,
+     "rank": 0,
+     "good": false
+    },
+    {
+     "sim": 0.4759,
+     "cov": 0.39621075261185806,
+     "rank": 1,
+     "good": true
+    },
+    {
+     "sim": 0.5243,
+     "cov": 0.1352279570274043,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.4639,
+     "cov": 0.0,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.5598,
+     "cov": 0.1352279570274043,
+     "rank": 4,
+     "good": true
+    },
+    {
+     "sim": 0.461,
+     "cov": 0.19810537630592903,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.429,
+     "cov": 0.0,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.402,
+     "cov": 0.0,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "las sopaipillas llevan huevo?",
+   "doc": "ficha-alergenos.md",
+   "cands": [
+    {
+     "sim": 0.6561,
+     "cov": 0.7998142281820301,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.4969,
+     "cov": 0.40037154363593996,
+     "rank": 1,
+     "good": true
+    },
+    {
+     "sim": 0.3314,
+     "cov": 0.3385352561712346,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.3521,
+     "cov": 0.3385352561712346,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.3982,
+     "cov": 0.2610932001928254,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.325,
+     "cov": 0.2610932001928254,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.3186,
+     "cov": 0.2610932001928254,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.3214,
+     "cov": 0.2610932001928254,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "que alergenos tienen las empanadas de pino",
+   "doc": "ficha-alergenos.md",
+   "cands": [
+    {
+     "sim": 0.6929,
+     "cov": 0.864296309469937,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.5767,
+     "cov": 0.434125788070699,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.5349,
+     "cov": 0.434125788070699,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.4607,
+     "cov": 0.2984220975406358,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.4417,
+     "cov": 0.27140738106012646,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.645,
+     "cov": 0.5,
+     "rank": 5,
+     "good": true
+    },
+    {
+     "sim": 0.6327,
+     "cov": 0.5,
+     "rank": 6,
+     "good": true
+    },
+    {
+     "sim": 0.4636,
+     "cov": 0.13570369053006323,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "tienen canapes sin gluten",
+   "doc": "ficha-alergenos.md",
+   "cands": [
+    {
+     "sim": 0.5526,
+     "cov": 0.6052866925552616,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.5168,
+     "cov": 0.21057338511052323,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.6369,
+     "cov": 0.8026433462776309,
+     "rank": 2,
+     "good": true
+    },
+    {
+     "sim": 0.4967,
+     "cov": 0.21057338511052323,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.4774,
+     "cov": 0.21057338511052323,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.4482,
+     "cov": 0.6052866925552616,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.4503,
+     "cov": 0.21057338511052323,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.5007,
+     "cov": 0.0,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "las brochetas tienen sesamo",
+   "doc": "ficha-alergenos.md",
+   "cands": [
+    {
+     "sim": 0.495,
+     "cov": 0.37916750175182135,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.6265,
+     "cov": 0.8104162491240893,
+     "rank": 1,
+     "good": true
+    },
+    {
+     "sim": 0.4473,
+     "cov": 0.37916750175182135,
+     "rank": 2,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "pueden garantizar que no hay nueces",
+   "doc": "ficha-alergenos.md",
+   "cands": [
+    {
+     "sim": 0.5573,
+     "cov": 1.0,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.4078,
+     "cov": 0.0,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.4767,
+     "cov": 0.0,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.4698,
+     "cov": 0.0,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.4621,
+     "cov": 0.0,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "los mini quiches tienen lactosa",
+   "doc": "ficha-alergenos.md",
+   "cands": [
+    {
+     "sim": 0.7424,
+     "cov": 0.5418430900086738,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.516,
+     "cov": 0.5418430900086738,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.5229,
+     "cov": 0.0,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.4927,
+     "cov": 0.0,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.4868,
+     "cov": 0.0,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.4736,
+     "cov": 0.0,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.4716,
+     "cov": 0.0,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.4713,
+     "cov": 0.0,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "las aceitunas de las empanadas tienen cuesco",
+   "doc": "ficha-alergenos.md",
+   "cands": [
+    {
+     "sim": 0.488,
+     "cov": 0.3843614572062234,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.4521,
+     "cov": 0.16897196449804652,
+     "rank": 1,
+     "good": true
+    },
+    {
+     "sim": 0.4613,
+     "cov": 0.16897196449804652,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.469,
+     "cov": 0.16897196449804652,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.4446,
+     "cov": 0.4688474394552467,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.471,
+     "cov": 0.08448598224902326,
+     "rank": 5,
+     "good": true
+    }
+   ]
+  },
+  {
+   "q": "cuantas yemas lleva el relleno del pie de limon",
+   "doc": "receta-pie-de-limon.txt",
+   "cands": [
+    {
+     "sim": 0.711,
+     "cov": 0.7113937245834588,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.578,
+     "cov": 0.3430360980460191,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.4056,
+     "cov": 0.2028472509050363,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.3875,
+     "cov": 0.2028472509050363,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.3465,
+     "cov": 0.0,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.3441,
+     "cov": 0.0,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.3439,
+     "cov": 0.2028472509050363,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.5977,
+     "cov": 0.17151804902300954,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "a que temperatura se hornea la masa del pie",
+   "doc": "receta-pie-de-limon.txt",
+   "cands": [
+    {
+     "sim": 0.666,
+     "cov": 0.46996668851171963,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.646,
+     "cov": 0.3441528870441535,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.5603,
+     "cov": 0.3441528870441535,
+     "rank": 2,
+     "good": true
+    },
+    {
+     "sim": 0.4433,
+     "cov": 0.311694225911693,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.4731,
+     "cov": 0.18505056821804222,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "se puede congelar el pie de limon",
+   "doc": "receta-pie-de-limon.txt",
+   "cands": [
+    {
+     "sim": 0.5647,
+     "cov": 0.5128869463501209,
+     "rank": 0,
+     "good": false
+    },
+    {
+     "sim": 0.6717,
+     "cov": 0.7435565268249396,
+     "rank": 1,
+     "good": true
+    },
+    {
+     "sim": 0.5567,
+     "cov": 0.3846652097625907,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.3529,
+     "cov": 0.0,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.6316,
+     "cov": 0.25644347317506044,
+     "rank": 5,
+     "good": true
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.5812,
+     "cov": 0.25644347317506044,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "cuanta azucar lleva el merengue",
+   "doc": "receta-pie-de-limon.txt",
+   "cands": [
+    {
+     "sim": 0.5775,
+     "cov": 0.6857972507265685,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.4695,
+     "cov": 0.31420274927343145,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.3964,
+     "cov": 0.37159450145313705,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.366,
+     "cov": 0.31420274927343145,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.3674,
+     "cov": 0.31420274927343145,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.31420274927343145,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.4656,
+     "cov": 0.15710137463671572,
+     "rank": 6,
+     "good": true
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "cuantas porciones salen del pie de limon",
+   "doc": "receta-pie-de-limon.txt",
+   "cands": [
+    {
+     "sim": 0.6445,
+     "cov": 0.566088233002627,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.6518,
+     "cov": 0.3773921553350847,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.6293,
+     "cov": 0.2830441165013135,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.441,
+     "cov": 0.0,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.3855,
+     "cov": 0.0,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.6141,
+     "cov": 0.2830441165013135,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "a que temperatura tiene que estar el refri",
+   "doc": "protocolo-higiene.md",
+   "cands": [
+    {
+     "sim": 0.4573,
+     "cov": 0.35933314313120324,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.5849,
+     "cov": 0.6406668568687968,
+     "rank": 1,
+     "good": true
+    },
+    {
+     "sim": 0.4705,
+     "cov": 0.2813337137375935,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.4647,
+     "cov": 0.0,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.4541,
+     "cov": 0.0,
+     "rank": 4,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "que color de tabla se usa para el pescado",
+   "doc": "protocolo-higiene.md",
+   "cands": [
+    {
+     "sim": 0.6536,
+     "cov": 0.7337926862891675,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.372,
+     "cov": 0.20137805886750237,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.26620731371083256,
+     "rank": 2,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "cada cuanto se cambia el aceite de la freidora",
+   "doc": "protocolo-higiene.md",
+   "cands": [
+    {
+     "sim": 0.6191,
+     "cov": 0.5983768161916053,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.546,
+     "cov": 0.4016231838083946,
+     "rank": 1,
+     "good": true
+    },
+    {
+     "sim": 0.4029,
+     "cov": 0.0,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.388,
+     "cov": 0.0,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.3658,
+     "cov": 0.2741504731167937,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.3583,
+     "cov": 0.32422634307481163,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.3475,
+     "cov": 0.2741504731167937,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "cuanto duran los rellenos cocidos en el refrigerador",
+   "doc": "protocolo-higiene.md",
+   "cands": [
+    {
+     "sim": 0.7892,
+     "cov": 1.0,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.5123,
+     "cov": 0.18120833017624932,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.5395,
+     "cov": 0.18120833017624932,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.4604,
+     "cov": 0.20834674391047142,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.4353,
+     "cov": 0.18120833017624932,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.5096,
+     "cov": 0.10417337195523571,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "cuando hay que usar el furgon refrigerado",
+   "doc": "protocolo-higiene.md",
+   "cands": [
+    {
+     "sim": 0.6283,
+     "cov": 0.5116754930940243,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.5079,
+     "cov": 0.17834215976069095,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.477,
+     "cov": 0.17834215976069095,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.4177,
+     "cov": 0.17834215976069095,
+     "rank": 3,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "que dia toca limpiar la campana",
+   "doc": "protocolo-higiene.md",
+   "cands": [
+    {
+     "sim": 0.4426,
+     "cov": 0.0,
+     "rank": 0,
+     "good": false
+    },
+    {
+     "sim": 0.6424,
+     "cov": 0.7216976134290604,
+     "rank": 1,
+     "good": true
+    },
+    {
+     "sim": 0.3579,
+     "cov": 0.2783023865709396,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.2783023865709396,
+     "rank": 3,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "hasta cuando se paga el saldo del evento",
+   "doc": "contrato-tipo-servicio.md",
+   "cands": [
+    {
+     "sim": 0.5489,
+     "cov": 1.0,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.5627,
+     "cov": 0.42387798897960466,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.5188,
+     "cov": 0.14746305199023912,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.498,
+     "cov": 0.0,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.5285,
+     "cov": 0.14746305199023912,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.5041,
+     "cov": 0.38118645963666237,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.4734,
+     "cov": 0.14746305199023912,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.4931,
+     "cov": 0.38118645963666237,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "cuanto se cobra la hora extra de garzon",
+   "doc": "contrato-tipo-servicio.md",
+   "cands": [
+    {
+     "sim": 0.7259,
+     "cov": 1.0,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.4759,
+     "cov": 0.1745650360148486,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.4447,
+     "cov": 0.0872825180074243,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.4447,
+     "cov": 0.1745650360148486,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.415,
+     "cov": 0.0,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.3754,
+     "cov": 0.23736961194815037,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.3734,
+     "cov": 0.0,
+     "rank": 6,
+     "good": true
+    },
+    {
+     "sim": 0.4684,
+     "cov": 0.0,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "que pasa si se rompe la vajilla prestada",
+   "doc": "contrato-tipo-servicio.md",
+   "cands": [
+    {
+     "sim": 0.6594,
+     "cov": 0.353984985057691,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": null,
+     "cov": 0.15018993796718483,
+     "rank": 1,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "con cuantos dias de anticipacion avisar las alergias",
+   "doc": "contrato-tipo-servicio.md",
+   "cands": [
+    {
+     "sim": 0.6497,
+     "cov": 0.38479055969223036,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.5101,
+     "cov": 0.2635267972601342,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.6109,
+     "cov": 0.20506981343592323,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.4991,
+     "cov": 0.3473328482639613,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.502,
+     "cov": 0.14226303482803807,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.4962,
+     "cov": 0.20506981343592323,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.5057,
+     "cov": 0.14226303482803807,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.5121,
+     "cov": 0.14226303482803807,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "si hay una emergencia sanitaria pierdo el abono",
+   "doc": "contrato-tipo-servicio.md",
+   "cands": [
+    {
+     "sim": 0.529,
+     "cov": 0.7085123056422485,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.545,
+     "cov": 0.1255369169267456,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.4821,
+     "cov": 0.1255369169267456,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.5245,
+     "cov": 0.1255369169267456,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.4097,
+     "cov": 0.29148769435775146,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.4341,
+     "cov": 0.1255369169267456,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.5284,
+     "cov": 0.1255369169267456,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.4002,
+     "cov": 0.1255369169267456,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "precio del queso crema en lacteos sur",
+   "doc": "lista-precios-lacteos-sur.csv",
+   "cands": [
+    {
+     "sim": 0.6377,
+     "cov": 0.820572790614359,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.5923,
+     "cov": 0.589404048195806,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.5631,
+     "cov": 0.6155843712092766,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.4088,
+     "cov": 0.35885441877128216,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.3876,
+     "cov": 0.5900231611898351,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.3814,
+     "cov": 0.5900231611898351,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.507,
+     "cov": 0.3844156287907235,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.4564,
+     "cov": 0.3844156287907235,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "que dias despachan el yogur",
+   "doc": "lista-precios-lacteos-sur.csv",
+   "cands": [
+    {
+     "sim": 0.5732,
+     "cov": 0.6460549712127345,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.5029,
+     "cov": 0.20761888361236505,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.4567,
+     "cov": 0.20761888361236505,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.4635,
+     "cov": 0.20761888361236505,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.4592,
+     "cov": 0.20761888361236505,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.4657,
+     "cov": 0.20761888361236505,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.4287,
+     "cov": 0.35394502878726564,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.4591,
+     "cov": 0.35394502878726564,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "cuanto cuesta la mantequilla sin sal",
+   "doc": "lista-precios-lacteos-sur.csv",
+   "cands": [
+    {
+     "sim": 0.731,
+     "cov": 0.6967110751808197,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.4074,
+     "cov": 0.30328892481918035,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.4041,
+     "cov": 0.6967110751808197,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.3983,
+     "cov": 0.0,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.5079,
+     "cov": 0.20702689880056682,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.4891,
+     "cov": 0.0,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.4812,
+     "cov": 0.0,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "cuantos bocados por persona para un coctel",
+   "doc": "preguntas-frecuentes-clientes.txt",
+   "cands": [
+    {
+     "sim": 0.7619,
+     "cov": 0.6948660090822252,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.4864,
+     "cov": 0.3051339909177749,
+     "rank": 1,
+     "good": true
+    },
+    {
+     "sim": 0.6206,
+     "cov": 0.3051339909177749,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.4419,
+     "cov": 0.3051339909177749,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 4,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "hacen eventos en villarrica",
+   "doc": "preguntas-frecuentes-clientes.txt",
+   "cands": [
+    {
+     "sim": 0.4463,
+     "cov": 0.22447612992301985,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.3268,
+     "cov": 0.22447612992301985,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.3199,
+     "cov": 0.22447612992301985,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.2893,
+     "cov": 0.22447612992301985,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.2981,
+     "cov": 0.22447612992301985,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.3617,
+     "cov": 0.22447612992301985,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.3391,
+     "cov": 0.22447612992301985,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.3154,
+     "cov": 0.22447612992301985,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "que opciones vegetarianas tienen",
+   "doc": "preguntas-frecuentes-clientes.txt",
+   "cands": [
+    {
+     "sim": 0.7074,
+     "cov": 1.0,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.6979,
+     "cov": 0.5,
+     "rank": 1,
+     "good": true
+    },
+    {
+     "sim": 0.4528,
+     "cov": 0.44670524433488773,
+     "rank": 2,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "con cuanta anticipacion pedir para 150 personas",
+   "doc": "preguntas-frecuentes-clientes.txt",
+   "cands": [
+    {
+     "sim": 0.6473,
+     "cov": 0.6757736569251883,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.579,
+     "cov": 0.32422634307481163,
+     "rank": 1,
+     "good": true
+    },
+    {
+     "sim": 0.4501,
+     "cov": 0.32422634307481163,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.4635,
+     "cov": 0.2741504731167937,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.4713,
+     "cov": 0.0,
+     "rank": 4,
+     "good": true
+    },
+    {
+     "sim": 0.493,
+     "cov": 0.0,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.4424,
+     "cov": 0.2741504731167937,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.4427,
+     "cov": 0.0,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "dan factura?",
+   "doc": "preguntas-frecuentes-clientes.txt",
+   "cands": [
+    {
+     "sim": 0.679,
+     "cov": 0.33333333333333337,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.6537,
+     "cov": 0.33333333333333337,
+     "rank": 1,
+     "good": true
+    },
+    {
+     "sim": 0.4888,
+     "cov": 0.33333333333333337,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.5048,
+     "cov": 0.0,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.5029,
+     "cov": 0.0,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.4927,
+     "cov": 0.0,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.4793,
+     "cov": 0.0,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.4782,
+     "cov": 0.0,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "como tienen que ir vestidos los garzones",
+   "doc": "manual-garzones.pdf",
+   "cands": [
+    {
+     "sim": 0.415,
+     "cov": 0.25277826369078593,
+     "rank": 0,
+     "good": false
+    },
+    {
+     "sim": 0.4559,
+     "cov": 0.25277826369078593,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.4011,
+     "cov": 0.25277826369078593,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.5765,
+     "cov": 0.12638913184539297,
+     "rank": 3,
+     "good": true
+    },
+    {
+     "sim": 0.5491,
+     "cov": 0.12638913184539297,
+     "rank": 4,
+     "good": true
+    }
+   ]
+  },
+  {
+   "q": "cuantos invitados atiende cada garzon",
+   "doc": "manual-garzones.pdf",
+   "cands": [
+    {
+     "sim": 0.7324,
+     "cov": 0.5772049881597967,
+     "rank": 0,
+     "good": true
+    },
+    {
+     "sim": 0.5453,
+     "cov": 0.28860249407989835,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.3887,
+     "cov": 0.28860249407989835,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.4432,
+     "cov": 0.28860249407989835,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.3746,
+     "cov": 0.0,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.3537,
+     "cov": 0.28860249407989835,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.3527,
+     "cov": 0.42279501184020335,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "como se reparten las propinas",
+   "doc": "manual-garzones.pdf",
+   "cands": [
+    {
+     "sim": 0.6755,
+     "cov": 1.0,
+     "rank": 0,
+     "good": true
+    }
+   ]
+  },
+  {
+   "q": "por que lado se ofrecen las bandejas",
+   "doc": "manual-garzones.pdf",
+   "cands": [
+    {
+     "sim": 0.7229,
+     "cov": 0.5391545793816298,
+     "rank": 0,
+     "good": true
+    }
+   ]
+  },
+  {
+   "q": "cual es el rut de harinas cautin",
+   "doc": null,
+   "cands": [
+    {
+     "sim": 0.4708,
+     "cov": 0.3152558202811776,
+     "rank": 0,
+     "good": false
+    },
+    {
+     "sim": 0.4174,
+     "cov": 0.44161517185584565,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.4401,
+     "cov": 0.3152558202811776,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.2569,
+     "cov": 0.1888964687065096,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.1888964687065096,
+     "rank": 4,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "tienen menu para celiacos en matrimonios de 300 personas con barra de tragos",
+   "doc": null,
+   "cands": [
+    {
+     "sim": 0.3987,
+     "cov": 0.09526101057137186,
+     "rank": 0,
+     "good": false
+    },
+    {
+     "sim": 0.3854,
+     "cov": 0.09526101057137186,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.4727,
+     "cov": 0.0,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.4686,
+     "cov": 0.0,
+     "rank": 3,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "quien gano el campeonato nacional",
+   "doc": null,
+   "cands": []
+  },
+  {
+   "q": "cuanto cuesta el arriendo del local",
+   "doc": null,
+   "cands": [
+    {
+     "sim": 0.4827,
+     "cov": 0.26264953503719357,
+     "rank": 0,
+     "good": false
+    },
+    {
+     "sim": 0.5289,
+     "cov": 0.0,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.4657,
+     "cov": 0.0,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.4629,
+     "cov": 0.0,
+     "rank": 5,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "horario de atencion de la municipalidad",
+   "doc": null,
+   "cands": [
+    {
+     "sim": 0.4822,
+     "cov": 0.0,
+     "rank": 0,
+     "good": false
+    },
+    {
+     "sim": 0.4714,
+     "cov": 0.0,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.4712,
+     "cov": 0.0,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.4711,
+     "cov": 0.0,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.4703,
+     "cov": 0.0,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.4688,
+     "cov": 0.0,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.4687,
+     "cov": 0.0,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.4618,
+     "cov": 0.0,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "precio del salmon ahumado por kilo",
+   "doc": null,
+   "cands": [
+    {
+     "sim": 0.4705,
+     "cov": 0.11345868229591442,
+     "rank": 0,
+     "good": false
+    },
+    {
+     "sim": 0.4635,
+     "cov": 0.11345868229591442,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.4637,
+     "cov": 0.11345868229591442,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.3958,
+     "cov": 0.5268858040635661,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.4632,
+     "cov": 0.11345868229591442,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.4435,
+     "cov": 0.11345868229591442,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.446,
+     "cov": 0.11345868229591442,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.11345868229591442,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "tienen estacionamiento para los invitados",
+   "doc": null,
+   "cands": [
+    {
+     "sim": 0.5034,
+     "cov": 0.6274735630753033,
+     "rank": 0,
+     "good": false
+    },
+    {
+     "sim": 0.4948,
+     "cov": 0.37252643692469667,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.4577,
+     "cov": 0.37252643692469667,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": 0.4557,
+     "cov": 0.37252643692469667,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.4047,
+     "cov": 0.37252643692469667,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.4735,
+     "cov": 0.0,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.4567,
+     "cov": 0.0,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.4513,
+     "cov": 0.0,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "cual es la clave del wifi",
+   "doc": null,
+   "cands": []
+  },
+  {
+   "q": "venden tortas de cumpleanos con fondant",
+   "doc": null,
+   "cands": []
+  },
+  {
+   "q": "como saco la patente de alcoholes",
+   "doc": null,
+   "cands": [
+    {
+     "sim": null,
+     "cov": 0.2398124665681314,
+     "rank": 0,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 1,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "cuantos litros de bebida por persona",
+   "doc": null,
+   "cands": [
+    {
+     "sim": 0.5243,
+     "cov": 0.22819531239899163,
+     "rank": 0,
+     "good": false
+    },
+    {
+     "sim": 0.4363,
+     "cov": 0.22819531239899163,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": 0.5358,
+     "cov": 0.0,
+     "rank": 2,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 3,
+     "good": false
+    },
+    {
+     "sim": 0.497,
+     "cov": 0.0,
+     "rank": 4,
+     "good": false
+    },
+    {
+     "sim": 0.4804,
+     "cov": 0.0,
+     "rank": 5,
+     "good": false
+    },
+    {
+     "sim": 0.4646,
+     "cov": 0.0,
+     "rank": 6,
+     "good": false
+    },
+    {
+     "sim": 0.4531,
+     "cov": 0.0,
+     "rank": 7,
+     "good": false
+    }
+   ]
+  },
+  {
+   "q": "hacen delivery con drones",
+   "doc": null,
+   "cands": [
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 0,
+     "good": false
+    },
+    {
+     "sim": 0.4553,
+     "cov": 0.0,
+     "rank": 1,
+     "good": false
+    },
+    {
+     "sim": null,
+     "cov": 0.0,
+     "rank": 2,
+     "good": false
+    }
+   ]
+  }
+ ]
+}

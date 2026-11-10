@@ -1,0 +1,998 @@
+{
+  "measured_at": "2026-11-10 05:19",
+  "api": "http://127.0.0.1:8000/api/v1",
+  "note": "Documentos y preguntas SINTÉTICOS; pyme de prueba nueva, sin inventario ni pedidos.",
+  "summary": {
+    "answerable": 50,
+    "answerable_ok": 27,
+    "answerable_routed_to_intent": 4,
+    "answerable_not_found": 0,
+    "answerable_wrong_fragment": 19,
+    "unanswerable": 12,
+    "unanswerable_ok": 3,
+    "client_ms": {
+      "p50": 127,
+      "p95": 149
+    }
+  },
+  "cases": [
+    {
+      "q": "¿cuál es el pedido mínimo de Harinas Cautín?",
+      "doc": "condiciones-harinas-cautin.md",
+      "key": "pedido minimo es de $45.000",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md"
+      ],
+      "answer": "Según condiciones-harinas-cautin.md: «# Condiciones comerciales — Harinas Cautín (DOCUMENTO SINTÉTICO DE PRUEBA, no es de un proveedor real) ## Pedidos El pedido mínimo es de $45.000 con IVA incluido. Los pedidos se reciben por WhatsApp hasta las 18:00 del día hábil anterior al despacho. ## Despacho Despachamos los martes y jueves dentro de Temuco y Padre Las Casas sin costo. Para…»",
+      "latency_ms": 155,
+      "client_ms": 168
+    },
+    {
+      "q": "hasta que hora se puede pedir harina para el despacho",
+      "doc": "condiciones-harinas-cautin.md",
+      "key": "hasta las 18:00",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md"
+      ],
+      "answer": "Según condiciones-harinas-cautin.md: «# Condiciones comerciales — Harinas Cautín (DOCUMENTO SINTÉTICO DE PRUEBA, no es de un proveedor real) ## Pedidos El pedido mínimo es de $45.000 con IVA incluido. Los pedidos se reciben por WhatsApp hasta las 18:00 del día hábil anterior al despacho. ## Despacho Despachamos los martes y jueves dentro de Temuco y Padre Las Casas sin costo. Para…»",
+      "latency_ms": 138,
+      "client_ms": 149
+    },
+    {
+      "q": "cuanto cobran por despachar a labranza",
+      "doc": "condiciones-harinas-cautin.md",
+      "key": "cuesta $6.000",
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md"
+      ],
+      "answer": "Según condiciones-harinas-cautin.md: «# Condiciones comerciales — Harinas Cautín (DOCUMENTO SINTÉTICO DE PRUEBA, no es de un proveedor real) ## Pedidos El pedido mínimo es de $45.000 con IVA incluido. Los pedidos se reciben por WhatsApp hasta las 18:00 del día hábil anterior al despacho. ## Despacho Despachamos los martes y jueves dentro de Temuco y Padre Las Casas sin costo. Para…»",
+      "latency_ms": 102,
+      "client_ms": 130
+    },
+    {
+      "q": "despachan el sabado los de la harina?",
+      "doc": "condiciones-harinas-cautin.md",
+      "key": "fines de semana",
+      "ok": false,
+      "level": 0,
+      "intent": "supplier_info",
+      "status": "missing_entity",
+      "fallback_reason": null,
+      "cited": [],
+      "answer": "No encontré ese proveedor en tus datos. ¿Me dices cómo se llama?",
+      "latency_ms": 7,
+      "client_ms": 52
+    },
+    {
+      "q": "puedo pagar a 30 dias al molino",
+      "doc": "condiciones-harinas-cautin.md",
+      "key": "pagar a 30 dias",
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "politica-anulaciones.md"
+      ],
+      "answer": "Según politica-anulaciones.md: «# Política de reservas, anulaciones y devoluciones (DOCUMENTO SINTÉTICO DE PRUEBA) ## Reserva de fecha Para reservar la fecha de un evento se paga un abono del 30 % del total de la cotización. Sin abono, la fecha no queda reservada. ## Anulaciones Si el cliente anula con 7 días o más de anticipación, se devuelve el abono completo. Si anula entre 6…»",
+      "latency_ms": 93,
+      "client_ms": 127
+    },
+    {
+      "q": "que pasa si llega un saco de harina roto",
+      "doc": "condiciones-harinas-cautin.md",
+      "key": "saco roto",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md"
+      ],
+      "answer": "Según condiciones-harinas-cautin.md: «## Cambios y devoluciones La harina con humedad o con el saco roto se cambia si se avisa dentro de 24 horas desde la entrega, con fotos del producto. No se aceptan devoluciones de productos abiertos en buen estado. ## Descuentos Sobre 20 sacos de harina de 25 kg en un mismo pedido se aplica un 7 % de descuento.»",
+      "latency_ms": 104,
+      "client_ms": 138
+    },
+    {
+      "q": "hay descuento por comprar muchos sacos",
+      "doc": "condiciones-harinas-cautin.md",
+      "key": "7 % de descuento",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md"
+      ],
+      "answer": "Según condiciones-harinas-cautin.md: «## Cambios y devoluciones La harina con humedad o con el saco roto se cambia si se avisa dentro de 24 horas desde la entrega, con fotos del producto. No se aceptan devoluciones de productos abiertos en buen estado. ## Descuentos Sobre 20 sacos de harina de 25 kg en un mismo pedido se aplica un 7 % de descuento.»",
+      "latency_ms": 84,
+      "client_ms": 118
+    },
+    {
+      "q": "dias de reparto en padre las casas del proveedor de harina",
+      "doc": "condiciones-harinas-cautin.md",
+      "key": "martes y jueves",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md"
+      ],
+      "answer": "Según condiciones-harinas-cautin.md: «# Condiciones comerciales — Harinas Cautín (DOCUMENTO SINTÉTICO DE PRUEBA, no es de un proveedor real) ## Pedidos El pedido mínimo es de $45.000 con IVA incluido. Los pedidos se reciben por WhatsApp hasta las 18:00 del día hábil anterior al despacho. ## Despacho Despachamos los martes y jueves dentro de Temuco y Padre Las Casas sin costo. Para…»",
+      "latency_ms": 113,
+      "client_ms": 131
+    },
+    {
+      "q": "cuanto es el abono para reservar la fecha",
+      "doc": "politica-anulaciones.md",
+      "key": "abono del 30 %",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "politica-anulaciones.md"
+      ],
+      "answer": "Según politica-anulaciones.md: «# Política de reservas, anulaciones y devoluciones (DOCUMENTO SINTÉTICO DE PRUEBA) ## Reserva de fecha Para reservar la fecha de un evento se paga un abono del 30 % del total de la cotización. Sin abono, la fecha no queda reservada. ## Anulaciones Si el cliente anula con 7 días o más de anticipación, se devuelve el abono completo. Si anula entre 6…»",
+      "latency_ms": 101,
+      "client_ms": 134
+    },
+    {
+      "q": "si el cliente anula 5 dias antes cuanto le devuelvo",
+      "doc": "politica-anulaciones.md",
+      "key": "mitad del abono",
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "politica-anulaciones.md"
+      ],
+      "answer": "Según politica-anulaciones.md: «# Política de reservas, anulaciones y devoluciones (DOCUMENTO SINTÉTICO DE PRUEBA) ## Reserva de fecha Para reservar la fecha de un evento se paga un abono del 30 % del total de la cotización. Sin abono, la fecha no queda reservada. ## Anulaciones Si el cliente anula con 7 días o más de anticipación, se devuelve el abono completo. Si anula entre 6…»",
+      "latency_ms": 111,
+      "client_ms": 134
+    },
+    {
+      "q": "se devuelve el abono si cancelan el dia antes",
+      "doc": "politica-anulaciones.md",
+      "key": "menos de 72 horas",
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "politica-anulaciones.md"
+      ],
+      "answer": "Según politica-anulaciones.md: «# Política de reservas, anulaciones y devoluciones (DOCUMENTO SINTÉTICO DE PRUEBA) ## Reserva de fecha Para reservar la fecha de un evento se paga un abono del 30 % del total de la cotización. Sin abono, la fecha no queda reservada. ## Anulaciones Si el cliente anula con 7 días o más de anticipación, se devuelve el abono completo. Si anula entre 6…»",
+      "latency_ms": 137,
+      "client_ms": 152
+    },
+    {
+      "q": "hasta cuando pueden cambiar el numero de invitados",
+      "doc": "politica-anulaciones.md",
+      "key": "4 dias antes",
+      "ok": false,
+      "level": 0,
+      "intent": "supplier_info",
+      "status": "missing_entity",
+      "fallback_reason": null,
+      "cited": [],
+      "answer": "No encontré ese proveedor en tus datos. ¿Me dices cómo se llama?",
+      "latency_ms": 3,
+      "client_ms": 43
+    },
+    {
+      "q": "plazo para reclamar por la calidad de la comida",
+      "doc": "politica-anulaciones.md",
+      "key": "24 horas despues del evento",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "politica-anulaciones.md"
+      ],
+      "answer": "Según politica-anulaciones.md: «## Cambios en el pedido La cantidad de invitados se puede cambiar hasta 4 días antes del evento sin recargo. Después, solo se aceptan aumentos de hasta un 10 % y se cobran al precio de la cotización. ## Reclamos Los reclamos por calidad se reciben hasta 24 horas después del evento, por correo o WhatsApp, idealmente con fotos. Si el reclamo es…»",
+      "latency_ms": 101,
+      "client_ms": 125
+    },
+    {
+      "q": "anulacion con una semana de anticipacion",
+      "doc": "politica-anulaciones.md",
+      "key": "abono completo",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "politica-anulaciones.md"
+      ],
+      "answer": "Según politica-anulaciones.md: «# Política de reservas, anulaciones y devoluciones (DOCUMENTO SINTÉTICO DE PRUEBA) ## Reserva de fecha Para reservar la fecha de un evento se paga un abono del 30 % del total de la cotización. Sin abono, la fecha no queda reservada. ## Anulaciones Si el cliente anula con 7 días o más de anticipación, se devuelve el abono completo. Si anula entre 6…»",
+      "latency_ms": 91,
+      "client_ms": 127
+    },
+    {
+      "q": "aceptan aumentar los invitados a ultima hora",
+      "doc": "politica-anulaciones.md",
+      "key": "hasta un 10 %",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "politica-anulaciones.md"
+      ],
+      "answer": "Según politica-anulaciones.md: «## Cambios en el pedido La cantidad de invitados se puede cambiar hasta 4 días antes del evento sin recargo. Después, solo se aceptan aumentos de hasta un 10 % y se cobran al precio de la cotización. ## Reclamos Los reclamos por calidad se reciben hasta 24 horas después del evento, por correo o WhatsApp, idealmente con fotos. Si el reclamo es…»",
+      "latency_ms": 105,
+      "client_ms": 119
+    },
+    {
+      "q": "las sopaipillas llevan huevo?",
+      "doc": "ficha-alergenos.md",
+      "key": "no llevan huevo ni lacteos",
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "ficha-alergenos.md"
+      ],
+      "answer": "Según ficha-alergenos.md: «# Ficha de alérgenos de los productos (DOCUMENTO SINTÉTICO DE PRUEBA) Empanadas de pino: contienen gluten (harina de trigo), huevo y pueden tener trazas de soya. La carne es de vacuno. Llevan aceituna con carozo: avisar a los invitados. Empanadas de queso: contienen gluten, lácteos (queso mantecoso) y huevo en el pintado. Canapés de salmón:…»",
+      "latency_ms": 95,
+      "client_ms": 125
+    },
+    {
+      "q": "que alergenos tienen las empanadas de pino",
+      "doc": "ficha-alergenos.md",
+      "key": "empanadas de pino: contienen gluten",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "ficha-alergenos.md"
+      ],
+      "answer": "Según ficha-alergenos.md: «# Ficha de alérgenos de los productos (DOCUMENTO SINTÉTICO DE PRUEBA) Empanadas de pino: contienen gluten (harina de trigo), huevo y pueden tener trazas de soya. La carne es de vacuno. Llevan aceituna con carozo: avisar a los invitados. Empanadas de queso: contienen gluten, lácteos (queso mantecoso) y huevo en el pintado. Canapés de salmón:…»",
+      "latency_ms": 120,
+      "client_ms": 167
+    },
+    {
+      "q": "tienen canapes sin gluten",
+      "doc": "ficha-alergenos.md",
+      "key": "galleta de arroz",
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "ficha-alergenos.md"
+      ],
+      "answer": "Según ficha-alergenos.md: «# Ficha de alérgenos de los productos (DOCUMENTO SINTÉTICO DE PRUEBA) Empanadas de pino: contienen gluten (harina de trigo), huevo y pueden tener trazas de soya. La carne es de vacuno. Llevan aceituna con carozo: avisar a los invitados. Empanadas de queso: contienen gluten, lácteos (queso mantecoso) y huevo en el pintado. Canapés de salmón:…»",
+      "latency_ms": 79,
+      "client_ms": 123
+    },
+    {
+      "q": "las brochetas tienen sesamo",
+      "doc": "ficha-alergenos.md",
+      "key": "soya y sesamo",
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "ficha-alergenos.md"
+      ],
+      "answer": "Según ficha-alergenos.md: «# Ficha de alérgenos de los productos (DOCUMENTO SINTÉTICO DE PRUEBA) Empanadas de pino: contienen gluten (harina de trigo), huevo y pueden tener trazas de soya. La carne es de vacuno. Llevan aceituna con carozo: avisar a los invitados. Empanadas de queso: contienen gluten, lácteos (queso mantecoso) y huevo en el pintado. Canapés de salmón:…»",
+      "latency_ms": 92,
+      "client_ms": 133
+    },
+    {
+      "q": "pueden garantizar que no hay nueces",
+      "doc": "ficha-alergenos.md",
+      "key": "frutos secos",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "ficha-alergenos.md"
+      ],
+      "answer": "Según ficha-alergenos.md: «Mini quiches: contienen gluten, huevo y lácteos (crema y queso). Toda la cocina manipula frutos secos (nueces en los queques), así que ningún producto puede garantizarse libre de trazas de frutos secos.»",
+      "latency_ms": 92,
+      "client_ms": 127
+    },
+    {
+      "q": "los mini quiches tienen lactosa",
+      "doc": "ficha-alergenos.md",
+      "key": "mini quiches: contienen gluten, huevo y lacteos",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "ficha-alergenos.md"
+      ],
+      "answer": "Según ficha-alergenos.md: «Mini quiches: contienen gluten, huevo y lácteos (crema y queso). Toda la cocina manipula frutos secos (nueces en los queques), así que ningún producto puede garantizarse libre de trazas de frutos secos.»",
+      "latency_ms": 96,
+      "client_ms": 117
+    },
+    {
+      "q": "las aceitunas de las empanadas tienen cuesco",
+      "doc": "ficha-alergenos.md",
+      "key": "aceituna con carozo",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "ficha-alergenos.md"
+      ],
+      "answer": "Según ficha-alergenos.md: «# Ficha de alérgenos de los productos (DOCUMENTO SINTÉTICO DE PRUEBA) Empanadas de pino: contienen gluten (harina de trigo), huevo y pueden tener trazas de soya. La carne es de vacuno. Llevan aceituna con carozo: avisar a los invitados. Empanadas de queso: contienen gluten, lácteos (queso mantecoso) y huevo en el pintado. Canapés de salmón:…»",
+      "latency_ms": 106,
+      "client_ms": 129
+    },
+    {
+      "q": "cuantas yemas lleva el relleno del pie de limon",
+      "doc": "receta-pie-de-limon.txt",
+      "key": "4 yemas",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "receta-pie-de-limon.txt"
+      ],
+      "answer": "Según receta-pie-de-limon.txt: «RECETA ESCRITA: PIE DE LIMÓN (molde de 24 cm, 12 porciones) — DOCUMENTO SINTÉTICO DE PRUEBA Masa: 250 g de harina sin polvos, 125 g de mantequilla fría, 1 huevo, 50 g de azúcar flor y una pizca de sal. Se forra el molde y se hornea en blanco 15 minutos a 180 °C. Relleno: 1 tarro de leche condensada, 4 yemas y el jugo de 4 limones de pica. Se…»",
+      "latency_ms": 114,
+      "client_ms": 127
+    },
+    {
+      "q": "a que temperatura se hornea la masa del pie",
+      "doc": "receta-pie-de-limon.txt",
+      "key": "15 minutos a 180",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "receta-pie-de-limon.txt"
+      ],
+      "answer": "Según receta-pie-de-limon.txt: «RECETA ESCRITA: PIE DE LIMÓN (molde de 24 cm, 12 porciones) — DOCUMENTO SINTÉTICO DE PRUEBA Masa: 250 g de harina sin polvos, 125 g de mantequilla fría, 1 huevo, 50 g de azúcar flor y una pizca de sal. Se forra el molde y se hornea en blanco 15 minutos a 180 °C. Relleno: 1 tarro de leche condensada, 4 yemas y el jugo de 4 limones de pica. Se…»",
+      "latency_ms": 105,
+      "client_ms": 135
+    },
+    {
+      "q": "se puede congelar el pie de limon",
+      "doc": "receta-pie-de-limon.txt",
+      "key": "no se congela",
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "receta-pie-de-limon.txt"
+      ],
+      "answer": "Según receta-pie-de-limon.txt: «RECETA ESCRITA: PIE DE LIMÓN (molde de 24 cm, 12 porciones) — DOCUMENTO SINTÉTICO DE PRUEBA Masa: 250 g de harina sin polvos, 125 g de mantequilla fría, 1 huevo, 50 g de azúcar flor y una pizca de sal. Se forra el molde y se hornea en blanco 15 minutos a 180 °C. Relleno: 1 tarro de leche condensada, 4 yemas y el jugo de 4 limones de pica. Se…»",
+      "latency_ms": 94,
+      "client_ms": 121
+    },
+    {
+      "q": "cuanta azucar lleva el merengue",
+      "doc": "receta-pie-de-limon.txt",
+      "key": "200 g de azucar",
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "receta-pie-de-limon.txt"
+      ],
+      "answer": "Según receta-pie-de-limon.txt: «RECETA ESCRITA: PIE DE LIMÓN (molde de 24 cm, 12 porciones) — DOCUMENTO SINTÉTICO DE PRUEBA Masa: 250 g de harina sin polvos, 125 g de mantequilla fría, 1 huevo, 50 g de azúcar flor y una pizca de sal. Se forra el molde y se hornea en blanco 15 minutos a 180 °C. Relleno: 1 tarro de leche condensada, 4 yemas y el jugo de 4 limones de pica. Se…»",
+      "latency_ms": 97,
+      "client_ms": 131
+    },
+    {
+      "q": "cuantas porciones salen del pie de limon",
+      "doc": "receta-pie-de-limon.txt",
+      "key": "12 porciones",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "receta-pie-de-limon.txt"
+      ],
+      "answer": "Según receta-pie-de-limon.txt: «RECETA ESCRITA: PIE DE LIMÓN (molde de 24 cm, 12 porciones) — DOCUMENTO SINTÉTICO DE PRUEBA Masa: 250 g de harina sin polvos, 125 g de mantequilla fría, 1 huevo, 50 g de azúcar flor y una pizca de sal. Se forra el molde y se hornea en blanco 15 minutos a 180 °C. Relleno: 1 tarro de leche condensada, 4 yemas y el jugo de 4 limones de pica. Se…»",
+      "latency_ms": 118,
+      "client_ms": 127
+    },
+    {
+      "q": "a que temperatura tiene que estar el refri",
+      "doc": "protocolo-higiene.md",
+      "key": "entre 1 y 4",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "protocolo-higiene.md"
+      ],
+      "answer": "Según protocolo-higiene.md: «1. Lavado de manos al entrar a la cocina, después de tocar basura, carne cruda o el celular, durante 20 segundos. 2. Las tablas de colores: roja para carne cruda, azul para pescado, verde para verduras y blanca para lácteos y masas. 3. El refrigerador debe estar entre 1 y 4 °C. Se anota la temperatura en la planilla dos veces al día, al abrir y al…»",
+      "latency_ms": 104,
+      "client_ms": 130
+    },
+    {
+      "q": "que color de tabla se usa para el pescado",
+      "doc": "protocolo-higiene.md",
+      "key": "azul para pescado",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "protocolo-higiene.md"
+      ],
+      "answer": "Según protocolo-higiene.md: «1. Lavado de manos al entrar a la cocina, después de tocar basura, carne cruda o el celular, durante 20 segundos. 2. Las tablas de colores: roja para carne cruda, azul para pescado, verde para verduras y blanca para lácteos y masas. 3. El refrigerador debe estar entre 1 y 4 °C. Se anota la temperatura en la planilla dos veces al día, al abrir y al…»",
+      "latency_ms": 112,
+      "client_ms": 121
+    },
+    {
+      "q": "cada cuanto se cambia el aceite de la freidora",
+      "doc": "protocolo-higiene.md",
+      "key": "cada 3 usos",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "protocolo-higiene.md"
+      ],
+      "answer": "Según protocolo-higiene.md: «de 2 horas exige el furgón refrigerado. 6. La limpieza profunda de la campana y la freidora se hace todos los lunes. El aceite de fritura se cambia cada 3 usos o antes si oscurece.»",
+      "latency_ms": 111,
+      "client_ms": 136
+    },
+    {
+      "q": "cuanto duran los rellenos cocidos en el refrigerador",
+      "doc": "protocolo-higiene.md",
+      "key": "duran 3 dias",
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "protocolo-higiene.md"
+      ],
+      "answer": "Según protocolo-higiene.md: «1. Lavado de manos al entrar a la cocina, después de tocar basura, carne cruda o el celular, durante 20 segundos. 2. Las tablas de colores: roja para carne cruda, azul para pescado, verde para verduras y blanca para lácteos y masas. 3. El refrigerador debe estar entre 1 y 4 °C. Se anota la temperatura en la planilla dos veces al día, al abrir y al…»",
+      "latency_ms": 133,
+      "client_ms": 144
+    },
+    {
+      "q": "cuando hay que usar el furgon refrigerado",
+      "doc": "protocolo-higiene.md",
+      "key": "mas de 2 horas",
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "protocolo-higiene.md"
+      ],
+      "answer": "Según protocolo-higiene.md: «1. Lavado de manos al entrar a la cocina, después de tocar basura, carne cruda o el celular, durante 20 segundos. 2. Las tablas de colores: roja para carne cruda, azul para pescado, verde para verduras y blanca para lácteos y masas. 3. El refrigerador debe estar entre 1 y 4 °C. Se anota la temperatura en la planilla dos veces al día, al abrir y al…»",
+      "latency_ms": 111,
+      "client_ms": 140
+    },
+    {
+      "q": "que dia toca limpiar la campana",
+      "doc": "protocolo-higiene.md",
+      "key": "todos los lunes",
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "protocolo-higiene.md"
+      ],
+      "answer": "Según protocolo-higiene.md: «1. Lavado de manos al entrar a la cocina, después de tocar basura, carne cruda o el celular, durante 20 segundos. 2. Las tablas de colores: roja para carne cruda, azul para pescado, verde para verduras y blanca para lácteos y masas. 3. El refrigerador debe estar entre 1 y 4 °C. Se anota la temperatura en la planilla dos veces al día, al abrir y al…»",
+      "latency_ms": 90,
+      "client_ms": 131
+    },
+    {
+      "q": "hasta cuando se paga el saldo del evento",
+      "doc": "contrato-tipo-servicio.md",
+      "key": "48 horas antes del evento",
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "politica-anulaciones.md"
+      ],
+      "answer": "Según politica-anulaciones.md: «# Política de reservas, anulaciones y devoluciones (DOCUMENTO SINTÉTICO DE PRUEBA) ## Reserva de fecha Para reservar la fecha de un evento se paga un abono del 30 % del total de la cotización. Sin abono, la fecha no queda reservada. ## Anulaciones Si el cliente anula con 7 días o más de anticipación, se devuelve el abono completo. Si anula entre 6…»",
+      "latency_ms": 94,
+      "client_ms": 130
+    },
+    {
+      "q": "cuanto se cobra la hora extra de garzon",
+      "doc": "contrato-tipo-servicio.md",
+      "key": "$12.000",
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "contrato-tipo-servicio.md"
+      ],
+      "answer": "Según contrato-tipo-servicio.md: «# Contrato tipo de servicio de catering (DOCUMENTO SINTÉTICO DE PRUEBA, no es asesoría legal) PRIMERO. Cocina Los Aromos (demo) presta el servicio de banquetería descrito en la cotización aceptada, que forma parte de este contrato. SEGUNDO. Precio y pago: el cliente paga un 30 % de abono al firmar y el saldo hasta 48 horas antes del evento. Los…»",
+      "latency_ms": 105,
+      "client_ms": 130
+    },
+    {
+      "q": "que pasa si se rompe la vajilla prestada",
+      "doc": "contrato-tipo-servicio.md",
+      "key": "valor de reposicion",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "contrato-tipo-servicio.md"
+      ],
+      "answer": "Según contrato-tipo-servicio.md: «QUINTO. Vajilla: la vajilla prestada que se rompa o se pierda se cobra al valor de reposición informado en la cotización. SEXTO. Fuerza mayor: si el evento no puede realizarse por emergencia sanitaria o catástrofe, el abono se guarda como crédito por 6 meses.»",
+      "latency_ms": 122,
+      "client_ms": 133
+    },
+    {
+      "q": "con cuantos dias de anticipacion avisar las alergias",
+      "doc": "contrato-tipo-servicio.md",
+      "key": "al menos 5 dias antes",
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "preguntas-frecuentes-clientes.txt"
+      ],
+      "answer": "Según preguntas-frecuentes-clientes.txt: «PREGUNTAS FRECUENTES DE CLIENTES (DOCUMENTO SINTÉTICO DE PRUEBA) ¿Atienden eventos fuera de Temuco? Sí, en toda la Región de La Araucanía, con un recargo de traslado que se cotiza según la distancia. ¿Cuántos productos calculan por persona? Para un cóctel de 2 horas recomendamos 12 bocados por invitado; para un cóctel antes de una cena, 6 bocados.…»",
+      "latency_ms": 114,
+      "client_ms": 125
+    },
+    {
+      "q": "si hay una emergencia sanitaria pierdo el abono",
+      "doc": "contrato-tipo-servicio.md",
+      "key": "credito por 6 meses",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "contrato-tipo-servicio.md"
+      ],
+      "answer": "Según contrato-tipo-servicio.md: «QUINTO. Vajilla: la vajilla prestada que se rompa o se pierda se cobra al valor de reposición informado en la cotización. SEXTO. Fuerza mayor: si el evento no puede realizarse por emergencia sanitaria o catástrofe, el abono se guarda como crédito por 6 meses.»",
+      "latency_ms": 98,
+      "client_ms": 138
+    },
+    {
+      "q": "precio del queso crema en lacteos sur",
+      "doc": "lista-precios-lacteos-sur.csv",
+      "key": "queso crema | 1,5 kg | 9.450",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "lista-precios-lacteos-sur.csv, filas 2-7"
+      ],
+      "answer": "Según lista-precios-lacteos-sur.csv, filas 2-7: «producto | formato | precio_con_iva | despacho Queso mantecoso laminado | 1 kg | 8.990 | lunes y miércoles Queso crema | 1,5 kg | 9.450 | lunes y miércoles Crema de leche | 1 L | 3.890 | lunes y miércoles Mantequilla sin sal | 250 g | 2.490 | lunes y miércoles Leche entera | 1 L | 1.090 | lunes y miércoles Yogur natural | 1 kg | 2.990 | solo…»",
+      "latency_ms": 101,
+      "client_ms": 123
+    },
+    {
+      "q": "que dias despachan el yogur",
+      "doc": "lista-precios-lacteos-sur.csv",
+      "key": "solo miercoles",
+      "ok": false,
+      "level": 0,
+      "intent": "supplier_info",
+      "status": "missing_entity",
+      "fallback_reason": null,
+      "cited": [],
+      "answer": "No encontré ese proveedor en tus datos. ¿Me dices cómo se llama?",
+      "latency_ms": 3,
+      "client_ms": 11
+    },
+    {
+      "q": "cuanto cuesta la mantequilla sin sal",
+      "doc": "lista-precios-lacteos-sur.csv",
+      "key": "2.490",
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md"
+      ],
+      "answer": "Según condiciones-harinas-cautin.md: «# Condiciones comerciales — Harinas Cautín (DOCUMENTO SINTÉTICO DE PRUEBA, no es de un proveedor real) ## Pedidos El pedido mínimo es de $45.000 con IVA incluido. Los pedidos se reciben por WhatsApp hasta las 18:00 del día hábil anterior al despacho. ## Despacho Despachamos los martes y jueves dentro de Temuco y Padre Las Casas sin costo. Para…»",
+      "latency_ms": 105,
+      "client_ms": 114
+    },
+    {
+      "q": "cuantos bocados por persona para un coctel",
+      "doc": "preguntas-frecuentes-clientes.txt",
+      "key": "12 bocados por invitado",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "preguntas-frecuentes-clientes.txt"
+      ],
+      "answer": "Según preguntas-frecuentes-clientes.txt: «PREGUNTAS FRECUENTES DE CLIENTES (DOCUMENTO SINTÉTICO DE PRUEBA) ¿Atienden eventos fuera de Temuco? Sí, en toda la Región de La Araucanía, con un recargo de traslado que se cotiza según la distancia. ¿Cuántos productos calculan por persona? Para un cóctel de 2 horas recomendamos 12 bocados por invitado; para un cóctel antes de una cena, 6 bocados.…»",
+      "latency_ms": 108,
+      "client_ms": 123
+    },
+    {
+      "q": "hacen eventos en villarrica",
+      "doc": "preguntas-frecuentes-clientes.txt",
+      "key": "toda la region de la araucania",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "preguntas-frecuentes-clientes.txt"
+      ],
+      "answer": "Según preguntas-frecuentes-clientes.txt: «PREGUNTAS FRECUENTES DE CLIENTES (DOCUMENTO SINTÉTICO DE PRUEBA) ¿Atienden eventos fuera de Temuco? Sí, en toda la Región de La Araucanía, con un recargo de traslado que se cotiza según la distancia. ¿Cuántos productos calculan por persona? Para un cóctel de 2 horas recomendamos 12 bocados por invitado; para un cóctel antes de una cena, 6 bocados.…»",
+      "latency_ms": 108,
+      "client_ms": 129
+    },
+    {
+      "q": "que opciones vegetarianas tienen",
+      "doc": "preguntas-frecuentes-clientes.txt",
+      "key": "brochetas de verduras",
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "preguntas-frecuentes-clientes.txt"
+      ],
+      "answer": "Según preguntas-frecuentes-clientes.txt: «PREGUNTAS FRECUENTES DE CLIENTES (DOCUMENTO SINTÉTICO DE PRUEBA) ¿Atienden eventos fuera de Temuco? Sí, en toda la Región de La Araucanía, con un recargo de traslado que se cotiza según la distancia. ¿Cuántos productos calculan por persona? Para un cóctel de 2 horas recomendamos 12 bocados por invitado; para un cóctel antes de una cena, 6 bocados.…»",
+      "latency_ms": 83,
+      "client_ms": 120
+    },
+    {
+      "q": "con cuanta anticipacion pedir para 150 personas",
+      "doc": "preguntas-frecuentes-clientes.txt",
+      "key": "al menos 15 dias",
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "preguntas-frecuentes-clientes.txt"
+      ],
+      "answer": "Según preguntas-frecuentes-clientes.txt: «PREGUNTAS FRECUENTES DE CLIENTES (DOCUMENTO SINTÉTICO DE PRUEBA) ¿Atienden eventos fuera de Temuco? Sí, en toda la Región de La Araucanía, con un recargo de traslado que se cotiza según la distancia. ¿Cuántos productos calculan por persona? Para un cóctel de 2 horas recomendamos 12 bocados por invitado; para un cóctel antes de una cena, 6 bocados.…»",
+      "latency_ms": 96,
+      "client_ms": 136
+    },
+    {
+      "q": "dan factura?",
+      "doc": "preguntas-frecuentes-clientes.txt",
+      "key": "la factura se pide",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "preguntas-frecuentes-clientes.txt"
+      ],
+      "answer": "Según preguntas-frecuentes-clientes.txt: «¿Entregan boleta o factura? Entregamos boleta electrónica; la factura se pide al confirmar el pedido con los datos de la empresa.»",
+      "latency_ms": 75,
+      "client_ms": 84
+    },
+    {
+      "q": "como tienen que ir vestidos los garzones",
+      "doc": "manual-garzones.pdf",
+      "key": "camisa blanca",
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "manual-garzones.pdf, pág. 2"
+      ],
+      "answer": "Según manual-garzones.pdf, pág. 2: «MANUAL DE GARZONES — página 2 Servicio: las bandejas se ofrecen por la izquierda y se retiran por la derecha. Cada garzón ati ende como máximo a 25 invitados en un cóctel. Propinas: las propinas se juntan en un sobre y se reparten en partes iguales al final del event o.»",
+      "latency_ms": 94,
+      "client_ms": 108
+    },
+    {
+      "q": "cuantos invitados atiende cada garzon",
+      "doc": "manual-garzones.pdf",
+      "key": "maximo a 25 invitados",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "manual-garzones.pdf, pág. 2"
+      ],
+      "answer": "Según manual-garzones.pdf, pág. 2: «MANUAL DE GARZONES — página 2 Servicio: las bandejas se ofrecen por la izquierda y se retiran por la derecha. Cada garzón ati ende como máximo a 25 invitados en un cóctel. Propinas: las propinas se juntan en un sobre y se reparten en partes iguales al final del event o.»",
+      "latency_ms": 103,
+      "client_ms": 140
+    },
+    {
+      "q": "como se reparten las propinas",
+      "doc": "manual-garzones.pdf",
+      "key": "partes iguales",
+      "ok": false,
+      "level": 0,
+      "intent": "supplier_info",
+      "status": "missing_entity",
+      "fallback_reason": null,
+      "cited": [],
+      "answer": "No encontré ese proveedor en tus datos. ¿Me dices cómo se llama?",
+      "latency_ms": 3,
+      "client_ms": 13
+    },
+    {
+      "q": "por que lado se ofrecen las bandejas",
+      "doc": "manual-garzones.pdf",
+      "key": "por la izquierda",
+      "ok": true,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "manual-garzones.pdf, pág. 2"
+      ],
+      "answer": "Según manual-garzones.pdf, pág. 2: «MANUAL DE GARZONES — página 2 Servicio: las bandejas se ofrecen por la izquierda y se retiran por la derecha. Cada garzón ati ende como máximo a 25 invitados en un cóctel. Propinas: las propinas se juntan en un sobre y se reparten en partes iguales al final del event o.»",
+      "latency_ms": 94,
+      "client_ms": 110
+    },
+    {
+      "q": "cual es el rut de harinas cautin",
+      "doc": null,
+      "key": null,
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md"
+      ],
+      "answer": "Según condiciones-harinas-cautin.md: «# Condiciones comerciales — Harinas Cautín (DOCUMENTO SINTÉTICO DE PRUEBA, no es de un proveedor real) ## Pedidos El pedido mínimo es de $45.000 con IVA incluido. Los pedidos se reciben por WhatsApp hasta las 18:00 del día hábil anterior al despacho. ## Despacho Despachamos los martes y jueves dentro de Temuco y Padre Las Casas sin costo. Para…»",
+      "latency_ms": 95,
+      "client_ms": 112
+    },
+    {
+      "q": "tienen menu para celiacos en matrimonios de 300 personas con barra de tragos",
+      "doc": null,
+      "key": null,
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "preguntas-frecuentes-clientes.txt"
+      ],
+      "answer": "Según preguntas-frecuentes-clientes.txt: «PREGUNTAS FRECUENTES DE CLIENTES (DOCUMENTO SINTÉTICO DE PRUEBA) ¿Atienden eventos fuera de Temuco? Sí, en toda la Región de La Araucanía, con un recargo de traslado que se cotiza según la distancia. ¿Cuántos productos calculan por persona? Para un cóctel de 2 horas recomendamos 12 bocados por invitado; para un cóctel antes de una cena, 6 bocados.…»",
+      "latency_ms": 132,
+      "client_ms": 147
+    },
+    {
+      "q": "quien gano el campeonato nacional",
+      "doc": null,
+      "key": null,
+      "ok": true,
+      "level": 0,
+      "intent": null,
+      "status": "unrecognized",
+      "fallback_reason": "no_intent",
+      "cited": [],
+      "answer": "No estoy seguro de qué me preguntas. ¿Te refieres a alguna de estas?",
+      "latency_ms": 86,
+      "client_ms": 95
+    },
+    {
+      "q": "cuanto cuesta el arriendo del local",
+      "doc": null,
+      "key": null,
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md"
+      ],
+      "answer": "Según condiciones-harinas-cautin.md: «# Condiciones comerciales — Harinas Cautín (DOCUMENTO SINTÉTICO DE PRUEBA, no es de un proveedor real) ## Pedidos El pedido mínimo es de $45.000 con IVA incluido. Los pedidos se reciben por WhatsApp hasta las 18:00 del día hábil anterior al despacho. ## Despacho Despachamos los martes y jueves dentro de Temuco y Padre Las Casas sin costo. Para…»",
+      "latency_ms": 92,
+      "client_ms": 110
+    },
+    {
+      "q": "horario de atencion de la municipalidad",
+      "doc": null,
+      "key": null,
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "preguntas-frecuentes-clientes.txt"
+      ],
+      "answer": "Según preguntas-frecuentes-clientes.txt: «PREGUNTAS FRECUENTES DE CLIENTES (DOCUMENTO SINTÉTICO DE PRUEBA) ¿Atienden eventos fuera de Temuco? Sí, en toda la Región de La Araucanía, con un recargo de traslado que se cotiza según la distancia. ¿Cuántos productos calculan por persona? Para un cóctel de 2 horas recomendamos 12 bocados por invitado; para un cóctel antes de una cena, 6 bocados.…»",
+      "latency_ms": 93,
+      "client_ms": 110
+    },
+    {
+      "q": "precio del salmon ahumado por kilo",
+      "doc": null,
+      "key": null,
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "lista-precios-lacteos-sur.csv, filas 2-7"
+      ],
+      "answer": "Según lista-precios-lacteos-sur.csv, filas 2-7: «producto | formato | precio_con_iva | despacho Queso mantecoso laminado | 1 kg | 8.990 | lunes y miércoles Queso crema | 1,5 kg | 9.450 | lunes y miércoles Crema de leche | 1 L | 3.890 | lunes y miércoles Mantequilla sin sal | 250 g | 2.490 | lunes y miércoles Leche entera | 1 L | 1.090 | lunes y miércoles Yogur natural | 1 kg | 2.990 | solo…»",
+      "latency_ms": 90,
+      "client_ms": 107
+    },
+    {
+      "q": "tienen estacionamiento para los invitados",
+      "doc": null,
+      "key": null,
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "manual-garzones.pdf, pág. 1"
+      ],
+      "answer": "Según manual-garzones.pdf, pág. 1: «MANUAL DE GARZONES (DOCUMENTO SINTÉTICO DE PRUEBA) — página 1 Uniforme: camisa blanca, pantalón negro y delantal burdeo de la empresa. Pelo tomado y sin joya s en las manos. Llegada: presentarse 2 horas antes del inicio del evento para el montaje de mesas y estaciones.»",
+      "latency_ms": 84,
+      "client_ms": 105
+    },
+    {
+      "q": "cual es la clave del wifi",
+      "doc": null,
+      "key": null,
+      "ok": true,
+      "level": 0,
+      "intent": null,
+      "status": "unrecognized",
+      "fallback_reason": "no_intent",
+      "cited": [],
+      "answer": "No estoy seguro de qué me preguntas. ¿Te refieres a alguna de estas?",
+      "latency_ms": 82,
+      "client_ms": 101
+    },
+    {
+      "q": "venden tortas de cumpleanos con fondant",
+      "doc": null,
+      "key": null,
+      "ok": true,
+      "level": 0,
+      "intent": null,
+      "status": "unrecognized",
+      "fallback_reason": "no_intent",
+      "cited": [],
+      "answer": "No estoy seguro de qué me preguntas. ¿Te refieres a alguna de estas?",
+      "latency_ms": 103,
+      "client_ms": 121
+    },
+    {
+      "q": "como saco la patente de alcoholes",
+      "doc": null,
+      "key": null,
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md"
+      ],
+      "answer": "Según condiciones-harinas-cautin.md: «## Cambios y devoluciones La harina con humedad o con el saco roto se cambia si se avisa dentro de 24 horas desde la entrega, con fotos del producto. No se aceptan devoluciones de productos abiertos en buen estado. ## Descuentos Sobre 20 sacos de harina de 25 kg en un mismo pedido se aplica un 7 % de descuento.»",
+      "latency_ms": 121,
+      "client_ms": 139
+    },
+    {
+      "q": "cuantos litros de bebida por persona",
+      "doc": null,
+      "key": null,
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "preguntas-frecuentes-clientes.txt"
+      ],
+      "answer": "Según preguntas-frecuentes-clientes.txt: «PREGUNTAS FRECUENTES DE CLIENTES (DOCUMENTO SINTÉTICO DE PRUEBA) ¿Atienden eventos fuera de Temuco? Sí, en toda la Región de La Araucanía, con un recargo de traslado que se cotiza según la distancia. ¿Cuántos productos calculan por persona? Para un cóctel de 2 horas recomendamos 12 bocados por invitado; para un cóctel antes de una cena, 6 bocados.…»",
+      "latency_ms": 99,
+      "client_ms": 116
+    },
+    {
+      "q": "hacen delivery con drones",
+      "doc": null,
+      "key": null,
+      "ok": false,
+      "level": 2,
+      "intent": null,
+      "status": "ok",
+      "fallback_reason": null,
+      "cited": [
+        "condiciones-harinas-cautin.md"
+      ],
+      "answer": "Según condiciones-harinas-cautin.md: «# Condiciones comerciales — Harinas Cautín (DOCUMENTO SINTÉTICO DE PRUEBA, no es de un proveedor real) ## Pedidos El pedido mínimo es de $45.000 con IVA incluido. Los pedidos se reciben por WhatsApp hasta las 18:00 del día hábil anterior al despacho. ## Despacho Despachamos los martes y jueves dentro de Temuco y Padre Las Casas sin costo. Para…»",
+      "latency_ms": 87,
+      "client_ms": 97
+    }
+  ]
+}

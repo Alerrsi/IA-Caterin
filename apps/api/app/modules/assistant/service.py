@@ -29,6 +29,7 @@ from app.core.tenancy import CurrentUser
 from app.db.enums import DataDomain
 from app.db.models import AssistantInteraction, DataVersion
 from app.modules.assistant.intents import Catalog, Intent, load_catalog
+from app.modules.assistant.passages import best_passage
 from app.modules.assistant.queries import QUERIES
 from app.modules.assistant.recognizer import Recognition, normalize_question, recognize
 from app.modules.assistant.schemas import AskIn, AskOut, Option, QuickActionOut, Source
@@ -50,7 +51,10 @@ NOT_SURE = "No estoy seguro de qué me preguntas. ¿Te refieres a alguna de esta
 NO_DATA = (
     "Eso todavía no lo sé responder. Puedo ayudarte con inventario, costos de recetas, pedidos, precios y proveedores."
 )
-SNIPPET_CHARS = 350
+NOT_IN_DOCUMENTS = "No encontré eso en tus documentos."
+PASSAGE_CANDIDATES = 8  # frases que se comparan para elegir la respuesta (el LLM recibe ASSISTANT_RAG_K)
+NOT_EXACT = "No estoy seguro de que esto responda tu pregunta."
+ASK_WHICH = "¿Me preguntabas por alguna de estas?"
 NUM_PREDICT = 120
 # Si el LLM falla por esto, la respuesta degradada no se cachea: se reintenta cuando vuelva.
 TRANSIENT = ("llm_unavailable", "llm_timeout")
@@ -156,14 +160,6 @@ def _delimit(text: str) -> str:
     return text.replace("<", "‹").replace(">", "›")
 
 
-def _snippet(text: str) -> str:
-    flat = " ".join(text.split())
-    if len(flat) <= SNIPPET_CHARS:
-        return flat
-    cut = flat.rfind(" ", 0, SNIPPET_CHARS)
-    return flat[: cut if cut > SNIPPET_CHARS // 2 else SNIPPET_CHARS] + "…"
-
-
 def _plan_intent(db: Session, turn: Turn, intent: Intent, today: date, use_llm: bool) -> None:
     key = (
         db.info["pyme_id"],
@@ -185,29 +181,62 @@ def _plan_intent(db: Session, turn: Turn, intent: Intent, today: date, use_llm: 
         turn.draft = Draft(SYSTEM_PROMPT, user, f"{result.text}\n{turn.question}", level=1)
 
 
+def _llm_text(h: documents.Hit) -> str:
+    """El párrafo de la frase (si se guardó) con su contexto: el LLM necesita algo más que la frase suelta."""
+    body = h.meta.get("paragraph") or h.text
+    context = h.meta.get("context")
+    return f"{context}: {body}" if context else body
+
+
 def _plan_documents(db: Session, turn: Turn, emb: EmbeddingProvider, use_llm: bool) -> bool:
-    """Nivel 2. No se cachea en el MVP (ADR-005). False si no hay fragmentos que coincidan."""
+    """Nivel 2. No se cachea en el MVP (ADR-005). False si la pyme no tiene documentos o nada coincide.
+
+    La respuesta sin LLM es la frase del fragmento que mejor responde (`passages.best_passage`). Si su cobertura
+    es baja se muestra avisando que puede no ser la respuesta; si es muy baja, se dice que no está en sus
+    documentos y no se llama al LLM: un fragmento que no corresponde es peor que un "no lo encontré".
+    """
     if not documents.has_documents(db):
         return False
     s = get_settings()
-    hits = documents.search(db, emb, turn.question, s.assistant_rag_k, s.assistant_rag_min_similarity)
+    hits = documents.search(
+        db, emb, turn.question, max(s.assistant_rag_k, PASSAGE_CANDIDATES), s.assistant_rag_min_similarity
+    )
     if not hits:
         return False
-    top = hits[0]
-    sources = [{"kind": "document", "label": h.citation()} for h in hits]
-    entities = {"chunks": [str(h.chunk_id) for h in hits]}
-    text = f"Según {top.citation()}: «{_snippet(top.text)}»"
-    turn.base = Answer(text, 2, "ok", sources[:1], [], entities)
-    turn.queries = ["search_documents"]
+    passage = best_passage(turn.question, hits)
+    turn.queries = [*turn.queries, "search_documents"]
+    turn.draft = None
+    turn.cache_key = None  # el nivel 2 no se cachea
+    entities: dict[str, Any] = {"chunks": [str(h.chunk_id) for h in hits]}
+    if passage is None or passage.confidence == "none":
+        if passage is not None:
+            entities.update(coverage=passage.coverage, similarity=passage.similarity, score=passage.score)
+        turn.base = Answer(NOT_IN_DOCUMENTS, 2, "no_data", [], [], entities)
+        return True
+    top = hits[passage.hit_index]
+    entities.update(
+        coverage=passage.coverage, similarity=passage.similarity, score=passage.score, confidence=passage.confidence
+    )
+    if passage.confidence == "high":
+        text = f"Según {top.citation()}: «{passage.text}»"
+    else:
+        text = f"{NOT_EXACT} Lo más parecido que encontré en {top.citation()}: «{passage.text}»"
+    turn.base = Answer(text, 2, "ok", [{"kind": "document", "label": top.citation()}], [], entities)
     if use_llm:
+        # Al LLM: la frase elegida primero y después las mejores, cada una con su párrafo (sin repetir).
+        ordered = [top, *(h for h in hits[: s.assistant_rag_k] if h is not top)]
+        pieces: list[tuple[str, str]] = []  # (texto, cita), sin repetir el mismo párrafo
+        for h in ordered:
+            if (t := _llm_text(h)) not in (x for x, _ in pieces):
+                pieces.append((t, h.citation()))
+        cites = list(dict.fromkeys(c for _, c in pieces))
         frags = "\n".join(
-            f'<documento n="{i}" fuente="{_delimit(h.citation())}">{_delimit(h.text)}</documento>'
-            for i, h in enumerate(hits, 1)
+            f'<documento n="{i}" fuente="{_delimit(c)}">{_delimit(t)}</documento>' for i, (t, c) in enumerate(pieces, 1)
         )
         user = f"<pregunta>{_delimit(turn.question)}</pregunta>\n{frags}"
-        facts = "\n".join([*(h.text for h in hits), turn.question])
+        facts = "\n".join([*(t for t, _ in pieces), turn.question])
         turn.draft = Draft(DOCUMENTS_PROMPT, user, facts, level=2)
-        turn.base.sources = sources  # el texto redactado puede apoyarse en todos los fragmentos
+        turn.base.sources = [{"kind": "document", "label": c} for c in cites]  # el LLM puede usar todos
     return True
 
 
@@ -220,9 +249,25 @@ def plan(db: Session, data: AskIn, emb: EmbeddingProvider, today: date) -> Turn:
     turn = Turn(question, rec, catalog, Answer("", 0, "unrecognized", [], [], {}), start)
     if rec.intent is not None:
         _plan_intent(db, turn, catalog.by_name(rec.intent), today, use_llm)
+        if turn.base.status in ("no_data", "missing_entity") and data.quick_action is None:
+            _try_documents_instead(db, turn, emb, use_llm)
     elif not _plan_documents(db, turn, emb, use_llm):
         turn.base = _unrecognized(rec, catalog)
+    elif turn.base.status == "no_data" and rec.alternatives:
+        turn.base.options = _unrecognized(rec, catalog).options  # "no está en tus documentos" + ¿te refieres a…?
+        turn.base.text = f"{NOT_IN_DOCUMENTS} {ASK_WHICH}"
     return turn
+
+
+def _try_documents_instead(db: Session, turn: Turn, emb: EmbeddingProvider, use_llm: bool) -> None:
+    """La intención se reconoció pero no tiene el dato ("despachan el sábado los de la harina?" sin ese proveedor
+    cargado). Si los documentos de la pyme tienen algo que se parezca (confianza alta o baja), se usa eso: un
+    "lo más parecido" de sus documentos sirve más que "no encontré ese proveedor". Si no, queda la intención."""
+    saved = (turn.base, turn.draft, turn.cache_key, turn.cache_hit, list(turn.queries))
+    if _plan_documents(db, turn, emb, use_llm) and turn.base.entities.get("confidence") in ("high", "low"):
+        turn.cache_hit = False
+        return
+    turn.base, turn.draft, turn.cache_key, turn.cache_hit, turn.queries = saved
 
 
 def drafted(llm: LLMProvider, draft: Draft, out: Drafted) -> Iterator[str]:

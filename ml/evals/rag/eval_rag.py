@@ -13,12 +13,17 @@ latencia de `search` p50/p95 (incluye el embedding de la pregunta) y, por cada c
 `k` × similitud mínima, el recall@k y los FALSOS POSITIVOS: preguntas sin respuesta en los documentos que igual
 devuelven fragmentos (el asistente respondería con un fragmento que no corresponde).
 
-Documentos y preguntas son SINTÉTICOS. El reranker no se evalúa: no está en Ollama e instalarlo exigiría
-PyTorch en la imagen (ADR-003); queda pendiente.
+Documentos y preguntas son SINTÉTICOS. El reranker no corre aquí (no está en Ollama e instalarlo exigiría PyTorch
+en la imagen, ADR-003): con `RAG_DUMP_CANDIDATES=1` cada variante guarda sus 10 candidatos por pregunta en
+`candidates_<variante>.json` y `rerank_eval.py` los reordena fuera del contenedor.
+
+Con nombres de variante como argumentos (`... eval_rag.py bge-m3`) solo corren esas y se reemplazan en
+`rag_results.json`; las demás se conservan.
 """
 
 import io
 import json
+import os
 import re
 import statistics
 import sys
@@ -169,6 +174,13 @@ def evaluate(label: str, emb: EmbeddingProvider, questions: list[dict[str, Any]]
                     "avg_fragments_answerable": round(statistics.mean(len(h[:k]) for h in res_a), 2),
                 }
             )
+    if os.environ.get("RAG_DUMP_CANDIDATES"):
+        dump = [
+            {"q": q["q"], "doc": q["doc"], "key": q.get("key"),
+             "hits": [{"filename": h.filename, "text": h.text, "similarity": h.similarity} for h in hits]}
+            for q, hits in zip(answerable + unanswerable, full_a + full_u, strict=True)
+        ]
+        (HERE / f"candidates_{label}.json").write_text(json.dumps(dump, ensure_ascii=False, indent=1) + "\n")
     db.close()
     n = len(answerable)
     return {
@@ -215,14 +227,19 @@ def main() -> None:
             f"search p50/p95 {r['search_ms']['p50']}/{r['search_ms']['p95']} ms  chunks {r['chunks']}",
             flush=True,
         )
+    out_path = HERE / "rag_results.json"
+    merged = results
+    if only and out_path.exists():
+        previous = json.loads(out_path.read_text(encoding="utf-8"))["results"]
+        merged = [r for r in previous if r["variant"] not in only] + results
     out = {
         "measured_at": time.strftime("%Y-%m-%d %H:%M"),
         "database": s.database_url.rsplit("/", 1)[-1],
         "questions": len(questions),
-        "note": "Documentos y preguntas SINTÉTICOS (ml/evals/rag). Sin reranker (no está en Ollama).",
-        "results": results,
+        "note": "Documentos y preguntas SINTÉTICOS (ml/evals/rag). Reranker aparte: rerank_results.json.",
+        "results": merged,
     }
-    (HERE / "rag_results.json").write_text(json.dumps(out, ensure_ascii=False, indent=2) + "\n")
+    out_path.write_text(json.dumps(out, ensure_ascii=False, indent=2) + "\n")
     # limpieza: las pymes de la corrida (CASCADE borra documentos y fragmentos)
     with get_sessionmaker()() as sess:
         sess.execute(delete(Pyme).where(Pyme.id.in_([uuid.UUID(r["pyme_id"]) for r in results])))

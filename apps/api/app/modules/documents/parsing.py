@@ -10,7 +10,11 @@ import re
 from dataclasses import dataclass, field
 from typing import Any
 
+from app.modules.documents.sentences import split_with_state
+
 CHUNK_CHARS = 700
+PARAGRAPH_CHARS = 350  # un párrafo más largo no se guarda para mostrarlo entero: se muestra la frase
+INDEX_UNIT = "sentence-v1"
 OVERLAP_CHARS = 100
 ROWS_PER_CHUNK = 15
 
@@ -37,6 +41,25 @@ def _clean(text: str) -> str:
     return re.sub(r"[ \t]+", " ", re.sub(r"\n{3,}", "\n\n", text.replace("\x00", ""))).strip()
 
 
+_BOUNDARY = re.compile(r"\n|(?<=[.!?…])\s")
+
+
+def _cut_point(p: str) -> int:
+    """Dónde cortar un párrafo largo: en el último salto de línea o fin de frase antes del tope, para no partir
+    una frase en dos fragmentos ("se hace" | "todos los lunes"). Si no hay, en el último espacio."""
+    ends = [m.end() for m in _BOUNDARY.finditer(p, 0, CHUNK_CHARS) if m.end() > CHUNK_CHARS // 2]
+    if ends:
+        return ends[-1]
+    cut = p.rfind(" ", 0, CHUNK_CHARS)
+    return cut if cut > CHUNK_CHARS // 2 else CHUNK_CHARS
+
+
+def _overlap_start(p: str, cut: int) -> int:
+    """El solape empieza al comienzo de una frase o línea dentro de los últimos ~100 caracteres."""
+    starts = [m.end() for m in _BOUNDARY.finditer(p, max(0, cut - OVERLAP_CHARS), cut) if m.end() < cut]
+    return starts[0] if starts else cut
+
+
 def split_text(text: str, meta: dict[str, Any]) -> list[Chunk]:
     """Fragmentos de ~700 caracteres por párrafos, con solape de ~100 si un párrafo es muy largo."""
     text = _clean(text)
@@ -52,10 +75,9 @@ def split_text(text: str, meta: dict[str, Any]) -> list[Chunk]:
         if current:
             chunks.append(Chunk(current, dict(meta)))
         while len(p) > CHUNK_CHARS:
-            cut = p.rfind(" ", 0, CHUNK_CHARS)
-            cut = cut if cut > CHUNK_CHARS // 2 else CHUNK_CHARS
+            cut = _cut_point(p)
             chunks.append(Chunk(p[:cut].strip(), dict(meta)))
-            p = p[max(0, cut - OVERLAP_CHARS) :].strip()
+            p = p[_overlap_start(p, cut) :].strip()
         current = p
     if current:
         chunks.append(Chunk(current, dict(meta)))
@@ -115,3 +137,35 @@ def _decode(data: bytes) -> str:
         except UnicodeDecodeError:
             continue
     raise DocumentParseError("codificación desconocida")  # pragma: no cover - latin-1 decodifica todo
+
+
+def to_sentences(chunks: list[Chunk]) -> list[Chunk]:
+    """Una unidad indexable por frase (ADR-005, T10): la búsqueda devuelve la frase que responde y su similitud.
+
+    `meta` conserva la página, hoja o filas del fragmento original, más `context` (título · sección · etiqueta
+    del párrafo, que se agrega al texto que se vectoriza) y `paragraph` (el párrafo, para mostrarlo si es corto).
+    Las frases repetidas por el solape entre fragmentos se guardan una vez.
+    """
+    out: list[Chunk] = []
+    seen: set[str] = set()
+    title = section = ""
+    for chunk in chunks:
+        if chunk.meta.get("page") != (out[-1].meta.get("page") if out else None):
+            title = section = ""  # una página nueva de PDF puede tener su propio encabezado
+        sentences, title, section = split_with_state(chunk.text, title, section)
+        for s in sentences:
+            if s.text in seen:
+                continue
+            seen.add(s.text)
+            meta = {**chunk.meta, "unit": INDEX_UNIT, "context": s.context}
+            if s.paragraph != s.text and len(s.paragraph) <= PARAGRAPH_CHARS:
+                meta["paragraph"] = s.paragraph
+            out.append(Chunk(s.text, meta))
+    return out
+
+
+def embedding_text(chunk: Chunk) -> str:
+    """Lo que se vectoriza: el contexto ayuda a que "¿cómo van vestidos los garzones?" encuentre "Uniforme: …"
+    del manual de garzones."""
+    context = chunk.meta.get("context")
+    return f"{context}: {chunk.text}" if context else chunk.text

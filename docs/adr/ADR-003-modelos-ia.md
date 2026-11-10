@@ -107,13 +107,33 @@ Límite de esta verificación: se leyó el campo de licencia de los metadatos y 
 - Esto refuerza la evaluación pendiente de **`qwen3:4b-instruct`** (variante sin *thinking*): si redacta igual de bien, evita depender de la gramática JSON para que no se cuele el razonamiento.
 - Latencia de punta a punta del asistente por nivel: ver ADR-005 y `ml/evals/assistant/bench_levels.json`.
 
+## T10 (9 y 10-nov-2026): lo medido y lo que sigue pendiente
+
+Detalle y comandos en `ml/evals/REPORT.md`. Datos sintéticos.
+
+- **Script corregido (`bench_cpu.py` 2.0.0):** RAM por nombre exacto del modelo en `/api/ps`, tokens generados por respuesta, campo que falló en la extracción, detección de razonamiento filtrado en texto libre, variante JSON que usa la app, versión del script y carga del sistema antes y después. Punto 1 de "Límites" resuelto.
+- **LLM, primera ronda con el script corregido** (`ml/bench/bench_results_t10.json` y `bench_results_t10_cargado.json`):
+
+| Modelo | Condición | Tokens/s p50 | Prefill p50 | Tokens por respuesta p50 | Razonamiento colado en texto libre | Tool calling | Extracción (bench) | RAM |
+|--------|-----------|--------------|-------------|--------------------------|-------------------------------------|--------------|--------------------|-----|
+| `qwen3:4b` | máquina tranquila (load 4,3 al empezar) | 7,1 | 1,22 s | 160 (llega al tope) | **12/12** | 1/4 | 7/8 (falla `guests`) | 3,19 GB |
+| `qwen3:4b-instruct` | **máquina cargada** (load 10,4) | 7,3 | 1,03 s | 44 | **0/12** | **4/4** | **8/8** | 3,19 GB |
+| `gemma4:e4b` | no alcanzó a correr | — | — | — | — | — | — | — |
+
+  - El 3,19 GB idéntico ahora sí es por nombre exacto: los dos son el mismo tamaño de pesos (2,5 GB) con la misma arquitectura.
+  - **`qwen3:4b-instruct` se ve mejor en todo lo medido** y responde corto sin depender de la gramática JSON para no filtrar razonamiento. Pero se midió con la máquina cargada, la repetición en limpio quedó cortada y falta Gemma 4 E4B, la evaluación del extractor con 20 pedidos reservados (`ml/evals/extractor/cases.yaml`) y la revisión humana de la redacción. **Se mantiene `qwen3:4b` como provisional**; la propuesta es cambiar a `qwen3:4b-instruct` cuando se complete esa ronda.
+- **Embeddings:** se ratifica **`bge-m3` servido por Ollama**. Con 50 preguntas sobre 9 documentos sintéticos, `qwen3-embedding:0.6b` mejora recall@1 en 1 a 2 preguntas (0,88 → 0,90 / 0,92), no significativo, y es 1,4 a 3,4 veces más lento. recall@5 = 1,0 en todas las variantes (corpus chico, saturado).
+- **Reranker:** **sigue sin evaluar** dentro del sistema (no está en Ollama; la imagen no instala PyTorch). Quedó listo `ml/evals/rag/rerank_eval.py` para medirlo fuera de la imagen. Sigue apagado.
+- **Indexación por frase (ADR-005):** cambia **qué** se vectoriza (frases con su contexto en vez de trozos de 700 caracteres), no el modelo ni la dimensión. Los fragmentos llevan `meta.unit = "sentence-v1"`; `python -m app.modules.documents.reindex` reindexa los antiguos.
+- **Detector:** sin cambios. El modelo de prueba de T06 no está en esta máquina (falta `model.json` junto al ONNX), así que `/vision/count` responde 503 en desarrollo y la prueba de carga no midió inferencia de visión.
+
 ## Pruebas pendientes (las ejecuta T10)
 
-1. Corregir el script (RAM por nombre exacto, tokens generados, detalle de fallos) y repetir `llm` con `qwen3:4b`, `qwen3:4b-instruct` y Gemma 4 E4B, con más casos de extracción (≥ 20).
+1. ~~Corregir el script~~ (hecho en T10). Repetir `llm` en limpio con `qwen3:4b-instruct` y Gemma 4 E4B, y correr `ml/evals/extractor/eval_extractor.py` con los 20 pedidos reservados y los tres modelos.
 2. Agregar la evaluación de redacción en español de Chile con revisión humana (rúbrica en T10).
 3. ~~Medir `bge-m3` servido por Ollama frente a `sentence-transformers`.~~ Hecho en T07 (arriba).
-4. Repetir embeddings con ≥ 50 preguntas sobre documentos reales o sintéticos realistas, con y sin reranker.
-5. Calibrar el umbral del enrutador de intenciones (ADR-005).
+4. ~~Embeddings con ≥ 50 preguntas~~ (hecho en T10 con documentos sintéticos; falta con documentos reales). Falta el reranker (`rerank_eval.py`).
+5. ~~Calibrar el umbral del enrutador~~ (hecho en T10: 0,55 y margen 0,10; ADR-005).
 6. Medir el detector de punta a punta (decodificar JPEG, preprocesar, inferir, postprocesar) con el modelo ajustado y en el VPS objetivo.
 
 ## Consecuencias

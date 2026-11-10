@@ -219,12 +219,12 @@ Sub-recetas (una receta que usa otra, p. ej. "masa"): **fuera del MVP**. Si apar
 |-------|------|------|
 | `document_id` | FK, `ON DELETE CASCADE` | |
 | `ordinal` | int | Posición dentro del documento |
-| `text` | text | |
+| `text` | text | **Una frase** (o una fila de planilla, "encabezado: valor; …") desde T10 (`meta.unit = "sentence-v1"`). Antes, un trozo de ~700 caracteres; se migran con `python -m app.modules.documents.reindex` |
 | `tsv` | tsvector (columna generada, `to_tsvector('spanish', caterin_unaccent(text))`), índice GIN | Búsqueda de texto completo **sin tildes** ("minimo" encuentra "mínimo"); `caterin_unaccent` envuelve `unaccent` como IMMUTABLE |
 | `embedding` | vector(1024), índice HNSW (coseno) | **Dimensión fija en la migración** |
 | `embedding_model` | text | P. ej. `BAAI/bge-m3` |
 | `embedding_version` | text | Revisión del `models.lock.yaml` |
-| `meta` | jsonb | Página, hoja o fila de origen (para citar) |
+| `meta` | jsonb | Página, hoja o fila de origen (para citar); `unit`; `context` (título · sección · etiqueta del párrafo, se antepone al texto que se vectoriza); `paragraph` (el párrafo de la frase si mide ≤ 350 caracteres, para mostrarlo entero y dárselo al LLM) |
 
 ### Interacción del asistente (`assistant_interaction`) [propuesta]
 Cumple la regla de trazabilidad: cada respuesta guarda las consultas usadas y sus fuentes.
