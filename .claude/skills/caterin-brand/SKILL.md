@@ -49,6 +49,17 @@ pyme", no "Continuar"). Los errores dicen qué pasó y cómo seguir, sin disculp
 - "Pega el mensaje del cliente y listo"
 - "Esta pyme todavía no publica productos. Puedes escribirle tu pedido igual."
 
+## Otras skills de diseño
+
+- `interface-design`: dirección, jerarquía y revisión (`/interface-design:design-review`).
+- `frontend-design`: solo para momentos de marca (login).
+- `web-interface-guidelines`: detalles de interfaz. Excepciones en Cáterin: títulos y botones en mayúscula inicial
+  del español, no *Title Case*; comillas y formatos de es-CL; `autoFocus` no se usa en el celular.
+- `emil-design-eng`: movimiento y sensación al presionar. Se implementa con CSS (no se agrega Motion); ignora su
+  "Initial Response".
+- Estética "plano de cocina" (T16, ADR-010 propuesto): plan en `docs/tasks/T16-estetica-plano.md`. Mientras no se
+  acepte, valen las reglas de arriba.
+
 ## Verificación
 
 `npm test` (contraste y marca), `npm run theme -- --check`, `npx playwright test e2e/a11y.e2e.ts` (axe) y capturas

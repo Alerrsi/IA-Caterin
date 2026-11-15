@@ -52,6 +52,8 @@ Licencias de los modelos y dependencias principales. Revisado el 9-nov-2026. Las
 | Skill | Licencia | Origen |
 |-------|----------|--------|
 | `interface-design` (skill y comandos `/interface-design:*`) | MIT (Damola Akinleye) | github.com/Dammyjay93/interface-design, commit en `.claude/skills/SOURCES.md` |
+| `web-interface-guidelines` | MIT (Vercel Labs) | github.com/vercel-labs/web-interface-guidelines, commit en `.claude/skills/SOURCES.md` |
+| `emil-design-eng` | MIT (Emil Kowalski) | github.com/emilkowalski/skill, commit en `.claude/skills/SOURCES.md` |
 | `frontend-design` | Apache-2.0 (Anthropic) | github.com/anthropics/skills, commit en `.claude/skills/SOURCES.md` |
 
 ## Datos de prueba de visión (no van a producción)
