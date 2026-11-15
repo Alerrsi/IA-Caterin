@@ -39,7 +39,7 @@ export function Logo({ size = 'md', className = '' }: { size?: 'sm' | 'md'; clas
   return (
     <span className={`inline-flex items-center gap-2 ${className}`}>
       <Isotipo className={sm ? 'h-8 w-8' : 'h-10 w-10'} />
-      <span className={`font-display font-semibold tracking-tight text-brand ${sm ? 'text-xl' : 'text-2xl'}`}>
+      <span className={`font-display font-medium tracking-tight text-brand ${sm ? 'text-xl' : 'text-2xl'}`}>
         {t.appName}
       </span>
     </span>
@@ -55,18 +55,18 @@ export function Logo({ size = 'md', className = '' }: { size?: 'sm' | 'md'; clas
 export function AuthLayout({ children, titleAsHeading = false }: { children: ReactNode; titleAsHeading?: boolean }) {
   const Title = titleAsHeading ? 'h1' : 'p'
   return (
-    <main className="min-h-dvh bg-surface-container lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
-      <header className="bg-brand px-6 pb-16 pt-10 text-on-brand lg:flex lg:flex-col lg:justify-center lg:px-16 lg:pb-10">
+    <main className="min-h-dvh bg-surface-container-low grid-paper lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
+      <header className="hatch bg-brand px-6 pb-16 pt-10 text-on-brand lg:flex lg:flex-col lg:justify-center lg:px-16 lg:pb-10">
         <div className="mx-auto flex max-w-md items-center gap-4 lg:mx-0 lg:block">
           <Isotipo framed={false} className="h-20 w-20 shrink-0 lg:-ml-4 lg:h-40 lg:w-40" />
           <div>
-            <Title className="font-display text-5xl font-semibold tracking-tight lg:mt-2 lg:text-7xl">{t.appName}</Title>
-            <p className="mt-1 text-lg text-on-brand/90 lg:mt-4 lg:max-w-sm lg:text-2xl">{t.tagline}</p>
+            <Title className="font-display text-5xl font-medium tracking-tight lg:mt-2 lg:text-7xl">{t.appName}</Title>
+            <p className="mt-1 font-display text-lg italic text-on-brand/90 lg:mt-4 lg:max-w-sm lg:text-2xl">{t.tagline}</p>
           </div>
         </div>
       </header>
       <div className="-mt-8 px-4 pb-10 lg:mt-0 lg:flex lg:items-center lg:justify-center lg:py-10">
-        <div className="mx-auto w-full max-w-md rounded-3xl border border-outline-variant bg-surface-container-lowest p-6 md:p-10">
+        <div className="mx-auto w-full max-w-md rounded-3xl border border-outline-variant bg-surface-container-lowest p-6 shadow-cap md:p-10">
           {children}
         </div>
       </div>

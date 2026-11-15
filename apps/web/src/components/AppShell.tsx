@@ -51,7 +51,7 @@ function DrawerItem({ dest, path, onNavigate }: { dest: Dest; path: string; onNa
         href={`#${dest.path}`}
         onClick={onNavigate}
         aria-current={active ? 'page' : undefined}
-        className={`flex h-14 items-center gap-3 rounded-lg px-4 text-base font-medium focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 ${
+        className={`flex h-14 items-center gap-3 rounded-lg px-4 text-base font-medium transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 ${
           active ? 'bg-secondary-container text-on-secondary-container' : 'text-on-surface-variant hover:bg-on-surface/8'
         }`}
       >
@@ -63,7 +63,7 @@ function DrawerItem({ dest, path, onNavigate }: { dest: Dest; path: string; onNa
 }
 
 /**
- * Marco de la app con Material Design 3, pensado primero para escritorio y adaptable al celular:
+ * Marco de la app ("plano de cocina", T16), pensado primero para escritorio y adaptable al celular:
  * - Desde 1024 px: cajón de navegación fijo a la izquierda y el contenido al lado.
  * - Más angosto: barra superior con menú (cajón modal) y barra de navegación inferior con los destinos principales.
  */
@@ -93,12 +93,12 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
           ))}
         </ul>
       </nav>
-      <div className="border-t border-outline-variant px-1 pt-3">
+      <div className="border-t border-hairline px-1 pt-3">
         <p className="truncate px-3 text-sm text-on-surface-variant">{user?.full_name}</p>
         <button
           type="button"
           onClick={() => void logout()}
-          className="mt-1 flex h-12 w-full items-center gap-3 rounded-lg px-3 text-base font-medium text-on-surface-variant hover:bg-on-surface/8 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30"
+          className="mt-1 flex h-12 w-full items-center gap-3 rounded-lg px-3 text-base font-medium text-on-surface-variant transition-colors hover:bg-on-surface/8 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30"
         >
           <Icon name="logout" className="h-6 w-6" />
           {t.home.logout}
@@ -108,20 +108,20 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
   )
 
   return (
-    <div className="min-h-dvh lg:pl-72">
-      {/* Escritorio: cajón fijo */}
-      <aside className="fixed inset-y-0 left-0 hidden w-72 border-r border-outline-variant bg-surface-container-low lg:block">
+    <div className="min-h-dvh lg:grid-paper lg:pl-72">
+      {/* Escritorio: cajón fijo, del mismo color que el lienzo y separado por una línea fina. */}
+      <aside className="fixed inset-y-0 left-0 z-10 hidden w-72 border-r border-hairline bg-surface-container-low lg:block">
         {drawer()}
       </aside>
 
       {/* Celular y tablet: barra superior */}
-      <header className="sticky top-0 z-20 flex h-16 items-center gap-2 bg-surface-container px-2 lg:hidden">
+      <header className="sticky top-0 z-20 flex h-16 items-center gap-2 border-b border-hairline bg-surface-container-low px-2 lg:hidden">
         <button
           type="button"
           onClick={() => setOpen(true)}
           aria-label={t.nav.open}
           aria-expanded={open}
-          className="inline-flex h-12 w-12 items-center justify-center rounded-full text-on-surface-variant hover:bg-on-surface/8 focus-visible:ring-4 focus-visible:ring-primary/30"
+          className="inline-flex h-12 w-12 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-on-surface/8 focus-visible:ring-4 focus-visible:ring-primary/30"
         >
           <Icon name="menu" />
         </button>
@@ -148,10 +148,10 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
 
       {children}
 
-      {/* Celular y tablet: barra de navegación inferior (MD3 navigation bar) */}
+      {/* Celular y tablet: barra de navegación inferior */}
       <nav
         aria-label={t.nav.main}
-        className="fixed inset-x-0 bottom-0 z-20 border-t border-outline-variant bg-surface-container pb-[env(safe-area-inset-bottom)] lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-20 border-t border-hairline bg-surface-container-low pb-[env(safe-area-inset-bottom)] lg:hidden"
       >
         <ul className="mx-auto flex max-w-xl">
           {dests
