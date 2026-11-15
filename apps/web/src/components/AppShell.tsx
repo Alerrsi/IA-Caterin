@@ -26,7 +26,7 @@ function destinations(role: string | undefined): Dest[] {
     { path: '/pedidos', label: t.nav.orders, icon: 'orders', bar: true },
     { path: '/preguntar', label: t.nav.assistant, icon: 'chat', bar: true },
     { path: '/inventario', label: t.nav.inventory, icon: 'inventory' },
-    { path: '/recetas', label: t.nav.recipes, icon: 'recipes' },
+    { path: '/recetas', label: t.nav.recipes, icon: 'restaurant' },
     { path: '/foto', label: t.nav.vision, icon: 'camera' },
     owner && { path: '/importar', label: t.nav.imports, icon: 'upload' },
     owner && { path: '/metricas', label: t.nav.metrics, icon: 'metrics' },

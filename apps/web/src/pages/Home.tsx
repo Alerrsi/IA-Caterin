@@ -121,7 +121,7 @@ export default function Home() {
           <ActionCard icon="inventory" label={t.home.inventory} hint={t.home.inventoryHint} onClick={() => navigate('/inventario')} />
           <ActionCard icon="chat" label={t.home.assistant} hint={t.home.assistantHint} onClick={() => navigate('/preguntar')} />
           <ActionCard icon="orders" label={t.home.orders} hint={t.home.ordersHint} onClick={() => navigate('/pedidos')} />
-          <ActionCard icon="recipes" label={t.home.recipes} hint={t.home.recipesHint} onClick={() => navigate('/recetas')} />
+          <ActionCard icon="restaurant" label={t.home.recipes} hint={t.home.recipesHint} onClick={() => navigate('/recetas')} />
           {owner && (
             <ActionCard icon="upload" label={t.home.imports} hint={t.home.importsHint} onClick={() => navigate('/importar')} />
           )}
