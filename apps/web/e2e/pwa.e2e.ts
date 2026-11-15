@@ -31,3 +31,22 @@ test('sin red: abre la app con la sesión recordada y muestra el inventario guar
   await page.screenshot({ path: 'e2e-artifacts/offline-inicio-390.png', fullPage: true })
   await context.setOffline(false)
 })
+
+test('la PWA instalable trae los íconos de la marca y las fuentes funcionan sin red (T14)', async ({ page, context }) => {
+  const manifest = await (await page.request.get(`${BASE}/manifest.webmanifest`)).json()
+  const purposes = manifest.icons.map((i: { src: string; purpose: string }) => `${i.src}:${i.purpose}`)
+  expect(purposes).toEqual(expect.arrayContaining(['pwa-512.png:any', 'pwa-maskable-512.png:maskable']))
+  expect(manifest.theme_color).toBe('#6d2a57')
+
+  await page.goto(`${BASE}/`)
+  await page.evaluate(() => navigator.serviceWorker.ready.then(() => true))
+  await context.setOffline(true)
+  await page.reload()
+  await expect(page.getByRole('heading', { level: 1, name: 'Cáterin' })).toBeVisible()
+  const loaded = await page.evaluate(async () => {
+    await document.fonts.ready
+    return [...document.fonts].filter((f) => f.status === 'loaded').map((f) => f.family)
+  })
+  expect(loaded).toEqual(expect.arrayContaining(['Roboto', 'Bricolage Grotesque Variable']))
+  await context.setOffline(false)
+})
