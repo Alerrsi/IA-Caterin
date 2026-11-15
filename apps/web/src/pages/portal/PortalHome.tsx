@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { api, ApiError, type PortalRequestSummary } from '../../api'
 import { useAuth } from '../../auth'
+import { Icon } from '../../components/Icon'
 import { Alert, Page, Spinner, StatusChip } from '../../components/ui'
 import { formatCLP, formatDate } from '../../format'
 import { t } from '../../i18n'
@@ -29,6 +30,18 @@ export default function PortalHome() {
         <span className="block text-lg font-medium">{t.portal.newQuote}</span>
         <span className="mt-1 block">{t.portal.newQuoteHint}</span>
       </button>
+      <a
+        href="#/pymes"
+        className="-mt-3 mb-6 flex items-center gap-4 rounded-xl border border-outline-variant bg-surface-container-lowest p-4 text-on-surface transition hover:bg-surface-container-low focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30"
+      >
+        <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-tertiary-container text-on-tertiary-container">
+          <Icon name="store" />
+        </span>
+        <span>
+          <span className="block text-lg font-medium">{t.catalog.homeLink}</span>
+          <span className="block text-on-surface-variant">{t.catalog.homeLinkHint}</span>
+        </span>
+      </a>
       {error && <Alert>{error}</Alert>}
       {!items ? (
         !error && <Spinner label={t.loading} />

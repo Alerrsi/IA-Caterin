@@ -21,14 +21,19 @@ import Orders from './pages/Orders'
 import QuoteView from './pages/QuoteView'
 import CustomerRegister from './pages/portal/CustomerRegister'
 import PortalHome from './pages/portal/PortalHome'
+import PortalPyme from './pages/portal/PortalPyme'
+import PortalPymes from './pages/portal/PortalPymes'
 import RequestView from './pages/portal/RequestView'
 import { matchPath, useHashPath } from './router'
 
-/** Un cliente del portal (ADR-007) solo ve sus cotizaciones: ninguna pantalla de la pyme. */
+/** Un cliente del portal (ADR-007) solo ve sus cotizaciones y el catálogo (ADR-009): ninguna pantalla de la pyme. */
 function CustomerRoutes({ path }: { path: string }) {
   const request = matchPath('/solicitudes/:id', path)
   if (request) return <RequestView key={request.id} id={request.id} />
-  if (matchPath('/cotizar', path)) return <NewQuote portal />
+  const pyme = matchPath('/pymes/:id', path)
+  if (pyme) return <PortalPyme key={pyme.id} id={pyme.id} />
+  if (matchPath('/pymes', path)) return <PortalPymes />
+  if (matchPath('/cotizar', path)) return <NewQuote key={path} portal />
   return <PortalHome />
 }
 

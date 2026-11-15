@@ -32,6 +32,15 @@ interface Line {
 }
 
 let nextKey = 1
+/** Unidad sugerida para un producto del catálogo según cómo rinde la receta. */
+const UNIT_FOR_YIELD: Record<string, OrderUnit> = { unit: 'unit', g: 'kg', ml: 'l' }
+
+/** Productos elegidos en el catálogo del portal (`#/cotizar?pyme=…&p=id1,id2`, ADR-009). */
+function pickedFromRoute(): string[] {
+  const ids = new URLSearchParams(currentPath().split('?')[1]).get('p')
+  return ids ? [...new Set(ids.split(',').filter(Boolean))].slice(0, 50) : []
+}
+
 const emptyLine = (): Line => ({
   key: nextKey++,
   requested_name: '',
@@ -49,12 +58,14 @@ const emptyLine = (): Line => ({
  */
 export default function NewQuote({ portal = false }: { portal?: boolean }) {
   const startedAt = useRef(new Date().toISOString())
-  const [step, setStep] = useState<'paste' | 'review'>('paste')
+  // Desde el catálogo se llega con productos elegidos: se salta el paso de escribir y se abre el formulario.
+  const [picked] = useState<string[]>(() => (portal ? pickedFromRoute() : []))
+  const [step, setStep] = useState<'paste' | 'review'>(picked.length ? 'review' : 'paste')
   const [text, setText] = useState('')
   const [reading, setReading] = useState(false)
   const [notice, setNotice] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [recipes, setRecipes] = useState<{ id: string; name: string }[]>([])
+  const [recipes, setRecipes] = useState<{ id: string; name: string; yield_unit?: string }[]>([])
   const [notes, setNotes] = useState('')
   // Portal: la pyme a la que se cotiza (sus productos y precios). Por defecto, la de la sesión.
   const { pyme: sessionPyme } = useAuth()
@@ -64,7 +75,9 @@ export default function NewQuote({ portal = false }: { portal?: boolean }) {
   const [customer, setCustomer] = useState('')
   const [eventDate, setEventDate] = useState('')
   const [guests, setGuests] = useState('')
-  const [lines, setLines] = useState<Line[]>([emptyLine()])
+  const [lines, setLines] = useState<Line[]>(() =>
+    picked.length ? picked.map((id) => ({ ...emptyLine(), recipe_id: id })) : [emptyLine()],
+  )
   const [source, setSource] = useState<'text' | 'form'>('form')
   const [extraction, setExtraction] = useState<Record<string, unknown> | null>(null)
   const [saving, setSaving] = useState(false)
@@ -86,10 +99,21 @@ export default function NewQuote({ portal = false }: { portal?: boolean }) {
 
   useEffect(() => {
     if (portal && !pymeId) return
-    api<{ id: string; name: string }[]>(portal ? `/portal/products?pyme_id=${encodeURIComponent(pymeId)}` : '/recipes')
-      .then(setRecipes)
+    api<{ id: string; name: string; yield_unit?: string }[]>(portal ? `/portal/products?pyme_id=${encodeURIComponent(pymeId)}` : '/recipes')
+      .then((list) => {
+        setRecipes(list)
+        if (!picked.length) return
+        // Los productos del catálogo: se descartan los que no son de esta pyme y se sugiere la unidad.
+        const byId = new Map(list.map((r) => [r.id, r]))
+        setLines((prev) => {
+          const kept = prev.filter((l) => !l.recipe_id || byId.has(l.recipe_id))
+          return kept.length
+            ? kept.map((l) => ({ ...l, unit: UNIT_FOR_YIELD[byId.get(l.recipe_id)?.yield_unit ?? ''] ?? l.unit }))
+            : [emptyLine()]
+        })
+      })
       .catch((err) => setError(err instanceof ApiError ? err.userMessage : t.genericError))
-  }, [portal, pymeId])
+  }, [portal, pymeId, picked])
 
   async function read() {
     setReading(true)

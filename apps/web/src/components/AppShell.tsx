@@ -16,6 +16,7 @@ function destinations(role: string | undefined): Dest[] {
   if (role === 'customer') {
     return [
       { path: '/', label: t.nav.myQuotes, icon: 'orders', bar: true },
+      { path: '/pymes', label: t.nav.pymes, icon: 'store', bar: true },
       { path: '/cotizar', label: t.nav.newQuote, icon: 'add', bar: true },
     ]
   }

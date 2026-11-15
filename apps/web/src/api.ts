@@ -458,6 +458,10 @@ export interface RecipeDetail {
   notes: string | null
   version: number
   is_active: boolean
+  catalog_description?: string | null
+  category?: string | null
+  visible_in_catalog?: boolean
+  photo_url?: string | null
   lines: RecipeLine[]
 }
 
@@ -492,6 +496,8 @@ export interface PymeSettings {
   quote_validity_days: number | null
   is_demo: boolean
   customer_code?: string | null
+  description?: string | null
+  logo_url?: string | null
 }
 
 export interface CountLine {
@@ -551,12 +557,25 @@ export interface PortalPyme {
   name: string
   commune: string | null
   joined: boolean
+  description: string | null
+  logo_url: string | null
 }
 
+/** Producto del catálogo del portal (ADR-009): sin costos, insumos ni stock. */
 export interface PortalProduct {
   id: string
   name: string
   yield_unit: 'g' | 'ml' | 'unit'
+  description: string | null
+  category: string | null
+  photo_url: string | null
+}
+
+/** Sube una imagen del catálogo (logo de la pyme o foto de producto). */
+export async function uploadImage<T>(path: string, image: Blob, name = 'imagen.jpg'): Promise<T> {
+  const form = new FormData()
+  form.append('image', image, name)
+  return api<T>(path, { method: 'PUT', body: form })
 }
 
 export interface CustomerQuote {
