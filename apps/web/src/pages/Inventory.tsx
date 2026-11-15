@@ -151,18 +151,18 @@ export default function Inventory() {
                   <span className="block text-lg font-medium text-on-surface">{ing.name}</span>
                   <span className="block text-on-surface">{formatStock(ing.stock_qty, ing.base_unit)}</span>
                   {ing.is_low && (
-                    <span className="mt-1 inline-block rounded-full bg-warning-container px-2 py-0.5 text-sm font-medium text-on-warning-container">
+                    <span className="mt-1 inline-block rounded-md bg-warning-container px-2 py-0.5 text-sm font-medium text-on-warning-container">
                       {t.inventory.low}
                       {ing.min_stock_qty && ` · ${t.inventory.min(formatStock(ing.min_stock_qty, ing.base_unit))}`}
                     </span>
                   )}
                   {priced && !priced.has(ing.id) && (
-                    <span className="mt-1 ml-1 inline-block rounded-full bg-error-container px-2 py-0.5 text-sm font-medium text-on-error-container">
+                    <span className="mt-1 ml-1 inline-block rounded-md bg-error-container px-2 py-0.5 text-sm font-medium text-on-error-container">
                       {t.inventory.noPrice}
                     </span>
                   )}
                   {pendingIds.has(ing.id) && (
-                    <span className="mt-1 ml-1 inline-block rounded-full bg-surface-container-highest px-2 py-0.5 text-sm font-medium text-on-surface">
+                    <span className="mt-1 ml-1 inline-block rounded-md bg-surface-container-highest px-2 py-0.5 text-sm font-medium text-on-surface">
                       {t.inventory.pendingBadge}
                     </span>
                   )}

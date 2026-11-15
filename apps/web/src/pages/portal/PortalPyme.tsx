@@ -39,7 +39,7 @@ function ProductCard({ product, added, onToggle }: { product: PortalProduct; add
             type="button"
             onClick={onToggle}
             aria-pressed={added}
-            className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full px-4 font-medium transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 ${
+            className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg px-4 font-medium transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 ${
               added ? 'bg-secondary-container text-on-secondary-container' : 'border border-outline text-primary hover:bg-primary/8'
             }`}
           >

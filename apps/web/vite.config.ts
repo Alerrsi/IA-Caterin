@@ -5,8 +5,8 @@ import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 const apiProxy = process.env.VITE_API_PROXY ?? 'http://localhost:8000'
-/** Color de la barra del sistema y del ícono instalado: maqui, la semilla del tema (igual en index.html). */
-export const THEME_COLOR = '#6d2a57'
+/** Color de la barra del sistema y del ícono instalado: laurel, la semilla del tema (igual en index.html). */
+export const THEME_COLOR = '#1f4d3f'
 
 export default defineConfig({
   plugins: [

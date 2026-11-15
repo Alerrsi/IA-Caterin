@@ -8,7 +8,7 @@ Necesita fontTools (no es dependencia de la app; solo se usa al rediseñar la ma
     PYTHONPATH=/tmp/pylib python3 scripts/brand.py
     npm run icons   # PNG de la PWA y del PDF desde estos SVG
 
-Colores: maqui (semilla del tema, `scripts/theme.mjs`) y los tonos claros del mismo esquema.
+Colores: laurel (semilla del tema, `scripts/theme.mjs`), la superficie clara del tema y el vapor cobre claro.
 """
 
 from __future__ import annotations
@@ -24,9 +24,9 @@ WEB = Path(__file__).resolve().parent.parent
 FONT = WEB / "node_modules/@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2"
 OUT = WEB / "public/brand"
 
-MAQUI = "#6d2a57"  # semilla
-CREAM = "#fff8f8"  # surface del tema (no crema: casi blanco con un tinte de maqui)
-STEAM = "#ffd8eb"  # primary-container
+LAUREL = "#1f4d3f"  # semilla (token brand)
+CREAM = "#faf9f7"  # surface del tema (on-brand): casi blanco, sin crema
+STEAM = "#ffdbcd"  # tertiary-container (brand-steam): vapor cobre, "comida caliente"
 WORD = "Cáterin"
 WEIGHT = 640
 TRACKING = -12  # unidades de la fuente (1000 por em)
@@ -45,14 +45,14 @@ GLYPH = """
   </g>"""
 
 
-def glyph(fg: str = CREAM, steam: str = STEAM, shine: str = MAQUI) -> str:
+def glyph(fg: str = CREAM, steam: str = STEAM, shine: str = LAUREL) -> str:
     return GLYPH.format(fg=fg, steam=steam, shine=shine)
 
 
 def isotipo() -> str:
     return (
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">'
-        f'<title>Cáterin</title><rect width="512" height="512" rx="116" fill="{MAQUI}"/>{glyph()}</svg>\n'
+        f'<title>Cáterin</title><rect width="512" height="512" rx="116" fill="{LAUREL}"/>{glyph()}</svg>\n'
     )
 
 
@@ -60,7 +60,7 @@ def maskable() -> str:
     """Fondo completo y el dibujo dentro de la zona segura (círculo del 80 %): Android recorta la forma."""
     return (
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><title>Cáterin</title>'
-        f'<rect width="512" height="512" fill="{MAQUI}"/>'
+        f'<rect width="512" height="512" fill="{LAUREL}"/>'
         f'<g transform="translate(256 256) scale(0.72) translate(-256 -256)">{glyph()}</g></svg>\n'
     )
 
@@ -95,7 +95,7 @@ def wordmark() -> tuple[str, float, float, float]:
     return pen.getCommands(), x - TRACKING, cap, float(-font["hhea"].descent)
 
 
-def horizontal(word: tuple[str, float, float, float], color: str = MAQUI, iso: bool = True) -> str:
+def horizontal(word: tuple[str, float, float, float], color: str = LAUREL, iso: bool = True) -> str:
     d, width, cap, _ = word
     # El isotipo mide 512; la palabra se escala para que su mayúscula mida ~46 % del isotipo.
     scale = 512 * 0.46 / cap
@@ -103,7 +103,7 @@ def horizontal(word: tuple[str, float, float, float], color: str = MAQUI, iso: b
     w_word = width * scale
     total = 512 + gap + w_word
     baseline = 256 + cap * scale / 2
-    iso_svg = f'<rect width="512" height="512" rx="116" fill="{MAQUI}"/>{glyph()}' if iso else ""
+    iso_svg = f'<rect width="512" height="512" rx="116" fill="{LAUREL}"/>{glyph()}' if iso else ""
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {total:.0f} 512"><title>Cáterin</title>{iso_svg}'
         f'<path transform="translate({512 + gap} {baseline:.1f}) scale({scale:.4f})" fill="{color}" d="{d}"/></svg>\n'
@@ -122,8 +122,8 @@ def stacked(word: tuple[str, float, float, float]) -> str:
     wx = (total_w - w_word) / 2
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {total_w:.0f} {height:.0f}"><title>Cáterin</title>'
-        f'<g transform="translate({ix:.1f} 0)"><rect width="512" height="512" rx="116" fill="{MAQUI}"/>{glyph()}</g>'
-        f'<path transform="translate({wx:.1f} {baseline:.1f}) scale({scale:.4f})" fill="{MAQUI}" d="{d}"/></svg>\n'
+        f'<g transform="translate({ix:.1f} 0)"><rect width="512" height="512" rx="116" fill="{LAUREL}"/>{glyph()}</g>'
+        f'<path transform="translate({wx:.1f} {baseline:.1f}) scale({scale:.4f})" fill="{LAUREL}" d="{d}"/></svg>\n'
     )
 
 

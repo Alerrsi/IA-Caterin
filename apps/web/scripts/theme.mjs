@@ -7,14 +7,17 @@
  *   npm run theme            # escribe src/index.css
  *   npm run theme -- --check # falla si src/index.css no coincide con lo generado (lo usa CI)
  *
- * Semilla: maqui, la baya nativa de La Araucanía. Las paletas tonales se arman a mano (tono y croma) y los roles los
- * calcula `DynamicScheme` de MD3, con los mismos tonos que el esquema "tonal spot", en modo claro:
- * - primaria: tono de la semilla con croma 48 (más viva que tonal spot, que la apaga a 36);
- * - secundaria: mismo tono con croma 16 (recesiva, como manda MD3);
- * - terciaria: verde araucaria, el acento que contrasta;
- * - neutros: tono de la semilla con croma 2 y 5, casi sin tinte (ni gris frío ni crema).
- * Los estados que MD3 no define (aviso, éxito, información) parten de un tono fijo, se armonizan con la semilla y se
- * limitan de croma para que los contenedores no queden chillones.
+ * Semilla: laurel, el verde profundo de las hierbas de cocina (ADR-008, revisión del 15-nov-2026). Dirección
+ * "cocina profesional ordenada": una sola tinta de marca, neutros casi blancos y un acento cobre (las ollas) que se usa
+ * poco. Las paletas tonales se arman a mano (tono y croma) y los roles los calcula `DynamicScheme`, en modo claro:
+ * - primaria: tono de la semilla con croma 30 (botones y enlaces);
+ * - contenedores de la primaria: mismo tono con croma 14, para que los fondos suaves no queden menta chillón;
+ * - secundaria: mismo tono con croma 10 (recesiva);
+ * - terciaria: cobre, el único acento cálido;
+ * - neutros: tono de la semilla con croma 2 y 4: superficies casi blancas, sin crema ni gris azulado.
+ * Los estados (aviso, éxito, información) parten de un tono fijo, se armonizan con la semilla y se limitan de croma.
+ * Los nombres de los tokens siguen los roles de Material Design 3 por compatibilidad con los componentes; la guía de
+ * diseño ya no es MD3 sino `interface-design` (ver `.claude/skills/SOURCES.md`).
  *
  * Se usa la versión 0.3.0 de material-color-utilities: la 0.4.0 publica ESM sin extensiones y no corre en Node.
  */
@@ -23,10 +26,10 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { argbFromHex, Blend, DynamicScheme, hexFromArgb, Hct, TonalPalette } from '@material/material-color-utilities'
 
-export const SEED = '#6d2a57' // maqui
-const ARAUCARIA = '#3f5f3a'
+export const SEED = '#1f4d3f' // laurel
+const COBRE = '#a0522d'
 const STATES = { warning: '#8a6100', success: '#2e7d32', info: '#2f6290' }
-const STATE_CHROMA = 32
+const STATE_CHROMA = 22
 const TONAL_SPOT = 2 // Variant.TONAL_SPOT (el enum no se exporta en 0.3.0)
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -44,11 +47,11 @@ export function tokens(seed = SEED) {
     variant: TONAL_SPOT,
     contrastLevel: 0,
     isDark: false,
-    primaryPalette: palette(src.hue, 48),
-    secondaryPalette: palette(src.hue, 16),
-    tertiaryPalette: palette(Hct.fromInt(argbFromHex(ARAUCARIA)).hue, 30),
+    primaryPalette: palette(src.hue, 30),
+    secondaryPalette: palette(src.hue, 10),
+    tertiaryPalette: palette(Hct.fromInt(argbFromHex(COBRE)).hue, 40),
     neutralPalette: palette(src.hue, 2),
-    neutralVariantPalette: palette(src.hue, 5),
+    neutralVariantPalette: palette(src.hue, 4),
   })
   const roles = {
     primary: s.primary,
@@ -84,6 +87,10 @@ export function tokens(seed = SEED) {
     'on-error-container': s.onErrorContainer,
   }
   const out = Object.fromEntries(Object.entries(roles).map(([k, v]) => [k, hex(v)]))
+  // Contenedores de la primaria más sobrios que MD3 (mismo tono 90/30, menos croma).
+  const soft = palette(src.hue, 14)
+  out['primary-container'] = hex(soft.tone(90))
+  out['on-primary-container'] = hex(soft.tone(30))
   for (const [name, base] of Object.entries(STATES)) {
     const h = Hct.fromInt(Blend.harmonize(argbFromHex(base), argbFromHex(seed)))
     const p = palette(h.hue, Math.min(h.chroma, STATE_CHROMA))
@@ -91,16 +98,16 @@ export function tokens(seed = SEED) {
     out[`${name}-container`] = hex(p.tone(90))
     out[`on-${name}-container`] = hex(p.tone(10))
   }
-  // Marca: el maqui puro de la semilla (logo, barra del sistema y panel del login) y sus tonos claros.
+  // Marca: el laurel puro de la semilla (logo, barra del sistema y panel del login) y el vapor cobre claro.
   out.brand = seed.toLowerCase()
   out['on-brand'] = hex(s.surface)
-  out['brand-steam'] = hex(s.primaryContainer)
+  out['brand-steam'] = hex(s.tertiaryContainer)
   return out
 }
 
 export function block(seed = SEED) {
   const lines = Object.entries(tokens(seed)).map(([k, v]) => `  --color-${k}: ${v};`)
-  return [START, `  /* Semilla ${seed} (maqui), terciaria ${ARAUCARIA} (araucaria). */`, ...lines, `  ${END}`].join('\n')
+  return [START, `  /* Semilla ${seed} (laurel), terciaria ${COBRE} (cobre). */`, ...lines, `  ${END}`].join('\n')
 }
 
 function main() {

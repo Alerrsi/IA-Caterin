@@ -175,7 +175,7 @@ export default function Imports() {
         <div>
           <p className="mb-1 font-medium text-on-surface">{t.imports.file}</p>
           {/* Botón propio: el selector nativo muestra "Choose File" en inglés */}
-          <label className="flex min-h-12 w-full cursor-pointer items-center rounded-full border border-outline bg-transparent px-6 py-3 text-base font-medium text-primary hover:bg-primary/8 focus-within:ring-4 focus-within:ring-primary/40">
+          <label className="flex min-h-12 w-full cursor-pointer items-center rounded-lg border border-outline bg-transparent px-6 py-3 text-base font-medium text-primary hover:bg-primary/8 focus-within:ring-4 focus-within:ring-primary/40">
             <span className="truncate">{file ? t.imports.chosen(file.name) : t.imports.chooseFile}</span>
             <input
               className="sr-only"

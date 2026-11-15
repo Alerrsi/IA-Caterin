@@ -66,7 +66,7 @@ export default function IngredientDetail({ id }: { id: string }) {
               </p>
             )}
             {pendingIds.has(ing.id) && (
-              <span className="mt-1 inline-block rounded-full bg-surface-container-highest px-2 py-0.5 text-sm font-medium text-on-surface">
+              <span className="mt-1 inline-block rounded-md bg-surface-container-highest px-2 py-0.5 text-sm font-medium text-on-surface">
                 {t.inventory.pendingBadge}
               </span>
             )}

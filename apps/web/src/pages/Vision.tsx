@@ -33,7 +33,7 @@ function objectUrl(blob: Blob): string | null {
 }
 
 const fileButton =
-  'flex min-h-14 w-full cursor-pointer items-center justify-center rounded-full px-6 py-3 text-lg font-medium focus-within:ring-4 focus-within:ring-primary/40'
+  'flex min-h-14 w-full cursor-pointer items-center justify-center rounded-lg px-6 py-3 text-lg font-medium focus-within:ring-4 focus-within:ring-primary/40'
 
 function PhotoInput({ label, capture, onFile, primary }: { label: string; capture?: boolean; onFile: (f: File) => void; primary?: boolean }) {
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +59,7 @@ function PhotoInput({ label, capture, onFile, primary }: { label: string; captur
 
 function Stepper({ name, value, onChange }: { name: string; value: number; onChange: (n: number) => void }) {
   const btn =
-    'min-h-14 min-w-14 rounded-full border border-outline bg-transparent text-3xl font-medium text-primary focus-visible:ring-4 focus-visible:ring-primary/40 disabled:border-outline-variant disabled:text-on-surface/40'
+    'min-h-14 min-w-14 rounded-lg border border-outline bg-transparent text-3xl font-medium text-primary focus-visible:ring-4 focus-visible:ring-primary/40 disabled:border-outline-variant disabled:text-on-surface/40'
   return (
     <div className="flex items-center gap-3">
       <button type="button" className={btn} aria-label={t.vision.decrease(name)} disabled={value <= 0} onClick={() => onChange(Math.max(0, value - 1))}>

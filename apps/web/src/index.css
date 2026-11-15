@@ -1,57 +1,57 @@
 @import 'tailwindcss';
 
 /*
- * Material Design 3 con la identidad de Cáterin (T14, ADR-008). Los nombres siguen los roles de color de MD3
- * (primary, surface-container, on-surface-variant…), así cada componente usa el rol y no un color fijo.
- * Los colores los genera `scripts/theme.mjs` desde la semilla (maqui); el contraste AA de cada par texto/fondo lo
- * verifica `src/theme.test.ts`.
+ * Identidad de Cáterin (T14, ADR-008): "cocina profesional ordenada". Los nombres siguen los roles de color de
+ * Material Design 3 (primary, surface-container, on-surface-variant…), así cada componente usa el rol y no un color
+ * fijo. Los colores los genera `scripts/theme.mjs` desde la semilla (laurel); el contraste AA de cada par texto/fondo
+ * lo verifica `src/theme.test.ts`.
  */
 @theme {
   /* theme:start (generado por scripts/theme.mjs; no editar a mano) */
-  /* Semilla #6d2a57 (maqui), terciaria #3f5f3a (araucaria). */
-  --color-primary: #924276;
+  /* Semilla #1f4d3f (laurel), terciaria #a0522d (cobre). */
+  --color-primary: #2d6956;
   --color-on-primary: #ffffff;
-  --color-primary-container: #ffd8eb;
-  --color-on-primary-container: #752a5d;
-  --color-secondary: #715765;
+  --color-primary-container: #d1e8dd;
+  --color-on-primary-container: #374b43;
+  --color-secondary: #54615b;
   --color-on-secondary: #ffffff;
-  --color-secondary-container: #fbd9ea;
-  --color-on-secondary-container: #57404d;
-  --color-tertiary: #44673f;
+  --color-secondary-container: #d8e6de;
+  --color-on-secondary-container: #3d4944;
+  --color-tertiary: #924b29;
   --color-on-tertiary: #ffffff;
-  --color-tertiary-container: #c5edbb;
-  --color-on-tertiary-container: #2d4e29;
-  --color-surface: #fff8f8;
-  --color-surface-dim: #dfd8d9;
-  --color-surface-bright: #fff8f8;
+  --color-tertiary-container: #ffdbcd;
+  --color-on-tertiary-container: #743414;
+  --color-surface: #faf9f7;
+  --color-surface-dim: #dbdad8;
+  --color-surface-bright: #faf9f7;
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f9f2f3;
-  --color-surface-container: #f3eced;
-  --color-surface-container-high: #ede6e7;
-  --color-surface-container-highest: #e8e1e2;
-  --color-on-surface: #1d1b1c;
-  --color-on-surface-variant: #4c4548;
-  --color-outline: #7e7578;
-  --color-outline-variant: #cfc4c7;
-  --color-inverse-surface: #333031;
-  --color-inverse-on-surface: #f6eff0;
-  --color-inverse-primary: #ffaedd;
+  --color-surface-container-low: #f5f3f1;
+  --color-surface-container: #efeeec;
+  --color-surface-container-high: #e9e8e6;
+  --color-surface-container-highest: #e3e2e0;
+  --color-on-surface: #1b1c1b;
+  --color-on-surface-variant: #444845;
+  --color-outline: #757875;
+  --color-outline-variant: #c4c7c4;
+  --color-inverse-surface: #303130;
+  --color-inverse-on-surface: #f2f0ef;
+  --color-inverse-primary: #97d3bd;
   --color-error: #ba1a1a;
   --color-on-error: #ffffff;
   --color-error-container: #ffdad6;
   --color-on-error-container: #93000a;
-  --color-warning: #825521;
-  --color-warning-container: #ffdcbd;
-  --color-on-warning-container: #2c1600;
-  --color-success: #4f6531;
-  --color-success-container: #d1ecaa;
-  --color-on-success-container: #112000;
-  --color-info: #485e8a;
-  --color-info-container: #d8e2ff;
-  --color-on-info-container: #001a41;
-  --color-brand: #6d2a57;
-  --color-on-brand: #fff8f8;
-  --color-brand-steam: #ffd8eb;
+  --color-warning: #6a5e33;
+  --color-warning-container: #f3e2ac;
+  --color-on-warning-container: #221b00;
+  --color-success: #466551;
+  --color-success-container: #c8ebd1;
+  --color-on-success-container: #022111;
+  --color-info: #456274;
+  --color-info-container: #c8e7fd;
+  --color-on-info-container: #001e2d;
+  --color-brand: #1f4d3f;
+  --color-on-brand: #faf9f7;
+  --color-brand-steam: #ffdbcd;
   /* theme:end */
 
   /* Fuentes autoalojadas (ver src/fonts.css): funcionan sin red. Roboto para el cuerpo (MD3) y Bricolage Grotesque
@@ -59,13 +59,13 @@
   --font-sans: Roboto, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
   --font-display: 'Bricolage Grotesque Variable', Roboto, system-ui, sans-serif;
 
-  /* Forma: las clases de Tailwind apuntan a los tokens de esquina de MD3, en px (la raíz es de 17 px y en rem
-     no calzarían). */
-  --radius-md: 4px; /* extra-small: campos de texto */
-  --radius-lg: 8px; /* small: chips y etiquetas */
-  --radius-xl: 12px; /* medium: tarjetas y avisos */
-  --radius-2xl: 16px; /* large: cajón de navegación */
-  --radius-3xl: 28px; /* extra-large: diálogos y la tarjeta del login */
+  /* Forma: esquinas contenidas, de herramienta de trabajo (no píldoras). En px: la raíz es de 17 px y en rem no
+     calzarían. Anidadas, la de afuera es la de adentro más el relleno. */
+  --radius-md: 6px; /* campos de texto y etiquetas de estado */
+  --radius-lg: 8px; /* botones, chips y elementos de navegación */
+  --radius-xl: 12px; /* tarjetas y avisos */
+  --radius-2xl: 16px; /* cajón de navegación */
+  --radius-3xl: 20px; /* tarjeta del login */
 }
 
 html {
@@ -80,5 +80,13 @@ body {
 /* Títulos de pantalla con la tipografía de la marca (MD3 headline). */
 h1 {
   font-family: var(--font-display);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
+}
+h1,
+h2 {
+  text-wrap: balance;
+}
+/* Cifras que cambian (precios, cantidades, stock) en columnas parejas. */
+table {
+  font-variant-numeric: tabular-nums;
 }

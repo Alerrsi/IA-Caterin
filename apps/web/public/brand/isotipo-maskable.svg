@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><title>Cáterin</title><rect width="512" height="512" fill="#6d2a57"/><g transform="translate(256 256) scale(0.72) translate(-256 -256)">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><title>Cáterin</title><rect width="512" height="512" fill="#1f4d3f"/><g transform="translate(256 256) scale(0.72) translate(-256 -256)">
   <g transform="translate(0 20)">
-    <path d="M216 164c-14-12 14-24 0-36s14-24 0-36M296 164c-14-12 14-24 0-36s14-24 0-36" fill="none" stroke="#ffd8eb"
+    <path d="M216 164c-14-12 14-24 0-36s14-24 0-36M296 164c-14-12 14-24 0-36s14-24 0-36" fill="none" stroke="#ffdbcd"
       stroke-width="18" stroke-linecap="round"/>
-    <circle cx="256" cy="190" r="20" fill="#fff8f8"/>
-    <path d="M126 336a130 130 0 0 1 260 0z" fill="#fff8f8"/>
-    <rect x="96" y="350" width="320" height="30" rx="15" fill="#fff8f8"/>
-    <path d="M182 304a92 92 0 0 1 52-62" fill="none" stroke="#6d2a57" stroke-width="16" stroke-linecap="round"/>
+    <circle cx="256" cy="190" r="20" fill="#faf9f7"/>
+    <path d="M126 336a130 130 0 0 1 260 0z" fill="#faf9f7"/>
+    <rect x="96" y="350" width="320" height="30" rx="15" fill="#faf9f7"/>
+    <path d="M182 304a92 92 0 0 1 52-62" fill="none" stroke="#1f4d3f" stroke-width="16" stroke-linecap="round"/>
   </g></g></svg>

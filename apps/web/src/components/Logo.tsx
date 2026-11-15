@@ -48,7 +48,7 @@ export function Logo({ size = 'md', className = '' }: { size?: 'sm' | 'md'; clas
 
 /**
  * Marco de las pantallas sin sesión (entrar, crear cuenta, registro de cliente). El único momento "fuerte" de la marca:
- * un panel maqui con la cloche grande; todo lo demás queda sobrio. En el celular el panel va arriba y el formulario lo
+ * un panel laurel con la cloche grande; todo lo demás queda sobrio. En el celular el panel va arriba y el formulario lo
  * monta encima; desde 1024 px, a la izquierda.
  * `titleAsHeading`: en el login la marca es el título de la pantalla (h1); en los registros el título es el del formulario.
  */

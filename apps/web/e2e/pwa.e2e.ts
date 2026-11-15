@@ -36,7 +36,7 @@ test('la PWA instalable trae los íconos de la marca y las fuentes funcionan sin
   const manifest = await (await page.request.get(`${BASE}/manifest.webmanifest`)).json()
   const purposes = manifest.icons.map((i: { src: string; purpose: string }) => `${i.src}:${i.purpose}`)
   expect(purposes).toEqual(expect.arrayContaining(['pwa-512.png:any', 'pwa-maskable-512.png:maskable']))
-  expect(manifest.theme_color).toBe('#6d2a57')
+  expect(manifest.theme_color).toBe('#1f4d3f')
 
   await page.goto(`${BASE}/`)
   await page.evaluate(() => navigator.serviceWorker.ready.then(() => true))

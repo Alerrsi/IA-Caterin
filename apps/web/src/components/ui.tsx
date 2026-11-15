@@ -4,8 +4,8 @@ import { dismissFailed, useQueue } from '../offline/queue'
 import { Icon, type IconName } from './Icon'
 
 /**
- * Componentes base con Material Design 3 (esquema neutro de `index.css`). Botones de 48 px de alto mínimo (área
- * táctil), forma de píldora y foco visible; tarjetas delineadas; campos de texto delineados.
+ * Componentes base sobre los roles de color de `index.css`. Botones de 48 px de alto mínimo (área táctil), esquina de
+ * 8 px y foco visible; tarjetas delineadas; campos de texto delineados.
  */
 type Variant = 'primary' | 'tonal' | 'secondary' | 'ghost'
 
@@ -30,7 +30,7 @@ export function Button({
   return (
     <button
       type="button"
-      className={`inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-2.5 text-base font-medium tracking-wide transition focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 disabled:cursor-not-allowed ${VARIANTS[variant]} ${className}`}
+      className={`inline-flex min-h-12 items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-base font-medium transition focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 disabled:cursor-not-allowed ${VARIANTS[variant]} ${className}`}
       {...props}
     />
   )
@@ -104,7 +104,7 @@ export function Field({ label, children, hint }: { label: string; children: Reac
   )
 }
 
-// MD3 "outlined text field": esquina de 4 px, borde que se engrosa con el foco.
+// Campo delineado: esquina de 6 px, borde que se engrosa con el foco.
 export const inputClass =
   'w-full min-h-12 rounded-md border border-outline bg-surface-container-lowest px-4 py-2 text-base text-on-surface placeholder:text-on-surface-variant/70 hover:border-on-surface focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-60'
 
@@ -160,7 +160,7 @@ export function OfflineBanner() {
                 <button
                   type="button"
                   onClick={() => void dismissFailed(op.id)}
-                  className="min-h-12 shrink-0 rounded-full px-4 font-medium hover:bg-on-error-container/8 focus-visible:ring-4 focus-visible:ring-error/40"
+                  className="min-h-12 shrink-0 rounded-lg px-4 font-medium hover:bg-on-error-container/8 focus-visible:ring-4 focus-visible:ring-error/40"
                 >
                   {t.sync.dismiss}
                 </button>

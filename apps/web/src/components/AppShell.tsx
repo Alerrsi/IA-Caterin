@@ -51,7 +51,7 @@ function DrawerItem({ dest, path, onNavigate }: { dest: Dest; path: string; onNa
         href={`#${dest.path}`}
         onClick={onNavigate}
         aria-current={active ? 'page' : undefined}
-        className={`flex h-14 items-center gap-3 rounded-full px-4 text-base font-medium focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 ${
+        className={`flex h-14 items-center gap-3 rounded-lg px-4 text-base font-medium focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 ${
           active ? 'bg-secondary-container text-on-secondary-container' : 'text-on-surface-variant hover:bg-on-surface/8'
         }`}
       >
@@ -98,7 +98,7 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
         <button
           type="button"
           onClick={() => void logout()}
-          className="mt-1 flex h-12 w-full items-center gap-3 rounded-full px-3 text-base font-medium text-on-surface-variant hover:bg-on-surface/8 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30"
+          className="mt-1 flex h-12 w-full items-center gap-3 rounded-lg px-3 text-base font-medium text-on-surface-variant hover:bg-on-surface/8 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30"
         >
           <Icon name="logout" className="h-6 w-6" />
           {t.home.logout}
@@ -166,7 +166,7 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
                     className="flex h-20 flex-col items-center justify-center gap-1 text-xs font-medium text-on-surface-variant focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-primary/30"
                   >
                     <span
-                      className={`inline-flex h-8 w-16 items-center justify-center rounded-full ${active ? 'bg-secondary-container text-on-secondary-container' : ''}`}
+                      className={`inline-flex h-8 w-16 items-center justify-center rounded-lg ${active ? 'bg-secondary-container text-on-secondary-container' : ''}`}
                     >
                       <Icon name={d.icon} />
                     </span>

@@ -23,9 +23,9 @@ from app.core.units import format_decimal
 from app.db.models import Order, Pyme, Quote
 
 TZ = ZoneInfo("America/Santiago")
-# Colores de la marca Cáterin (T14, ADR-008): maqui y el fondo claro del mismo tema (apps/web/scripts/theme.mjs).
-BRAND = colors.HexColor("#6d2a57")
-STRIPE = colors.HexColor("#f9f2f3")
+# Colores de la marca Cáterin (T14, ADR-008): laurel y el fondo claro del mismo tema (apps/web/scripts/theme.mjs).
+BRAND = colors.HexColor("#1f4d3f")
+STRIPE = colors.HexColor("#f5f3f1")
 # El PDF es de la pyme para su cliente: Cáterin solo firma al pie, con el isotipo en una tinta.
 ISOTIPO = Path(__file__).resolve().parents[2] / "assets" / "caterin-isotipo-mono.png"
 
