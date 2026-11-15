@@ -1265,6 +1265,74 @@ class Builder:
         self.s.commit()
 
 
+# --------------------------------------------------------------------------- catálogo del portal (ADR-009)
+
+PYME_DESCRIPTION = (
+    "Banquetería familiar de Temuco (SINTÉTICA): cóctel, empanadas y tortas para eventos de 20 a 300 personas, "
+    "con productos del sur como murta y maqui."
+)
+CATEGORIES = {
+    "Empanadas y fritos": ("Empanadas", "Sopaipillas"),
+    "Cóctel": ("Canapés", "Brochetas", "Mini ", "Tapaditos", "Choripanes"),
+    "Sándwiches": ("Sándwich",),
+    "Dulces y tortas": ("Pie ", "Kuchen", "Torta", "Alfajores"),
+    "Bebestibles": ("Mote con huesillo",),
+    "Platos y ensaladas": ("Ensalada", "Pastel de choclo", "Ceviche"),
+}
+DESCRIPTIONS = {
+    "Empanadas de pino": "Pino de carne cortada a cuchillo, horneadas el mismo día.",
+    "Empanadas de queso": "Fritas, de queso mantecoso. Se entregan tibias.",
+    "Canapés de queso de cabra y murta": "Queso de cabra con mermelada de murta del sur.",
+    "Brochetas caprese": "Tomate cherry, queso fresco y albahaca.",
+    "Kuchen de murta": "Masa de mantequilla y murta de la temporada.",
+    "Torta tres leches": "Bizcocho húmedo con merengue. Desde 15 porciones.",
+    "Mote con huesillo": "Bebida tradicional, servida fría en vasos de 250 cc.",
+    "Ceviche de reineta": "Reineta fresca con limón, cilantro y ají.",
+}
+# Ocultas del catálogo para mostrar la opción: siguen existiendo para la pyme, el cliente no las ve.
+HIDDEN = ("Choripanes de cóctel",)
+
+
+def _category(name: str) -> str | None:
+    return next((cat for cat, prefixes in CATEGORIES.items() if name.startswith(prefixes)), None)
+
+
+def demo_logo() -> bytes:
+    """Logo inventado de la pyme de demo: el volcán Llaima nevado sobre verde araucaria (PNG)."""
+    from io import BytesIO
+
+    from PIL import Image, ImageDraw
+
+    img = Image.new("RGB", (512, 512), (44, 78, 41))
+    draw = ImageDraw.Draw(img)
+    draw.polygon([(56, 400), (216, 150), (296, 150), (456, 400)], fill=(236, 230, 222))
+    draw.polygon([(56, 400), (170, 222), (210, 250), (256, 214), (300, 252), (342, 222), (456, 400)], fill=(92, 72, 64))
+    draw.ellipse((226, 96, 286, 136), fill=(205, 205, 205))
+    draw.rectangle((0, 400, 512, 512), fill=(44, 78, 41))
+    out = BytesIO()
+    img.save(out, "PNG")
+    return out.getvalue()
+
+
+def apply_catalog(session: Session, pyme_id: uuid.UUID) -> None:
+    """Completa el catálogo de la pyme de demo (solo lo que falta): descripción, logo, categorías y textos.
+    Sirve también para una demo creada antes de ADR-009."""
+    from app.core import media
+
+    pyme = session.get(Pyme, pyme_id)
+    if pyme is None:  # pragma: no cover - la llama build() o main() con una pyme que existe
+        return
+    pyme.description = pyme.description or PYME_DESCRIPTION
+    if pyme.logo_path is None:
+        pyme.logo_path = media.save_image(pyme_id, demo_logo(), media.Kind.LOGO)
+    for recipe in session.scalars(select(Recipe).where(Recipe.pyme_id == pyme_id, Recipe.is_final_product)):
+        recipe.category = recipe.category or _category(recipe.name)
+        recipe.catalog_description = recipe.catalog_description or DESCRIPTIONS.get(recipe.name)
+        if recipe.name in HIDDEN:
+            recipe.visible_in_catalog = False
+    session.commit()
+
+
 def build(session: Session, today: date | None = None) -> uuid.UUID | None:
     """Crea la pyme grande de demo si no existe. Devuelve su id, o None si ya estaba."""
     today = today or date.today()  # noqa: DTZ011 - fecha local del servidor
@@ -1280,6 +1348,7 @@ def build(session: Session, today: date | None = None) -> uuid.UUID | None:
         ("cotizaciones", b.quotes),
         ("producción", b.production),
         ("portal de clientes", b.portal),
+        ("catálogo del portal", lambda: apply_catalog(session, b.pyme.id)),
         ("documentos, fichas y asistente", b.rag_and_assistant),
         ("métricas y sesiones", b.metrics_and_auth),
     ]
@@ -1306,7 +1375,11 @@ def main() -> None:
             session.commit()
             raise
     if created is None:
-        logger.info("La pyme %s ya existía; no se hizo nada.", PYME_NAME)
+        with get_sessionmaker()() as session:
+            pyme_id = session.scalar(select(Pyme.id).where(Pyme.name == PYME_NAME, Pyme.is_demo.is_(True)))
+            if pyme_id is not None:
+                apply_catalog(session, pyme_id)
+        logger.info("La pyme %s ya existía: solo se completó el catálogo del portal (ADR-009).", PYME_NAME)
         return
     logger.info("Listo: %s (datos SINTÉTICOS).", PYME_NAME)
     logger.info("Dueña: %s · colaboradoras: cocina.llaima@demo.local, ventas.llaima@demo.local", OWNER_EMAIL)

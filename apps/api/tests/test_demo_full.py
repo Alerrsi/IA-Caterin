@@ -5,6 +5,7 @@ Usa embeddings y LLM falsos: lo que se prueba es que el poblador siga funcionand
 
 from collections.abc import Iterator
 from datetime import date
+from pathlib import Path
 
 import pytest
 from sqlalchemy import func, select, text
@@ -15,7 +16,7 @@ from app.core.embeddings import FakeEmbeddings
 from app.core.llm import FakeProvider
 from app.db import demo_full
 from app.db.base import Base
-from app.db.models import Ingredient, Pyme, StockMovement
+from app.db.models import Ingredient, Pyme, Recipe, StockMovement
 
 
 @pytest.fixture
@@ -25,10 +26,13 @@ def fresh_settings() -> Iterator[None]:
     get_settings.cache_clear()  # que las demás pruebas no hereden ASSISTANT_USE_LLM=false
 
 
-def test_demo_full_fills_every_table(db: Session, monkeypatch: pytest.MonkeyPatch, fresh_settings: None) -> None:
+def test_demo_full_fills_every_table(
+    db: Session, monkeypatch: pytest.MonkeyPatch, fresh_settings: None, tmp_path: Path
+) -> None:
     monkeypatch.setattr(demo_full, "get_embeddings", FakeEmbeddings)
     monkeypatch.setattr(demo_full, "get_llm", FakeProvider)
     monkeypatch.setenv("ASSISTANT_USE_LLM", "false")
+    monkeypatch.setenv("STORAGE_DIR", str(tmp_path))
 
     pyme_id = demo_full.build(db, today=date(2026, 11, 10))
     assert pyme_id is not None
@@ -42,6 +46,10 @@ def test_demo_full_fills_every_table(db: Session, monkeypatch: pytest.MonkeyPatc
 
     pyme = db.get(Pyme, pyme_id)
     assert pyme is not None and pyme.is_demo and pyme.customer_code == "llaima-demo-2026"
+    # Catálogo del portal (ADR-009): logo guardado, descripción y productos con categoría.
+    assert pyme.description and pyme.logo_path and (tmp_path / pyme.logo_path).is_file()
+    categories = db.scalars(select(Recipe.category).where(Recipe.pyme_id == pyme_id, Recipe.is_final_product))
+    assert all(categories)
     # El stock de cada insumo es la suma de su libro de movimientos (ADR-004) y nunca negativo.
     ledger = dict(
         db.execute(
