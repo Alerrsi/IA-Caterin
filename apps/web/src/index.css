@@ -49,6 +49,9 @@
   --color-info: #485e8a;
   --color-info-container: #d8e2ff;
   --color-on-info-container: #001a41;
+  --color-brand: #6d2a57;
+  --color-on-brand: #fff8f8;
+  --color-brand-steam: #ffd8eb;
   /* theme:end */
 
   /* Fuentes autoalojadas (ver src/fonts.css): funcionan sin red. Roboto para el cuerpo (MD3) y Bricolage Grotesque

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><title>Cáterin</title><mask id="m"><rect width="512" height="512" fill="#fff"/>
+  <g transform="translate(0 20)">
+    <path d="M216 164c-14-12 14-24 0-36s14-24 0-36M296 164c-14-12 14-24 0-36s14-24 0-36" fill="none" stroke="#000"
+      stroke-width="18" stroke-linecap="round"/>
+    <circle cx="256" cy="190" r="20" fill="#000"/>
+    <path d="M126 336a130 130 0 0 1 260 0z" fill="#000"/>
+    <rect x="96" y="350" width="320" height="30" rx="15" fill="#000"/>
+    <path d="M182 304a92 92 0 0 1 52-62" fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round"/>
+  </g></mask><rect width="512" height="512" rx="116" fill="#000000" mask="url(#m)"/></svg>

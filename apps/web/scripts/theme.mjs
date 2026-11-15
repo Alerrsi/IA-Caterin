@@ -91,6 +91,10 @@ export function tokens(seed = SEED) {
     out[`${name}-container`] = hex(p.tone(90))
     out[`on-${name}-container`] = hex(p.tone(10))
   }
+  // Marca: el maqui puro de la semilla (logo, barra del sistema y panel del login) y sus tonos claros.
+  out.brand = seed.toLowerCase()
+  out['on-brand'] = hex(s.surface)
+  out['brand-steam'] = hex(s.primaryContainer)
   return out
 }
 
