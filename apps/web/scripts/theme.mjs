@@ -98,6 +98,10 @@ export function tokens(seed = SEED) {
     out[`${name}-container`] = hex(p.tone(90))
     out[`on-${name}-container`] = hex(p.tone(10))
   }
+  // Plano de cocina (T16, ADR-010): línea fina para rieles, celdas y divisores (entre outline-variant y la superficie),
+  // y el borde inferior de la "tecla" del botón principal (un tono más oscuro que primary).
+  out.hairline = hex(palette(src.hue, 4).tone(88))
+  out['primary-edge'] = hex(palette(src.hue, 30).tone(25))
   // Marca: el laurel puro de la semilla (logo, barra del sistema y panel del login) y el vapor cobre claro.
   out.brand = seed.toLowerCase()
   out['on-brand'] = hex(s.surface)

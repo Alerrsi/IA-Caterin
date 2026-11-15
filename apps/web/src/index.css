@@ -49,38 +49,52 @@
   --color-info: #456274;
   --color-info-container: #c8e7fd;
   --color-on-info-container: #001e2d;
+  --color-hairline: #dbddda;
+  --color-primary-edge: #004434;
   --color-brand: #1f4d3f;
   --color-on-brand: #faf9f7;
   --color-brand-steam: #ffdbcd;
   /* theme:end */
 
-  /* Fuentes autoalojadas (ver src/fonts.css): funcionan sin red. Roboto para el cuerpo (MD3) y Bricolage Grotesque
-     para títulos y el logotipo. */
-  --font-sans: Roboto, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
-  --font-display: 'Bricolage Grotesque Variable', Roboto, system-ui, sans-serif;
+  /* Fuentes autoalojadas (ver src/fonts.css): funcionan sin red. Familia IBM Plex en tres voces (T16, ADR-010):
+     Sans para la interfaz, Serif para títulos y Mono para las cifras de comanda. */
+  --font-sans: 'IBM Plex Sans Variable', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --font-display: 'IBM Plex Serif', Georgia, 'Times New Roman', serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  /* Forma: esquinas contenidas, de herramienta de trabajo (no píldoras). En px: la raíz es de 17 px y en rem no
-     calzarían. Anidadas, la de afuera es la de adentro más el relleno. */
-  --radius-md: 6px; /* campos de texto y etiquetas de estado */
-  --radius-lg: 8px; /* botones, chips y elementos de navegación */
-  --radius-xl: 12px; /* tarjetas y avisos */
-  --radius-2xl: 16px; /* cajón de navegación */
-  --radius-3xl: 20px; /* tarjeta del login */
+  /* Forma: esquinas casi rectas, de plano. En px: la raíz es de 17 px y en rem no calzarían. Anidadas, la de afuera
+     es la de adentro más el relleno. */
+  --radius-sm: 2px; /* atajos de teclado y etiquetas de estado */
+  --radius-md: 4px; /* campos de texto */
+  --radius-lg: 4px; /* botones, chips y elementos de navegación */
+  --radius-xl: 6px; /* tarjetas, celdas y avisos */
+  --radius-2xl: 8px; /* cajón de navegación */
+  --radius-3xl: 8px; /* tarjeta del login */
+
+  /* Botón "tecla": borde inferior más oscuro y una sombra mínima. La única sombra de la interfaz. */
+  --shadow-key: inset 0 -2px 0 var(--color-primary-edge), 0 1px 2px rgb(27 28 27 / 0.12);
+  --shadow-key-pressed: inset 0 -1px 0 var(--color-primary-edge);
+  --shadow-cap: inset 0 -1px 0 var(--color-outline-variant), 0 1px 2px rgb(27 28 27 / 0.08);
+
+  /* Movimiento (skill emil-design-eng): salida rápida, nunca ease-in; menos de 300 ms. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 html {
   font-size: 17px;
 }
 body {
-  background: var(--color-surface);
+  background: var(--color-surface-container-low);
   color: var(--color-on-surface);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
-/* Títulos de pantalla con la tipografía de la marca (MD3 headline). */
+/* Títulos de pantalla en serif, con interletra ajustada como corresponde a un tamaño grande. */
 h1 {
   font-family: var(--font-display);
-  letter-spacing: -0.015em;
+  font-weight: 500;
+  letter-spacing: -0.02em;
 }
 h1,
 h2 {
@@ -89,4 +103,63 @@ h2 {
 /* Cifras que cambian (precios, cantidades, stock) en columnas parejas. */
 table {
   font-variant-numeric: tabular-nums;
+}
+/* Cifras de comanda: cantidades, precios, códigos y fechas en monoespaciada (T16). */
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/*
+ * Fondos del "plano de cocina" (T16, ADR-010). Decorativos: nunca detrás de texto largo.
+ * - grid-paper: papel cuadriculado de la libreta de recetas (márgenes del escritorio, panel del login, vacíos).
+ * - hatch: rayado diagonal, solo sobre el color de la marca (panel del login).
+ * - frame-marks: marcas cuadradas en los extremos de una línea horizontal que cruza los rieles (cabecera de pantalla).
+ */
+@utility grid-paper {
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--color-hairline) 55%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--color-hairline) 55%, transparent) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: -1px -1px;
+}
+@utility hatch {
+  background-image: repeating-linear-gradient(135deg, rgb(255 255 255 / 0.07) 0 1px, transparent 1px 10px);
+}
+/* Grilla de celdas: cada celda dibuja su línea derecha e inferior en una capa encima del contenido (así el fondo de la
+   celda vecina no la tapa), 1 px hacia afuera; las que caen en el borde de la lista las recorta `overflow: hidden`.
+   Las celdas vacías de la última fila quedan en blanco. */
+@utility cells {
+  & > li {
+    position: relative;
+  }
+  & > li::after {
+    content: '';
+    position: absolute;
+    inset: 0 -1px -1px 0;
+    border-right: 1px solid var(--color-hairline);
+    border-bottom: 1px solid var(--color-hairline);
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+@utility frame-marks {
+  position: relative;
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    width: 7px;
+    height: 7px;
+    border: 1px solid var(--color-outline-variant);
+    background: var(--color-surface-container-lowest);
+  }
+  &::before {
+    left: -4px;
+  }
+  &::after {
+    right: -4px;
+  }
 }
