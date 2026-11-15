@@ -1,6 +1,8 @@
-# ADR-008 — Identidad visual de Cáterin sobre Material Design 3
+# ADR-008 — Identidad visual de Cáterin
 
 - Estado: **aceptado** (15-nov-2026, pedido del usuario; plan en `docs/RENOVACION.md`, tarea T14).
+  **Revisado** el mismo día: colores, forma y skills (sección "Revisión: laurel e `interface-design`"). Los puntos
+  2, 5 (colores del logo), 9 y 10 quedan reemplazados por esa revisión.
 - Contexto en: T08 (frontend PWA), ADR-004 (offline), AGENTS.md (WCAG AA, mobile-first).
 
 ## Contexto
@@ -62,3 +64,32 @@ los datos son de una pyme ficticia de demo).
 - **No se ha medido** si una persona reconoce el rubro en el login: la prueba de 5 segundos de `docs/RENOVACION.md` (4.6)
   queda pendiente porque requiere personas reales. No se reporta como cumplida.
 - Auditoría MD3 y sus pendientes: ver `docs/tasks/T14-identidad-visual.md`.
+
+## Revisión: laurel e `interface-design` (15-nov-2026)
+
+**Pedido del usuario:** "quiero que los colores sean diferentes; si ves pertinente cambia la skill de material design
+por otra que se vea más profesional".
+
+**Decisión:**
+
+1. **Skill:** se retira `material-3` y entra **`interface-design`** (Dammyjay93, MIT, commit `2f9be32`), pensada para
+   herramientas de gestión ("dashboards, admin panels, SaaS apps, tools"), que es lo que es Cáterin. Pide decidir
+   intención, jerarquía, profundidad y escala antes de escribir UI, y trae `/interface-design:design-review` y
+   `/interface-design:design-deslop`. Su memoria es `.interface-design/system.md`. `frontend-design` se queda para los
+   momentos de marca (login). Descartadas y por qué: `.claude/skills/SOURCES.md`.
+2. **Color:** semilla **laurel `#1f4d3f`** (hierba de cocina, tinta sobria) en vez de maqui. Primaria con croma 30
+   (`#2d6956`), contenedores de la primaria con croma 14 (sin menta chillón), secundaria croma 10, **terciaria cobre**
+   (`#a0522d`, las ollas) como único acento cálido, neutros del mismo tono con croma 2 y 4 (`surface` `#faf9f7`: casi
+   blanco, sin crema). Estados armonizados con croma máximo 22 (antes 32) para que los avisos no compitan con la
+   acción principal. Mismo generador (`npm run theme`) y misma prueba de contraste: 41 pares en AA y el contorno de los campos en 3:1.
+3. **Logo:** misma cloche; cuadrado laurel, cloche casi blanca y vapor cobre claro. `theme-color` `#1f4d3f`. PDF:
+   títulos laurel y franjas `#f5f3f1`.
+4. **Forma:** botones, chips y navegación con esquina de 8 px en vez de píldora; campos y etiquetas de estado 6 px;
+   tarjeta del login 20 px (antes 28). Se quitó el `tracking-wide` de los botones (rasgo MD3).
+5. **Detalles:** `h1` con tracking −0.015 em y `text-wrap: balance` (también `h2`); tablas con `tabular-nums`.
+6. **Se mantienen** los nombres de rol MD3 en `index.css` (`primary`, `surface-container`…): renombrarlos tocaba todos
+   los componentes sin cambiar lo que se ve. La estructura de `ui.tsx` no cambia; solo clases de forma.
+
+**Consecuencias:** el éxito (`success`, verde) queda cerca de la primaria; siempre va con texto o ícono, no solo color.
+La tipografía de títulos (Bricolage Grotesque) se mantiene: si se quiere un aspecto aún más sobrio, el siguiente paso
+es cambiarla y regenerar el logotipo con `brand.py`. Sigue sin validarse con personas reales.

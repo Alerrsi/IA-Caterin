@@ -5,7 +5,18 @@ Para actualizar: volver a clonar, revisar el diff y anotar el commit nuevo aquí
 
 | Skill | Repositorio | Commit | Licencia | Fecha |
 |---|---|---|---|---|
-| `material-3` | https://github.com/hamen/material-3-skill (`skills/material-3`) | `14385f2bf3804d8779f8b4db2604211f1e70b4c1` | MIT (`material-3/LICENSE`) | 15-nov-2026 |
+| `interface-design` | https://github.com/Dammyjay93/interface-design (`.claude/skills/interface-design`, `reference/` y `.claude/commands/` → `.claude/commands/interface-design/`) | `2f9be3206855bcb2d1d0af262c8bae25cba6658d` | MIT (`interface-design/LICENSE`) | 15-nov-2026 |
 | `frontend-design` | https://github.com/anthropics/skills (`skills/frontend-design`) | `1780c5e5a552fd4d1c9d6a7b0cab26b0c2bef064` | Apache-2.0 (`frontend-design/LICENSE.txt`) | 15-nov-2026 |
 
-`caterin-brand` es propia del proyecto.
+`caterin-brand` es propia del proyecto. El archivo de memoria que pide `interface-design` es
+`.interface-design/system.md`, en la raíz del repositorio.
+
+## Retiradas o descartadas (15-nov-2026)
+
+| Skill | Decisión | Motivo |
+|---|---|---|
+| `material-3` (hamen, commit `14385f2`) | **Retirada** | Pensada para Jetpack Compose; empujaba a la estética MD3 por defecto (píldoras, contenedores pastel). Se mantienen solo los nombres de rol de color en `index.css` |
+| `anti-ui-slop` (UIZZE, en `.agents/skills/`) | No adoptada | Sus guías gratuitas repiten lo que cubre `interface-design`; su política pide ocultar al usuario cuándo falló su servicio pagado (choca con AGENTS.md, sección 10) y la licencia declarada (MIT) no coincide con el archivo `LICENSE` (Apache-2.0) |
+| `web-design-guidelines` (vercel-labs/agent-skills) | No adoptada | Descarga las reglas de una URL sin versión fija en cada uso; no se puede fijar el commit |
+| `impeccable` (pbakaus) | No adoptada | Trae ejecutables y scripts de navegador (~2 MB); más superficie de la que hace falta |
+

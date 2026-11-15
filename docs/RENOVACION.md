@@ -1,7 +1,7 @@
 # Renovación de Cáterin: nueva identidad visual y catálogo para clientes
 
 - Estado: **implementada** (15-nov-2026). Propuesta y revisada contra el código ese día (sección 10); implementada
-  el mismo día con las decisiones de la sección 11.
+  el mismo día con las decisiones de la sección 11. Colores y skills revisados después (sección 12).
 - Depende de: T13 (portal de clientes, ADR-007), T08 (frontend PWA)
 - Al aprobarla: crear **T14 (identidad visual)** y **T15 (catálogo)**, los **ADR-008 (identidad visual)** y
   **ADR-009 (catálogo del portal)**, y registrarlos en `docs/tasks/00-INDEX.md`. La numeración sigue el orden de
@@ -438,9 +438,42 @@ una pyme ficticia). Lo que se decidió y en qué difiere del plan:
 Pendiente: la prueba de 5 segundos con personas (4.6), mostrar marca y catálogo a una pyme y clientes reales, las
 mejoras de la auditoría MD3 (T14) y la limpieza de imágenes huérfanas (T11).
 
+## 12. Revisión de skills y colores (15-nov-2026, tarde)
+
+Pedido: "revisa para nuevas skills; quiero que los colores sean diferentes; si ves pertinente cambia la skill de
+material design por otra que se vea más profesional".
+
+**Skills evaluadas** (se leyó el contenido completo de cada una antes de decidir):
+
+| Skill | Qué es | Decisión |
+|---|---|---|
+| `interface-design` ([Dammyjay93/interface-design](https://github.com/Dammyjay93/interface-design), MIT) | Diseño de herramientas de gestión con el oficio de Linear, Stripe o Vercel: intención, jerarquía, una sola estrategia de profundidad, escala de forma, estados; revisión con barra de aprobación (`/interface-design:design-review`) y limpieza (`/interface-design:design-deslop`). Solo Markdown | **Adoptada en lugar de `material-3`** (commit `2f9be32`) |
+| `material-3` (hamen) | Material Design 3, sobre todo para Jetpack Compose | **Retirada**: empujaba a la estética MD3 por defecto (píldoras, contenedores pastel) |
+| `frontend-design` (Anthropic) | Dirección estética, evita valores por defecto | Se mantiene para momentos de marca |
+| `anti-ui-slop` (UIZZE), encontrada en `.agents/skills/` | Seis guías cortas más un servicio pagado opcional | No adoptada: repite lo que cubre `interface-design`; su política pide ocultar al usuario cuándo falla el servicio pagado (choca con AGENTS.md, sección 10); licencia declarada MIT pero el archivo es Apache-2.0 |
+| `web-design-guidelines` (Vercel) | Revisión contra las guías de interfaz de Vercel | No adoptada: descarga las reglas de una URL sin versión en cada uso |
+| `impeccable` (pbakaus, Apache-2.0) | 23 comandos de diseño, detector de patrones | No adoptada: trae ejecutables y scripts (~2 MB) |
+
+**Colores y forma** (dirección "cocina profesional ordenada", ADR-008):
+
+| Antes | Después |
+|---|---|
+| Maqui `#6d2a57`, primaria `#924276`, contenedores rosados | Laurel `#1f4d3f`, primaria `#2d6956`, contenedores verde grisáceo `#d1e8dd` |
+| Terciaria araucaria `#3f5f3a` | Terciaria cobre `#a0522d`, único acento cálido |
+| Superficie `#fff8f8` (tinte rosado) | Superficie `#faf9f7` (casi blanca) |
+| Estados con croma hasta 32 | Hasta 22: los avisos no compiten con la acción |
+| Botones píldora, tarjeta del login de 28 px | Esquinas de 8 px en botones, chips y navegación; 6 px campos; 20 px login |
+
+Verificado: 138 pruebas web, 41 pares de contraste AA, `theme --check`, axe en login, dueña y portal, e2e del portal,
+PWA sin red con el *build*, prueba del PDF. Capturas en `apps/web/e2e-artifacts/despues/`.
+
+Pendiente: mostrar la paleta nueva a personas reales (sigue sin medirse) y, si se quiere un aspecto todavía más sobrio,
+cambiar la tipografía de títulos (requiere regenerar el logotipo).
+
 ## Fuentes
 
-- hamen/material-3-skill: https://github.com/hamen/material-3-skill
+- hamen/material-3-skill (retirada): https://github.com/hamen/material-3-skill
+- Dammyjay93/interface-design: https://github.com/Dammyjay93/interface-design
 - anthropics/skills, `frontend-design`: https://github.com/anthropics/skills
 - material-color-utilities: https://github.com/material-foundation/material-color-utilities
 - @vite-pwa/assets-generator: https://github.com/vite-pwa/assets-generator

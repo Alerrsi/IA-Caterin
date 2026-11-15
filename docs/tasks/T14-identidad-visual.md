@@ -1,4 +1,4 @@
-# T14 — Identidad visual de catering sobre Material Design 3
+# T14 — Identidad visual de catering
 - Estado: hecha (falta la prueba de 5 segundos con personas reales)
 - Depende de: T08
 - Funcionalidad: transversal
@@ -13,6 +13,10 @@ logo e íconos propios, sin dejar Material Design 3 y sin perder accesibilidad n
   semilla maqui `#6d2a57`, terciaria araucaria `#3f5f3a`, Bricolage Grotesque para títulos, cloche con vapor como logo.
 - Se revisó la dirección con la skill `frontend-design` antes de construir: la primera idea (terracota, crema, serif)
   es el rasgo n.º 1 de su lista de valores por defecto y se cambió.
+- **Revisión del 15-nov-2026 (pedido del usuario: "colores diferentes" y una skill "más profesional" que
+  `material-3`):** semilla laurel `#1f4d3f`, acento cobre `#a0522d`, neutros casi blancos, esquinas de 8 px en vez de
+  píldoras y skill `interface-design` en lugar de `material-3`. Detalle en ADR-008 ("Revisión: laurel e
+  `interface-design`"). Los valores de maqui y araucaria de esta página son históricos.
 
 ## Entregables
 - [x] Skills `material-3` y `frontend-design` revisadas e instaladas con commit fijo (`.claude/skills/SOURCES.md`).
@@ -29,6 +33,8 @@ logo e íconos propios, sin dejar Material Design 3 y sin perder accesibilidad n
 - [x] Esquinas: clases `rounded-*` mapeadas a los tokens de forma MD3.
 - [x] Auditoría MD3 (abajo) y capturas antes/después.
 - [x] Skill del proyecto `.claude/skills/caterin-brand/SKILL.md`.
+- [x] Revisión: paleta laurel/cobre, forma de 8 px, `interface-design` instalada (commit fijo) y `material-3` retirada;
+      memoria de diseño en `.interface-design/system.md`; script `npm run icons` agregado a `package.json` (faltaba).
 - [ ] Prueba de 5 segundos con al menos 5 personas (requiere personas reales; ver riesgos).
 
 ## Criterios de aceptación
@@ -47,7 +53,7 @@ logo e íconos propios, sin dejar Material Design 3 y sin perder accesibilidad n
 - `e2e/pwa.e2e.ts`: manifiesto y fuentes sin red. `e2e/a11y.e2e.ts`: axe. `e2e/brand.e2e.ts`: capturas.
 - `tests/test_quotes_api.py`: el PDF lleva el pie "Hecha con Cáterin" y sigue sin datos internos.
 
-## Auditoría MD3 (`/material-3 audit`, sobre el código, 15-nov-2026)
+## Auditoría MD3 (`/material-3 audit`, sobre el código, 15-nov-2026; histórica: la skill se retiró)
 
 | Categoría | Puntaje | Estado | Nota |
 |---|---|---|---|

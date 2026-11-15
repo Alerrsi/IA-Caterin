@@ -51,7 +51,7 @@ Licencias de los modelos y dependencias principales. Revisado el 9-nov-2026. Las
 
 | Skill | Licencia | Origen |
 |-------|----------|--------|
-| `material-3` | MIT (CWTI Ltd) | github.com/hamen/material-3-skill, commit en `.claude/skills/SOURCES.md` |
+| `interface-design` (skill y comandos `/interface-design:*`) | MIT (Damola Akinleye) | github.com/Dammyjay93/interface-design, commit en `.claude/skills/SOURCES.md` |
 | `frontend-design` | Apache-2.0 (Anthropic) | github.com/anthropics/skills, commit en `.claude/skills/SOURCES.md` |
 
 ## Datos de prueba de visión (no van a producción)
