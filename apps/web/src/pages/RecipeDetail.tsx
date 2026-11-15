@@ -1,10 +1,11 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { ApiError, api, type RecipeCost, type RecipeDetail as Recipe } from '../api'
+import { ApiError, api, patch, uploadImage, type RecipeCost, type RecipeDetail as Recipe } from '../api'
 import { useAuth } from '../auth'
+import { ImagePicker } from '../components/ImagePicker'
 import { Alert, Button, Field, Page, Spinner, inputClass, useOnline } from '../components/ui'
 import { formatCLP, formatDate, formatQty, formatStock, parseQtyInput } from '../format'
 import { t } from '../i18n'
-import { useCached } from '../offline/cache'
+import { patchCached, useCached } from '../offline/cache'
 import { navigate } from '../router'
 import { savedAtLabel } from './Inventory'
 
@@ -113,6 +114,102 @@ function CostPanel({ recipe }: { recipe: Recipe }) {
   )
 }
 
+/** Cómo ven los clientes este producto en el catálogo del portal (ADR-009). Solo la dueña lo edita. */
+function CatalogPanel({ recipe: initial }: { recipe: Recipe }) {
+  const online = useOnline()
+  const [recipe, setRecipe] = useState(initial)
+  const [form, setForm] = useState({
+    description: initial.catalog_description ?? '',
+    category: initial.category ?? '',
+    visible: initial.visible_in_catalog ?? true,
+  })
+  const [error, setError] = useState<string | null>(null)
+  const [saved, setSaved] = useState(false)
+  const [busy, setBusy] = useState(false)
+
+  function keep(out: Recipe) {
+    setRecipe(out)
+    void patchCached<Recipe>(`recipe:${out.id}`, () => out)
+  }
+
+  async function save(e: FormEvent) {
+    e.preventDefault()
+    setBusy(true)
+    setError(null)
+    setSaved(false)
+    try {
+      keep(
+        await patch<Recipe>(`/recipes/${recipe.id}`, {
+          catalog_description: form.description.trim() || null,
+          category: form.category.trim() || null,
+          visible_in_catalog: form.visible,
+        }),
+      )
+      setSaved(true)
+    } catch (err) {
+      setError(err instanceof ApiError ? err.userMessage : t.genericError)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const set = (field: keyof typeof form) => (value: string | boolean) => {
+    setSaved(false)
+    setForm((f) => ({ ...f, [field]: value }))
+  }
+
+  return (
+    <section className="mt-4 space-y-4 rounded-xl border border-outline-variant bg-surface-container-lowest p-4">
+      <div>
+        <h2 className="text-lg font-medium text-on-surface">{t.catalogAdmin.recipeTitle}</h2>
+        <p className="text-on-surface-variant">{t.catalogAdmin.recipeHint}</p>
+      </div>
+      <ImagePicker
+        label={t.catalogAdmin.photo}
+        url={recipe.photo_url}
+        disabled={!online}
+        onUpload={async (file) => keep(await uploadImage<Recipe>(`/recipes/${recipe.id}/photo`, file, file.name))}
+        onRemove={async () => keep(await api<Recipe>(`/recipes/${recipe.id}/photo`, { method: 'DELETE' }))}
+      />
+      <form onSubmit={save} className="space-y-3" noValidate>
+        <Field label={t.catalogAdmin.productDescription}>
+          <textarea
+            className={`${inputClass} min-h-20`}
+            maxLength={500}
+            value={form.description}
+            onChange={(e) => set('description')(e.target.value)}
+          />
+        </Field>
+        <Field label={t.catalogAdmin.category} hint={t.catalogAdmin.categoryHint}>
+          <input
+            className={inputClass}
+            maxLength={60}
+            value={form.category}
+            onChange={(e) => set('category')(e.target.value)}
+          />
+        </Field>
+        <label className="flex min-h-12 items-start gap-3">
+          <input
+            type="checkbox"
+            className="mt-1 h-6 w-6 accent-primary"
+            checked={form.visible}
+            onChange={(e) => set('visible')(e.target.checked)}
+          />
+          <span>
+            <span className="block font-medium text-on-surface">{t.catalogAdmin.visible}</span>
+            <span className="block text-sm text-on-surface-variant">{t.catalogAdmin.visibleHint}</span>
+          </span>
+        </label>
+        <Button type="submit" variant="secondary" disabled={busy || !online}>
+          {t.catalogAdmin.saveProduct}
+        </Button>
+      </form>
+      {saved && <Alert kind="info">{t.catalogAdmin.saved}</Alert>}
+      {error && <Alert>{error}</Alert>}
+    </section>
+  )
+}
+
 export default function RecipeDetail({ id }: { id: string }) {
   const { user } = useAuth()
   const { value, error, loading } = useCached<Recipe>(`recipe:${id}`, `/recipes/${id}`)
@@ -154,6 +251,7 @@ export default function RecipeDetail({ id }: { id: string }) {
           ) : (
             <p className="mt-4 text-on-surface-variant">{t.recipes.ownerOnlyCost}</p>
           )}
+          {user?.role === 'owner' && recipe.is_final_product && <CatalogPanel key={recipe.id} recipe={recipe} />}
         </>
       )}
     </Page>

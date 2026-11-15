@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { ApiError, api, customerLink, patch, post, type PymeSettings, type User } from '../api'
+import { ApiError, api, customerLink, patch, post, uploadImage, type PymeSettings, type User } from '../api'
 import { useAuth } from '../auth'
+import { ImagePicker } from '../components/ImagePicker'
 import { Alert, Button, Field, Page, Spinner, inputClass, useOnline } from '../components/ui'
 import { t } from '../i18n'
 import { navigate } from '../router'
@@ -210,6 +211,77 @@ function Team({ online }: { online: boolean }) {
   )
 }
 
+/** Lo que los clientes ven de la pyme en el catálogo del portal (ADR-009): logo y presentación corta. */
+function CatalogProfile({ online }: { online: boolean }) {
+  const [pyme, setPyme] = useState<PymeSettings | null>(null)
+  const [description, setDescription] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [saved, setSaved] = useState(false)
+  const [busy, setBusy] = useState(false)
+
+  useEffect(() => {
+    api<PymeSettings>('/pyme')
+      .then((p) => {
+        setPyme(p)
+        setDescription(p.description ?? '')
+      })
+      .catch((err) => setError(errorText(err)))
+  }, [])
+
+  async function save(e: FormEvent) {
+    e.preventDefault()
+    setBusy(true)
+    setError(null)
+    setSaved(false)
+    try {
+      setPyme(await patch<PymeSettings>('/pyme', { description: description.trim() || null }))
+      setSaved(true)
+    } catch (err) {
+      setError(errorText(err))
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <section className="space-y-4 rounded-xl border border-outline-variant bg-surface-container-lowest p-4">
+      <h2 className="text-xl font-medium text-on-surface">{t.catalogAdmin.title}</h2>
+      <p className="text-on-surface-variant">{t.catalogAdmin.hint}</p>
+      {!pyme && !error && <Spinner label={t.loading} />}
+      {pyme && (
+        <>
+          <ImagePicker
+            label={t.catalogAdmin.logo}
+            url={pyme.logo_url}
+            square
+            disabled={!online}
+            onUpload={async (file) => setPyme(await uploadImage<PymeSettings>('/pyme/logo', file, file.name))}
+            onRemove={async () => setPyme(await api<PymeSettings>('/pyme/logo', { method: 'DELETE' }))}
+          />
+          <form onSubmit={save} className="space-y-3" noValidate>
+            <Field label={t.catalogAdmin.description} hint={t.catalogAdmin.descriptionCount(description.length)}>
+              <textarea
+                className={`${inputClass} min-h-24`}
+                maxLength={280}
+                value={description}
+                onChange={(e) => {
+                  setSaved(false)
+                  setDescription(e.target.value)
+                }}
+              />
+            </Field>
+            <Button type="submit" variant="secondary" disabled={busy || !online}>
+              {t.catalogAdmin.save}
+            </Button>
+          </form>
+        </>
+      )}
+      {saved && <Alert kind="info">{t.catalogAdmin.saved}</Alert>}
+      {error && <Alert>{error}</Alert>}
+    </section>
+  )
+}
+
 /** Enlace del portal de clientes (ADR-007): crearlo, copiarlo, cambiarlo o cerrar el registro. */
 function CustomerPortal({ online }: { online: boolean }) {
   const [code, setCode] = useState<string | null | undefined>(undefined)
@@ -297,6 +369,7 @@ export default function Settings() {
           <PymeForm online={online} />
           <div className="space-y-6">
             <CustomerPortal online={online} />
+            <CatalogProfile online={online} />
             <Team online={online} />
           </div>
         </div>
