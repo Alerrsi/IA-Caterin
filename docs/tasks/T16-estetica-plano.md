@@ -1,9 +1,9 @@
 # T16 — Estética "plano de cocina": detalles inspirados en zed.dev
-- Estado: pendiente (plan listo; el desarrollo empieza cuando el usuario lo pida)
+- Estado: hecha en la rama (15-nov-2026); falta que el usuario revise las capturas para integrarla a `main`
 - Rama: `feat/T16-estetica-plano`
 - Depende de: T14 (identidad visual, ADR-008), T15 (catálogo)
 - Funcionalidad: transversal
-- Decisión: [ADR-010](../adr/ADR-010-estetica-plano.md) (propuesto)
+- Decisión: [ADR-010](../adr/ADR-010-estetica-plano.md) (aceptado)
 
 ## Objetivo
 Que Cáterin se vea como una herramienta hecha con oficio: ordenada, precisa y confiable, como una cocina profesional
@@ -14,8 +14,8 @@ marca de Zed.
 ## Contexto y decisiones previas
 - Pedido del usuario (15-nov-2026): "busca integrar detalles o la estética de https://zed.dev/ en otra rama; primero
   crea un plan de implementación del diseño; agrega skills que consideres necesarias".
-- Base actual: paleta laurel con acento cobre, esquinas de 8 px, Bricolage Grotesque en títulos y Roboto en el cuerpo
-  (ADR-008, revisión del 15-nov-2026). Memoria de diseño en `.interface-design/system.md`.
+- Base al empezar: paleta laurel con acento cobre, esquinas de 8 px, Bricolage Grotesque en títulos y Roboto en el
+  cuerpo (ADR-008, revisión del 15-nov-2026). Memoria de diseño en `.interface-design/system.md`.
 - Reglas que no cambian: AA, mobile first (390 px), botones de 48 px, PWA sin red (fuentes autoalojadas, sin CDN),
   textos en es-CL, el cliente nunca ve datos internos (ADR-007), `ui.tsx` conserva su estructura.
 - **Supuesto:** el aspecto final se valida con capturas en la rama antes de integrar a `main`; no hay personas reales
@@ -129,7 +129,7 @@ Cada fase es un commit (o pocos) en la rama, con `./scripts/check.sh` en verde. 
 
 | Fase | Pasos | Archivos | Verificación | Tamaño |
 |---|---|---|---|---|
-| 0. Preparación (**hecha**) | Rama, este plan, ADR-010 propuesto, skills `web-interface-guidelines` y `emil-design-eng`, T16 en el índice | `docs/`, `.claude/skills/` | Revisión del usuario | S |
+| 0. Preparación | Rama, este plan, ADR-010 propuesto, skills `web-interface-guidelines` y `emil-design-eng`, T16 en el índice | `docs/`, `.claude/skills/` | Revisión del usuario | S |
 | 1. Capturas "antes" | `SHOTS=antes-t16` de login, inicio, cotizar, catálogo y portal a 390 y 1280 px | `e2e/brand.e2e.ts` (ancho de escritorio), `e2e-artifacts/` | Generadas | S |
 | 2. Fuentes | IBM Plex Serif/Sans/Mono en `fonts.css`, quitar Roboto y Bricolage, `--font-mono`, precaché | `package.json`, `src/fonts.css`, `index.css` | `pwa.e2e.ts` sin red; peso ≤ 200 KB | S |
 | 3. Tokens | Radios, `hairline`, sombra de tecla, easing; `theme.mjs` agrega los tokens nuevos | `index.css`, `scripts/theme.mjs`, `theme.test.ts` | `theme --check`; contraste AA | S |
@@ -152,7 +152,7 @@ Commits de ejemplo: `feat(web): tipografía IBM Plex autoalojada [T16]`, `feat(w
 | Funciona sin red con las fuentes nuevas | `pwa.e2e.ts` con el `build` |
 | Peso de fuentes + íconos ≤ 200 KB | `du -b` de `dist/` |
 | Botones de 48 px y foco visible | Vitest de `ui.tsx`; axe |
-| Ninguna marca, texto, fuente propia ni color de Zed | Revisión del diff (`git grep -i zed` solo en docs) |
+| Ninguna marca, texto, fuente propia ni color de Zed | Revisión del diff (`git grep -iw zed -- apps` vacío) |
 | `reduced-motion` respetado | e2e con `reducedMotion: 'reduce'` |
 | Aprobado por `/interface-design:design-review` y sin hallazgos de `web-interface-guidelines` sin justificar | Hallazgos anotados aquí |
 | Capturas antes/después a 390 y 1280 px | `apps/web/e2e-artifacts/` |
@@ -162,7 +162,7 @@ Commits de ejemplo: `feat(web): tipografía IBM Plex autoalojada [T16]`, `feat(w
 - E2E: `a11y.e2e.ts`, `pwa.e2e.ts`, `portal.e2e.ts`, `brand.e2e.ts` con el ancho de escritorio nuevo.
 - API: solo si se cambia la fuente del PDF (`tests/test_quotes_api.py`).
 
-## 7. Decisiones abiertas (con recomendación)
+## 7. Decisiones (el usuario aceptó todas las recomendaciones el 15-nov-2026)
 | Decisión | Opciones | Recomendación |
 |---|---|---|
 | Fuente del cuerpo | Mantener Roboto / IBM Plex Sans | **Plex Sans**: una sola familia con la serif y la mono; similar en legibilidad |
@@ -185,5 +185,43 @@ Commits de ejemplo: `feat(web): tipografía IBM Plex autoalojada [T16]`, `feat(w
 | Líneas finas casi invisibles en pantallas baratas | Se pierde la estructura | Las líneas son decoración; la estructura la dan el espacio y los bordes de 3:1 donde importa |
 | Skills de terceros nuevas | El agente cambia de criterio | Commit fijo en `SOURCES.md`; `caterin-brand` manda |
 
+## 10. Resultado (15-nov-2026)
+
+Todas las fases (0 a 10) se hicieron en la rama `feat/T16-estetica-plano`, con un commit por fase o grupo de fases.
+
+| Criterio | Resultado |
+|---|---|
+| Contraste AA | `theme.test.ts`: 41 pares ≥ 4,5:1 y contorno de campos ≥ 3:1. axe sin violaciones serias en login, registro, 10 pantallas de la dueña, portal y escritorio (`a11y.e2e.ts`, `plano.e2e.ts`) |
+| Texto nuevo bajo 15 px | Ninguno; la barra inferior sigue en 12,75 px (excepción ya existente) |
+| Sin red con las fuentes nuevas | `pwa.e2e.ts` con `vite build` + `vite preview`: Plex Sans y Serif cargan sin red |
+| Peso de fuentes + marca ≤ 200 KB | **151,9 KB**: fuentes 101,6 KB (Sans variable 45,7; Serif 500 20,3; Serif cursiva 20,9; Mono 14,7) y marca e íconos 50,3 KB. Antes: 168,6 KB |
+| Botones de 48 px, foco visible | `plano.test.tsx` |
+| Nada de la marca de Zed | `git grep -iw zed -- apps` no encuentra nada; solo aparece en la documentación |
+| Movimiento reducido | `plano.e2e.ts`: con `reducedMotion: 'reduce'` el cajón no tiene transición |
+| Atajos | `plano.e2e.ts`: `C` lleva a cotizar; `/` enfoca el buscador; dentro de un campo la tecla se escribe |
+| Pruebas | 144 de Vitest; e2e todos en verde salvo `vision.e2e.ts` (ya fallaba antes: el modelo de T06 está cargado, ver T15) |
+| Capturas | `apps/web/e2e-artifacts/antes-t16/` y `despues-t16/`, 8 pantallas a 390 y 1280 px (carpeta ignorada por git) |
+
+**Revisión con las skills** (`interface-design:design-review` y `web-interface-guidelines`, sobre el diff):
+- Corregido: líneas de la grilla tapadas por el fondo de la celda vecina (ahora se dibujan en una capa encima); el
+  inicio no usaba `Page` y quedaba sin marco; `⚠` separado del texto; la tecla visible dentro del `<label>` cambiaba el
+  nombre del campo; la foto del producto y el logo de la pyme sin `width`/`height`; faltaba `touch-action:
+  manipulation`; las capturas salían con "Cargando…".
+- Se dejó así, con motivo: `theme-color` es el laurel de la marca y no el fondo de la página (decisión de ADR-008); los
+  títulos van en mayúscula inicial del español, no *Title Case*.
+
+**Diferencias con el plan:**
+- `OfflineBanner` pasó a una franja de aviso (color de advertencia, borde fino) en vez de la etiqueta mono: el texto
+  ya parte con "Sin conexión:" y una segunda fuente en la misma línea no aportaba.
+- La tecla visible del atajo `C` va en el cajón de escritorio, junto a "Cotizar", y no dentro de un botón.
+- Las celdas no usan `gap-px` con fondo gris (dejaba grises las celdas vacías), sino una línea por celda.
+- No se agregó Plex Mono 500 (presupuesto); las cifras destacan por tamaño.
+- El PDF sigue con las fuentes de ReportLab (decisión 7: más adelante).
+
 ## Resumen de cierre
-(se completa al terminar)
+Cáterin tiene ahora una estética de "plano de cocina": IBM Plex en tres voces (Serif en títulos, Sans en la interfaz,
+Mono en las cifras), esquinas de 2–8 px, líneas finas como estructura, rieles con marcas en escritorio, grillas de
+celdas en el inicio y el catálogo, total de la cotización como ticket con línea de corte, botón tecla, papel
+cuadriculado y rayado en el login, atajos `C` y `/` en escritorio y un cajón que entra suave (y quieto si se pide
+reducir movimiento). Pesa menos que antes (151,9 KB contra 168,6 KB). Pendiente: que el usuario revise las capturas
+y apruebe la integración a `main`, y mostrarlo a personas reales.
