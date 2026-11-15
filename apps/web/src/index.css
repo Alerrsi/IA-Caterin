@@ -1,48 +1,60 @@
 @import 'tailwindcss';
 
 /*
- * Material Design 3 con un esquema neutro (grises con un leve tono frío). Los nombres siguen los roles de color de
- * MD3 (primary, surface-container, on-surface-variant…), así cada componente usa el rol y no un color fijo.
- * Contraste AA verificado a mano para los pares texto/fondo que usa la app (on-* sobre su contenedor).
+ * Material Design 3 con la identidad de Cáterin (T14, ADR-008). Los nombres siguen los roles de color de MD3
+ * (primary, surface-container, on-surface-variant…), así cada componente usa el rol y no un color fijo.
+ * Los colores los genera `scripts/theme.mjs` desde la semilla (maqui); el contraste AA de cada par texto/fondo lo
+ * verifica `src/theme.test.ts`.
  */
 @theme {
-  --color-primary: #3d4449;
+  /* theme:start (generado por scripts/theme.mjs; no editar a mano) */
+  /* Semilla #6d2a57 (maqui), terciaria #3f5f3a (araucaria). */
+  --color-primary: #924276;
   --color-on-primary: #ffffff;
-  --color-primary-container: #dde3e8;
-  --color-on-primary-container: #161c20;
-  --color-secondary: #565f66;
+  --color-primary-container: #ffd8eb;
+  --color-on-primary-container: #752a5d;
+  --color-secondary: #715765;
   --color-on-secondary: #ffffff;
-  --color-secondary-container: #e1e4e7;
-  --color-on-secondary-container: #191c1f;
-
-  --color-surface: #f8f9fa;
-  --color-surface-dim: #d8dadc;
+  --color-secondary-container: #fbd9ea;
+  --color-on-secondary-container: #57404d;
+  --color-tertiary: #44673f;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #c5edbb;
+  --color-on-tertiary-container: #2d4e29;
+  --color-surface: #fff8f8;
+  --color-surface-dim: #dfd8d9;
+  --color-surface-bright: #fff8f8;
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f2f3f5;
-  --color-surface-container: #eceef0;
-  --color-surface-container-high: #e6e8ea;
-  --color-surface-container-highest: #e0e2e4;
-  --color-on-surface: #1a1c1e;
-  --color-on-surface-variant: #44474a;
-  --color-outline: #74777b;
-  --color-outline-variant: #c4c7ca;
-  --color-inverse-surface: #2e3133;
-  --color-inverse-on-surface: #eff1f3;
-
+  --color-surface-container-low: #f9f2f3;
+  --color-surface-container: #f3eced;
+  --color-surface-container-high: #ede6e7;
+  --color-surface-container-highest: #e8e1e2;
+  --color-on-surface: #1d1b1c;
+  --color-on-surface-variant: #4c4548;
+  --color-outline: #7e7578;
+  --color-outline-variant: #cfc4c7;
+  --color-inverse-surface: #333031;
+  --color-inverse-on-surface: #f6eff0;
+  --color-inverse-primary: #ffaedd;
   --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
   --color-error-container: #ffdad6;
-  --color-on-error-container: #410002;
-  /* Estados que MD3 no define como rol: apagados para no romper la paleta neutra. */
-  --color-warning: #7a5900;
-  --color-warning-container: #f7e8c6;
-  --color-on-warning-container: #3a2b00;
-  --color-success-container: #d7e8d9;
-  --color-on-success-container: #0f2b16;
-  --color-info: #3e5a74;
-  --color-info-container: #dce5ee;
-  --color-on-info-container: #12212f;
+  --color-on-error-container: #93000a;
+  --color-warning: #825521;
+  --color-warning-container: #ffdcbd;
+  --color-on-warning-container: #2c1600;
+  --color-success: #4f6531;
+  --color-success-container: #d1ecaa;
+  --color-on-success-container: #112000;
+  --color-info: #485e8a;
+  --color-info-container: #d8e2ff;
+  --color-on-info-container: #001a41;
+  /* theme:end */
 
+  /* Fuentes autoalojadas (ver src/fonts.css): funcionan sin red. Roboto para el cuerpo (MD3) y Bricolage Grotesque
+     para títulos y el logotipo. */
   --font-sans: Roboto, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --font-display: 'Bricolage Grotesque Variable', Roboto, system-ui, sans-serif;
 }
 
 html {
@@ -53,4 +65,9 @@ body {
   color: var(--color-on-surface);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+}
+/* Títulos de pantalla con la tipografía de la marca (MD3 headline). */
+h1 {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
 }

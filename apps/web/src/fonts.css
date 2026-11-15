@@ -1,0 +1,15 @@
+/*
+ * Fuentes autoalojadas (T14, ADR-008): van en el precaché de la PWA y funcionan sin red. Solo el subconjunto latino,
+ * que cubre el español (á, é, í, ó, ú, ñ, ü, ¿, ¡). Licencia OFL-1.1 (ver THIRD_PARTY_NOTICES.md).
+ */
+@import '@fontsource/roboto/latin-400.css';
+@import '@fontsource/roboto/latin-500.css';
+
+@font-face {
+  font-family: 'Bricolage Grotesque Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 800;
+  src: url('@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2')
+    format('woff2-variations');
+}
