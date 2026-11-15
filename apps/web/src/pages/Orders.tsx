@@ -96,7 +96,7 @@ export default function Orders() {
                       <div>
                         <p className="text-lg font-medium">{o.customer_name}</p>
                         <p className="text-on-surface-variant">
-                          {o.event_date ? formatDate(o.event_date) : t.orders.noDate}
+                          {o.event_date ? <span className="num">{formatDate(o.event_date)}</span> : t.orders.noDate}
                           {o.submitted_at && ` · ${t.orders.sentOn(formatDate(o.submitted_at))}`}
                         </p>
                       </div>
@@ -104,9 +104,13 @@ export default function Orders() {
                     </div>
                     <p className="mt-2 text-on-surface-variant">{linesText(o)}</p>
                     <p className="mt-2 text-lg font-medium text-on-surface">
-                      {o.last_quote_total_clp != null
-                        ? t.orders.quotedTotal(formatCLP(o.last_quote_total_clp))
-                        : t.orders.noQuotedTotal}
+                      {o.last_quote_total_clp != null ? (
+                        <>
+                          {t.orders.quotedTotalLabel} <span className="num font-normal">{formatCLP(o.last_quote_total_clp)}</span>
+                        </>
+                      ) : (
+                        t.orders.noQuotedTotal
+                      )}
                     </p>
                     {o.guests && <p className="text-on-surface-variant">{t.portal.guests(o.guests)}</p>}
                     {o.customer_contact && (
@@ -157,7 +161,7 @@ export default function Orders() {
           ) : (
             <ul className="grid items-start gap-4 lg:grid-cols-2">
               {others.map((o) => (
-                <li key={o.id} className="rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
+                <li key={o.id} className="rounded-xl bg-surface-container-lowest p-4 border border-hairline">
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <p className="text-lg font-medium">{o.customer_name}</p>

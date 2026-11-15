@@ -50,7 +50,7 @@ function CostPanel({ recipe }: { recipe: Recipe }) {
   }
 
   return (
-    <section className="mt-4 rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
+    <section className="mt-4 rounded-xl bg-surface-container-lowest p-4 border border-hairline">
       <h2 className="mb-2 text-lg font-medium text-on-surface">{t.recipes.costTitle}</h2>
       {!online ? (
         <p className="text-on-surface-variant">{t.recipes.costNeedsNetwork}</p>
@@ -74,12 +74,12 @@ function CostPanel({ recipe }: { recipe: Recipe }) {
           {cost && (
             <div className="mt-3">
               <p className="text-on-surface-variant">{t.recipes.total}</p>
-              <p className="text-3xl font-medium text-on-surface" data-testid="recipe-cost-total">
+              <p className="num text-3xl text-on-surface" data-testid="recipe-cost-total">
                 {formatCLP(cost.total_clp)}
               </p>
               {cost.per_unit_clp !== null && (
                 <p className="text-on-surface">
-                  {t.recipes.perUnit}: {formatCLP(cost.per_unit_clp)}
+                  {t.recipes.perUnit}: <span className="num">{formatCLP(cost.per_unit_clp)}</span>
                 </p>
               )}
               {!cost.is_complete && (
@@ -87,12 +87,12 @@ function CostPanel({ recipe }: { recipe: Recipe }) {
                   <Alert kind="warning">{t.recipes.missing(cost.missing_prices.join(', '))}</Alert>
                 </div>
               )}
-              <ul className="mt-3 divide-y divide-outline-variant">
+              <ul className="mt-3 divide-y divide-hairline">
                 {cost.lines.map((l) => (
                   <li key={l.ingredient_name} className="flex justify-between gap-3 py-2">
                     <span className="min-w-0">
                       <span className="block font-medium">
-                        {l.ingredient_name} · {formatStock(l.required_qty, l.base_unit)}
+                        {l.ingredient_name} · <span className="num font-normal">{formatStock(l.required_qty, l.base_unit)}</span>
                       </span>
                       {l.supplier_name && (
                         <span className="block text-sm text-on-surface-variant">
@@ -100,7 +100,7 @@ function CostPanel({ recipe }: { recipe: Recipe }) {
                         </span>
                       )}
                     </span>
-                    <span className="shrink-0 font-medium">
+                    <span className={`shrink-0 ${l.cost_clp === null ? 'font-medium' : 'num'}`}>
                       {l.cost_clp === null ? t.recipes.noPrice : formatCLP(l.cost_clp)}
                     </span>
                   </li>
@@ -159,7 +159,7 @@ function CatalogPanel({ recipe: initial }: { recipe: Recipe }) {
   }
 
   return (
-    <section className="mt-4 space-y-4 rounded-xl border border-outline-variant bg-surface-container-lowest p-4">
+    <section className="mt-4 space-y-4 rounded-xl border border-hairline bg-surface-container-lowest p-4">
       <div>
         <h2 className="text-lg font-medium text-on-surface">{t.catalogAdmin.recipeTitle}</h2>
         <p className="text-on-surface-variant">{t.catalogAdmin.recipeHint}</p>
@@ -230,13 +230,13 @@ export default function RecipeDetail({ id }: { id: string }) {
         )
       ) : (
         <>
-          <section className="rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
+          <section className="rounded-xl bg-surface-container-lowest p-4 border border-hairline">
             <p className="text-on-surface">
               {t.recipes.yields(formatStock(recipe.yield_qty, recipe.yield_unit))}
               {recipe.is_final_product && ` · ${t.recipes.finalProduct}`}
             </p>
             <h2 className="mt-3 mb-1 font-medium text-on-surface">{t.recipes.ingredients}</h2>
-            <ul className="divide-y divide-outline-variant">
+            <ul className="divide-y divide-hairline">
               {recipe.lines.map((l) => (
                 <li key={l.id} className="flex justify-between gap-3 py-2">
                   <span>{l.ingredient_name}</span>

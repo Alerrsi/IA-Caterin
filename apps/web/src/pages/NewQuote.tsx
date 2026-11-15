@@ -324,7 +324,7 @@ export default function NewQuote({ portal = false }: { portal?: boolean }) {
       <h2 className="mb-2 mt-6 text-xl font-medium text-on-surface">{t.quote.products}</h2>
       <ul className="grid items-start gap-4 lg:grid-cols-2">
         {lines.map((line, idx) => (
-          <li key={line.key} className="rounded-xl bg-surface-container-lowest p-4 border border-outline-variant" data-testid="order-line">
+          <li key={line.key} className="rounded-xl bg-surface-container-lowest p-4 border border-hairline" data-testid="order-line">
             {line.requested_name && (
               <p className="mb-2 text-sm text-on-surface-variant">
                 {portal ? t.portal.asked(line.requested_name) : t.quote.asked(line.requested_name)}

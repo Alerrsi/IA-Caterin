@@ -49,7 +49,7 @@ function LineEditor({
   const chosen = ingredients.find((i) => i.id === line.ingredientId)
   const units = chosen ? ADJUST_UNITS[chosen.base_unit] : []
   return (
-    <fieldset className="space-y-3 rounded-xl border border-outline-variant bg-surface-container-lowest p-4">
+    <fieldset className="space-y-3 rounded-xl border border-hairline bg-surface-container-lowest p-4">
       <legend className="px-1 font-medium text-on-surface">{t.recipeForm.line(n)}</legend>
       <Field label={t.recipeForm.search}>
         <input

@@ -86,7 +86,7 @@ function PymeForm({ online }: { online: boolean }) {
 
   if (!pyme) return error ? <Alert>{error}</Alert> : <Spinner label={t.loading} />
   return (
-    <form onSubmit={submit} className="space-y-4 rounded-xl bg-surface-container-lowest p-4 border border-outline-variant" noValidate>
+    <form onSubmit={submit} className="space-y-4 rounded-xl bg-surface-container-lowest p-4 border border-hairline" noValidate>
       <h2 className="text-xl font-medium text-on-surface">{t.settings.pyme}</h2>
       <Field label={t.settings.name}>
         <input className={inputClass} value={form.name} onChange={(e) => set('name')(e.target.value)} maxLength={120} />
@@ -159,12 +159,12 @@ function Team({ online }: { online: boolean }) {
 
   const ready = form.name.trim().length >= 2 && form.email.includes('@') && form.password.length >= 10
   return (
-    <section className="space-y-4 rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
+    <section className="space-y-4 rounded-xl bg-surface-container-lowest p-4 border border-hairline">
       <h2 className="text-xl font-medium text-on-surface">{t.settings.team}</h2>
       {users === null ? (
         !error && <Spinner label={t.loading} />
       ) : (
-        <ul className="divide-y divide-outline-variant">
+        <ul className="divide-y divide-hairline">
           {users.map((u) => (
             <li key={u.id} className="py-2">
               <p className="font-medium text-on-surface">{u.full_name}</p>
@@ -177,7 +177,7 @@ function Team({ online }: { online: boolean }) {
           ))}
         </ul>
       )}
-      <form onSubmit={invite} className="space-y-3 border-t border-outline-variant pt-4" noValidate>
+      <form onSubmit={invite} className="space-y-3 border-t border-hairline pt-4" noValidate>
         <h3 className="text-lg font-medium text-on-surface">{t.settings.invite}</h3>
         <Field label={t.settings.inviteName}>
           <input className={inputClass} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
@@ -244,7 +244,7 @@ function CatalogProfile({ online }: { online: boolean }) {
   }
 
   return (
-    <section className="space-y-4 rounded-xl border border-outline-variant bg-surface-container-lowest p-4">
+    <section className="space-y-4 rounded-xl border border-hairline bg-surface-container-lowest p-4">
       <h2 className="text-xl font-medium text-on-surface">{t.catalogAdmin.title}</h2>
       <p className="text-on-surface-variant">{t.catalogAdmin.hint}</p>
       {!pyme && !error && <Spinner label={t.loading} />}
@@ -320,7 +320,7 @@ function CustomerPortal({ online }: { online: boolean }) {
 
   const link = code ? customerLink(code) : null
   return (
-    <section className="space-y-3 rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
+    <section className="space-y-3 rounded-xl bg-surface-container-lowest p-4 border border-hairline">
       <h2 className="text-xl font-medium text-on-surface">{t.settings.customersTitle}</h2>
       <p className="text-on-surface-variant">{t.settings.customersHint}</p>
       {code === undefined && !error && <Spinner label={t.loading} />}

@@ -141,7 +141,7 @@ export default function Inventory() {
       ) : (
         <ul className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {items.map((ing) => (
-            <li key={ing.id} className="rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
+            <li key={ing.id} className="rounded-xl bg-surface-container-lowest p-4 border border-hairline">
               <div className="flex items-center gap-3">
                 <button
                   type="button"
@@ -149,7 +149,7 @@ export default function Inventory() {
                   className="min-h-12 min-w-0 flex-1 rounded-xl text-left focus-visible:ring-4 focus-visible:ring-primary/40"
                 >
                   <span className="block text-lg font-medium text-on-surface">{ing.name}</span>
-                  <span className="block text-on-surface">{formatStock(ing.stock_qty, ing.base_unit)}</span>
+                  <span className="num block text-on-surface">{formatStock(ing.stock_qty, ing.base_unit)}</span>
                   {ing.is_low && (
                     <span className="mt-1 inline-block rounded-md bg-warning-container px-2 py-0.5 text-sm font-medium text-on-warning-container">
                       {t.inventory.low}

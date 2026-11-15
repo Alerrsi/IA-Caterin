@@ -128,17 +128,20 @@ export default function QuoteView({ id }: { id: string }) {
 
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <aside className="space-y-4 lg:sticky lg:top-6 lg:col-start-2 lg:row-start-1">
-      <section className="rounded-xl bg-surface-container-lowest p-5 border border-outline-variant" aria-label={t.view.total}>
-        <p className="text-on-surface-variant">{t.view.total}</p>
-        <p className="text-4xl font-normal text-on-surface" data-testid="quote-total">
-          {formatCLP(quote.total_clp)}
-        </p>
-        <dl className="mt-3 grid grid-cols-2 gap-1 text-on-surface">
+      {/* Como un ticket de comanda: el detalle arriba, la línea de corte y el total (T16). */}
+      <section className="rounded-xl bg-surface-container-lowest p-5 border border-hairline" aria-label={t.view.total}>
+        <dl className="grid grid-cols-2 gap-1 text-on-surface">
           <dt>{t.view.net}</dt>
-          <dd className="text-right">{formatCLP(quote.net_clp)}</dd>
+          <dd className="num text-right">{formatCLP(quote.net_clp)}</dd>
           <dt>{t.view.vat(formatQty(quote.vat_pct))}</dt>
-          <dd className="text-right">{formatCLP(quote.vat_clp)}</dd>
+          <dd className="num text-right">{formatCLP(quote.vat_clp)}</dd>
         </dl>
+        <div className="mt-3 border-t border-dashed border-outline pt-3">
+          <p className="text-on-surface-variant">{t.view.total}</p>
+          <p className="num text-4xl text-on-surface" data-testid="quote-total">
+            {formatCLP(quote.total_clp)}
+          </p>
+        </div>
         {quote.valid_until && <p className="mt-2 text-sm text-on-surface-variant">{t.view.validUntil(formatDate(quote.valid_until))}</p>}
       </section>
 
@@ -182,27 +185,28 @@ export default function QuoteView({ id }: { id: string }) {
 
         </aside>
         <div className="min-w-0 lg:col-start-1 lg:row-start-1">
-      <h2 className="mb-2 text-lg font-medium">{t.view.products}</h2>
-      <ul className="divide-y divide-outline-variant rounded-xl bg-surface-container-lowest border border-outline-variant">
+      <h2 className="mb-2 font-display text-xl">{t.view.products}</h2>
+      <ul className="divide-y divide-hairline rounded-xl bg-surface-container-lowest border border-hairline">
         {quote.products.map((p, i) => (
           <li key={i} className="flex items-start justify-between gap-3 p-4">
             <div>
               <p className="font-medium">{p.recipe_name}</p>
               <p className="text-on-surface-variant">
-                {formatQty(p.qty)} {p.unit_label} · {formatCLP(p.unit_price_clp)} {t.view.unitPrice}
+                <span className="num">{formatQty(p.qty)}</span> {p.unit_label} · <span className="num">{formatCLP(p.unit_price_clp)}</span>{' '}
+                {t.view.unitPrice}
               </p>
             </div>
-            <p className="font-medium">{formatCLP(p.subtotal_clp)}</p>
+            <p className="num font-medium">{formatCLP(p.subtotal_clp)}</p>
           </li>
         ))}
       </ul>
       <p className="mt-2 text-sm text-on-surface-variant">
-        {t.view.ingredientsCost}: {formatCLP(quote.ingredients_cost_clp)}
+        {t.view.ingredientsCost}: <span className="num">{formatCLP(quote.ingredients_cost_clp)}</span>
       </p>
 
-      <details className="mt-6 rounded-xl bg-surface-container-lowest p-4 border border-outline-variant" onToggle={(e) => toggleShopping(e.currentTarget.open)}>
+      <details className="mt-6 rounded-xl bg-surface-container-lowest p-4 border border-hairline" onToggle={(e) => toggleShopping(e.currentTarget.open)}>
         <summary className="min-h-12 cursor-pointer py-2 text-xl font-medium">
-          {t.view.shopping} · {formatCLP(quote.shopping_total_clp)}
+          {t.view.shopping} · <span className="num">{formatCLP(quote.shopping_total_clp)}</span>
         </summary>
         {!shopping ? (
           <Spinner label={t.loading} />
@@ -220,7 +224,7 @@ export default function QuoteView({ id }: { id: string }) {
                       <span>
                         {it.packages} × {it.package_label} — {it.ingredient_name}
                       </span>
-                      <span>{formatCLP(it.total_clp)}</span>
+                      <span className="num shrink-0">{formatCLP(it.total_clp)}</span>
                     </li>
                   ))}
                 </ul>
@@ -236,8 +240,8 @@ export default function QuoteView({ id }: { id: string }) {
                 {t.view.coveredByStock}: {shopping.covered_by_stock.join(', ')}
               </p>
             )}
-            <p className="font-medium">
-              {t.view.shoppingTotal}: {formatCLP(shopping.total_clp)}
+            <p className="border-t border-dashed border-outline pt-3 font-medium">
+              {t.view.shoppingTotal}: <span className="num">{formatCLP(shopping.total_clp)}</span>
             </p>
           </div>
         )}

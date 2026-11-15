@@ -61,7 +61,7 @@ export default function Recipes() {
               <button
                 type="button"
                 onClick={() => navigate(`/recetas/${r.id}`)}
-                className="block min-h-12 w-full rounded-xl bg-surface-container-lowest p-4 text-left border border-outline-variant focus-visible:ring-4 focus-visible:ring-primary/40"
+                className="block min-h-12 w-full rounded-xl bg-surface-container-lowest p-4 text-left border border-hairline focus-visible:ring-4 focus-visible:ring-primary/40"
               >
                 <span className="block text-lg font-medium text-on-surface">{r.name}</span>
                 <span className="block text-on-surface-variant">

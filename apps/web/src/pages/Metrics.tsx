@@ -21,7 +21,7 @@ function query(period: PeriodKey): string {
 
 function Card({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="rounded-xl bg-surface-container-lowest p-5 border border-outline-variant" aria-label={title}>
+    <section className="rounded-xl bg-surface-container-lowest p-5 border border-hairline" aria-label={title}>
       <h2 className="mb-2 text-xl font-medium">{title}</h2>
       {children}
     </section>
@@ -270,7 +270,7 @@ export default function Metrics() {
               </thead>
               <tbody>
                 {summary.assistant.levels.map((lv) => (
-                  <tr key={lv.level} className="border-t border-outline-variant">
+                  <tr key={lv.level} className="border-t border-hairline">
                     <th scope="row" className="py-2 font-medium">
                       {t.metrics.level(lv.level)}
                     </th>
@@ -302,7 +302,7 @@ export default function Metrics() {
             {downloading ? t.metrics.downloading : t.metrics.download}
           </Button>
 
-          <details className="rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
+          <details className="rounded-xl bg-surface-container-lowest p-4 border border-hairline">
             <summary className="min-h-12 cursor-pointer py-2 text-xl font-medium">{t.metrics.baselineTitle}</summary>
             <BaselineForm onSaved={load} />
           </details>

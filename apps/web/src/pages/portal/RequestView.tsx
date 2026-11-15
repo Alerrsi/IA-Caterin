@@ -91,17 +91,19 @@ export default function RequestView({ id }: { id: string }) {
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <aside className="space-y-4 lg:sticky lg:top-6 lg:col-start-2 lg:row-start-1">
       {q?.is_complete && (
-        <section className="rounded-xl bg-surface-container-lowest p-5 border border-outline-variant" aria-label={t.view.total}>
-          <p className="text-on-surface-variant">{t.view.total}</p>
-          <p className="text-4xl font-normal text-on-surface" data-testid="request-total">
-            {formatCLP(q.total_clp)}
-          </p>
-          <dl className="mt-3 grid grid-cols-2 gap-1 text-on-surface">
+        <section className="rounded-xl bg-surface-container-lowest p-5 border border-hairline" aria-label={t.view.total}>
+          <dl className="grid grid-cols-2 gap-1 text-on-surface">
             <dt>{t.view.net}</dt>
-            <dd className="text-right">{formatCLP(q.net_clp)}</dd>
+            <dd className="num text-right">{formatCLP(q.net_clp)}</dd>
             <dt>{t.view.vat(q.vat_pct)}</dt>
-            <dd className="text-right">{formatCLP(q.vat_clp)}</dd>
+            <dd className="num text-right">{formatCLP(q.vat_clp)}</dd>
           </dl>
+          <div className="mt-3 border-t border-dashed border-outline pt-3">
+            <p className="text-on-surface-variant">{t.view.total}</p>
+            <p className="num text-4xl text-on-surface" data-testid="request-total">
+              {formatCLP(q.total_clp)}
+            </p>
+          </div>
           {q.valid_until && <p className="mt-2 text-sm text-on-surface-variant">{t.view.validUntil(formatDate(q.valid_until))}</p>}
         </section>
       )}
@@ -136,18 +138,23 @@ export default function RequestView({ id }: { id: string }) {
       </div>
         </aside>
         <div className="min-w-0 lg:col-start-1 lg:row-start-1">
-      <h2 className="mb-2 text-lg font-medium">{t.view.products}</h2>
-      <ul className="divide-y divide-outline-variant rounded-xl bg-surface-container-lowest border border-outline-variant">
+      <h2 className="mb-2 font-display text-xl">{t.view.products}</h2>
+      <ul className="divide-y divide-hairline rounded-xl bg-surface-container-lowest border border-hairline">
         {(q?.products ?? req.lines.map((l) => ({ ...l, unit_price_clp: null, subtotal_clp: null }))).map((p, i) => (
           <li key={i} className="flex items-start justify-between gap-3 p-4">
             <div>
               <p className="font-medium">{p.name}</p>
               <p className="text-on-surface-variant">
-                {p.qty} {p.unit_label}
-                {p.unit_price_clp !== null && ` · ${formatCLP(p.unit_price_clp)} ${t.view.unitPrice}`}
+                <span className="num">{p.qty}</span> {p.unit_label}
+                {p.unit_price_clp !== null && (
+                  <>
+                    {' · '}
+                    <span className="num">{formatCLP(p.unit_price_clp)}</span> {t.view.unitPrice}
+                  </>
+                )}
               </p>
             </div>
-            <p className="font-medium">{p.subtotal_clp === null ? '—' : formatCLP(p.subtotal_clp)}</p>
+            <p className="num font-medium">{p.subtotal_clp === null ? '—' : formatCLP(p.subtotal_clp)}</p>
           </li>
         ))}
       </ul>

@@ -193,7 +193,7 @@ export const t = {
     accepted: 'Solicitud aceptada: el pedido quedó confirmado.',
     rejected: 'Solicitud rechazada. El cliente verá tu mensaje.',
     otherOrders: 'Pedidos',
-    quotedTotal: (total: string) => `Total cotizado: ${total}`,
+    quotedTotalLabel: 'Total cotizado:',
     noQuotedTotal: 'Sin total: falta un precio o el margen',
     contact: 'Contacto',
   },

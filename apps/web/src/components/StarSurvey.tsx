@@ -7,13 +7,13 @@ export function StarSurvey({ context }: { context: 'general' | 'quote' | 'assist
   const [sent, setSent] = useState<number | null>(null)
   if (sent !== null) {
     return (
-      <p role="status" className="rounded-xl bg-surface-container-lowest p-4 text-center font-medium text-on-surface border border-outline-variant">
+      <p role="status" className="rounded-xl bg-surface-container-lowest p-4 text-center font-medium text-on-surface border border-hairline">
         {t.survey.thanks}
       </p>
     )
   }
   return (
-    <fieldset className="rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
+    <fieldset className="rounded-xl bg-surface-container-lowest p-4 border border-hairline">
       <legend className="sr-only">{t.survey.questions[context]}</legend>
       <p aria-hidden="true" className="mb-2 font-medium text-on-surface">
         {t.survey.questions[context]}

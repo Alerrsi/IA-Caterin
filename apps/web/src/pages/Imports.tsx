@@ -145,7 +145,7 @@ export default function Imports() {
           <Alert kind="warning">{t.sync.needsNetwork}</Alert>
         </div>
       )}
-      <form onSubmit={review} className="space-y-4 rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
+      <form onSubmit={review} className="space-y-4 rounded-xl bg-surface-container-lowest p-4 border border-hairline">
         <fieldset>
           <legend className="mb-2 font-medium text-on-surface">{t.imports.what}</legend>
           <div className="flex flex-wrap gap-2">
@@ -206,7 +206,7 @@ export default function Imports() {
         <section className="mt-6 space-y-4" aria-live="polite">
           <p className="text-lg font-medium text-on-surface">{t.imports.summary(preview.valid.length, preview.total_rows)}</p>
           {preview.valid.length > 0 && (
-            <ul className="divide-y divide-outline-variant rounded-xl bg-surface-container-lowest px-4 border border-outline-variant">
+            <ul className="divide-y divide-hairline rounded-xl bg-surface-container-lowest px-4 border border-hairline">
               {preview.valid.map((r) => (
                 <li key={r.row} className="py-2">
                   <span className="text-sm text-on-surface-variant">{t.imports.row(r.row)} · </span>

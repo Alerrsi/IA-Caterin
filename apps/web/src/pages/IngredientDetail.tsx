@@ -51,7 +51,7 @@ export default function IngredientDetail({ id }: { id: string }) {
         )
       ) : (
         <>
-          <section className="rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
+          <section className="rounded-xl bg-surface-container-lowest p-4 border border-hairline">
             <p className="text-on-surface-variant">{t.inventory.stock}</p>
             <p className="text-3xl font-medium text-on-surface">{formatStock(ing.stock_qty, ing.base_unit)}</p>
             {ing.min_stock_qty && (
@@ -86,13 +86,13 @@ export default function IngredientDetail({ id }: { id: string }) {
 
           <PriceSection ingredient={ing} />
 
-          <section className="mt-4 rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
+          <section className="mt-4 rounded-xl bg-surface-container-lowest p-4 border border-hairline">
             <h2 className="mb-2 text-lg font-medium text-on-surface">{t.inventory.history}</h2>
             {history.value ? (
               history.value.data.items.length === 0 ? (
                 <p>{t.inventory.noHistory}</p>
               ) : (
-                <ul className="divide-y divide-outline-variant">
+                <ul className="divide-y divide-hairline">
                   {history.value.data.items.map((m) => (
                     <li key={m.id} className="flex justify-between gap-3 py-2">
                       <span>

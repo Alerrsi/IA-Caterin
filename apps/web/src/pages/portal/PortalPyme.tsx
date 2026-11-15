@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { PortalProduct, PortalPyme as Pyme } from '../../api'
-import { Alert, Button, Page, Spinner } from '../../components/ui'
+import { Alert, Button, Cells, Page, Spinner } from '../../components/ui'
 import { Icon } from '../../components/Icon'
 import { t } from '../../i18n'
 import { useCached } from '../../offline/cache'
@@ -14,33 +14,40 @@ export function quotePath(pymeId: string, picked: string[]): string {
 }
 
 function ProductCard({ product, added, onToggle }: { product: PortalProduct; added: boolean; onToggle: () => void }) {
-  // Celular: fila compacta con miniatura. Desde 640 px: tarjeta con la foto arriba.
+  // Una celda de la grilla (T16). Celular: fila compacta con miniatura. Desde 640 px: la foto arriba, en un marco
+  // punteado como la línea de corte de una comanda.
   return (
-    <li className="flex gap-3 rounded-xl border border-outline-variant bg-surface-container-lowest p-3 sm:flex-col sm:gap-0 sm:overflow-hidden sm:p-0">
-      {product.photo_url ? (
-        <img
-          src={product.photo_url}
-          alt=""
-          loading="lazy"
-          className="h-20 w-20 shrink-0 rounded-lg object-cover sm:aspect-[4/3] sm:h-auto sm:w-full sm:rounded-none"
-        />
-      ) : (
-        <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-lg bg-surface-container-high text-on-surface-variant sm:aspect-[4/3] sm:h-auto sm:w-full sm:rounded-none">
-          <Icon name="cloche" className="h-9 w-9 sm:h-12 sm:w-12" />
-          <span className="sr-only">{t.catalog.noPhoto}</span>
-        </div>
-      )}
-      <div className="flex min-w-0 flex-1 flex-col sm:p-4">
+    <li className="flex gap-3 p-3 sm:flex-col sm:p-4">
+      <div className="shrink-0 rounded-sm border border-dashed border-outline-variant p-1">
+        {product.photo_url ? (
+          <img
+            src={product.photo_url}
+            alt=""
+            loading="lazy"
+            width={800}
+            height={600}
+            className="h-20 w-20 object-cover sm:aspect-[4/3] sm:h-auto sm:w-full"
+          />
+        ) : (
+          <div className="flex h-20 w-20 items-center justify-center bg-surface-container-high text-on-surface-variant sm:aspect-[4/3] sm:h-auto sm:w-full">
+            <Icon name="cloche" className="h-9 w-9 sm:h-12 sm:w-12" />
+            <span className="sr-only">{t.catalog.noPhoto}</span>
+          </div>
+        )}
+      </div>
+      <div className="flex min-w-0 flex-1 flex-col sm:pt-3">
         <h3 className="text-lg font-medium text-on-surface">{product.name}</h3>
-        <p className="text-sm text-on-surface-variant">{t.catalog.soldBy[product.yield_unit]}</p>
+        <p className="num text-sm text-on-surface-variant">{t.catalog.soldBy[product.yield_unit]}</p>
         {product.description && <p className="mt-1 text-on-surface-variant">{product.description}</p>}
         <div className="mt-auto pt-3">
           <button
             type="button"
             onClick={onToggle}
             aria-pressed={added}
-            className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg px-4 font-medium transition focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 ${
-              added ? 'bg-secondary-container text-on-secondary-container' : 'border border-outline text-primary hover:bg-primary/8'
+            className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg px-4 font-medium transition-[background-color,translate] duration-150 ease-out focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 active:translate-y-px motion-reduce:active:translate-y-0 ${
+              added
+                ? 'bg-secondary-container text-on-secondary-container'
+                : 'border border-outline bg-surface-container-lowest text-on-surface shadow-cap hover:bg-surface-container-low'
             }`}
           >
             <Icon name={added ? 'check' : 'add'} className="h-5 w-5" />
@@ -117,22 +124,22 @@ export default function PortalPyme({ id }: { id: string }) {
         groups.map(([category, items]) => (
           <section key={category} className="mb-6" aria-labelledby={groups.length > 1 ? `cat-${category}` : undefined}>
             {groups.length > 1 && (
-              <h2 id={`cat-${category}`} className="mb-3 text-xl font-medium text-on-surface">
+              <h2 id={`cat-${category}`} className="mb-3 font-display text-xl text-on-surface">
                 {category}
               </h2>
             )}
-            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <Cells className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {items.map((p) => (
                 <ProductCard key={p.id} product={p} added={picked.includes(p.id)} onToggle={() => toggle(p.id)} />
               ))}
-            </ul>
+            </Cells>
           </section>
         ))
       )}
       {/* Botón fijo sobre la navegación inferior: siempre a mano para pasar a cotizar. */}
       <p className="mt-2 text-on-surface-variant">{t.catalog.pricesAtQuote}</p>
       <div className="sticky bottom-24 z-10 mt-3 lg:bottom-6">
-        <Button onClick={() => navigate(quotePath(id, picked))} className="w-full shadow-md sm:w-auto">
+        <Button onClick={() => navigate(quotePath(id, picked))} className="w-full sm:w-auto">
           {picked.length ? t.catalog.quoteN(picked.length) : t.catalog.quoteWith}
         </Button>
       </div>

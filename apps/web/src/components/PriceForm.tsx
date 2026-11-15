@@ -46,7 +46,7 @@ export function PriceSection({ ingredient }: { ingredient: Ingredient }) {
   const [saved, setSaved] = useState(false)
 
   return (
-    <section className="mt-4 rounded-xl bg-surface-container-lowest p-4 border border-outline-variant" aria-labelledby={`prices-${ingredient.id}`}>
+    <section className="mt-4 rounded-xl bg-surface-container-lowest p-4 border border-hairline" aria-labelledby={`prices-${ingredient.id}`}>
       <h2 id={`prices-${ingredient.id}`} className="mb-2 text-lg font-medium text-on-surface">
         {t.priceForm.current}
       </h2>
@@ -59,7 +59,7 @@ export function PriceSection({ ingredient }: { ingredient: Ingredient }) {
         prices.value.data.items.length === 0 ? (
           <p className="text-on-surface-variant">{t.priceForm.none}</p>
         ) : (
-          <ul className="divide-y divide-outline-variant">
+          <ul className="divide-y divide-hairline">
             {prices.value.data.items.map((p) => (
               <li key={p.price_id} className="py-2">
                 <span className="block font-medium">
@@ -157,7 +157,7 @@ function PriceForm({ ingredient, onSaved, onCancel }: { ingredient: Ingredient; 
   }
 
   return (
-    <form onSubmit={save} className="mt-4 space-y-3 border-t-2 border-outline-variant pt-4" noValidate>
+    <form onSubmit={save} className="mt-4 space-y-3 border-t border-dashed border-outline-variant pt-4" noValidate>
       {active.length > 0 && (
         <Field label={t.priceForm.supplier}>
           <select className={inputClass} value={supplierId} onChange={(e) => setSupplierId(e.target.value)}>

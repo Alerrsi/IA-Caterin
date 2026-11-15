@@ -273,7 +273,7 @@ export default function Vision() {
         {info && <Alert kind="info">{info}</Alert>}
 
         {pending.length > 0 && stage === 'start' && !photo && (
-          <section className="rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
+          <section className="rounded-xl bg-surface-container-lowest p-4 border border-hairline">
             <p className="mb-3 font-medium">{t.vision.pendingPhotos(pending.length)}</p>
             <div className="flex gap-2">
               <Button className="flex-1" disabled={!online} onClick={() => void countPending()}>
@@ -319,7 +319,7 @@ export default function Vision() {
             {lines.map((l, i) => {
               const name = l.recipeName ?? l.visionClass
               return (
-                <div key={l.visionClass} className="space-y-3 rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
+                <div key={l.visionClass} className="space-y-3 rounded-xl bg-surface-container-lowest p-4 border border-hairline">
                   {l.recipeName ? (
                     <p className="text-lg font-medium">{l.recipeName}</p>
                   ) : (
@@ -347,7 +347,7 @@ export default function Vision() {
         )}
 
         {(stage === 'start' || stage === 'review') && (
-          <section className="rounded-xl bg-surface-container-lowest p-4 border border-outline-variant">
+          <section className="rounded-xl bg-surface-container-lowest p-4 border border-hairline">
             {manualOpen ? (
               <div className="space-y-3">
                 <h2 className="text-xl font-medium">{t.vision.manualTitle}</h2>
