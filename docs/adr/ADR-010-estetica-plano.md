@@ -1,7 +1,7 @@
 # ADR-010 — Estética "plano de cocina" (inspirada en zed.dev)
 
 - Estado: **aceptado** (15-nov-2026: el usuario aceptó todas las recomendaciones del plan). Implementado en la rama
-  `feat/T16-estetica-plano`; se integra a `main` cuando el usuario revise las capturas.
+  `feat/T16-estetica-plano` e integrado a `main` el mismo día.
 - Contexto en: ADR-008 (identidad visual), T16 (plan detallado).
 
 ## Contexto

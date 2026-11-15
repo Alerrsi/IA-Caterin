@@ -1,5 +1,5 @@
 # T16 — Estética "plano de cocina": detalles inspirados en zed.dev
-- Estado: hecha en la rama (15-nov-2026); falta que el usuario revise las capturas para integrarla a `main`
+- Estado: hecha (15-nov-2026); integrada a `main` por *fast-forward* tras la revisión del usuario
 - Rama: `feat/T16-estetica-plano`
 - Depende de: T14 (identidad visual, ADR-008), T15 (catálogo)
 - Funcionalidad: transversal
@@ -223,5 +223,5 @@ Cáterin tiene ahora una estética de "plano de cocina": IBM Plex en tres voces 
 Mono en las cifras), esquinas de 2–8 px, líneas finas como estructura, rieles con marcas en escritorio, grillas de
 celdas en el inicio y el catálogo, total de la cotización como ticket con línea de corte, botón tecla, papel
 cuadriculado y rayado en el login, atajos `C` y `/` en escritorio y un cajón que entra suave (y quieto si se pide
-reducir movimiento). Pesa menos que antes (151,9 KB contra 168,6 KB). Pendiente: que el usuario revise las capturas
-y apruebe la integración a `main`, y mostrarlo a personas reales.
+reducir movimiento). Pesa menos que antes (151,9 KB contra 168,6 KB). Integrada a `main` el 15-nov-2026.
+Pendiente: mostrarlo a personas reales.

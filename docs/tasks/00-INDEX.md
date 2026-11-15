@@ -19,7 +19,7 @@ Actualizado: 15-nov-2026. Por decisión del usuario (9-nov-2026), las tareas se 
 | [T13](T13-portal-clientes.md) | Portal de clientes (ADR-007) | F3 | hecha (e2e con navegador desde T15; falta prueba con clientes reales) | T03, T05, T08 | por asignar |
 | [T14](T14-identidad-visual.md) | Identidad visual de catering (ADR-008) | transversal | hecha (falta prueba de 5 segundos con personas) | T08 | por asignar |
 | [T15](T15-catalogo-portal.md) | Catálogo de pymes y productos para el cliente (ADR-009) | F3 | hecha (falta validar con una pyme y clientes reales) | T13, T14 | por asignar |
-| [T16](T16-estetica-plano.md) | Estética "plano de cocina" inspirada en zed.dev (ADR-010) | transversal | hecha en la rama `feat/T16-estetica-plano` (falta revisar capturas e integrar a `main`) | T14, T15 | por asignar |
+| [T16](T16-estetica-plano.md) | Estética "plano de cocina" inspirada en zed.dev (ADR-010) | transversal | hecha (falta mostrarla a personas reales) | T14, T15 | por asignar |
 
 Orden recomendado: T01 → T02 → T03 → T04 → (T05, T06, T07 en paralelo si hay capacidad) → T08 → T09 → T10 → T11 → T12.
 
