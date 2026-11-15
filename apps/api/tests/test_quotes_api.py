@@ -203,6 +203,7 @@ def test_full_flow_with_missing_price_then_complete(client: TestClient, demo: di
     assert "Empanadas de pino" in text
     assert "$83.600" in text  # 80 × $1.045
     assert f"${q2['total_clp']:,}".replace(",", ".") in text
+    assert "Hecha con Cáterin" in text  # Cáterin firma al pie; el encabezado es de la pyme (T14)
     for secret in ("Harina", "Eneldo", "costo", "margen", str(pino["cost_clp"])):
         assert secret not in text  # el PDF no muestra costos internos
 
