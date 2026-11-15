@@ -1,8 +1,11 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { useAuth } from '../auth'
 import { t } from '../i18n'
+import { navigate } from '../router'
+import { useShortcut } from '../shortcuts'
 import { Icon, type IconName } from './Icon'
 import { Logo } from './Logo'
+import { Kbd } from './ui'
 
 interface Dest {
   path: string
@@ -10,6 +13,8 @@ interface Dest {
   icon: IconName
   /** Aparece en la barra inferior del celular (máximo 4; el resto queda en el menú). */
   bar?: boolean
+  /** Atajo de teclado de una tecla (T16); se muestra en el cajón de escritorio. */
+  shortcut?: string
 }
 
 function destinations(role: string | undefined): Dest[] {
@@ -17,13 +22,13 @@ function destinations(role: string | undefined): Dest[] {
     return [
       { path: '/', label: t.nav.myQuotes, icon: 'orders', bar: true },
       { path: '/pymes', label: t.nav.pymes, icon: 'store', bar: true },
-      { path: '/cotizar', label: t.nav.newQuote, icon: 'add', bar: true },
+      { path: '/cotizar', label: t.nav.newQuote, icon: 'add', bar: true, shortcut: 'C' },
     ]
   }
   const owner = role === 'owner'
   const all: (Dest | false)[] = [
     { path: '/', label: t.nav.home, icon: 'home', bar: true },
-    { path: '/cotizar', label: t.nav.quote, icon: 'quote', bar: true },
+    { path: '/cotizar', label: t.nav.quote, icon: 'quote', bar: true, shortcut: 'C' },
     { path: '/pedidos', label: t.nav.orders, icon: 'orders', bar: true },
     { path: '/preguntar', label: t.nav.assistant, icon: 'chat', bar: true },
     { path: '/inventario', label: t.nav.inventory, icon: 'inventory' },
@@ -51,12 +56,14 @@ function DrawerItem({ dest, path, onNavigate }: { dest: Dest; path: string; onNa
         href={`#${dest.path}`}
         onClick={onNavigate}
         aria-current={active ? 'page' : undefined}
+        aria-keyshortcuts={dest.shortcut}
         className={`flex h-14 items-center gap-3 rounded-lg px-4 text-base font-medium transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 ${
           active ? 'bg-secondary-container text-on-secondary-container' : 'text-on-surface-variant hover:bg-on-surface/8'
         }`}
       >
         <Icon name={dest.icon} className="h-6 w-6" />
-        {dest.label}
+        <span className="flex-1">{dest.label}</span>
+        {dest.shortcut && <Kbd>{dest.shortcut}</Kbd>}
       </a>
     </li>
   )
@@ -72,6 +79,7 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
   const [open, setOpen] = useState(false)
   const dests = destinations(user?.role)
   const customer = user?.role === 'customer' // trabaja con varias pymes: no se muestra una sola
+  useShortcut('c', () => navigate('/cotizar'))
 
   useEffect(() => {
     if (!open) return
@@ -137,10 +145,16 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
           <button
             type="button"
             aria-label={t.nav.close}
-            className="absolute inset-0 h-full w-full bg-black/30"
+            className="absolute inset-0 h-full w-full bg-black/30 transition-opacity duration-200 ease-out starting:opacity-0 motion-reduce:transition-none"
             onClick={() => setOpen(false)}
           />
-          <div role="dialog" aria-modal="true" aria-label={t.nav.label} className="absolute inset-y-0 left-0 w-80 max-w-[85vw] rounded-r-2xl bg-surface-container-low shadow-xl">
+          {/* Entra desde la izquierda con la curva de cajón (300 ms); sin movimiento si se pidió reducirlo. */}
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={t.nav.label}
+            className="absolute inset-y-0 left-0 w-80 max-w-[85vw] overscroll-contain rounded-r-2xl border-r border-hairline bg-surface-container-low shadow-xl transition-[translate] duration-300 ease-drawer starting:-translate-x-full motion-reduce:transition-none"
+          >
             {drawer(() => setOpen(false))}
           </div>
         </div>

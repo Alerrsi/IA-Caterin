@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { loadAllIngredients, type Ingredient } from '../api'
 import { StockAdjust, applyDelta } from '../components/StockAdjust'
-import { Alert, Button, Page, Spinner, inputClass } from '../components/ui'
+import { Alert, Button, Kbd, Page, Spinner, inputClass } from '../components/ui'
 import { formatStock } from '../format'
 import { t } from '../i18n'
 import { useCached } from '../offline/cache'
 import { useQueue } from '../offline/queue'
 import { navigate } from '../router'
+import { useShortcut } from '../shortcuts'
 
 export function plain(text: string): string {
   return text.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim()
@@ -50,6 +51,8 @@ export function useReloadWhenSynced(reload: () => void): void {
 export default function Inventory() {
   const { value, error, loading, setData, reload } = useCached<Ingredient[]>('ingredients', loadAllIngredients)
   const [query, setQuery] = useState('')
+  const search = useRef<HTMLInputElement>(null)
+  useShortcut('/', () => search.current?.focus())
   const [onlyLow, setOnlyLow] = useState(false)
   const [onlyNoPrice, setOnlyNoPrice] = useState(false)
   // Precios vigentes de todos los insumos en una llamada: con eso se sabe cuáles no tienen precio.
@@ -95,12 +98,17 @@ export default function Inventory() {
       <Button className="mb-4 w-full" onClick={() => navigate('/inventario/nuevo')}>
         {t.inventory.newItem}
       </Button>
-      <label htmlFor="inventory-search" className="mb-1 block font-medium text-on-surface">
-        {t.inventory.search}
-      </label>
+      <div className="mb-1 flex items-center gap-2">
+        <label htmlFor="inventory-search" className="font-medium text-on-surface">
+          {t.inventory.search}
+        </label>
+        <Kbd>/</Kbd>
+      </div>
       <input
+        ref={search}
         id="inventory-search"
         type="search"
+        aria-keyshortcuts="/"
         className={inputClass}
         placeholder={t.inventory.searchPlaceholder}
         value={query}

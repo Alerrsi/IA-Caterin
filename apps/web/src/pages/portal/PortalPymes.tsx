@@ -1,10 +1,11 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import type { PortalPyme } from '../../api'
-import { Alert, Cells, Page, Spinner, inputClass } from '../../components/ui'
+import { Alert, Cells, Kbd, Page, Spinner, inputClass } from '../../components/ui'
 import { Icon } from '../../components/Icon'
 import { t } from '../../i18n'
 import { useCached } from '../../offline/cache'
 import { navigate } from '../../router'
+import { useShortcut } from '../../shortcuts'
 import { plain, savedAtLabel } from '../Inventory'
 
 /** Logo de la pyme o, si no tiene, un círculo con su inicial. Decorativo: el nombre va al lado. */
@@ -27,6 +28,8 @@ export function PymeAvatar({ pyme, size = 'md' }: { pyme: Pick<PortalPyme, 'name
 export default function PortalPymes() {
   const { value, error, loading } = useCached<PortalPyme[]>('portal:pymes', '/portal/pymes')
   const [query, setQuery] = useState('')
+  const search = useRef<HTMLInputElement>(null)
+  useShortcut('/', () => search.current?.focus())
   const all = value?.data
   const items = useMemo(() => {
     const q = plain(query)
@@ -42,10 +45,15 @@ export default function PortalPymes() {
       )}
       {all && all.length > 3 && (
         <div className="mb-4 max-w-md">
-          <label htmlFor="pymes-search" className="mb-1 block font-medium text-on-surface">
-            {t.catalog.search}
-          </label>
+          <div className="mb-1 flex items-center gap-2">
+            <label htmlFor="pymes-search" className="font-medium text-on-surface">
+              {t.catalog.search}
+            </label>
+            <Kbd>/</Kbd>
+          </div>
           <input
+            ref={search}
+            aria-keyshortcuts="/"
             id="pymes-search"
             type="search"
             className={inputClass}
