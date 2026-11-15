@@ -86,7 +86,13 @@ def directory(db: Session, me: CurrentUser | None = None) -> list[PortalPymeOut]
     if joined:
         cond = or_(cond, Pyme.id.in_(joined))
     rows = db.scalars(select(Pyme).where(cond).order_by(Pyme.name))
-    return [PortalPymeOut(id=p.id, name=p.name, commune=p.commune, joined=p.id in joined) for p in rows]
+    return [pyme_out(p, joined=p.id in joined) for p in rows]
+
+
+def pyme_out(p: Pyme, joined: bool = False) -> PortalPymeOut:
+    return PortalPymeOut(
+        id=p.id, name=p.name, commune=p.commune, joined=joined, description=p.description, logo_url=p.logo_url
+    )
 
 
 def _pyme_for(db: Session, me: CurrentUser, pyme_id: uuid.UUID | None) -> Pyme:
@@ -183,12 +189,25 @@ def check_extract_quota(key: uuid.UUID | str, now: float | None = None) -> None:
 
 
 def products(db: Session, me: CurrentUser, pyme_id: uuid.UUID | None) -> list[ProductOut]:
-    """Productos que se pueden pedir a esa pyme: recetas activas marcadas como producto final (no las bases)."""
+    """Productos que se pueden pedir a esa pyme: recetas activas marcadas como producto final (no las bases) y que la
+    pyme publica en el catálogo (ADR-009). Lo usan también el extractor y las solicitudes: una sola regla."""
     pyme = _pyme_for(db, me, pyme_id)
     rows = db.scalars(
-        select(Recipe).where(Recipe.pyme_id == pyme.id, Recipe.is_active, Recipe.is_final_product).order_by(Recipe.name)
+        select(Recipe)
+        .where(Recipe.pyme_id == pyme.id, Recipe.is_active, Recipe.is_final_product, Recipe.visible_in_catalog)
+        .order_by(Recipe.category.nulls_last(), Recipe.name)
     )
-    return [ProductOut(id=r.id, name=r.name, yield_unit=r.yield_unit) for r in rows]
+    return [
+        ProductOut(
+            id=r.id,
+            name=r.name,
+            yield_unit=r.yield_unit,
+            description=r.catalog_description,
+            category=r.category,
+            photo_url=r.photo_url,
+        )
+        for r in rows
+    ]
 
 
 def product_choices(db: Session, me: CurrentUser, pyme_id: uuid.UUID | None) -> dict[uuid.UUID, str]:

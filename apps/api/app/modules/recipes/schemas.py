@@ -30,6 +30,11 @@ class RecipeCreate(BaseModel):
     is_final_product: bool = True
     vision_class: str | None = Field(default=None, max_length=60, pattern=r"^[a-z0-9_]+$")
     notes: str | None = Field(default=None, max_length=2000)
+    catalog_description: str | None = Field(
+        default=None, max_length=500, description="Texto para el catálogo del portal"
+    )
+    category: str | None = Field(default=None, max_length=60, description="Para agrupar en el catálogo (p. ej. Dulces)")
+    visible_in_catalog: bool = True
     lines: Annotated[list[RecipeLineIn], Field(min_length=1, max_length=60), AfterValidator(_unique_lines)]
 
 
@@ -41,6 +46,11 @@ class RecipeUpdate(BaseModel):
     vision_class: str | None = Field(default=None, max_length=60, pattern=r"^[a-z0-9_]+$")
     notes: str | None = Field(default=None, max_length=2000)
     is_active: bool | None = None
+    catalog_description: str | None = Field(
+        default=None, max_length=500, description="Texto para el catálogo del portal"
+    )
+    category: str | None = Field(default=None, max_length=60, description="Para agrupar en el catálogo (p. ej. Dulces)")
+    visible_in_catalog: bool | None = None
     lines: Annotated[list[RecipeLineIn] | None, Field(min_length=1, max_length=60), AfterValidator(_unique_lines)] = (
         None
     )
@@ -70,6 +80,10 @@ class RecipeOut(BaseModel):
     version: int
     is_active: bool
     updated_at: datetime
+    catalog_description: str | None = None
+    category: str | None = None
+    visible_in_catalog: bool = True
+    photo_url: str | None = None
     lines: list[RecipeLineOut]
 
 
@@ -84,6 +98,9 @@ class RecipeSummary(BaseModel):
     vision_class: str | None
     is_active: bool
     updated_at: datetime
+    category: str | None = None
+    visible_in_catalog: bool = True
+    photo_url: str | None = None
 
 
 class CostLineOut(BaseModel):

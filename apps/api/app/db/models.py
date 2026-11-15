@@ -32,6 +32,7 @@ from sqlalchemy import text as sql_text
 from sqlalchemy.dialects.postgresql import CITEXT, JSONB, TSVECTOR
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.core.media import media_url
 from app.db.base import Base, Money, Percent, Quantity, TenantMixin, TimestampMixin, str_enum, tenant_args
 from app.db.enums import (
     BaseUnit,
@@ -69,6 +70,13 @@ class Pyme(TimestampMixin, Base):
     is_demo: Mapped[bool] = mapped_column(Boolean, server_default=sql_text("false"))
     # Código del enlace para que los clientes se registren en el portal (ADR-007). None = portal cerrado.
     customer_code: Mapped[str | None] = mapped_column(String(32), unique=True)
+    # Catálogo del portal (ADR-009): lo ve cualquiera que mire el directorio de pymes.
+    description: Mapped[str | None] = mapped_column(String(280))
+    logo_path: Mapped[str | None] = mapped_column(String(200))
+
+    @property
+    def logo_url(self) -> str | None:
+        return media_url(self.id, self.logo_path)
 
     __table_args__ = (
         CheckConstraint("default_waste_pct >= 0 AND default_waste_pct < 100", name="waste_range"),
@@ -245,6 +253,15 @@ class Recipe(TenantMixin, Base):
     notes: Mapped[str | None] = mapped_column(Text)
     version: Mapped[int] = mapped_column(Integer, server_default="1")
     is_active: Mapped[bool] = mapped_column(Boolean, server_default=sql_text("true"))
+    # Catálogo del portal (ADR-009). `visible_in_catalog=False` saca el producto de todo el portal.
+    catalog_description: Mapped[str | None] = mapped_column(String(500))
+    category: Mapped[str | None] = mapped_column(String(60))
+    photo_path: Mapped[str | None] = mapped_column(String(200))
+    visible_in_catalog: Mapped[bool] = mapped_column(Boolean, server_default=sql_text("true"))
+
+    @property
+    def photo_url(self) -> str | None:
+        return media_url(self.pyme_id, self.photo_path)
 
     lines: Mapped[list["RecipeLine"]] = relationship(
         primaryjoin="and_(Recipe.id == RecipeLine.recipe_id, Recipe.pyme_id == RecipeLine.pyme_id)",

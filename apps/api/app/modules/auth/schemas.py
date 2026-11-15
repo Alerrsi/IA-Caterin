@@ -61,6 +61,8 @@ class PymeOut(BaseModel):
     quote_validity_days: int | None
     is_demo: bool
     customer_code: str | None = None
+    description: str | None = None
+    logo_url: str | None = None
 
 
 class PymePublicOut(BaseModel):
@@ -84,6 +86,9 @@ class PymeUpdate(BaseModel):
     vat_pct: Decimal | None = Field(default=None, ge=0, lt=100)
     prices_include_vat: bool | None = None
     quote_validity_days: int | None = Field(default=None, ge=1, le=365)
+    description: str | None = Field(
+        default=None, max_length=280, description="Presentación corta para el catálogo del portal (pública)"
+    )
 
 
 class UserOut(BaseModel):

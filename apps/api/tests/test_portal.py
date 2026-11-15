@@ -404,3 +404,119 @@ def test_register_from_directory_and_email_rules(client: TestClient, portal: dic
         f"{API}/portal/register", json={"full_name": "Sin Pyme", "email": "x@prueba.local", "password": PASSWORD}
     )
     assert no_pyme.status_code == 422
+
+
+# --------------------------------------------------------------------------- catálogo (ADR-009)
+
+PRODUCT_KEYS = {"id", "name", "yield_unit", "description", "category", "photo_url"}
+PYME_KEYS = {"id", "name", "commune", "joined", "description", "logo_url"}
+
+
+def _image(fmt: str = "JPEG", size: tuple[int, int] = (1600, 1200), gps: bool = False) -> bytes:
+    from PIL import Image
+
+    img = Image.new("RGB", size, (140, 60, 100))
+    out = io.BytesIO()
+    if gps:
+        exif = Image.Exif()
+        exif[0x010F] = "CamaraDePrueba"  # Make
+        exif[0x8825] = {2: (38.0, 44.0, 0.0), 1: "S"}  # GPSInfo: latitud de Temuco
+        img.save(out, fmt, exif=exif)
+    else:
+        img.save(out, fmt)
+    return out.getvalue()
+
+
+@pytest.fixture
+def media_dir(tmp_path: Any, monkeypatch: pytest.MonkeyPatch) -> Any:
+    monkeypatch.setattr(get_settings(), "storage_dir", tmp_path)
+    return tmp_path
+
+
+def test_catalog_responses_only_have_allowed_fields(client: TestClient, portal: dict[str, Any]) -> None:
+    """Lista blanca: si alguien agrega un campo a los esquemas del catálogo, esta prueba obliga a revisarlo."""
+    products = client.get(f"{API}/portal/products", headers=portal["a"]).json()
+    assert products and all(set(p) == PRODUCT_KEYS for p in products)
+    for path, headers in (("/portal/pymes", portal["a"]), ("/portal/directory", {})):
+        pymes = client.get(f"{API}{path}", headers=headers).json()
+        assert pymes and all(set(p) == PYME_KEYS for p in pymes)
+    assert set(client.get(f"{API}/portal/pymes/{portal['code']}").json()) == PYME_KEYS
+
+
+def test_owner_publishes_logo_photo_and_details(client: TestClient, portal: dict[str, Any], media_dir: Any) -> None:
+    from PIL import Image
+
+    owner, pino = portal["owner"], portal["recipes"]["Empanadas de pino"]
+    assert (
+        client.patch(f"{API}/pyme", headers=owner, json={"description": "  Cocina  casera\n del sur "}).status_code
+        == 200
+    )
+    logo = client.put(f"{API}/pyme/logo", headers=owner, files={"image": ("logo.png", _image("PNG"), "image/png")})
+    assert logo.status_code == 200, logo.text
+    patch = {"catalog_description": "Horneadas el mismo día", "category": " Salados ", "visible_in_catalog": True}
+    assert client.patch(f"{API}/recipes/{pino}", headers=owner, json=patch).status_code == 200
+    photo = client.put(
+        f"{API}/recipes/{pino}/photo", headers=owner, files={"image": ("f.jpg", _image(gps=True), "image/jpeg")}
+    )
+    assert photo.status_code == 200, photo.text
+    assert photo.json()["photo_url"].startswith(f"{API}/portal/media/")
+
+    pyme = next(p for p in client.get(f"{API}/portal/pymes", headers=portal["a"]).json() if p["logo_url"])
+    assert pyme["description"] == "Cocina casera del sur"
+    product = next(p for p in client.get(f"{API}/portal/products", headers=portal["a"]).json() if p["id"] == pino)
+    assert product["description"] == "Horneadas el mismo día" and product["category"] == "Salados"
+
+    # La imagen se sirve sin sesión, como WebP chico, cacheable y sin los metadatos de la cámara (ni GPS).
+    served = client.get(product["photo_url"])
+    assert served.status_code == 200 and served.headers["content-type"] == "image/webp"
+    assert "immutable" in served.headers["cache-control"]
+    img = Image.open(io.BytesIO(served.content))
+    assert img.format == "WEBP" and max(img.size) == 800
+    assert not img.getexif() and b"CamaraDePrueba" not in served.content
+    assert client.get(pyme["logo_url"]).status_code == 200
+
+
+def test_hidden_product_leaves_the_whole_portal(client: TestClient, portal: dict[str, Any]) -> None:
+    pino = portal["recipes"]["Empanadas de pino"]
+    client.patch(f"{API}/recipes/{pino}", headers=portal["owner"], json={"visible_in_catalog": False})
+    ids = {p["id"] for p in client.get(f"{API}/portal/products", headers=portal["a"]).json()}
+    assert pino not in ids
+    resp = _bad_request(client, portal, pino)
+    assert resp.status_code == 422 and resp.json()["code"] == "product_not_found"
+
+
+def test_image_upload_limits_and_roles(client: TestClient, portal: dict[str, Any], media_dir: Any) -> None:
+    owner, pino = portal["owner"], portal["recipes"]["Empanadas de pino"]
+    url = f"{API}/recipes/{pino}/photo"
+    big = b"\xff\xd8" + b"0" * (get_settings().media_max_upload_mb * 1024 * 1024 + 10)
+    assert client.put(url, headers=owner, files={"image": ("a.jpg", big, "image/jpeg")}).status_code == 413
+    gif = client.put(url, headers=owner, files={"image": ("a.gif", _image("GIF", (10, 10)), "image/gif")})
+    assert gif.status_code == 415 and gif.json()["code"] == "invalid_image"
+    junk = client.put(url, headers=owner, files={"image": ("a.jpg", b"no soy una foto", "image/jpeg")})
+    assert junk.status_code == 415
+
+    # Otra pyme no puede tocar la receta (404, sin revelar que existe); la colaboradora no publica (403).
+    lago = client.put(url, headers=portal["lago"], files={"image": ("a.jpg", _image(), "image/jpeg")})
+    assert lago.status_code == 404
+    collab = login(client, "colaboradora.aromos@demo.local", DEFAULT_DEMO_PASSWORD)
+    assert client.put(url, headers=collab, files={"image": ("a.jpg", _image(), "image/jpeg")}).status_code == 403
+    assert (
+        client.put(
+            f"{API}/pyme/logo", headers=collab, files={"image": ("a.png", _image("PNG"), "image/png")}
+        ).status_code
+        == 403
+    )
+    # Un cliente tampoco.
+    assert client.put(url, headers=portal["a"], files={"image": ("a.jpg", _image(), "image/jpeg")}).status_code == 403
+    assert not list(media_dir.rglob("*.webp"))  # nada de lo rechazado quedó en el disco
+
+
+def test_media_route_only_serves_hashed_files(client: TestClient, portal: dict[str, Any], media_dir: Any) -> None:
+    owner = portal["owner"]
+    logo = client.put(f"{API}/pyme/logo", headers=owner, files={"image": ("l.png", _image("PNG"), "image/png")}).json()
+    pyme_id = logo["id"]
+    for name in ("../../etc/passwd", "x.webp", "a" * 64 + ".png", "%2e%2e%2fsecret.webp"):
+        assert client.get(f"{API}/portal/media/{pyme_id}/{name}").status_code == 404
+    other = str(uuid.uuid4())
+    assert client.get(f"{API}/portal/media/{other}/{logo['logo_url'].rsplit('/', 1)[1]}").status_code == 404
+    assert client.delete(f"{API}/pyme/logo", headers=owner).json()["logo_url"] is None

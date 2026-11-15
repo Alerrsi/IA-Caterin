@@ -198,7 +198,17 @@ def update_pyme(db: Session, current: CurrentUser, data: PymeUpdate) -> Pyme:
     for field, value in data.model_dump(exclude_unset=True).items():
         if field in {"name", "vat_pct", "default_waste_pct", "prices_include_vat"} and value is None:
             continue
+        if field == "description" and value is not None:
+            value = " ".join(value.split()) or None
         setattr(pyme, field, value)
+    db.commit()
+    db.refresh(pyme)
+    return pyme
+
+
+def set_logo(db: Session, current: CurrentUser, path: str | None) -> Pyme:
+    pyme = get_pyme(db, current)
+    pyme.logo_path = path
     db.commit()
     db.refresh(pyme)
     return pyme

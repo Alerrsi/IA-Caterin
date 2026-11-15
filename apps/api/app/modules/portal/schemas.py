@@ -19,6 +19,8 @@ class PortalPymeOut(BaseModel):
     name: str
     commune: str | None
     joined: bool = Field(default=False, description="El cliente ya tiene cuenta en esta pyme")
+    description: str | None = None
+    logo_url: str | None = None
 
 
 class CustomerRegisterIn(BaseModel):
@@ -43,9 +45,14 @@ class PortalExtractIn(BaseModel):
 
 
 class ProductOut(BaseModel):
+    """Un producto del catálogo (ADR-009): nunca costos, insumos, proveedores ni stock."""
+
     id: uuid.UUID
     name: str
     yield_unit: BaseUnit
+    description: str | None = None
+    category: str | None = None
+    photo_url: str | None = None
 
 
 class RequestCreate(BaseModel):

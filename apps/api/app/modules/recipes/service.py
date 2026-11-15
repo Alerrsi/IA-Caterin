@@ -77,6 +77,20 @@ def _commit(db: Session) -> None:
         raise _DUPLICATE from exc
 
 
+def _clean(text: str | None) -> str | None:
+    """Espacios de más fuera; un texto vacío queda en None."""
+    return " ".join(text.split()) or None if text is not None else None
+
+
+def set_photo(db: Session, recipe_id: uuid.UUID, path: str | None) -> Recipe:
+    """Foto del producto para el catálogo del portal (ADR-009); None la quita."""
+    recipe = get_recipe(db, recipe_id)
+    recipe.photo_path = path
+    _commit(db)
+    db.refresh(recipe)
+    return recipe
+
+
 def create_recipe(db: Session, data: RecipeCreate) -> Recipe:
     recipe = Recipe(
         name=" ".join(data.name.split()),
@@ -85,6 +99,9 @@ def create_recipe(db: Session, data: RecipeCreate) -> Recipe:
         is_final_product=data.is_final_product,
         vision_class=data.vision_class,
         notes=data.notes,
+        catalog_description=_clean(data.catalog_description),
+        category=_clean(data.category),
+        visible_in_catalog=data.visible_in_catalog,
         version=1,
     )
     db.add(recipe)
@@ -106,9 +123,11 @@ def update_recipe(db: Session, recipe_id: uuid.UUID, data: RecipeUpdate) -> Reci
     recipe = get_recipe(db, recipe_id)
     changes = data.model_dump(exclude_unset=True, exclude={"lines"})
     for field, value in changes.items():
-        if value is None and field not in ("vision_class", "notes"):
+        if value is None and field not in ("vision_class", "notes", "catalog_description", "category"):
             continue
-        setattr(recipe, field, " ".join(value.split()) if field == "name" else value)
+        if field in ("name", "catalog_description", "category"):
+            value = _clean(value)
+        setattr(recipe, field, value)
     if data.lines is not None:
         new_lines = _build_lines(db, data.lines)
         recipe.lines.clear()

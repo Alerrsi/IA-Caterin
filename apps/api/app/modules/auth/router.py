@@ -1,9 +1,10 @@
 import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, Cookie, Depends, Request, Response, status
+from fastapi import APIRouter, Cookie, Depends, File, Request, Response, UploadFile, status
 from sqlalchemy.orm import Session
 
+from app.core import media
 from app.core.tenancy import CurrentUserDep, OwnerDep, SessionUserDep, TenantDB
 from app.db.models import Pyme, User
 from app.db.session import get_db
@@ -71,6 +72,19 @@ def get_pyme(current: CurrentUserDep, db: TenantDB) -> Pyme:
 @router.patch("/pyme", response_model=PymeOut, tags=["pyme"])
 def update_pyme(data: PymeUpdate, owner: OwnerDep, db: TenantDB) -> Pyme:
     return service.update_pyme(db, owner, data)
+
+
+@router.put("/pyme/logo", response_model=PymeOut, tags=["pyme"])
+def upload_logo(owner: OwnerDep, db: TenantDB, image: Annotated[UploadFile, File()]) -> Pyme:
+    """Logo para el catálogo del portal (ADR-009). JPG, PNG o WebP de hasta 2 MB; se guarda como WebP de 512 px, sin
+    metadatos. **Es público**: lo ve cualquiera que mire el directorio de pymes."""
+    path = media.save_image(owner.pyme_id, media.read_upload(image.file), media.Kind.LOGO)
+    return service.set_logo(db, owner, path)
+
+
+@router.delete("/pyme/logo", response_model=PymeOut, tags=["pyme"])
+def delete_logo(owner: OwnerDep, db: TenantDB) -> Pyme:
+    return service.set_logo(db, owner, None)
 
 
 @router.post("/pyme/customer-code", response_model=PymeOut, tags=["pyme"])

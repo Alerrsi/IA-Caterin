@@ -2,9 +2,10 @@ import uuid
 from decimal import Decimal
 from typing import Annotated
 
-from fastapi import APIRouter, Query, Response, status
+from fastapi import APIRouter, File, Query, Response, UploadFile, status
 
-from app.core.tenancy import CurrentUserDep, TenantDB
+from app.core import media
+from app.core.tenancy import CurrentUserDep, OwnerDep, TenantDB
 from app.modules.recipes import service
 from app.modules.recipes.schemas import RecipeCostOut, RecipeCreate, RecipeOut, RecipeSummary, RecipeUpdate
 
@@ -38,6 +39,22 @@ def update_recipe(recipe_id: uuid.UUID, data: RecipeUpdate, _user: CurrentUserDe
 def deactivate_recipe(recipe_id: uuid.UUID, _user: CurrentUserDep, db: TenantDB) -> Response:
     service.update_recipe(db, recipe_id, RecipeUpdate(is_active=False))
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.put("/recipes/{recipe_id}/photo", response_model=RecipeOut)
+def upload_photo(
+    recipe_id: uuid.UUID, owner: OwnerDep, db: TenantDB, image: Annotated[UploadFile, File()]
+) -> RecipeOut:
+    """Foto del producto para el catálogo del portal (ADR-009). Solo la dueña decide qué se publica. JPG, PNG o WebP
+    de hasta 2 MB; se guarda como WebP de 800 px, sin metadatos (EXIF con ubicación incluido)."""
+    service.get_recipe(db, recipe_id)  # 404 antes de guardar el archivo si la receta no es de esta pyme
+    path = media.save_image(owner.pyme_id, media.read_upload(image.file), media.Kind.PHOTO)
+    return service.to_out(db, service.set_photo(db, recipe_id, path))
+
+
+@router.delete("/recipes/{recipe_id}/photo", response_model=RecipeOut)
+def delete_photo(recipe_id: uuid.UUID, _owner: OwnerDep, db: TenantDB) -> RecipeOut:
+    return service.to_out(db, service.set_photo(db, recipe_id, None))
 
 
 @router.get("/recipes/{recipe_id}/cost", response_model=RecipeCostOut)

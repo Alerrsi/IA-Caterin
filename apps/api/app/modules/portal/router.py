@@ -8,8 +8,11 @@ from typing import Annotated
 from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, Depends, Query, Response, status
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 
+from app.core import media
+from app.core.errors import not_found
 from app.core.llm import LLMProvider, get_llm
 from app.core.tenancy import CustomerDep
 from app.db.session import get_db
@@ -47,8 +50,21 @@ def public_directory(db: DB) -> list[PortalPymeOut]:
 @router.get("/pymes/{code}", response_model=PortalPymeOut)
 def pyme_for_code(code: str, db: DB) -> PortalPymeOut:
     """Público: la pyme del enlace, para mostrarla al registrarse."""
-    pyme = service.pyme_by_code(db, code)
-    return PortalPymeOut(id=pyme.id, name=pyme.name, commune=pyme.commune)
+    return service.pyme_out(service.pyme_by_code(db, code))
+
+
+@router.get(
+    "/media/{pyme_id}/{filename}",
+    response_class=FileResponse,
+    responses={200: {"content": {"image/webp": {}}}, 404: {"description": "No existe"}},
+)
+def media_file(pyme_id: uuid.UUID, filename: str) -> FileResponse:
+    """Público: logo o foto del catálogo (ADR-009). El nombre es el hash del contenido: no se adivina y no cambia,
+    así que se cachea para siempre."""
+    path = media.file_for(pyme_id, filename)
+    if path is None:
+        raise not_found("media_not_found", "No encontramos esa imagen")
+    return FileResponse(path, media_type="image/webp", headers={"Cache-Control": "public, max-age=31536000, immutable"})
 
 
 @router.post("/register", response_model=TokenOut, status_code=status.HTTP_201_CREATED)

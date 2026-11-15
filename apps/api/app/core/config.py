@@ -45,6 +45,7 @@ class Settings(BaseSettings):
     vision_model_path: Path = Path("/data/models/vision/model.onnx")  # junto a model.json
     vision_threshold: float = 0.5
     vision_max_image_mb: int = 15
+    media_max_upload_mb: int = 2  # logo de la pyme y fotos del catálogo (ADR-009)
 
     llm_provider: Literal["ollama", "fake", "disabled"] = "ollama"
     ollama_url: str = "http://ollama:11434"
