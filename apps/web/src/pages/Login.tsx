@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { ApiError } from '../api'
 import { useAuth } from '../auth'
+import { AuthLayout } from '../components/Logo'
 import { Alert, Button, Field, inputClass } from '../components/ui'
 import { t } from '../i18n'
 
@@ -25,10 +26,8 @@ export default function Login() {
   }
 
   return (
-    <main className="flex min-h-dvh items-start justify-center bg-surface-container px-4 py-10 md:items-center">
-      <div className="w-full max-w-md rounded-3xl border border-outline-variant bg-surface-container-lowest p-6 md:p-10">
-      <h1 className="text-3xl font-normal text-on-surface">{t.appName}</h1>
-      <p className="mb-8 mt-1 text-on-surface-variant">{t.tagline}</p>
+    <AuthLayout titleAsHeading>
+      <h2 className="mb-6 text-2xl font-normal text-on-surface">{t.login.title}</h2>
       <form onSubmit={submit} className="space-y-4" noValidate>
         <Field label={t.login.email}>
           <input
@@ -66,7 +65,6 @@ export default function Login() {
           {t.portal.registerLink}
         </a>
       </p>
-    </div>
-    </main>
+    </AuthLayout>
   )
 }

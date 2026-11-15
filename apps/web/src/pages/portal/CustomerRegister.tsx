@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { api, ApiError, type PortalPyme } from '../../api'
 import { useAuth } from '../../auth'
+import { AuthLayout } from '../../components/Logo'
 import { Alert, Button, Field, inputClass, Spinner } from '../../components/ui'
 import { t } from '../../i18n'
 import { navigate } from '../../router'
@@ -57,9 +58,8 @@ export default function CustomerRegister({ code }: { code?: string }) {
   }
 
   return (
-    <main className="flex min-h-dvh items-start justify-center bg-surface-container px-4 py-10 md:items-center">
-      <div className="w-full max-w-md rounded-3xl border border-outline-variant bg-surface-container-lowest p-6 md:p-10">
-      <h1 className="text-2xl font-normal text-on-surface">{t.portal.registerTitle}</h1>
+    <AuthLayout>
+      <h1 className="text-2xl font-semibold text-on-surface">{t.portal.registerTitle}</h1>
       {badLink ? (
         <div className="mt-6">
           <Alert>{t.portal.badLink}</Alert>
@@ -125,7 +125,6 @@ export default function CustomerRegister({ code }: { code?: string }) {
           {t.register.toLogin}
         </a>
       </p>
-    </div>
-    </main>
+    </AuthLayout>
   )
 }

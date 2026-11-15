@@ -81,7 +81,7 @@ export function Page({
             <Icon name="back" className="h-6 w-6" />
           </button>
         )}
-        <h1 className="flex-1 text-2xl font-normal text-on-surface md:text-[2rem] md:leading-10">{title}</h1>
+        <h1 className="flex-1 text-2xl font-semibold text-on-surface md:text-[2rem] md:leading-10">{title}</h1>
         {actions}
       </header>
       {children}

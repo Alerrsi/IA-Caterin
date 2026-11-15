@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { ApiError, patch } from '../api'
 import { useAuth } from '../auth'
+import { AuthLayout } from '../components/Logo'
 import { Alert, Button, Field, inputClass } from '../components/ui'
 import { parseQtyInput } from '../format'
 import { t } from '../i18n'
@@ -42,10 +43,8 @@ export default function Register() {
     form.pyme.trim().length >= 2 && form.name.trim().length >= 2 && form.email.includes('@') && form.password.length >= 10
 
   return (
-    <main className="flex min-h-dvh items-start justify-center bg-surface-container px-4 py-10 md:items-center">
-      <div className="w-full max-w-md rounded-3xl border border-outline-variant bg-surface-container-lowest p-6 md:p-10">
-      <h1 className="text-3xl font-normal text-on-surface">{t.appName}</h1>
-      <h2 className="mb-6 mt-2 text-2xl font-medium text-on-surface">{t.register.title}</h2>
+    <AuthLayout>
+      <h1 className="mb-6 text-2xl font-semibold text-on-surface">{t.register.title}</h1>
       <form onSubmit={submit} className="space-y-4" noValidate>
         <Field label={t.register.pyme}>
           <input className={inputClass} autoComplete="organization" value={form.pyme} onChange={set('pyme')} />
@@ -85,7 +84,6 @@ export default function Register() {
           {t.register.toLogin}
         </a>
       </p>
-    </div>
-    </main>
+    </AuthLayout>
   )
 }

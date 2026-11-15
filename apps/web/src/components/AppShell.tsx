@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { useAuth } from '../auth'
 import { t } from '../i18n'
 import { Icon, type IconName } from './Icon'
+import { Logo } from './Logo'
 
 interface Dest {
   path: string
@@ -81,8 +82,8 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
   const drawer = (onNavigate?: () => void) => (
     <div className="flex h-full flex-col px-3 py-4">
       <div className="px-4 pb-4">
-        <p className="text-xl font-medium text-on-surface">{t.appName}</p>
-        <p className="truncate text-sm text-on-surface-variant">{customer ? t.portal.portalName : pyme?.name}</p>
+        <Logo />
+        <p className="mt-2 truncate text-sm text-on-surface-variant">{customer ? t.portal.portalName : pyme?.name}</p>
       </div>
       <nav aria-label={t.nav.label} className="flex-1 overflow-y-auto">
         <ul className="space-y-1">
@@ -124,9 +125,9 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
           <Icon name="menu" />
         </button>
         {/* El título de la sección ya está en la pantalla: aquí va la app y la pyme, como en el cajón. */}
-        <p className="min-w-0 flex-1 truncate">
-          <span className="text-lg text-on-surface">{t.appName}</span>
-          <span className="ml-2 text-sm text-on-surface-variant">{customer ? t.portal.portalName : pyme?.name}</span>
+        <p className="flex min-w-0 flex-1 items-center">
+          <Logo size="sm" className="shrink-0" />
+          <span className="ml-3 truncate text-sm text-on-surface-variant">{customer ? t.portal.portalName : pyme?.name}</span>
         </p>
       </header>
 
