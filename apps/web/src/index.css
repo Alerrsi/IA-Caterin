@@ -84,6 +84,13 @@
 html {
   font-size: 17px;
 }
+/* Sin la espera del doble toque para hacer zoom: los botones responden al instante en el celular. */
+a,
+button,
+label,
+summary {
+  touch-action: manipulation;
+}
 body {
   background: var(--color-surface-container-low);
   color: var(--color-on-surface);

@@ -32,7 +32,7 @@ test('sin red: abre la app con la sesión recordada y muestra el inventario guar
   await context.setOffline(false)
 })
 
-test('la PWA instalable trae los íconos de la marca y las fuentes funcionan sin red (T14)', async ({ page, context }) => {
+test('la PWA instalable trae los íconos de la marca y las fuentes funcionan sin red (T14, T16)', async ({ page, context }) => {
   const manifest = await (await page.request.get(`${BASE}/manifest.webmanifest`)).json()
   const purposes = manifest.icons.map((i: { src: string; purpose: string }) => `${i.src}:${i.purpose}`)
   expect(purposes).toEqual(expect.arrayContaining(['pwa-512.png:any', 'pwa-maskable-512.png:maskable']))
@@ -47,7 +47,7 @@ test('la PWA instalable trae los íconos de la marca y las fuentes funcionan sin
     await document.fonts.ready
     return [...document.fonts].filter((f) => f.status === 'loaded').map((f) => f.family)
   })
-  expect(loaded).toEqual(expect.arrayContaining(['Roboto', 'Bricolage Grotesque Variable']))
+  expect(loaded).toEqual(expect.arrayContaining(['IBM Plex Sans Variable', 'IBM Plex Serif']))
   await context.setOffline(false)
 })
 

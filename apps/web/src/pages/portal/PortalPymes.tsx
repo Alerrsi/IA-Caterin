@@ -12,7 +12,7 @@ import { plain, savedAtLabel } from '../Inventory'
 export function PymeAvatar({ pyme, size = 'md' }: { pyme: Pick<PortalPyme, 'name' | 'logo_url'>; size?: 'md' | 'lg' }) {
   const box = size === 'lg' ? 'h-20 w-20 text-3xl' : 'h-14 w-14 text-2xl'
   if (pyme.logo_url) {
-    return <img src={pyme.logo_url} alt="" className={`${box} shrink-0 rounded-md object-cover`} />
+    return <img src={pyme.logo_url} alt="" width={512} height={512} className={`${box} shrink-0 rounded-md object-cover`} />
   }
   return (
     <span

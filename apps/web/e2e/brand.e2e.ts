@@ -21,6 +21,7 @@ async function shoot(page: Page, name: string) {
   for (const width of WIDTHS) {
     await page.setViewportSize({ width, height: width === 390 ? 844 : 800 })
     await page.waitForLoadState('networkidle')
+    await expect(page.getByRole('status').filter({ hasText: /^Cargando/ })).toHaveCount(0)
     await page.screenshot({ path: `${DIR}/${name}-${width}.png`, fullPage: true })
   }
   await page.setViewportSize({ width: 390, height: 844 })
