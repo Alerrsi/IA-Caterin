@@ -8,7 +8,7 @@ Que la emprendedora y sus clientes reconozcan de un vistazo que Cáterin es un s
 logo e íconos propios, sin dejar Material Design 3 y sin perder accesibilidad ni el funcionamiento sin red.
 
 ## Contexto y decisiones previas
-- Plan: `RENOVACION.md` (secciones 4 y 9). Decisión: [ADR-008](../adr/ADR-008-identidad-visual.md).
+- Plan: `docs/RENOVACION.md` (secciones 4 y 9). Decisión: [ADR-008](../adr/ADR-008-identidad-visual.md).
 - Supuestos explícitos (el usuario delegó los detalles el 15-nov-2026; los datos son de una pyme ficticia):
   semilla maqui `#6d2a57`, terciaria araucaria `#3f5f3a`, Bricolage Grotesque para títulos, cloche con vapor como logo.
 - Se revisó la dirección con la skill `frontend-design` antes de construir: la primera idea (terracota, crema, serif)
@@ -70,7 +70,7 @@ dejó fija.
 - Modo oscuro. Cambiar de MD3. Rediseñar la estructura de las pantallas.
 
 ## Riesgos y preguntas abiertas
-- **La marca no está validada con personas.** Falta la prueba de 5 segundos (RENOVACION.md 4.6) y mostrarla a la
+- **La marca no está validada con personas.** Falta la prueba de 5 segundos (`docs/RENOVACION.md` 4.6) y mostrarla a la
   dueña de una pyme real. Cambiar la semilla o el logo es barato (`npm run theme`, `scripts/brand.py`).
 - `brand.py` necesita fontTools fuera del proyecto; si se pierde la fuente de `node_modules` hay que reinstalar.
 

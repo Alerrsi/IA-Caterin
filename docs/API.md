@@ -69,6 +69,7 @@ Todas las respuestas de error usan `application/problem+json`:
 | GET/POST | `/users` | Listar e invitar colaboradoras — solo dueña |
 | PATCH/DELETE | `/users/{id}` | Cambiar nombre, rol, contraseña o desactivar (DELETE desactiva, no borra) — solo dueña. Protege a la última dueña activa. `/users` no lista ni modifica clientes del portal, y no acepta el rol `customer` |
 | POST/DELETE | `/pyme/customer-code` | Crea o cambia (POST) el código del enlace del portal de clientes, o cierra el registro (DELETE) — solo dueña |
+| PUT/DELETE | `/pyme/logo` | Sube (multipart `image`) o quita el logo del catálogo del portal (ADR-009). JPG, PNG o WebP ≤ 2 MB (`MEDIA_MAX_UPLOAD_MB`) → WebP 512 px sin EXIF. 413 `image_too_large`, 415 `invalid_image` — solo dueña. `PATCH /pyme` acepta `description` (≤ 280, pública) |
 
 ### inventory (T04)
 | Método | Ruta | Descripción |
@@ -99,6 +100,7 @@ Todas las respuestas de error usan `application/problem+json`:
 |--------|------|-------------|
 | GET/POST | `/recipes` | Listar y crear recetas con sus líneas |
 | GET/PATCH/DELETE | `/recipes/{id}` | |
+| PUT/DELETE | `/recipes/{id}/photo` | Foto del producto para el catálogo del portal (ADR-009), multipart `image`; mismas reglas que el logo, WebP 800 px — solo dueña. `POST`/`PATCH /recipes` aceptan `catalog_description` (≤ 500), `category` (≤ 60) y `visible_in_catalog` |
 | GET | `/recipes/{id}/cost?qty=` | Costo calculado para N unidades, con IVA, usando por insumo la presentación vigente más barata; desglose por línea, precios usados y `is_complete` si falta algún precio |
 
 ### quotes (T05)
@@ -122,11 +124,12 @@ Los pedidos `customer_draft` (cotizados por un cliente sin enviar) no aparecen e
 ### portal (ADR-007, T13)
 | Método | Ruta | Quién | Descripción |
 |--------|------|-------|-------------|
-| GET | `/portal/directory` | público | Pymes con el portal abierto (id, nombre, comuna), para elegir al registrarse |
+| GET | `/portal/directory` | público | Pymes con el portal abierto (id, nombre, comuna, `description`, `logo_url`), para elegir al registrarse |
 | GET | `/portal/pymes/{code}` | público | La pyme del enlace. 404 `portal_code_not_found` |
 | POST | `/portal/register` | público | `{code o pyme_id, full_name, email, password}` → cuenta de cliente y sesión (como `/auth/login`). 409 `email_taken` (también si ya es cliente: entra y elige la pyme) |
 | GET | `/portal/pymes` | cliente | Pymes a las que puede cotizar: portal abierto o ya usadas (`joined`) |
-| GET | `/portal/products?pyme_id=` | cliente | Productos de esa pyme: recetas activas marcadas como producto final. 404 `pyme_not_available` si la pyme no tiene portal abierto ni lo conoce |
+| GET | `/portal/products?pyme_id=` | cliente | Catálogo de esa pyme (ADR-009): recetas activas, producto final y `visible_in_catalog`, ordenadas por categoría. Campos: `id`, `name`, `yield_unit`, `description`, `category`, `photo_url`; **sin precios ni costos**. 404 `pyme_not_available` si la pyme no tiene portal abierto ni lo conoce |
+| GET | `/portal/media/{pyme_id}/{sha256}.webp` | público | Logo o foto del catálogo. Nombre = hash del contenido; `Cache-Control: public, max-age=31536000, immutable`. 404 `media_not_found` |
 | POST | `/portal/extract` | cliente | `{text, pyme_id}`: igual que `/orders/extract`, con los productos de esa pyme. Tope `PORTAL_EXTRACT_PER_HOUR` por cliente y hora → 429 `too_many_reads` |
 | GET/POST | `/portal/requests` | cliente | Sus cotizaciones en todas sus pymes (con `pyme_name`) / guardar un pedido para `pyme_id` y cotizarlo con el margen de esa pyme (queda `customer_draft`). La primera vez crea su cuenta en esa pyme |
 | GET | `/portal/requests/{id}` | cliente | Detalle: líneas, precio al cliente (sin costos), `price_pending` (`margin_required` \| `missing_prices` \| `cannot_calculate`), mensaje de la pyme |

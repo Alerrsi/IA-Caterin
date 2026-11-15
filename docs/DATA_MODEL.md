@@ -63,6 +63,8 @@ Leyenda: **[MVP]** son las entidades exigidas en `AGENTS.md` (sección 7.1). **[
 | `vat_pct` | numeric(5,2), default 19.00 | IVA de Chile |
 | `prices_include_vat` | bool, default true | Si sus precios de compra se ingresan con IVA |
 | `customer_code` | text, único, nullable | Código del enlace del portal de clientes (ADR-007). Null = registro cerrado |
+| `description` | varchar(280), nullable | Presentación pública en el catálogo del portal (ADR-009) |
+| `logo_path` | varchar(200), nullable | Ruta relativa a `STORAGE_DIR` del logo (`media/<pyme_id>/<sha256>.webp`) |
 
 ### Usuario (`app_user`) [MVP]
 | Campo | Tipo | Nota |
@@ -134,6 +136,10 @@ El precio por unidad base se calcula en código cuando se necesita (`price_clp /
 | `vision_class` | text, nullable, único por pyme | Clase del detector que corresponde a este producto |
 | `notes` | text, nullable | |
 | `version` | int | Sube con cada cambio de líneas |
+| `catalog_description` | varchar(500), nullable | Texto para el catálogo del portal (ADR-009) |
+| `category` | varchar(60), nullable | Agrupa el producto en el catálogo (p. ej. Dulces) |
+| `photo_path` | varchar(200), nullable | Foto del producto, ruta relativa a `STORAGE_DIR` |
+| `visible_in_catalog` | bool, default true | `false` saca el producto de todo el portal (catálogo, extractor y solicitudes) |
 
 ### Línea de receta (`recipe_line`) [MVP]
 | Campo | Tipo | Nota |

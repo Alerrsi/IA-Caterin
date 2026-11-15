@@ -84,6 +84,14 @@ Reglas:
 - Excel: leer con `openpyxl` en modo solo lectura, sin evaluar fórmulas ni macros. CSV: cuidar la inyección de fórmulas (`=`, `+`, `-`, `@` al inicio) cuando se reexporta.
 - PDF: extraer el texto con una librería mantenida, con límite de páginas y de tiempo.
 - Los nombres de archivo se reemplazan por UUID en el almacenamiento.
+- **Imágenes del catálogo del portal (ADR-009):** logo de la pyme y fotos de producto. Solo la dueña las sube
+  (`OwnerDep`), ≤ 2 MB, JPEG/PNG/WebP detectado por contenido, tope de 40 MP contra imágenes "bomba", y se re-codifican a
+  WebP con Pillow: **se borra el EXIF** (puede traer la ubicación GPS). Se guardan como `media/<pyme_id>/<sha256>.webp`
+  y se sirven **sin sesión** (un `<img>` no envía el token) desde `/portal/media/...`: la URL no se puede adivinar,
+  pero quien la tenga puede verla. Por eso la pantalla avisa que son públicas. La ruta valida el nombre con una
+  expresión regular, así que no se puede salir de la carpeta (`../`). Se prueba en `tests/test_portal.py`.
+- Los archivos reemplazados quedan en el disco (el nombre es el hash del contenido); limpiar los huérfanos es una
+  tarea pendiente de T11 junto con los respaldos.
 
 ## 7. Infraestructura
 

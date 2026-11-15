@@ -1,6 +1,7 @@
 # Renovación de Cáterin: nueva identidad visual y catálogo para clientes
 
-- Estado: **propuesta** (15-nov-2026, pedido del usuario; revisada contra el código el mismo día, ver sección 10)
+- Estado: **implementada** (15-nov-2026). Propuesta y revisada contra el código ese día (sección 10); implementada
+  el mismo día con las decisiones de la sección 11.
 - Depende de: T13 (portal de clientes, ADR-007), T08 (frontend PWA)
 - Al aprobarla: crear **T14 (identidad visual)** y **T15 (catálogo)**, los **ADR-008 (identidad visual)** y
   **ADR-009 (catálogo del portal)**, y registrarlos en `docs/tasks/00-INDEX.md`. La numeración sigue el orden de
@@ -417,6 +418,25 @@ Commits de ejemplo: `feat(web): catálogo de pymes y productos para el cliente [
 - **Guía de usuario:** todavía no existe (T12 pendiente); se apunta a su futura sección del portal.
 - **Pruebas:** no hay e2e del portal ni pruebas de accesibilidad con sesión de cliente; se agregaron al plan.
 - **Plan detallado:** sección 9 nueva.
+
+## 11. Resultado de la implementación (15-nov-2026)
+
+El usuario delegó las decisiones de la sección 6 ("usa los detalles a tu criterio e implementa todo"; los datos son de
+una pyme ficticia). Lo que se decidió y en qué difiere del plan:
+
+| Tema | Plan | Implementado | Dónde |
+|---|---|---|---|
+| Color semilla | Terracota o ají | **Maqui** `#6d2a57` con acento verde araucaria. La skill `frontend-design` lista "crema + serif + terracota" como el primer rasgo de las interfaces generadas por IA | ADR-008 |
+| Tipografía de display | A elegir | **Bricolage Grotesque** (OFL), autoalojada; Roboto ahora sí incluida | ADR-008 |
+| Generador de tema | `material-color-utilities` | Versión 0.3.0: la 0.4.0 no corre en Node | `apps/web/scripts/theme.mjs` |
+| PNG de la PWA | `@vite-pwa/assets-generator` | Chromium de Playwright, sin dependencias nativas nuevas | `apps/web/scripts/icons.mjs` |
+| Versión del catálogo | Mínima y luego completa tras validar | **Completa** sin esperar la validación (pedido del usuario) | ADR-009, T15 |
+| Precios en el catálogo | Sin precios en v1 | Sin precios | ADR-009 |
+| Imágenes | Disco del servidor, URL pública con hash | Igual; se sirven todas las existentes (no solo de portales abiertos) para que la dueña vea la vista previa | ADR-009 |
+| Ramas | Una por tarea | T14 en su rama y *fast-forward* a `main`; T15 directo en `main`, como dice `00-INDEX.md` | — |
+
+Pendiente: la prueba de 5 segundos con personas (4.6), mostrar marca y catálogo a una pyme y clientes reales, las
+mejoras de la auditoría MD3 (T14) y la limpieza de imágenes huérfanas (T11).
 
 ## Fuentes
 

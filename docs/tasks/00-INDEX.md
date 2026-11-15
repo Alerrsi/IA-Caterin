@@ -16,8 +16,9 @@ Actualizado: 15-nov-2026. Por decisión del usuario (9-nov-2026), las tareas se 
 | [T10](T10-calidad-evals.md) | Calidad y evaluaciones | transversal | en curso (hecho: benchmark corregido, umbral, cobertura, e2e, carga mixta, RAG por frase; RAG sobre fichas del negocio (ADR-006); falta: LLM en limpio, extractor, reranker, revisión humana, visión) | T05–T07 | por asignar |
 | [T11](T11-despliegue.md) | Despliegue en producción | transversal | pendiente | T08 | por asignar |
 | [T12](T12-documentacion-demo.md) | Documentación final y demo | transversal | pendiente | T09–T11 | por asignar |
-| [T13](T13-portal-clientes.md) | Portal de clientes (ADR-007) | F3 | hecha (sin e2e con navegador ni prueba con clientes reales) | T03, T05, T08 | por asignar |
+| [T13](T13-portal-clientes.md) | Portal de clientes (ADR-007) | F3 | hecha (e2e con navegador desde T15; falta prueba con clientes reales) | T03, T05, T08 | por asignar |
 | [T14](T14-identidad-visual.md) | Identidad visual de catering sobre MD3 (ADR-008) | transversal | hecha (falta prueba de 5 segundos con personas) | T08 | por asignar |
+| [T15](T15-catalogo-portal.md) | Catálogo de pymes y productos para el cliente (ADR-009) | F3 | hecha (falta validar con una pyme y clientes reales) | T13, T14 | por asignar |
 
 Orden recomendado: T01 → T02 → T03 → T04 → (T05, T06, T07 en paralelo si hay capacidad) → T08 → T09 → T10 → T11 → T12.
 

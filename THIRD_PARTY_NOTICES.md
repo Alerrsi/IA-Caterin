@@ -31,6 +31,7 @@ Licencias de los modelos y dependencias principales. Revisado el 9-nov-2026. Las
 | FastAPI, Pydantic, pydantic-settings, SQLAlchemy, Alembic, pgvector (Python), argon2-cffi, PyJWT, openpyxl, RapidFuzz, PyYAML | MIT |
 | Uvicorn, HTTPX, pypdf (lectura de PDF para el asistente) | BSD-3-Clause |
 | ReportLab | BSD |
+| Pillow (fotos de visión y del catálogo del portal) | MIT-CMU (HPND) |
 | python-multipart | Apache-2.0 |
 | psycopg 3 | **LGPL-3.0**: se usa como biblioteca sin modificarla, lo que la LGPL permite en proyectos con otra licencia |
 

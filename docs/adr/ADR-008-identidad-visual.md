@@ -1,6 +1,6 @@
 # ADR-008 — Identidad visual de Cáterin sobre Material Design 3
 
-- Estado: **aceptado** (15-nov-2026, pedido del usuario; plan en `RENOVACION.md`, tarea T14).
+- Estado: **aceptado** (15-nov-2026, pedido del usuario; plan en `docs/RENOVACION.md`, tarea T14).
 - Contexto en: T08 (frontend PWA), ADR-004 (offline), AGENTS.md (WCAG AA, mobile-first).
 
 ## Contexto
@@ -59,6 +59,6 @@ los datos son de una pyme ficticia de demo).
 - Cambiar la marca es repetible: semilla en `theme.mjs` → `npm run theme`; dibujo en `brand.py` → `npm run icons`.
 - `brand.py` necesita fontTools, que no es dependencia del proyecto (solo al rediseñar el logotipo).
 - Sin modo oscuro (fuera de alcance); el generador puede producirlo cambiando `isDark`.
-- **No se ha medido** si una persona reconoce el rubro en el login: la prueba de 5 segundos de `RENOVACION.md` (4.6)
+- **No se ha medido** si una persona reconoce el rubro en el login: la prueba de 5 segundos de `docs/RENOVACION.md` (4.6)
   queda pendiente porque requiere personas reales. No se reporta como cumplida.
 - Auditoría MD3 y sus pendientes: ver `docs/tasks/T14-identidad-visual.md`.

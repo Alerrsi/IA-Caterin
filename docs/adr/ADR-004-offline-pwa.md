@@ -18,6 +18,7 @@ Las emprendedoras de La Araucanía trabajan a veces en cocinas, bodegas o evento
 | Proveedores y precios vigentes | Borradores de pedido (formulario) | Calcular la cotización y generar el PDF |
 | Pedidos próximos | Fotos pendientes de conteo (se infieren al volver) | Conteo por foto (inferencia) |
 | Última cotización abierta y su PDF, si ya se descargó | Respuestas de la encuesta | Login inicial, importar CSV/Excel, subir documentos |
+| Portal del cliente: lista de pymes y productos ya vistos, con sus logos y fotos (ADR-009) | — | Cotizar y guardar la cotización del cliente; subir logo o fotos |
 
 ### Cómo
 
