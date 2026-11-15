@@ -260,7 +260,6 @@ export const t = {
     noResults: (q: string) => `No encontramos pymes con «${q}».`,
     homeLink: 'Ver pymes y sus productos',
     homeLinkHint: 'Mira qué ofrece cada una antes de cotizar',
-    open: (name: string) => `Ver productos de ${name}`,
     noProducts: 'Esta pyme todavía no publica productos. Puedes escribirle tu pedido igual.',
     otherCategory: 'Otros',
     add: 'Agregar',

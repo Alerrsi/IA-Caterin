@@ -59,7 +59,7 @@ test('del inicio a cotizar con una pyme en 3 clics', async () => {
   expect(screen.getByText('Cóctel para matrimonios')).toBeInTheDocument()
   expect(screen.getByText('ya le cotizaste')).toBeInTheDocument() // Cocina Demo: joined
   // 2: la tarjeta de la pyme
-  await user.click(screen.getByRole('link', { name: 'Ver productos de Banquetería Lago' }))
+  await user.click(screen.getByRole('link', { name: /^Banquetería Lago/ }))
   expect(await screen.findByRole('heading', { level: 1, name: 'Banquetería Lago' })).toBeInTheDocument()
   // 3: cotizar
   await user.click(await screen.findByRole('button', { name: 'Cotizar con esta pyme' }))
@@ -114,8 +114,9 @@ test('busca pymes por nombre o comuna, sin tildes', async () => {
   const user = userEvent.setup()
   render(<App />)
   await user.type(await screen.findByLabelText('Buscar por nombre o comuna'), 'pucon')
-  expect(screen.getAllByRole('link', { name: /^Ver productos de/ })).toHaveLength(1)
-  expect(screen.getByRole('link', { name: 'Ver productos de Dulces Pucón' })).toBeInTheDocument()
+  const cards = screen.getAllByRole('link').filter((a) => a.getAttribute('href')?.startsWith('#/pymes/'))
+  expect(cards).toHaveLength(1)
+  expect(cards[0]).toHaveTextContent('Dulces Pucón')
   await user.clear(screen.getByLabelText('Buscar por nombre o comuna'))
   await user.type(screen.getByLabelText('Buscar por nombre o comuna'), 'xyz')
   expect(screen.getByText('No encontramos pymes con «xyz».')).toBeInTheDocument()

@@ -68,7 +68,6 @@ export default function PortalPymes() {
             <li key={p.id}>
               <a
                 href={`#/pymes/${p.id}`}
-                aria-label={t.catalog.open(p.name)}
                 className="flex h-full gap-4 rounded-xl border border-outline-variant bg-surface-container-lowest p-4 transition hover:bg-surface-container-low focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30"
               >
                 <PymeAvatar pyme={p} />

@@ -50,3 +50,23 @@ test('la PWA instalable trae los íconos de la marca y las fuentes funcionan sin
   expect(loaded).toEqual(expect.arrayContaining(['Roboto', 'Bricolage Grotesque Variable']))
   await context.setOffline(false)
 })
+
+test('sin red: el cliente vuelve a ver el catálogo de una pyme con su logo (T15)', async ({ page, context }) => {
+  await page.goto(`${BASE}/`)
+  await page.getByLabel('Correo').fill(process.env.E2E_CUSTOMER ?? 'cliente1.llaima@demo.local')
+  await page.getByLabel('Contraseña').fill(PASSWORD)
+  await page.getByRole('button', { name: 'Entrar' }).click()
+  await page.evaluate(() => navigator.serviceWorker.ready.then(() => true))
+  await page.goto(`${BASE}/#/pymes`)
+  await page.getByRole('link', { name: /Volcán Llaima/ }).click()
+  await expect(page.getByRole('button', { name: /Empanadas de pino/ })).toBeVisible()
+  const logo = page.locator('main img').first()
+  await expect(logo).toBeVisible()
+
+  await context.setOffline(true)
+  await page.reload()
+  await expect(page.getByText(/Sin conexión: datos guardados/)).toBeVisible()
+  await expect(page.getByRole('button', { name: /Empanadas de pino/ })).toBeVisible()
+  await expect.poll(() => logo.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth)).toBeGreaterThan(0)
+  await context.setOffline(false)
+})
