@@ -21,7 +21,7 @@ Las emprendedoras de La Araucanía trabajan a veces en cocinas, bodegas o evento
 
 ### Cómo
 
-1. **App shell en caché** con `vite-plugin-pwa` (Workbox): HTML, JS, CSS, íconos y textos i18n con *precache*. La app abre sin red.
+1. **App shell en caché** con `vite-plugin-pwa` (Workbox): HTML, JS, CSS, íconos y textos i18n con *precache*. La app abre sin red. Desde T14 (ADR-008) el precaché incluye también las fuentes autoalojadas (`woff2`) y los PNG y SVG de la marca (`workbox.globPatterns`), así la app se ve igual sin red.
 2. **Datos en IndexedDB** (con una capa pequeña tipo `idb` o Dexie): catálogos descargados con `GET ?updated_since=` y revalidados con ETag. Estrategia *stale-while-revalidate*.
 3. **Cola de escrituras** en IndexedDB: cada operación lleva un `client_op_id` (UUID) que viaja como `Idempotency-Key`. Se reintenta con *backoff* al volver la red (evento `online` y Background Sync donde exista; en iOS, al abrir la app).
 4. **Conflictos:**

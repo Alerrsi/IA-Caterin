@@ -1,6 +1,6 @@
 # Índice de tareas — Cáterin
 
-Actualizado: 10-nov-2026. Por decisión del usuario (9-nov-2026), las tareas se trabajan directo en `main`, con un commit por tarea probada. El estado se marca aquí al cambiar.
+Actualizado: 15-nov-2026. Por decisión del usuario (9-nov-2026), las tareas se trabajan directo en `main`, con un commit por tarea probada. El estado se marca aquí al cambiar.
 
 | ID | Título | Funcionalidad | Estado | Depende de | Dueño |
 |----|--------|---------------|--------|------------|-------|
@@ -17,6 +17,7 @@ Actualizado: 10-nov-2026. Por decisión del usuario (9-nov-2026), las tareas se 
 | [T11](T11-despliegue.md) | Despliegue en producción | transversal | pendiente | T08 | por asignar |
 | [T12](T12-documentacion-demo.md) | Documentación final y demo | transversal | pendiente | T09–T11 | por asignar |
 | [T13](T13-portal-clientes.md) | Portal de clientes (ADR-007) | F3 | hecha (sin e2e con navegador ni prueba con clientes reales) | T03, T05, T08 | por asignar |
+| [T14](T14-identidad-visual.md) | Identidad visual de catering sobre MD3 (ADR-008) | transversal | hecha (falta prueba de 5 segundos con personas) | T08 | por asignar |
 
 Orden recomendado: T01 → T02 → T03 → T04 → (T05, T06, T07 en paralelo si hay capacidad) → T08 → T09 → T10 → T11 → T12.
 

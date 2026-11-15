@@ -1,3 +1,5 @@
+<p><img src="apps/web/public/brand/logotipo-horizontal.svg" alt="Cáterin" height="64"></p>
+
 # Cáterin
 
 Software de gestión con IA para pymes de catering de La Araucanía (Chile).

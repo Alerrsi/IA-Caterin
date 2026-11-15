@@ -41,6 +41,17 @@ Licencias de los modelos y dependencias principales. Revisado el 9-nov-2026. Las
 | React, React DOM, React Router, Vite, Tailwind CSS, vite-plugin-pwa, Workbox, Vitest, Testing Library, ESLint, typescript-eslint | MIT |
 | `@axe-core/playwright` y `axe-core` (solo pruebas de accesibilidad; no se distribuyen con la app) | MPL-2.0 |
 | TypeScript | Apache-2.0 |
+| Roboto (`@fontsource/roboto`) y Bricolage Grotesque (`@fontsource-variable/bricolage-grotesque`), fuentes incluidas en la app (T14) | OFL-1.1 (SIL Open Font License) |
+| Íconos de Material Icons (trazos SVG copiados en `components/Icon.tsx`) | Apache-2.0 (Google) |
+| `@material/material-color-utilities` (solo genera el tema con `npm run theme`; no se distribuye) | Apache-2.0 |
+| Playwright (pruebas y generación de los PNG de la marca; no se distribuye) | Apache-2.0 |
+
+## Skills de diseño para agentes (`.claude/skills/`, no se distribuyen con la app)
+
+| Skill | Licencia | Origen |
+|-------|----------|--------|
+| `material-3` | MIT (CWTI Ltd) | github.com/hamen/material-3-skill, commit en `.claude/skills/SOURCES.md` |
+| `frontend-design` | Apache-2.0 (Anthropic) | github.com/anthropics/skills, commit en `.claude/skills/SOURCES.md` |
 
 ## Datos de prueba de visión (no van a producción)
 

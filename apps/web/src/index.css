@@ -58,6 +58,14 @@
      para títulos y el logotipo. */
   --font-sans: Roboto, 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
   --font-display: 'Bricolage Grotesque Variable', Roboto, system-ui, sans-serif;
+
+  /* Forma: las clases de Tailwind apuntan a los tokens de esquina de MD3, en px (la raíz es de 17 px y en rem
+     no calzarían). */
+  --radius-md: 4px; /* extra-small: campos de texto */
+  --radius-lg: 8px; /* small: chips y etiquetas */
+  --radius-xl: 12px; /* medium: tarjetas y avisos */
+  --radius-2xl: 16px; /* large: cajón de navegación */
+  --radius-3xl: 28px; /* extra-large: diálogos y la tarjeta del login */
 }
 
 html {
