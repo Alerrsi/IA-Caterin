@@ -57,7 +57,8 @@ La skill `interface-design` pide que la estética salga del mundo del producto. 
 
 **No se toma:** logo, nombre, textos, el azul de Zed, sus fuentes propias (`zedMono`, la de cuerpo tipo máquina de
 escribir) ni sus diagramaciones exactas o capturas del editor. Tampoco el texto chico y gris: Zed usa 10–12 px y
-Cáterin no baja de 15 px (`text-sm` con raíz de 17 px) por la usuaria objetivo y AA. Nada de grano de papel (imagen
+Cáterin usa 15 px como mínimo (`text-sm` con raíz de 17 px) por la usuaria objetivo y AA; única excepción actual: las
+etiquetas de la barra inferior (`text-xs`, 12,75 px, junto a un ícono). Nada de grano de papel (imagen
 extra y ruido sobre el texto).
 
 ## 3. Diseño propuesto (valores de partida)
@@ -147,7 +148,7 @@ Commits de ejemplo: `feat(web): tipografía IBM Plex autoalojada [T16]`, `feat(w
 | Criterio | Cómo se verifica |
 |---|---|
 | Contraste AA en todos los pares, incluido el texto sobre la cuadrícula y el rayado | `theme.test.ts` y `a11y.e2e.ts` |
-| Ningún texto de la interfaz bajo 15 px | Búsqueda de `text-xs` y tamaños fijos menores en `src/` |
+| Ningún texto nuevo bajo 15 px (la barra inferior sigue en 12,75 px) | Búsqueda de `text-xs` y tamaños fijos menores en `src/` |
 | Funciona sin red con las fuentes nuevas | `pwa.e2e.ts` con el `build` |
 | Peso de fuentes + íconos ≤ 200 KB | `du -b` de `dist/` |
 | Botones de 48 px y foco visible | Vitest de `ui.tsx`; axe |

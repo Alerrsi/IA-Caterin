@@ -19,7 +19,7 @@ escribir y monoespaciada), esquinas de 2–4 px, botones con borde de tecla y un
 3. Tipografía IBM Plex (Serif para títulos, Sans para el cuerpo, Mono para cifras), OFL y autoalojada; se retiran
    Roboto y Bricolage Grotesque si cabe en el presupuesto de 200 KB.
 4. Esquinas de 2–8 px, líneas finas como estructura y una sola sombra (la del botón tecla).
-5. Se mantienen la paleta laurel/cobre, AA, 48 px de área táctil, textos de 15 px como mínimo y el funcionamiento sin
+5. Se mantienen la paleta laurel/cobre, AA, 48 px de área táctil, textos de 15 px como mínimo (salvo las etiquetas ya existentes de la barra inferior) y el funcionamiento sin
    red.
 6. Skills nuevas: `web-interface-guidelines` (Vercel, MIT, copia fija) para los detalles de interfaz y
    `emil-design-eng` (Emil Kowalski, MIT) para el movimiento y la sensación al presionar. Origen en
