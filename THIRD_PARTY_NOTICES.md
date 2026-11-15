@@ -42,7 +42,7 @@ Licencias de los modelos y dependencias principales. Revisado el 9-nov-2026. Las
 | React, React DOM, React Router, Vite, Tailwind CSS, vite-plugin-pwa, Workbox, Vitest, Testing Library, ESLint, typescript-eslint | MIT |
 | `@axe-core/playwright` y `axe-core` (solo pruebas de accesibilidad; no se distribuyen con la app) | MPL-2.0 |
 | TypeScript | Apache-2.0 |
-| Roboto (`@fontsource/roboto`) y Bricolage Grotesque (`@fontsource-variable/bricolage-grotesque`), fuentes incluidas en la app (T14) | OFL-1.1 (SIL Open Font License) |
+| IBM Plex Sans, Serif y Mono (`@fontsource-variable/ibm-plex-sans`, `@fontsource/ibm-plex-serif`, `@fontsource/ibm-plex-mono`), fuentes incluidas en la app y en el logotipo (T16; antes Roboto y Bricolage Grotesque) | OFL-1.1 (SIL Open Font License) |
 | Íconos de Material Icons (trazos SVG copiados en `components/Icon.tsx`) | Apache-2.0 (Google) |
 | `@material/material-color-utilities` (solo genera el tema con `npm run theme`; no se distribuye) | Apache-2.0 |
 | Playwright (pruebas y generación de los PNG de la marca; no se distribuye) | Apache-2.0 |

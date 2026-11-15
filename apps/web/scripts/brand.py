@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Genera los SVG de la marca Cáterin (T14, ADR-008) en `public/brand/` y el favicon `public/icon.svg`.
 
-El logotipo usa Bricolage Grotesque (OFL) convertida a trazos, para que el SVG se vea igual sin la fuente instalada.
+El logotipo usa IBM Plex Serif 500 (OFL; T16, ADR-010) convertida a trazos, para que el SVG se vea igual sin la fuente instalada.
 Necesita fontTools (no es dependencia de la app; solo se usa al rediseñar la marca):
 
     pip install --target /tmp/pylib "fonttools==4.60.1" "brotli==1.1.0"
@@ -18,18 +18,17 @@ from pathlib import Path
 from fontTools.pens.svgPathPen import SVGPathPen
 from fontTools.pens.transformPen import TransformPen
 from fontTools.ttLib import TTFont
-from fontTools.varLib import instancer
 
 WEB = Path(__file__).resolve().parent.parent
-FONT = WEB / "node_modules/@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-wght-normal.woff2"
+FONT = WEB / "node_modules/@fontsource/ibm-plex-serif/files/ibm-plex-serif-latin-500-normal.woff2"
 OUT = WEB / "public/brand"
 
 LAUREL = "#1f4d3f"  # semilla (token brand)
 CREAM = "#faf9f7"  # surface del tema (on-brand): casi blanco, sin crema
 STEAM = "#ffdbcd"  # tertiary-container (brand-steam): vapor cobre, "comida caliente"
 WORD = "Cáterin"
-WEIGHT = 640
-TRACKING = -12  # unidades de la fuente (1000 por em)
+TRACKING = -14  # unidades de la fuente (1000 por em): la serif grande se ve mejor un poco más junta
+RADIUS = 96  # esquina del cuadrado del isotipo (de 512): casi recta, como el resto de la interfaz (T16)
 
 # --------------------------------------------------------------------------- isotipo (caja de 512)
 
@@ -52,7 +51,7 @@ def glyph(fg: str = CREAM, steam: str = STEAM, shine: str = LAUREL) -> str:
 def isotipo() -> str:
     return (
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">'
-        f'<title>Cáterin</title><rect width="512" height="512" rx="116" fill="{LAUREL}"/>{glyph()}</svg>\n'
+        f'<title>Cáterin</title><rect width="512" height="512" rx="{RADIUS}" fill="{LAUREL}"/>{glyph()}</svg>\n'
     )
 
 
@@ -71,7 +70,7 @@ def mono(ink: str = "#000000") -> str:
     return (
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><title>Cáterin</title>'
         f'<mask id="m"><rect width="512" height="512" fill="#fff"/>{cut}</mask>'
-        f'<rect width="512" height="512" rx="116" fill="{ink}" mask="url(#m)"/></svg>\n'
+        f'<rect width="512" height="512" rx="{RADIUS}" fill="{ink}" mask="url(#m)"/></svg>\n'
     )
 
 
@@ -81,7 +80,6 @@ def mono(ink: str = "#000000") -> str:
 def wordmark() -> tuple[str, float, float, float]:
     """Devuelve (path d, ancho, alto de mayúscula, descendente) en unidades de la fuente, con la línea base en y=0."""
     font = TTFont(FONT)
-    font = instancer.instantiateVariableFont(font, {"wght": WEIGHT})
     gs = font.getGlyphSet()
     cmap = font.getBestCmap()
     pen = SVGPathPen(gs)
@@ -103,7 +101,7 @@ def horizontal(word: tuple[str, float, float, float], color: str = LAUREL, iso: 
     w_word = width * scale
     total = 512 + gap + w_word
     baseline = 256 + cap * scale / 2
-    iso_svg = f'<rect width="512" height="512" rx="116" fill="{LAUREL}"/>{glyph()}' if iso else ""
+    iso_svg = f'<rect width="512" height="512" rx="{RADIUS}" fill="{LAUREL}"/>{glyph()}' if iso else ""
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {total:.0f} 512"><title>Cáterin</title>{iso_svg}'
         f'<path transform="translate({512 + gap} {baseline:.1f}) scale({scale:.4f})" fill="{color}" d="{d}"/></svg>\n'
@@ -122,7 +120,7 @@ def stacked(word: tuple[str, float, float, float]) -> str:
     wx = (total_w - w_word) / 2
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {total_w:.0f} {height:.0f}"><title>Cáterin</title>'
-        f'<g transform="translate({ix:.1f} 0)"><rect width="512" height="512" rx="116" fill="{LAUREL}"/>{glyph()}</g>'
+        f'<g transform="translate({ix:.1f} 0)"><rect width="512" height="512" rx="{RADIUS}" fill="{LAUREL}"/>{glyph()}</g>'
         f'<path transform="translate({wx:.1f} {baseline:.1f}) scale({scale:.4f})" fill="{LAUREL}" d="{d}"/></svg>\n'
     )
 
