@@ -90,6 +90,7 @@ Reglas:
    - `assistant` depende de los servicios de lectura de `inventory`, `recipes`, `suppliers` y `quotes`.
    - `vision` depende de `recipes` (producto final) e `inventory` (registro de producción).
    - `metrics` recibe eventos de todos y no es dependencia de nadie.
+   - `dashboard` (T17) solo lee: agrega pedidos, cotizaciones, líneas de cotización, recetas, proveedores e insumos para el tablero de la dueña, con consultas propias de solo lectura (como `metrics`). No escribe nada y no es dependencia de nadie.
    - `portal` (ADR-007) depende de `quotes` (mismo motor de cotización) y de `auth` (emitir la sesión del cliente).
 3. Los modelos SQLAlchemy viven en `app/db/models/` (uno por agregado) para que Alembic los vea todos. Cada módulo usa solo los suyos.
 4. La aritmética de negocio (cantidades, costos, IVA, redondeos) vive en funciones puras sin acceso a la base, en `recipes/costing.py` y `quotes/calculator.py`, para testearla aislada (ver ADR-002).
@@ -174,7 +175,7 @@ Detalle en ADR-004.
 
 | Funciona sin red | Se encola y sincroniza | Requiere red |
 |------------------|------------------------|--------------|
-| Ver insumos, stock (con la hora del último dato), recetas, proveedores y precios cacheados | Ajustes de stock, borradores de pedido, registro manual de producción, fotos pendientes de conteo | Asistente, extracción con LLM, cálculo y PDF de cotización, inferencia de visión, login inicial |
+| Ver insumos, stock (con la hora del último dato), recetas, proveedores y precios cacheados; el tablero "Mi negocio" del último periodo abierto | Ajustes de stock, borradores de pedido, registro manual de producción, fotos pendientes de conteo | Asistente, extracción con LLM, cálculo y PDF de cotización, inferencia de visión, login inicial |
 
 ## 7. Despliegue y costo mensual estimado
 

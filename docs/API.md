@@ -193,6 +193,15 @@ El historial de producciones (`GET /vision/productions`) queda pendiente. El mod
 - Percentiles con interpolación lineal, igual que `percentile_cont` de Postgres. Sin datos, el valor es `null` (nunca 0).
 - La PWA ya no manda `started_at` al crear la cotización: usa `/metrics/quote-timing`. El campo `started_at` de `POST /orders/{id}/quotes` se mantiene por compatibilidad y comparte la misma regla de un registro por cotización.
 
+### dashboard (T17)
+
+| Método | Ruta | Quién | Descripción |
+|--------|------|-------|-------------|
+| GET | `/dashboard?months=6` | Dueña | Tablero del negocio. `months` de 1 a 12 (incluye el mes en curso). Devuelve `period`, `kpis` (venta con IVA y neta, costo de insumos, margen sobre insumos en CLP y %, pedidos vendidos, ticket promedio, pedidos sin cotización aceptada, solicitudes por responder, eventos de los próximos 7 días, insumos bajo el mínimo), `sales_by_month` (todos los meses, aunque estén en cero), `orders_by_status`, `top_products` (hasta 8, en unidades; docena = 12), `upcoming_by_day` (14 días), `spend_by_supplier` (hasta 5 + «Otros») y `low_stock` (hasta 8 + total). Colaboradora: 403 `owner_only` |
+
+- Venta = última cotización aceptada de cada pedido confirmado o entregado, en el mes del evento (America/Santiago). El margen sobre insumos es venta neta menos costo de insumos: no es utilidad. Supuestos en `docs/tasks/T17-tablero.md`.
+- Dinero en CLP enteros (redondeo mitad hacia arriba al final, cuentas en `Decimal`); cantidades en texto decimal.
+
 ## 5. Convenciones
 
 - Rutas en inglés, en plural y en kebab-case. Los campos JSON en `snake_case`.
