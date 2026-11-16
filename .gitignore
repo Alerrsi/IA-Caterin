@@ -40,3 +40,6 @@ storage/
 .idea/
 .vscode/
 .DS_Store
+
+# Copias de trabajo de los agentes (git worktree)
+.claude/worktrees/

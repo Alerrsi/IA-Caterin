@@ -22,6 +22,9 @@ Actualizado: 16-nov-2026. Por decisión del usuario (9-nov-2026), las tareas se 
 | [T16](T16-estetica-plano.md) | Estética "plano de cocina" inspirada en zed.dev (ADR-010) | transversal | hecha (falta mostrarla a personas reales) | T14, T15 | por asignar |
 | [T17](T17-tablero.md) | Tablero del negocio con gráficos (solo dueña) | transversal | hecha, integrada a `main` (falta mostrarla a una dueña real) | T04, T05, T09, T16 | por asignar |
 | [T18](T18-existencias-por-foto.md) | Existencias de productos terminados desde la foto (ADR-011) | F2 | hecha en la rama `feat/T18-existencias-por-foto` (falta integrar a `main` y validar con una dueña) | T04, T06, T08 | por asignar |
+| [T19](T19-portada-catalogo.md) | Portada de la pyme en el portal (ADR-012) | F3 | hecha en la rama `feat/T19-portada-catalogo` (falta integrar a `main` y fotos reales) | T15, T16 | por asignar |
+| T20 | Cotización que usa primero los productos ya hechos (propuesta en T18) | F3 | propuesta | T18 | por asignar |
+| [T21](T21-estetica-referencia.md) | Rediseño de toda la app con la estética de la imagen de referencia | transversal | en curso | T18, T19 | por asignar |
 
 Orden recomendado: T01 → T02 → T03 → T04 → (T05, T06, T07 en paralelo si hay capacidad) → T08 → T09 → T10 → T11 → T12.
 
