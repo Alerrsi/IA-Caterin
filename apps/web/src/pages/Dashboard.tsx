@@ -17,7 +17,7 @@ const d = t.dashboard
 
 function ChartCard({ title, hint, children, className = '' }: { title: string; hint?: ReactNode; children: ReactNode; className?: string }) {
   return (
-    <section aria-label={title} className={`min-w-0 rounded-xl border border-hairline bg-surface-container-lowest p-4 md:p-5 ${className}`}>
+    <section aria-label={title} className={`min-w-0 rounded-xl bg-surface-container-lowest shadow-cap p-4 md:p-5 ${className}`}>
       <h2 className="font-display text-xl text-on-surface">{title}</h2>
       {hint && <p className="mb-3 mt-1 text-sm text-on-surface-variant">{hint}</p>}
       {children}

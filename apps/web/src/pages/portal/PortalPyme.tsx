@@ -164,7 +164,7 @@ function Showcase({
   return (
     <section
       aria-labelledby="showcase-title"
-      className="relative mb-8 flex flex-col overflow-hidden rounded-xl border border-hairline bg-surface-container-lowest lg:grid lg:min-h-[32rem] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:grid-rows-[1fr_auto]"
+      className="relative mb-8 flex flex-col overflow-hidden rounded-xl bg-surface-container-lowest shadow-cap lg:grid lg:min-h-[32rem] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:grid-rows-[1fr_auto]"
     >
       {/* Escritorio: el panel laurel cubre la columna derecha con un corte diagonal. */}
       <div

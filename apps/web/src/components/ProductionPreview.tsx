@@ -45,7 +45,7 @@ export function ProductionPreview({ recipeId, qty, consume }: { recipeId: string
   const unit = preview.yield_unit
   const consumed = preview.consumed
   return (
-    <div className="rounded-lg border border-dashed border-outline p-3 text-on-surface" aria-live="polite">
+    <div className="rounded-xl border border-dashed border-outline p-3 text-on-surface" aria-live="polite">
       <p className="text-sm font-medium text-on-surface-variant">{t.vision.previewTitle}</p>
       <p className="mt-1">
         {t.vision.previewAdd(formatStock(preview.add_qty, unit), preview.recipe_name, formatStock(preview.product_stock_qty, unit))}

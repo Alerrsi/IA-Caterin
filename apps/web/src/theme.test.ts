@@ -1,6 +1,6 @@
 /**
- * Contraste AA de los pares texto/fondo del tema (T14). Lee los tokens de `src/index.css`, que genera
- * `scripts/theme.mjs`: si se cambia la semilla y un par baja de 4.5:1, esta prueba falla.
+ * Contraste AA de los pares texto/fondo del tema (T14, T21). Lee los tokens de `src/index.css`, que escribe
+ * `scripts/theme.mjs`: si se cambia un color y un par baja de 4.5:1, esta prueba falla.
  */
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
@@ -46,6 +46,12 @@ const PAIRS: [string, string][] = [
   ]),
   ...['error', 'warning', 'info', 'success'].map((r): [string, string] => [r, 'surface-container-lowest']),
   ['inverse-on-surface', 'inverse-surface'],
+  // T21 (ADR-013): el amarillo solo es fondo, con texto negro; el panel oscuro lleva texto claro.
+  ['on-accent', 'accent'],
+  ['on-accent', 'accent-soft'],
+  ['on-panel', 'panel'],
+  ['on-panel-variant', 'panel'],
+  ['tertiary', 'surface-container-lowest'],
 ]
 
 describe('tema', () => {
@@ -58,6 +64,10 @@ describe('tema', () => {
 
   test.each(PAIRS)('%s sobre %s cumple AA (4.5:1)', (fg, bg) => {
     expect(contrast(tokens[fg], tokens[bg])).toBeGreaterThanOrEqual(4.5)
+  })
+
+  test('el amarillo no sirve como texto sobre blanco: por eso solo es fondo (ADR-013)', () => {
+    expect(contrast(tokens.accent, tokens['surface-container-lowest'])).toBeLessThan(3)
   })
 
   test('el contorno de los campos se distingue del fondo (3:1, WCAG 1.4.11)', () => {

@@ -27,7 +27,7 @@ export default function Login() {
 
   return (
     <AuthLayout titleAsHeading>
-      <h2 className="mb-6 text-2xl font-normal text-on-surface">{t.login.title}</h2>
+      <h2 className="mb-6 text-2xl font-extrabold text-on-surface">{t.login.title}</h2>
       <form onSubmit={submit} className="space-y-4" noValidate>
         <Field label={t.login.email}>
           <input

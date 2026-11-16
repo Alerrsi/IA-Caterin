@@ -129,7 +129,7 @@ export default function QuoteView({ id }: { id: string }) {
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <aside className="space-y-4 lg:sticky lg:top-6 lg:col-start-2 lg:row-start-1">
       {/* Como un ticket de comanda: el detalle arriba, la línea de corte y el total (T16). */}
-      <section className="rounded-xl bg-surface-container-lowest p-5 border border-hairline" aria-label={t.view.total}>
+      <section className="rounded-xl bg-surface-container-lowest p-5 shadow-cap" aria-label={t.view.total}>
         <dl className="grid grid-cols-2 gap-1 text-on-surface">
           <dt>{t.view.net}</dt>
           <dd className="num text-right">{formatCLP(quote.net_clp)}</dd>
@@ -186,7 +186,7 @@ export default function QuoteView({ id }: { id: string }) {
         </aside>
         <div className="min-w-0 lg:col-start-1 lg:row-start-1">
       <h2 className="mb-2 font-display text-xl">{t.view.products}</h2>
-      <ul className="divide-y divide-hairline rounded-xl bg-surface-container-lowest border border-hairline">
+      <ul className="divide-y divide-hairline rounded-xl bg-surface-container-lowest shadow-cap">
         {quote.products.map((p, i) => (
           <li key={i} className="flex items-start justify-between gap-3 p-4">
             <div>
@@ -204,7 +204,7 @@ export default function QuoteView({ id }: { id: string }) {
         {t.view.ingredientsCost}: <span className="num">{formatCLP(quote.ingredients_cost_clp)}</span>
       </p>
 
-      <details className="mt-6 rounded-xl bg-surface-container-lowest p-4 border border-hairline" onToggle={(e) => toggleShopping(e.currentTarget.open)}>
+      <details className="mt-6 rounded-xl bg-surface-container-lowest p-4 shadow-cap" onToggle={(e) => toggleShopping(e.currentTarget.open)}>
         <summary className="min-h-12 cursor-pointer py-2 text-xl font-medium">
           {t.view.shopping} · <span className="num">{formatCLP(quote.shopping_total_clp)}</span>
         </summary>

@@ -1,85 +1,93 @@
 @import 'tailwindcss';
 
 /*
- * Identidad de Cáterin (T14, ADR-008): "cocina profesional ordenada". Los nombres siguen los roles de color de
- * Material Design 3 (primary, surface-container, on-surface-variant…), así cada componente usa el rol y no un color
- * fijo. Los colores los genera `scripts/theme.mjs` desde la semilla (laurel); el contraste AA de cada par texto/fondo
- * lo verifica `src/theme.test.ts`.
+ * Identidad de Cáterin (T21, ADR-013): la estética de la imagen de referencia. Blanco limpio, tinta casi negra, un
+ * panel oscuro con dibujos de comida y un acento amarillo que solo es fondo. Los nombres siguen los roles de color de
+ * siempre (primary, surface-container, on-surface-variant…), así cada componente usa el rol y no un color fijo. Los
+ * colores los declara `scripts/theme.mjs`; el contraste AA de cada par lo verifica `src/theme.test.ts`.
  */
 @theme {
   /* theme:start (generado por scripts/theme.mjs; no editar a mano) */
-  /* Semilla #1f4d3f (laurel), terciaria #a0522d (cobre). */
-  --color-primary: #2d6956;
+  /* Tinta #1a1a1a, acento #ffd45c (ADR-013). */
+  --color-primary: #1a1a1a;
   --color-on-primary: #ffffff;
-  --color-primary-container: #d1e8dd;
-  --color-on-primary-container: #374b43;
-  --color-secondary: #54615b;
+  --color-primary-container: #fff4cf;
+  --color-on-primary-container: #2b2100;
+  --color-secondary: #4f4c47;
   --color-on-secondary: #ffffff;
-  --color-secondary-container: #d8e6de;
-  --color-on-secondary-container: #3d4944;
-  --color-tertiary: #924b29;
+  --color-secondary-container: #f1efea;
+  --color-on-secondary-container: #1a1a1a;
+  --color-tertiary: #7a5200;
   --color-on-tertiary: #ffffff;
-  --color-tertiary-container: #ffdbcd;
-  --color-on-tertiary-container: #743414;
-  --color-surface: #faf9f7;
-  --color-surface-dim: #dbdad8;
-  --color-surface-bright: #faf9f7;
+  --color-tertiary-container: #ffe7a3;
+  --color-on-tertiary-container: #2b1d00;
+  --color-surface: #ffffff;
+  --color-surface-dim: #e4e2dd;
+  --color-surface-bright: #ffffff;
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f5f3f1;
-  --color-surface-container: #efeeec;
-  --color-surface-container-high: #e9e8e6;
-  --color-surface-container-highest: #e3e2e0;
-  --color-on-surface: #1b1c1b;
-  --color-on-surface-variant: #444845;
-  --color-outline: #757875;
-  --color-outline-variant: #c4c7c4;
-  --color-inverse-surface: #303130;
-  --color-inverse-on-surface: #f2f0ef;
-  --color-inverse-primary: #97d3bd;
-  --color-error: #ba1a1a;
+  --color-surface-container-low: #f7f6f3;
+  --color-surface-container: #f1efea;
+  --color-surface-container-high: #ebe9e4;
+  --color-surface-container-highest: #e4e2dd;
+  --color-on-surface: #1a1a1a;
+  --color-on-surface-variant: #57544e;
+  --color-outline: #85827b;
+  --color-outline-variant: #d9d6cf;
+  --color-inverse-surface: #1b1b1b;
+  --color-inverse-on-surface: #f7f6f3;
+  --color-inverse-primary: #ffd45c;
+  --color-error: #b3261e;
   --color-on-error: #ffffff;
-  --color-error-container: #ffdad6;
-  --color-on-error-container: #93000a;
-  --color-warning: #6a5e33;
-  --color-warning-container: #f3e2ac;
-  --color-on-warning-container: #221b00;
-  --color-success: #466551;
-  --color-success-container: #c8ebd1;
-  --color-on-success-container: #022111;
-  --color-info: #456274;
-  --color-info-container: #c8e7fd;
-  --color-on-info-container: #001e2d;
-  --color-hairline: #dbddda;
-  --color-primary-edge: #004434;
-  --color-brand: #1f4d3f;
-  --color-on-brand: #faf9f7;
-  --color-brand-steam: #ffdbcd;
+  --color-error-container: #fde2df;
+  --color-on-error-container: #5c0f0a;
+  --color-warning: #7a5600;
+  --color-warning-container: #fff0c2;
+  --color-on-warning-container: #2b1f00;
+  --color-success: #2e6b3a;
+  --color-success-container: #dcf1df;
+  --color-on-success-container: #0b2611;
+  --color-info: #2f5f8a;
+  --color-info-container: #dceaf7;
+  --color-on-info-container: #08223a;
+  --color-hairline: #ecebe7;
+  --color-primary-edge: #000000;
+  --color-brand: #1a1a1a;
+  --color-on-brand: #ffffff;
+  --color-brand-steam: #ffd45c;
+  --color-accent: #ffd45c;
+  --color-on-accent: #1a1a1a;
+  --color-accent-soft: #fff4cf;
+  --color-panel: #1b1b1b;
+  --color-on-panel: #f7f6f3;
+  --color-on-panel-variant: #c9c6bf;
   /* theme:end */
 
-  /* Gráficos del tablero (T17). Colores de dato, no de interfaz: validados con validate_palette.js (skill dataviz)
-     contra el blanco de las tarjetas. chart-2 queda bajo 3:1, así que cada gráfico lleva texto y vista en tabla. */
-  --color-chart-1: #14845c;
-  --color-chart-2: #d4874c;
+  /* Gráficos del tablero (T17), recoloreados en T21. Colores de dato, no de interfaz: validados con
+     validate_palette.js (skill dataviz) contra el blanco de las tarjetas. chart-1 (dorado) queda bajo 3:1, así que cada gráfico
+     lleva texto y vista en tabla. */
+  --color-chart-1: #d99a00;
+  --color-chart-2: #5a5ad6;
 
-  /* Fuentes autoalojadas (ver src/fonts.css): funcionan sin red. Familia IBM Plex en tres voces (T16, ADR-010):
-     Sans para la interfaz, Serif para títulos y Mono para las cifras de comanda. */
-  --font-sans: 'IBM Plex Sans Variable', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
-  --font-display: 'IBM Plex Serif', Georgia, 'Times New Roman', serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  /* Fuente autoalojada (ver src/fonts.css): Urbanist variable para todo. Las cifras usan la misma fuente con cifras
+     tabulares (clase `num`). */
+  --font-sans: 'Urbanist Variable', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --font-display: 'Urbanist Variable', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'Urbanist Variable', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
 
-  /* Forma: esquinas casi rectas, de plano. En px: la raíz es de 17 px y en rem no calzarían. Anidadas, la de afuera
-     es la de adentro más el relleno. */
-  --radius-sm: 2px; /* atajos de teclado y etiquetas de estado */
-  --radius-md: 4px; /* campos de texto */
-  --radius-lg: 4px; /* botones, chips y elementos de navegación */
-  --radius-xl: 6px; /* tarjetas, celdas y avisos */
-  --radius-2xl: 8px; /* cajón de navegación */
-  --radius-3xl: 8px; /* tarjeta del login */
+  /* Forma (ADR-013): botones y navegación en píldora, tarjetas redondeadas generosas. En px: la raíz es de 17 px. */
+  --radius-sm: 8px; /* etiquetas de estado y atajos */
+  --radius-md: 14px; /* campos de texto */
+  --radius-lg: 9999px; /* botones, chips y navegación: píldora */
+  --radius-xl: 22px; /* tarjetas y avisos */
+  --radius-2xl: 28px; /* cajón y tarjetas grandes */
+  --radius-3xl: 36px; /* portadas */
 
-  /* Botón "tecla": borde inferior más oscuro y una sombra mínima. La única sombra de la interfaz. */
-  --shadow-key: inset 0 -2px 0 var(--color-primary-edge), 0 1px 2px rgb(27 28 27 / 0.12);
-  --shadow-key-pressed: inset 0 -1px 0 var(--color-primary-edge);
-  --shadow-cap: inset 0 -1px 0 var(--color-outline-variant), 0 1px 2px rgb(27 28 27 / 0.08);
+  /* Sombras suaves y difusas, como las de la referencia. */
+  --shadow-key: 0 10px 24px -10px rgb(26 26 26 / 0.45);
+  --shadow-key-pressed: 0 4px 10px -4px rgb(26 26 26 / 0.35);
+  --shadow-cap: 0 8px 22px -12px rgb(26 26 26 / 0.22);
+  --shadow-soft: 0 24px 60px -28px rgb(26 26 26 / 0.28);
+  --shadow-plate: 0 30px 50px -18px rgb(0 0 0 / 0.45);
 
   /* Movimiento (skill emil-design-eng): salida rápida, nunca ease-in; menos de 300 ms. */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -100,13 +108,17 @@ body {
   background: var(--color-surface-container-low);
   color: var(--color-on-surface);
   font-family: var(--font-sans);
+  font-weight: 500;
   -webkit-font-smoothing: antialiased;
 }
-/* Títulos de pantalla en serif, con interletra ajustada como corresponde a un tamaño grande. */
+/* Títulos grandes y apretados, como en la referencia. */
 h1 {
   font-family: var(--font-display);
-  font-weight: 500;
-  letter-spacing: -0.02em;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+h2 {
+  letter-spacing: -0.01em;
 }
 h1,
 h2 {
@@ -116,62 +128,44 @@ h2 {
 table {
   font-variant-numeric: tabular-nums;
 }
-/* Cifras de comanda: cantidades, precios, códigos y fechas en monoespaciada (T16). */
+/* Cifras: precios, cantidades, códigos y fechas, con cifras tabulares y un peso firme. */
 .num {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
+  font-weight: 700;
   letter-spacing: -0.01em;
 }
 
 /*
- * Fondos del "plano de cocina" (T16, ADR-010). Decorativos: nunca detrás de texto largo.
- * - grid-paper: papel cuadriculado de la libreta de recetas (márgenes del escritorio, panel del login, vacíos).
- * - hatch: rayado diagonal, solo sobre el color de la marca (panel del login).
- * - frame-marks: marcas cuadradas en los extremos de una línea horizontal que cruza los rieles (cabecera de pantalla).
+ * Fondos decorativos (ADR-013). Nunca detrás de texto largo.
+ * - doodles: dibujos de comida en línea fina sobre el panel oscuro (portadas, login).
+ * - grid-paper: los mismos dibujos, muy tenues, sobre fondos claros (vacíos y lienzo del escritorio). Se conserva el
+ *   nombre de T16 para no tocar cada pantalla.
+ * - hatch: alias de `doodles` (antes, rayado sobre el laurel).
+ * - frame-marks: ya no dibuja nada (era el marco del plano de cocina).
  */
-@utility grid-paper {
-  background-image:
-    linear-gradient(color-mix(in oklab, var(--color-hairline) 55%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in oklab, var(--color-hairline) 55%, transparent) 1px, transparent 1px);
-  background-size: 24px 24px;
-  background-position: -1px -1px;
+@utility doodles {
+  background-image: url('./assets/doodles-dark.svg');
+  background-size: 200px 200px;
 }
 @utility hatch {
-  background-image: repeating-linear-gradient(135deg, rgb(255 255 255 / 0.07) 0 1px, transparent 1px 10px);
+  background-image: url('./assets/doodles-dark.svg');
+  background-size: 200px 200px;
 }
-/* Grilla de celdas: cada celda dibuja su línea derecha e inferior en una capa encima del contenido (así el fondo de la
-   celda vecina no la tapa), 1 px hacia afuera; las que caen en el borde de la lista las recorta `overflow: hidden`.
-   Las celdas vacías de la última fila quedan en blanco. */
+@utility grid-paper {
+  background-image: url('./assets/doodles-light.svg');
+  background-size: 220px 220px;
+}
+/* Grilla de tarjetas: cada hijo es una tarjeta blanca, redondeada y con sombra suave (antes, celdas con líneas). */
 @utility cells {
   & > li {
     position: relative;
-  }
-  & > li::after {
-    content: '';
-    position: absolute;
-    inset: 0 -1px -1px 0;
-    border-right: 1px solid var(--color-hairline);
-    border-bottom: 1px solid var(--color-hairline);
-    pointer-events: none;
-    z-index: 1;
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+    background: var(--color-surface-container-lowest);
+    box-shadow: var(--shadow-cap);
   }
 }
 @utility frame-marks {
   position: relative;
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    width: 7px;
-    height: 7px;
-    border: 1px solid var(--color-outline-variant);
-    background: var(--color-surface-container-lowest);
-  }
-  &::before {
-    left: -4px;
-  }
-  &::after {
-    right: -4px;
-  }
 }

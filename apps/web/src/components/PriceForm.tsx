@@ -46,7 +46,7 @@ export function PriceSection({ ingredient }: { ingredient: Ingredient }) {
   const [saved, setSaved] = useState(false)
 
   return (
-    <section className="mt-4 rounded-xl bg-surface-container-lowest p-4 border border-hairline" aria-labelledby={`prices-${ingredient.id}`}>
+    <section className="mt-4 rounded-xl bg-surface-container-lowest p-4 shadow-cap" aria-labelledby={`prices-${ingredient.id}`}>
       <h2 id={`prices-${ingredient.id}`} className="mb-2 text-lg font-medium text-on-surface">
         {t.priceForm.current}
       </h2>

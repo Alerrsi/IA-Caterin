@@ -4,24 +4,24 @@ import { dismissFailed, useQueue } from '../offline/queue'
 import { Icon, type IconName } from './Icon'
 
 /**
- * Componentes base sobre los roles de color de `index.css` (estética "plano de cocina", T16, ADR-010). Botones de
- * 48 px de alto mínimo (área táctil), esquina de 4 px, borde de tecla y foco visible; tarjetas y celdas con línea fina;
- * campos de texto delineados.
+ * Componentes base sobre los roles de color de `index.css` (T21, ADR-013: estética de la imagen de referencia). Botones
+ * en píldora de 48 px mínimo (área táctil) con sombra suave y foco visible; tarjetas blancas redondeadas con sombra
+ * difusa; campos redondeados.
  */
 type Variant = 'primary' | 'tonal' | 'secondary' | 'ghost'
 
 const VARIANTS: Record<Variant, string> = {
-  // La acción principal de la pantalla: tecla laurel con el borde inferior más oscuro.
+  // La acción principal de la pantalla: píldora negra con texto blanco.
   primary:
-    'bg-primary text-on-primary shadow-key hover:bg-primary/92 active:shadow-key-pressed disabled:bg-on-surface/12 disabled:text-on-surface/40 disabled:shadow-none',
-  // Acción importante pero no principal.
+    'bg-primary text-on-primary shadow-key hover:bg-primary/88 active:shadow-key-pressed disabled:bg-on-surface/12 disabled:text-on-surface/40 disabled:shadow-none',
+  // Acción importante pero no principal: píldora amarilla con texto negro (el amarillo solo es fondo).
   tonal:
-    'bg-secondary-container text-on-secondary-container hover:bg-secondary-container/80 disabled:bg-on-surface/12 disabled:text-on-surface/40',
-  // Tecla clara: fondo blanco, borde fino y una sombra mínima.
+    'bg-accent text-on-accent shadow-cap hover:bg-accent/85 disabled:bg-on-surface/12 disabled:text-on-surface/40 disabled:shadow-none',
+  // Píldora clara delineada (como "Sign In" de la referencia).
   secondary:
-    'border border-outline bg-surface-container-lowest text-on-surface shadow-cap hover:bg-surface-container-low disabled:border-on-surface/12 disabled:text-on-surface/40 disabled:shadow-none',
+    'border border-outline bg-surface-container-lowest text-on-surface hover:bg-surface-container-low disabled:border-on-surface/12 disabled:text-on-surface/40',
   // Acción de texto.
-  ghost: 'bg-transparent text-primary hover:bg-primary/8 disabled:text-on-surface/40',
+  ghost: 'bg-transparent text-primary underline-offset-4 hover:bg-primary/6 hover:underline disabled:text-on-surface/40',
 }
 
 /**
@@ -39,23 +39,41 @@ export function Kbd({ children }: { children: ReactNode }) {
   )
 }
 
+/**
+ * Botón en píldora. Con `icon`, el ícono va dentro de un círculo amarillo al inicio, como el "Buy Now" de la
+ * referencia (en el botón amarillo el círculo es negro).
+ */
 export function Button({
   variant = 'primary',
   className = '',
   shortcut,
+  icon,
   children,
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant; shortcut?: string }) {
+}: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant; shortcut?: string; icon?: IconName }) {
   return (
     <button
       type="button"
       aria-keyshortcuts={shortcut}
-      className={`inline-flex min-h-12 items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-base font-medium transition-[background-color,box-shadow,translate] duration-150 ease-out focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 enabled:active:translate-y-px disabled:cursor-not-allowed motion-reduce:enabled:active:translate-y-0 ${VARIANTS[variant]} ${className}`}
+      className={`inline-flex min-h-12 items-center justify-center gap-3 rounded-lg py-2.5 text-base font-semibold transition-[background-color,box-shadow,translate] duration-150 ease-out focus:outline-none focus-visible:ring-4 focus-visible:ring-accent enabled:active:translate-y-px disabled:cursor-not-allowed motion-reduce:enabled:active:translate-y-0 ${icon ? 'pl-1.5 pr-6' : 'px-6'} ${VARIANTS[variant]} ${className}`}
       {...props}
     >
+      {icon && <IconDot name={icon} dark={variant === 'tonal'} />}
       {children}
       {shortcut && <Kbd>{shortcut}</Kbd>}
     </button>
+  )
+}
+
+/** Círculo con un ícono: amarillo con ícono negro (o negro con ícono amarillo sobre fondos amarillos). Decorativo. */
+export function IconDot({ name, dark = false, className = '' }: { name: IconName; dark?: boolean; className?: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${dark ? 'bg-primary text-accent' : 'bg-accent text-on-accent'} ${className}`}
+    >
+      <Icon name={name} className="h-5 w-5" />
+    </span>
   )
 }
 
@@ -75,11 +93,13 @@ export function Alert({ kind = 'error', children }: { kind?: 'error' | 'warning'
 }
 
 /**
- * Contenido de una pantalla dentro del marco de la app (`AppShell`): título en serif, bajada opcional y botón de volver.
- * `size="narrow"` para formularios de una columna; por defecto usa el ancho de escritorio.
+ * Contenido de una pantalla dentro del marco de la app (`AppShell`): título grande en dos pesos, bajada opcional y
+ * botón de volver. `lead` va arriba en peso normal y `title` abajo en negrita ("Mi / negocio"), como los títulos de la
+ * referencia. `size="narrow"` para formularios de una columna; por defecto usa el ancho de escritorio.
  */
 export function Page({
   title,
+  lead,
   description,
   onBack,
   children,
@@ -87,6 +107,7 @@ export function Page({
   actions,
 }: {
   title: string
+  lead?: string
   description?: ReactNode
   onBack?: () => void
   children: ReactNode
@@ -94,72 +115,81 @@ export function Page({
   actions?: ReactNode
 }) {
   return (
-    <main
-      className={`mx-auto w-full lg:min-h-dvh lg:border-x lg:border-hairline lg:bg-surface ${size === 'narrow' ? 'max-w-3xl' : 'max-w-6xl'}`}
-    >
-      {/* En escritorio la cabecera cruza los rieles del marco con una línea fina y marcas en los extremos (T16). */}
-      <header className="flex items-start gap-2 px-4 pb-4 pt-4 md:px-8 md:pt-6 lg:frame-marks lg:border-b lg:border-hairline lg:pb-6">
+    <main className={`mx-auto w-full ${size === 'narrow' ? 'max-w-3xl' : 'max-w-6xl'}`}>
+      <header className="flex items-start gap-2 px-4 pb-4 pt-5 md:px-8 md:pt-8 lg:pb-6">
         {onBack && (
           <button
             type="button"
             onClick={onBack}
-            className="-ml-2 inline-flex h-12 w-12 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-on-surface/8 focus-visible:ring-4 focus-visible:ring-primary/30"
+            className="-ml-1 mt-1 inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface-container-lowest text-on-surface shadow-cap transition-colors hover:bg-accent focus-visible:ring-4 focus-visible:ring-accent"
             aria-label={t.back}
           >
             <Icon name="back" className="h-6 w-6" />
           </button>
         )}
-        <div className="min-w-0 flex-1 pt-1.5">
-          <h1 className="text-[1.75rem] leading-9 text-on-surface md:text-[2.25rem] md:leading-11">{title}</h1>
-          {description && <p className="mt-1 max-w-prose text-on-surface-variant">{description}</p>}
+        <div className="min-w-0 flex-1 pt-1 md:pl-2">
+          <h1 className="text-[2rem] leading-10 text-on-surface md:text-[2.75rem] md:leading-[3.25rem]">
+            {lead && <span className="block font-normal">{lead}</span>}
+            {title}
+          </h1>
+          {description && <p className="mt-2 max-w-prose text-on-surface-variant">{description}</p>}
         </div>
-        {actions && <div className="flex shrink-0 flex-wrap items-center gap-2 pt-1">{actions}</div>}
+        {actions && <div className="flex shrink-0 flex-wrap items-center gap-2 pt-2">{actions}</div>}
       </header>
-      <div className="px-4 pb-24 pt-2 md:px-8 lg:pb-12 lg:pt-6">{children}</div>
+      <div className="px-4 pb-28 pt-2 md:px-8 lg:pb-16 lg:pt-4">{children}</div>
     </main>
   )
 }
 
-/** Tarjeta con línea fina. */
+/** Tarjeta blanca redondeada con sombra difusa. */
 export function Card({ children, className = '' }: { children: ReactNode; className?: string }) {
-  return <section className={`rounded-xl border border-hairline bg-surface-container-lowest p-4 md:p-5 ${className}`}>{children}</section>
+  return <section className={`rounded-xl bg-surface-container-lowest p-4 shadow-cap md:p-6 ${className}`}>{children}</section>
 }
 
 /**
- * Grilla de celdas separadas por líneas de 1 px, sin espacio entre ellas (T16; utilidad `cells` en `index.css`).
- * Cada hijo debe ser un `<li>`.
+ * Grilla de tarjetas con aire entre ellas (utilidad `cells` en `index.css`: cada hijo es una tarjeta blanca con
+ * sombra suave). Cada hijo debe ser un `<li>`.
  */
 export function Cells({ children, className = '', label }: { children: ReactNode; className?: string; label?: string }) {
   return (
-    <ul aria-label={label} className={`cells grid overflow-hidden rounded-xl border border-hairline bg-surface-container-lowest ${className}`}>
+    <ul aria-label={label} className={`cells grid gap-3 md:gap-4 ${className}`}>
       {children}
     </ul>
   )
 }
 
-/** Cifra de comanda: cantidad, precio, código o fecha en monoespaciada con cifras tabulares (T16). */
+/** Cifra: cantidad, precio, código o fecha, con cifras tabulares y peso firme. */
 export function Num({ children, className = '' }: { children: ReactNode; className?: string }) {
   return <span className={`num ${className}`}>{children}</span>
+}
+
+/** Píldora pequeña de información (como "30 dk." de la referencia): fondo amarillo, texto negro. */
+export function Pill({ children, className = '' }: { children: ReactNode; className?: string }) {
+  return (
+    <span className={`inline-flex h-8 items-center gap-1.5 rounded-lg bg-accent px-3 text-sm font-semibold text-on-accent ${className}`}>
+      {children}
+    </span>
+  )
 }
 
 export function Field({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-sm font-medium text-on-surface-variant">{label}</span>
+      <span className="mb-1.5 block text-sm font-semibold text-on-surface">{label}</span>
       {children}
       {hint && <span className="mt-1 block text-sm text-on-surface-variant">{hint}</span>}
     </label>
   )
 }
 
-// Campo delineado: esquina de 4 px, borde que se engrosa con el foco.
+// Campo redondeado: fondo blanco, borde que se vuelve negro con el foco y aro amarillo.
 export const inputClass =
-  'w-full min-h-12 rounded-md border border-outline bg-surface-container-lowest px-4 py-2 text-base text-on-surface placeholder:text-on-surface-variant/70 hover:border-on-surface focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-60'
+  'w-full min-h-12 rounded-md border border-outline bg-surface-container-lowest px-4 py-2 text-base text-on-surface placeholder:text-on-surface-variant/70 hover:border-on-surface focus:border-primary focus:outline-none focus:ring-4 focus:ring-accent/60 disabled:opacity-60'
 
 export function Spinner({ label }: { label: string }) {
   return (
     <p role="status" className="flex items-center gap-3 text-on-surface-variant">
-      <span className="inline-block h-5 w-5 animate-spin rounded-full border-[3px] border-primary/20 border-t-primary" />
+      <span className="inline-block h-5 w-5 animate-spin rounded-full border-[3px] border-accent/40 border-t-primary" />
       {label}
     </p>
   )
@@ -221,7 +251,7 @@ export function OfflineBanner() {
   )
 }
 
-/** Estado de un pedido o cotización: etiqueta con el color del estado y esquina de 2 px. */
+/** Estado de un pedido o cotización: píldora con el color del estado. */
 export function StatusChip({ status, children }: { status: string; children: ReactNode }) {
   const tone =
     status === 'confirmed' || status === 'accepted' || status === 'delivered'
@@ -232,7 +262,7 @@ export function StatusChip({ status, children }: { status: string; children: Rea
           ? 'bg-info-container text-on-info-container'
           : 'bg-secondary-container text-on-secondary-container'
   return (
-    <span className={`inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-sm px-2.5 text-sm font-medium ${tone}`}>
+    <span className={`inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-lg px-3 text-sm font-semibold ${tone}`}>
       {children}
     </span>
   )

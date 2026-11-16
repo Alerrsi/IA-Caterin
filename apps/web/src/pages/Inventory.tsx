@@ -176,7 +176,7 @@ export default function Inventory() {
       ) : (
         <ul className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {items.map((ing) => (
-            <li key={ing.id} className="rounded-xl bg-surface-container-lowest p-4 border border-hairline">
+            <li key={ing.id} className="rounded-xl bg-surface-container-lowest p-4 shadow-cap">
               <div className="flex items-center gap-3">
                 <button
                   type="button"

@@ -161,7 +161,7 @@ export default function Orders() {
           ) : (
             <ul className="grid items-start gap-4 lg:grid-cols-2">
               {others.map((o) => (
-                <li key={o.id} className="rounded-xl bg-surface-container-lowest p-4 border border-hairline">
+                <li key={o.id} className="rounded-xl bg-surface-container-lowest p-4 shadow-cap">
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <p className="text-lg font-medium">{o.customer_name}</p>

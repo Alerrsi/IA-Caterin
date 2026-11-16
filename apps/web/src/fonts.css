@@ -1,20 +1,13 @@
 /*
- * Fuentes autoalojadas (T14, T16; ADR-008 y ADR-010): van en el precaché de la PWA y funcionan sin red. Familia
- * IBM Plex, solo el subconjunto latino, que cubre el español (á, é, í, ó, ú, ñ, ü, ¿, ¡). Licencia OFL-1.1 (ver
- * THIRD_PARTY_NOTICES.md). Presupuesto con íconos y marca: 200 KB.
- *   Sans (variable, 100–700): todo el texto de la interfaz.
- *   Serif 500 y 400 cursiva: títulos de pantalla y de sección, y la frase del login.
- *   Mono 400: cifras de comanda (cantidades, precios, códigos, fechas) y atajos de teclado.
- * Los @import van antes de cualquier otra regla (si no, el navegador los ignora).
+ * Fuente autoalojada (T21, ADR-013): va en el precaché de la PWA y funciona sin red. Urbanist, sans geométrica de
+ * licencia OFL-1.1 (ver THIRD_PARTY_NOTICES.md), en su versión variable (100–900), solo el subconjunto latino, que
+ * cubre el español (á, é, í, ó, ú, ñ, ü, ¿, ¡). Una sola familia para todo: interfaz (500), títulos en dos pesos
+ * (400 arriba, 800 abajo) y cifras (con cifras tabulares). ≈ 28 KB.
  */
-@import '@fontsource/ibm-plex-serif/latin-500.css';
-@import '@fontsource/ibm-plex-serif/latin-400-italic.css';
-@import '@fontsource/ibm-plex-mono/latin-400.css';
-
 @font-face {
-  font-family: 'IBM Plex Sans Variable';
+  font-family: 'Urbanist Variable';
   font-style: normal;
   font-display: swap;
-  font-weight: 100 700;
-  src: url('@fontsource-variable/ibm-plex-sans/files/ibm-plex-sans-latin-wght-normal.woff2') format('woff2-variations');
+  font-weight: 100 900;
+  src: url('@fontsource-variable/urbanist/files/urbanist-latin-wght-normal.woff2') format('woff2-variations');
 }

@@ -2,6 +2,13 @@
 export const t = {
   appName: 'Cáterin',
   tagline: 'Tu catering, ordenado y sin planillas',
+  // El mismo lema en dos pesos (T21): arriba normal, abajo en negrita.
+  taglineParts: ['Tu catering,', 'ordenado y sin planillas'] as const,
+  authCoupon: {
+    title: 'Cotiza en minutos',
+    body: 'Pega el mensaje del cliente y listo',
+    pill: 'Sin planillas',
+  },
   offline: 'Sin conexión: tus cambios se guardan en el teléfono y se envían al volver la señal.',
   loading: 'Cargando…',
   back: 'Volver',
@@ -35,6 +42,7 @@ export const t = {
   nav: {
     label: 'Secciones',
     main: 'Navegación principal',
+    more: 'Más',
     open: 'Abrir menú',
     close: 'Cerrar menú',
     home: 'Inicio',
@@ -61,6 +69,7 @@ export const t = {
   },
   home: {
     hello: (name: string) => `Hola, ${name}`,
+    heroBold: '¿Qué cotizamos hoy?',
     quote: 'Cotizar un pedido',
     quoteHint: 'Pega el mensaje del cliente y listo',
     orders: 'Mis pedidos',

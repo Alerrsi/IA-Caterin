@@ -91,7 +91,7 @@ export default function RequestView({ id }: { id: string }) {
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <aside className="space-y-4 lg:sticky lg:top-6 lg:col-start-2 lg:row-start-1">
       {q?.is_complete && (
-        <section className="rounded-xl bg-surface-container-lowest p-5 border border-hairline" aria-label={t.view.total}>
+        <section className="rounded-xl bg-surface-container-lowest p-5 shadow-cap" aria-label={t.view.total}>
           <dl className="grid grid-cols-2 gap-1 text-on-surface">
             <dt>{t.view.net}</dt>
             <dd className="num text-right">{formatCLP(q.net_clp)}</dd>
@@ -139,7 +139,7 @@ export default function RequestView({ id }: { id: string }) {
         </aside>
         <div className="min-w-0 lg:col-start-1 lg:row-start-1">
       <h2 className="mb-2 font-display text-xl">{t.view.products}</h2>
-      <ul className="divide-y divide-hairline rounded-xl bg-surface-container-lowest border border-hairline">
+      <ul className="divide-y divide-hairline rounded-xl bg-surface-container-lowest shadow-cap">
         {(q?.products ?? req.lines.map((l) => ({ ...l, unit_price_clp: null, subtotal_clp: null }))).map((p, i) => (
           <li key={i} className="flex items-start justify-between gap-3 p-4">
             <div>

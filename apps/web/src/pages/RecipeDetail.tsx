@@ -50,7 +50,7 @@ function CostPanel({ recipe }: { recipe: Recipe }) {
   }
 
   return (
-    <section className="mt-4 rounded-xl bg-surface-container-lowest p-4 border border-hairline">
+    <section className="mt-4 rounded-xl bg-surface-container-lowest p-4 shadow-cap">
       <h2 className="mb-2 text-lg font-medium text-on-surface">{t.recipes.costTitle}</h2>
       {!online ? (
         <p className="text-on-surface-variant">{t.recipes.costNeedsNetwork}</p>
@@ -159,7 +159,7 @@ function CatalogPanel({ recipe: initial }: { recipe: Recipe }) {
   }
 
   return (
-    <section className="mt-4 space-y-4 rounded-xl border border-hairline bg-surface-container-lowest p-4">
+    <section className="mt-4 space-y-4 rounded-xl bg-surface-container-lowest shadow-cap p-4">
       <div>
         <h2 className="text-lg font-medium text-on-surface">{t.catalogAdmin.recipeTitle}</h2>
         <p className="text-on-surface-variant">{t.catalogAdmin.recipeHint}</p>
@@ -230,7 +230,7 @@ export default function RecipeDetail({ id }: { id: string }) {
         )
       ) : (
         <>
-          <section className="rounded-xl bg-surface-container-lowest p-4 border border-hairline">
+          <section className="rounded-xl bg-surface-container-lowest p-4 shadow-cap">
             <p className="text-on-surface">
               {t.recipes.yields(formatStock(recipe.yield_qty, recipe.yield_unit))}
               {recipe.is_final_product && ` · ${t.recipes.finalProduct}`}

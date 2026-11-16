@@ -1,19 +1,21 @@
-/** Estética "plano de cocina" (T16, ADR-010): botón tecla, atajos, celdas, cifras y fuentes. */
+/** Estética de la referencia (T21, ADR-013): botón en píldora, atajos, tarjetas, cifras, fuente y piezas de comida. */
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { expect, test, vi } from 'vitest'
+import { Plate } from './components/Food'
 import { Button, Cells, Kbd, Num } from './components/ui'
 import { isTyping, useShortcut } from './shortcuts'
 
 const read = (f: string) => readFileSync(resolve(__dirname, f), 'utf8')
 
-test('el botón principal mantiene 48 px, foco visible, borde de tecla y respeta reducir movimiento', () => {
+test('el botón principal es una píldora de 48 px con foco visible, sombra suave y respeta reducir movimiento', () => {
   render(<Button>Cotizar</Button>)
   const cls = screen.getByRole('button', { name: 'Cotizar' }).className
   expect(cls).toContain('min-h-12')
   expect(cls).toContain('focus-visible:ring-4')
   expect(cls).toContain('shadow-key')
+  expect(cls).toContain('rounded-lg') // --radius-lg es 9999px: píldora
   expect(cls).toContain('motion-reduce:enabled:active:translate-y-0')
   expect(cls).not.toMatch(/(^| )transition( |$)/)
 })
@@ -32,7 +34,14 @@ test('la tecla visible solo aparece en escritorio con mouse', () => {
   expect(kbd.className).toContain('pointer-fine:lg:inline-flex')
 })
 
-test('las celdas son una lista y las cifras usan la monoespaciada', () => {
+test('un botón con ícono lo muestra en un círculo amarillo decorativo', () => {
+  render(<Button icon="quote">Cotizar</Button>)
+  const dot = screen.getByRole('button', { name: 'Cotizar' }).querySelector('span[aria-hidden="true"]')
+  expect(dot?.className).toContain('bg-accent')
+  expect(dot?.className).toContain('rounded-full')
+})
+
+test('las tarjetas son una lista y las cifras usan cifras tabulares', () => {
   render(
     <Cells label="Accesos">
       <li>
@@ -61,15 +70,21 @@ test('el atajo actúa con la tecla sola y no mientras se escribe ni con Ctrl', (
   expect(isTyping(screen.getByLabelText('campo'))).toBe(true)
 })
 
-test('las fuentes son IBM Plex autoalojadas, sin CDN', () => {
+test('la fuente es Urbanist autoalojada, sin CDN, y reemplaza a IBM Plex', () => {
   const fonts = read('fonts.css')
-  expect(fonts).toContain('@fontsource/ibm-plex-serif')
-  expect(fonts).toContain('@fontsource/ibm-plex-mono')
-  expect(fonts).toContain('@fontsource-variable/ibm-plex-sans')
+  expect(fonts).toContain('@fontsource-variable/urbanist')
+  expect(fonts).not.toMatch(/ibm-plex/i)
   expect(fonts).not.toMatch(/https?:\/\//)
-  // Los @import deben ir antes de cualquier otra regla: si no, el navegador los ignora.
-  expect(fonts.indexOf('@import')).toBeLessThan(fonts.indexOf('@font-face'))
   const css = read('index.css')
-  expect(css).toContain("--font-mono: 'IBM Plex Mono'")
-  expect(css).toContain("--font-display: 'IBM Plex Serif'")
+  expect(css).toContain("--font-sans: 'Urbanist Variable'")
+  expect(css).toContain("--font-display: 'Urbanist Variable'")
+  expect(css).toContain('--radius-lg: 9999px')
+})
+
+test('el plato sin foto se dibuja y es decorativo', () => {
+  const { container } = render(<Plate src={null} className="w-40" />)
+  const plate = container.firstElementChild as HTMLElement
+  expect(plate).toHaveAttribute('aria-hidden', 'true')
+  expect(plate.querySelector('svg')).not.toBeNull()
+  expect(plate.querySelector('img')).toBeNull()
 })

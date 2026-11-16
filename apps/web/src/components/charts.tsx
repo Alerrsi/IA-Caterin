@@ -205,7 +205,7 @@ export function ColumnChart({
       {active !== null && (
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute z-10 min-w-40 -translate-x-1/2 rounded-lg border border-hairline bg-surface-container-lowest px-3 py-2 text-sm shadow-cap"
+          className="pointer-events-none absolute z-10 min-w-40 -translate-x-1/2 rounded-2xl bg-surface-container-lowest shadow-cap px-3 py-2 text-sm shadow-cap"
           style={{ left: tipLeft, top: 0 }}
         >
           <p className="mb-1 font-medium text-on-surface">{categories[active].title}</p>
@@ -256,7 +256,7 @@ export function BarList({ label, rows, color = 'var(--color-chart-1)' }: { label
         return (
           <li key={r.key}>
             {r.href ? (
-              <a href={r.href} className="block rounded-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30">
+              <a href={r.href} className="block rounded-xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30">
                 {body}
               </a>
             ) : (
@@ -304,7 +304,7 @@ export function Meter({
     </>
   )
   return href ? (
-    <a href={href} className="block rounded-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30">
+    <a href={href} className="block rounded-xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30">
       {body}
     </a>
   ) : (

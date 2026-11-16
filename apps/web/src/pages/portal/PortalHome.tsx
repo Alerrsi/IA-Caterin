@@ -60,7 +60,7 @@ export default function PortalHome() {
               <button
                 type="button"
                 onClick={() => navigate(`/solicitudes/${r.id}`)}
-                className="block h-full w-full rounded-xl bg-surface-container-lowest p-4 text-left border border-hairline transition-colors hover:bg-surface-container-low focus-visible:ring-4 focus-visible:ring-primary/40"
+                className="block h-full w-full rounded-xl bg-surface-container-lowest p-4 text-left shadow-cap transition-colors hover:bg-surface-container-low focus-visible:ring-4 focus-visible:ring-primary/40"
               >
                 <div className="flex items-start justify-between gap-2">
                   <StatusChip status={r.status}>{t.portal.status[r.status]}</StatusChip>

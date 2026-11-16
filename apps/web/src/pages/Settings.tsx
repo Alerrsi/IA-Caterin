@@ -96,7 +96,7 @@ function PymeForm({ online }: { online: boolean }) {
 
   if (!pyme) return error ? <Alert>{error}</Alert> : <Spinner label={t.loading} />
   return (
-    <form onSubmit={submit} className="space-y-4 rounded-xl bg-surface-container-lowest p-4 border border-hairline" noValidate>
+    <form onSubmit={submit} className="space-y-4 rounded-xl bg-surface-container-lowest p-4 shadow-cap" noValidate>
       <h2 className="text-xl font-medium text-on-surface">{t.settings.pyme}</h2>
       <Field label={t.settings.name}>
         <input className={inputClass} value={form.name} onChange={(e) => set('name')(e.target.value)} maxLength={120} />
@@ -181,7 +181,7 @@ function Team({ online }: { online: boolean }) {
 
   const ready = form.name.trim().length >= 2 && form.email.includes('@') && form.password.length >= 10
   return (
-    <section className="space-y-4 rounded-xl bg-surface-container-lowest p-4 border border-hairline">
+    <section className="space-y-4 rounded-xl bg-surface-container-lowest p-4 shadow-cap">
       <h2 className="text-xl font-medium text-on-surface">{t.settings.team}</h2>
       {users === null ? (
         !error && <Spinner label={t.loading} />
@@ -266,7 +266,7 @@ function CatalogProfile({ online }: { online: boolean }) {
   }
 
   return (
-    <section className="space-y-4 rounded-xl border border-hairline bg-surface-container-lowest p-4">
+    <section className="space-y-4 rounded-xl bg-surface-container-lowest shadow-cap p-4">
       <h2 className="text-xl font-medium text-on-surface">{t.catalogAdmin.title}</h2>
       <p className="text-on-surface-variant">{t.catalogAdmin.hint}</p>
       {!pyme && !error && <Spinner label={t.loading} />}
@@ -342,7 +342,7 @@ function CustomerPortal({ online }: { online: boolean }) {
 
   const link = code ? customerLink(code) : null
   return (
-    <section className="space-y-3 rounded-xl bg-surface-container-lowest p-4 border border-hairline">
+    <section className="space-y-3 rounded-xl bg-surface-container-lowest p-4 shadow-cap">
       <h2 className="text-xl font-medium text-on-surface">{t.settings.customersTitle}</h2>
       <p className="text-on-surface-variant">{t.settings.customersHint}</p>
       {code === undefined && !error && <Spinner label={t.loading} />}

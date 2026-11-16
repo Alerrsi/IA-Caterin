@@ -27,7 +27,7 @@ interface Turn {
 
 function Answer({ turn, onAsk, onFeedback }: { turn: Turn; onAsk: (q: string) => void; onFeedback: (useful: boolean) => void }) {
   return (
-    <div className="rounded-xl bg-surface-container-lowest p-4 border border-hairline">
+    <div className="rounded-xl bg-surface-container-lowest p-4 shadow-cap">
       <p className="text-sm font-medium text-on-surface-variant">{t.assistant.me}</p>
       {turn.error ? (
         <Alert>{turn.error}</Alert>

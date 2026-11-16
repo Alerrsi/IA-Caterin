@@ -132,7 +132,7 @@ function ProductRow({ product, onAdjusted }: { product: ProductStock; onAdjusted
   const [mode, setMode] = useState<'none' | 'adjust' | 'history'>('none')
   const negative = Number(product.stock_qty) < 0
   return (
-    <li className="rounded-xl border border-hairline bg-surface-container-lowest p-4">
+    <li className="rounded-xl bg-surface-container-lowest shadow-cap p-4">
       <div className="flex items-center gap-3">
         <div className="min-w-0 flex-1">
           <p className="text-lg font-medium text-on-surface">{product.name}</p>
@@ -218,7 +218,7 @@ function RecentProductions({ onVoided }: { onVoided: () => void }) {
       ) : items.length === 0 ? (
         <p className="text-on-surface-variant">{p.noProductions}</p>
       ) : (
-        <ul className="divide-y divide-hairline rounded-xl border border-hairline bg-surface-container-lowest">
+        <ul className="divide-y divide-hairline rounded-xl bg-surface-container-lowest shadow-cap">
           {items.map((r) => (
             <li key={r.id} className="p-4">
               <div className="flex flex-wrap items-baseline justify-between gap-x-3">
