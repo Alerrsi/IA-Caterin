@@ -53,49 +53,64 @@ export function Logo({ size = 'md', className = '' }: { size?: 'sm' | 'md'; clas
  * Marco de las pantallas sin sesión (entrar, crear cuenta, registro de cliente), la pantalla más parecida a la imagen
  * de referencia (T21, ADR-013): a un lado, la marca, un título grande en dos pesos y el formulario; al otro, el panel
  * oscuro en diagonal con dibujos de comida, un plato enorme que se sale del panel, ingredientes flotando y una tarjeta
- * punteada tipo cupón. En el celular el panel va arriba y el formulario debajo.
+ * punteada tipo cupón.
+ *
+ * **Sin scroll en la primera vista** (requisito de T21): en el celular el formulario manda; el panel es una franja de
+ * 18 % del alto (`dvh`) con el plato asomándose, recortado por la diagonal, y en pantallas bajas (`short`) se oculta el
+ * lema. En escritorio todo cabe en `100dvh`. Se usa `min-h-dvh` (no un alto fijo): con zoom o con el teclado abierto la
+ * página puede crecer y desplazarse, nunca recortar.
  * `titleAsHeading`: en el login la marca es el título de la pantalla (h1); en los registros el título es el del formulario.
+ * `compact`: sin el lema en el celular (formularios largos, como crear cuenta).
  */
-export function AuthLayout({ children, titleAsHeading = false }: { children: ReactNode; titleAsHeading?: boolean }) {
+export function AuthLayout({
+  children,
+  titleAsHeading = false,
+  compact = false,
+}: {
+  children: ReactNode
+  titleAsHeading?: boolean
+  compact?: boolean
+}) {
   const Title = titleAsHeading ? 'h1' : 'p'
   const [lead, rest] = t.taglineParts
   return (
-    <main className="min-h-dvh overflow-x-clip bg-surface-container-lowest">
-      <div className="mx-auto grid max-w-7xl lg:min-h-dvh lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
-        <div className="relative z-10 order-2 px-5 pb-12 lg:order-1 lg:flex lg:flex-col lg:justify-center lg:py-12 lg:pl-12 lg:pr-6">
+    <main className="flex min-h-dvh flex-col overflow-x-clip bg-surface-container-lowest lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+      <div className="relative z-10 order-2 flex flex-1 flex-col justify-center px-5 py-4 sm:px-8 lg:order-1 lg:py-6 lg:pl-12 lg:pr-6">
+        <div className="mx-auto w-full max-w-md lg:mx-0 lg:max-w-none">
           <div className="flex items-center gap-3">
-            <Isotipo className="h-11 w-11" />
-            <Title className="font-display text-3xl font-extrabold tracking-tight text-on-surface">{t.appName}</Title>
+            <Isotipo className="h-9 w-9 lg:h-11 lg:w-11" />
+            <Title className="font-display text-2xl font-extrabold tracking-tight text-on-surface lg:text-3xl">{t.appName}</Title>
           </div>
-          <div className="mt-6 flex gap-4 lg:mt-10">
-            <Squiggle className="mt-3 hidden h-6 w-12 shrink-0 text-on-surface-variant md:block" />
-            <p className="text-[2.1rem] leading-[2.5rem] tracking-tight text-on-surface md:text-5xl md:leading-[3.4rem]">
+          <div className={`mt-3 gap-4 lg:mt-6 lg:flex ${compact ? 'max-lg:hidden' : 'max-lg:short:hidden'}`}>
+            <Squiggle className="mt-3 hidden h-6 w-12 shrink-0 text-on-surface-variant lg:block" />
+            <p className="text-[1.65rem] leading-[1.95rem] tracking-tight text-on-surface sm:text-4xl sm:leading-[2.6rem] lg:text-[2.6rem] lg:leading-[3rem] lg:short:text-4xl lg:short:leading-[2.6rem]">
               <span className="block font-normal">{lead}</span>
               <span className="block font-extrabold">{rest}</span>
             </p>
           </div>
-          <div className="mt-8 w-full max-w-md rounded-3xl bg-surface-container-lowest p-6 shadow-soft ring-1 ring-black/5 md:p-8 lg:ml-16">
+          <div className="mt-4 w-full max-w-md lg:ml-16 lg:mt-6 lg:rounded-3xl lg:bg-surface-container-lowest lg:p-7 lg:shadow-soft lg:ring-1 lg:ring-black/5 lg:short:mt-5 lg:short:p-6">
             {children}
           </div>
         </div>
-
-        <FoodPanel className="order-1 h-[330px] sm:h-[400px] lg:order-2 lg:h-auto">
-          <div className="relative h-[330px] sm:h-[400px] lg:h-full lg:min-h-dvh">
-            <Floater kind="tomato" className="left-[8%] top-[10%] h-12 w-12 lg:left-[-2%] lg:top-[26%] lg:h-16 lg:w-16" />
-            <Floater kind="basil" className="right-[10%] top-[8%] h-14 w-14 rotate-12 lg:right-[18%] lg:top-[12%] lg:h-20 lg:w-20" />
-            <Floater kind="lemon" className="bottom-[14%] left-[14%] h-10 w-10 lg:bottom-[38%] lg:left-[6%] lg:h-14 lg:w-14" />
-            <Plate className="absolute left-1/2 top-[52%] w-[230px] -translate-x-1/2 -translate-y-1/2 sm:w-[290px] lg:left-[30%] lg:top-[40%] lg:w-[min(480px,38vw)]" />
-            <Floater kind="chili" className="bottom-[22%] right-[12%] h-12 w-12 -rotate-12 lg:bottom-[42%] lg:right-[10%] lg:h-16 lg:w-16" />
-            <Coupon dark title={t.authCoupon.title} className="absolute bottom-10 right-8 hidden w-[min(380px,32vw)] lg:block">
-              <div className="flex items-center gap-4">
-                <Plate src={FOTOS.plate2} className="w-16 shrink-0" />
-                <p className="min-w-0 flex-1 font-semibold leading-snug">{t.authCoupon.body}</p>
-                <Pill>{t.authCoupon.pill}</Pill>
-              </div>
-            </Coupon>
-          </div>
-        </FoodPanel>
       </div>
+
+      <FoodPanel className="order-1 h-[clamp(88px,18dvh,200px)] shrink-0 lg:order-2 lg:h-auto">
+        {/* En el celular el plato se asoma, recortado por la misma diagonal del panel. */}
+        <div className="relative h-[clamp(88px,18dvh,200px)] [clip-path:polygon(0_0,100%_0,100%_86%,0_100%)] lg:h-full lg:min-h-dvh lg:[clip-path:none]">
+          <Plate className="absolute left-1/2 top-[14%] w-[min(58vw,250px)] -translate-x-1/2 lg:left-[30%] lg:top-[40%] lg:w-[min(460px,36vw,58dvh)] lg:-translate-y-1/2" />
+          <Floater kind="tomato" className="left-[7%] top-[18%] h-9 w-9 lg:left-[-2%] lg:top-[26%] lg:h-16 lg:w-16" />
+          <Floater kind="basil" className="right-[8%] top-[12%] h-10 w-10 rotate-12 lg:right-[18%] lg:top-[12%] lg:h-20 lg:w-20" />
+          <Floater kind="lemon" className="hidden lg:bottom-[38%] lg:left-[6%] lg:block lg:h-14 lg:w-14" />
+          <Floater kind="chili" className="hidden lg:bottom-[42%] lg:right-[10%] lg:block lg:h-16 lg:w-16 lg:-rotate-12" />
+          <Coupon dark title={t.authCoupon.title} className="absolute bottom-8 right-8 hidden w-[min(380px,32vw)] lg:block lg:short:hidden">
+            <div className="flex items-center gap-4">
+              <Plate src={FOTOS.plate2} className="w-16 shrink-0" />
+              <p className="min-w-0 flex-1 font-semibold leading-snug">{t.authCoupon.body}</p>
+              <Pill>{t.authCoupon.pill}</Pill>
+            </div>
+          </Coupon>
+        </div>
+      </FoodPanel>
     </main>
   )
 }

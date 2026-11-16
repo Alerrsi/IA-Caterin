@@ -1,5 +1,8 @@
 @import 'tailwindcss';
 
+/* Pantallas bajas (celular chico o con la barra del navegador): el login se compacta para entrar sin scroll (T21). */
+@custom-variant short (@media (max-height: 780px));
+
 /*
  * Identidad de Cáterin (T21, ADR-013): la estética de la imagen de referencia. Blanco limpio, tinta casi negra, un
  * panel oscuro con dibujos de comida y un acento amarillo que solo es fondo. Los nombres siguen los roles de color de

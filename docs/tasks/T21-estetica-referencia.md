@@ -28,6 +28,21 @@ emprendedora y sus clientes sientan que es una app de comida, no una planilla.
 4. El bloque "recomendación" usa el logo o la inicial de la pyme en el círculo, no la foto de una persona.
 5. En escritorio la navegación pasa a una barra superior; en el celular se mantienen la barra superior y la inferior.
 
+### Requisito: entrar sin scroll (pedido del usuario, 16-nov-2026)
+La pantalla de entrar (y las de registro, que comparten el marco) no debe obligar a desplazarse: logo, título, correo,
+contraseña, "Entrar", el mensaje de error y los dos enlaces caben en la primera vista.
+- Celular: sin scroll vertical a 390×844 y a 360×640. El formulario manda: el panel es una franja de 18 % del alto
+  (`clamp(88px, 18dvh, 200px)`) con el plato asomándose, recortado por la diagonal; en pantallas bajas (variante
+  `short`, alto ≤ 780 px) se oculta el lema.
+- Escritorio: sin scroll a 1280×800 y 1366×768 (formulario a un lado, panel al otro, todo en `100dvh`; en pantallas
+  bajas el lema es más chico y se oculta el cupón).
+- Se usa `min-h-dvh`, no `100vh` ni un alto fijo: con el teclado abierto o con zoom la página puede crecer y desplazarse,
+  pero nunca recorta.
+- Con zoom de texto al 125 % se permite desplazar (AA exige que el zoom funcione), sin recortar. Con el error visible
+  tampoco hay scroll en 390×844, 1280×800 y 1366×768; en 360×640 con el error se permite desplazar, sin recortar.
+- Registro: mismo marco en modo `compact` (sin lema en el celular). Tiene 4 o 5 campos, así que en un celular chico
+  puede necesitar desplazarse; la prueba estricta es la de entrar.
+
 ## Entregables
 - [ ] ADR-013, skill `caterin-brand` y `.interface-design/system.md` al día
 - [ ] Tokens (`scripts/theme.mjs`), fuente, radios, sombras y patrón `doodles`
@@ -40,6 +55,10 @@ emprendedora y sus clientes sientan que es una app de comida, no una planilla.
 - [ ] Pruebas de marca y contraste actualizadas; capturas en `apps/web/e2e-artifacts/t21/`
 
 ## Criterios de aceptación
+- `e2e/login-sin-scroll.e2e.ts`: `document.documentElement.scrollHeight <= window.innerHeight` y cada pieza (logo,
+  correo, contraseña, "Entrar", enlaces) dentro de la ventana a 390×844, 360×640, 1280×800 y 1366×768; lo mismo con
+  el error visible (salvo 360×640, donde nada se recorta); zoom al 125 % y teclado abierto sin recortes. Capturas en
+  `apps/web/e2e-artifacts/t21/login-*.png`.
 - Capturas a 390 y 1280 px de entrar, inicio, portal y tablero que se parecen a la referencia (panel oscuro diagonal,
   plato grande, título en dos pesos, píldoras amarillas/negras).
 - Sin scroll horizontal; axe sin violaciones serias; `./scripts/check.sh` y las e2e de a11y, marca, plano, portal y

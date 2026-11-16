@@ -43,9 +43,9 @@ export default function Register() {
     form.pyme.trim().length >= 2 && form.name.trim().length >= 2 && form.email.includes('@') && form.password.length >= 10
 
   return (
-    <AuthLayout>
+    <AuthLayout compact>
       <h1 className="mb-6 text-2xl font-semibold text-on-surface">{t.register.title}</h1>
-      <form onSubmit={submit} className="space-y-4" noValidate>
+      <form onSubmit={submit} className="space-y-3" noValidate>
         <Field label={t.register.pyme}>
           <input className={inputClass} autoComplete="organization" value={form.pyme} onChange={set('pyme')} />
         </Field>

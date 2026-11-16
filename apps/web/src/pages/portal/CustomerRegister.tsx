@@ -58,7 +58,7 @@ export default function CustomerRegister({ code }: { code?: string }) {
   }
 
   return (
-    <AuthLayout>
+    <AuthLayout compact>
       <h1 className="text-2xl font-semibold text-on-surface">{t.portal.registerTitle}</h1>
       {badLink ? (
         <div className="mt-6">

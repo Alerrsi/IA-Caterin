@@ -27,8 +27,8 @@ export default function Login() {
 
   return (
     <AuthLayout titleAsHeading>
-      <h2 className="mb-6 text-2xl font-extrabold text-on-surface">{t.login.title}</h2>
-      <form onSubmit={submit} className="space-y-4" noValidate>
+      <h2 className="mb-3 text-2xl font-extrabold text-on-surface lg:mb-4">{t.login.title}</h2>
+      <form onSubmit={submit} className="space-y-3" noValidate>
         <Field label={t.login.email}>
           <input
             className={inputClass}
@@ -55,13 +55,14 @@ export default function Login() {
           {busy ? t.login.submitting : t.login.submit}
         </Button>
       </form>
-      <p className="mt-6 text-center">
-        <a href="#/registro" className="inline-block min-h-12 py-3 text-lg font-medium text-primary underline underline-offset-4">
+      {/* Dos enlaces apilados de 44 px: táctiles y sin empujar el formulario fuera de la primera vista. */}
+      <p className="mt-2 text-center">
+        <a href="#/registro" className="inline-flex min-h-11 items-center text-base font-semibold text-primary underline underline-offset-4">
           {t.register.link}
         </a>
       </p>
       <p className="text-center">
-        <a href="#/cliente" className="inline-block min-h-12 py-3 text-base font-medium text-primary underline underline-offset-4">
+        <a href="#/cliente" className="inline-flex min-h-11 items-center text-sm font-medium text-primary underline underline-offset-4">
           {t.portal.registerLink}
         </a>
       </p>
