@@ -128,15 +128,24 @@ function History({ product }: { product: ProductStock }) {
   )
 }
 
-function ProductRow({ product, onAdjusted }: { product: ProductStock; onAdjusted: (delta: number) => void }) {
+function ProductRow({
+  product,
+  onAdjusted,
+  flat = false,
+}: {
+  product: ProductStock
+  onAdjusted: (delta: number) => void
+  /** Fila simple (sin tarjeta) para la lista plegada de productos sin existencias. */
+  flat?: boolean
+}) {
   const [mode, setMode] = useState<'none' | 'adjust' | 'history'>('none')
   const negative = Number(product.stock_qty) < 0
   return (
-    <li className="rounded-xl bg-surface-container-lowest p-4 shadow-cap md:p-5">
+    <li className={flat ? 'py-2' : 'rounded-xl bg-surface-container-lowest p-4 shadow-cap md:p-5'}>
       <div className="flex items-center gap-3">
         <div className="min-w-0 flex-1">
-          <p className="text-lg font-bold text-on-surface">{product.name}</p>
-          <Num className="block text-2xl text-on-surface">{formatStock(product.stock_qty, product.yield_unit)}</Num>
+          <p className={`font-bold text-on-surface ${flat ? 'text-base' : 'text-lg'}`}>{product.name}</p>
+          <Num className={`block text-on-surface ${flat ? 'text-base' : 'text-2xl'}`}>{formatStock(product.stock_qty, product.yield_unit)}</Num>
           {negative && (
             <span className="mt-1 inline-flex items-center gap-1 rounded-lg bg-warning-container px-3 py-0.5 text-sm font-semibold text-on-warning-container">
               <Icon name="warning" className="h-4 w-4" />
@@ -316,6 +325,7 @@ export default function ProductsStock() {
       ) : (
         <>
           {/* Primero lo que tiene existencias (o quedó en negativo); los de cero, plegados (T21). */}
+          {withStock.length === 0 && <p className="mb-2 text-on-surface-variant">{p.noneReady}</p>}
           {withStock.length > 0 && (
             <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3" aria-label={p.title}>
               {withStock.map((product) => (
@@ -324,11 +334,11 @@ export default function ProductsStock() {
             </ul>
           )}
           {empty.length > 0 && (
-            <details className="mt-4 rounded-xl bg-surface-container-lowest p-4 shadow-cap md:p-5" open={withStock.length === 0}>
+            <details className="mt-4 rounded-xl bg-surface-container-lowest p-4 shadow-cap md:p-5">
               <summary className="min-h-11 cursor-pointer py-2 text-lg font-bold text-on-surface">{p.withoutStock(empty.length)}</summary>
-              <ul className="mt-2 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              <ul className="mt-2 divide-y divide-hairline md:grid md:grid-cols-2 md:gap-x-8 md:divide-y-0 xl:grid-cols-3">
                 {empty.map((product) => (
-                  <ProductRow key={product.recipe_id} product={product} onAdjusted={(d) => adjusted(product, d)} />
+                  <ProductRow key={product.recipe_id} product={product} flat onAdjusted={(d) => adjusted(product, d)} />
                 ))}
               </ul>
             </details>

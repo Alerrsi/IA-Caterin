@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-"""Genera los SVG de la marca Cáterin (T14, ADR-008) en `public/brand/` y el favicon `public/icon.svg`.
+"""Genera los SVG de la marca Cáterin (T14; recoloreada en T21, ADR-013) en `public/brand/` y el favicon `public/icon.svg`.
 
-El logotipo usa IBM Plex Serif 500 (OFL; T16, ADR-010) convertida a trazos, para que el SVG se vea igual sin la fuente instalada.
+El logotipo usa Urbanist 800 (OFL; T21, ADR-013), instanciada desde la fuente variable y convertida a trazos, para que el
+SVG se vea igual sin la fuente instalada.
 Necesita fontTools (no es dependencia de la app; solo se usa al rediseñar la marca):
 
     pip install --target /tmp/pylib "fonttools==4.60.1" "brotli==1.1.0"
     PYTHONPATH=/tmp/pylib python3 scripts/brand.py
     npm run icons   # PNG de la PWA y del PDF desde estos SVG
 
-Colores: laurel (semilla del tema, `scripts/theme.mjs`), la superficie clara del tema y el vapor cobre claro.
+Colores (los de `scripts/theme.mjs`): tinta casi negra (brand), blanco (on-brand) y el vapor amarillo (brand-steam).
 """
 
 from __future__ import annotations
@@ -18,17 +19,19 @@ from pathlib import Path
 from fontTools.pens.svgPathPen import SVGPathPen
 from fontTools.pens.transformPen import TransformPen
 from fontTools.ttLib import TTFont
+from fontTools.varLib.instancer import instantiateVariableFont
 
 WEB = Path(__file__).resolve().parent.parent
-FONT = WEB / "node_modules/@fontsource/ibm-plex-serif/files/ibm-plex-serif-latin-500-normal.woff2"
+FONT = WEB / "node_modules/@fontsource-variable/urbanist/files/urbanist-latin-wght-normal.woff2"
+WEIGHT = 800  # el peso de los títulos en negrita
 OUT = WEB / "public/brand"
 
-LAUREL = "#1f4d3f"  # semilla (token brand)
-CREAM = "#faf9f7"  # surface del tema (on-brand): casi blanco, sin crema
-STEAM = "#ffdbcd"  # tertiary-container (brand-steam): vapor cobre, "comida caliente"
+LAUREL = "#1a1a1a"  # tinta (token brand). Se conserva el nombre de la variable de T14 para no tocar cada función.
+CREAM = "#ffffff"  # on-brand
+STEAM = "#ffd45c"  # brand-steam: el amarillo de la referencia, "comida caliente"
 WORD = "Cáterin"
-TRACKING = -14  # unidades de la fuente (1000 por em): la serif grande se ve mejor un poco más junta
-RADIUS = 96  # esquina del cuadrado del isotipo (de 512): casi recta, como el resto de la interfaz (T16)
+TRACKING = -12  # unidades de la fuente (1000 por em): el título grande se ve mejor un poco más junto
+RADIUS = 120  # esquina del cuadrado del isotipo (de 512): redondeada, como las tarjetas (T21)
 
 # --------------------------------------------------------------------------- isotipo (caja de 512)
 
@@ -80,6 +83,8 @@ def mono(ink: str = "#000000") -> str:
 def wordmark() -> tuple[str, float, float, float]:
     """Devuelve (path d, ancho, alto de mayúscula, descendente) en unidades de la fuente, con la línea base en y=0."""
     font = TTFont(FONT)
+    if "fvar" in font:
+        font = instantiateVariableFont(font, {"wght": WEIGHT})
     gs = font.getGlyphSet()
     cmap = font.getBestCmap()
     pen = SVGPathPen(gs)

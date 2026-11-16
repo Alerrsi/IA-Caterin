@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
 /**
- * Capturas de la identidad visual (T14, T16) a 390 y 1280 px, para comparar antes y después:
+ * Capturas de la identidad visual (T14, T16; estética de T21, ADR-013) a 390 y 1280 px, para comparar antes y después:
  *   SHOTS=antes npx playwright test e2e/brand.e2e.ts   (por defecto: despues)
  * Usa la pyme de demo grande (demo_full): Banquetería Volcán Llaima y su cliente de portal.
  */

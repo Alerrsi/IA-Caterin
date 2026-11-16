@@ -1,7 +1,7 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test, type Page } from '@playwright/test'
 
-/** Estética "plano de cocina" (T16, ADR-010): escritorio, atajos, movimiento reducido y fuentes. */
+/** Estética de la referencia (T21, ADR-013): barra superior en escritorio, píldoras, atajos, movimiento reducido y fuente. */
 const EMAIL = process.env.E2E_EMAIL ?? 'duena.aromos@demo.local'
 const PASSWORD = process.env.E2E_PASSWORD ?? 'caterin-demo-2026'
 
@@ -16,15 +16,16 @@ async function login(page: Page) {
 test.describe('escritorio', () => {
   test.use({ viewport: { width: 1280, height: 800 }, hasTouch: false, isMobile: false })
 
-  test('atajo C para cotizar, rieles del marco y sin violaciones de axe', async ({ page }) => {
+  test('atajo C para cotizar, barra superior con píldoras, portada con panel oscuro y sin violaciones de axe', async ({ page }) => {
     await login(page)
-    // El cajón muestra la tecla y el enlace la anuncia.
+    // La barra superior muestra la tecla y el enlace la anuncia.
     const quote = page.getByRole('navigation', { name: 'Secciones' }).getByRole('link', { name: 'Cotizar' })
     await expect(quote).toHaveAttribute('aria-keyshortcuts', 'C')
     await expect(quote.locator('kbd')).toBeVisible()
-    // Los rieles: la pantalla tiene una línea a cada lado.
-    const main = page.locator('main').first()
-    expect(await main.evaluate((el) => getComputedStyle(el).borderLeftWidth)).toBe('1px')
+    // Botones en píldora y la portada del inicio con el panel oscuro.
+    const cta = page.getByRole('button', { name: 'Cotizar un pedido' })
+    expect(parseFloat(await cta.evaluate((el) => getComputedStyle(el).borderTopLeftRadius))).toBeGreaterThan(100)
+    expect(await page.locator('.doodles').first().evaluate((el) => getComputedStyle(el).backgroundColor)).toBe('rgb(27, 27, 27)')
     const result = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()
     const serious = result.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical')
     expect(serious.map((v) => v.id)).toEqual([])
@@ -48,13 +49,13 @@ test('con "reducir movimiento" el cajón del celular aparece sin animación', as
   expect(await dialog.evaluate((el) => getComputedStyle(el).transitionProperty)).toBe('none')
 })
 
-test('las fuentes IBM Plex cargan', async ({ page }) => {
+test('la fuente Urbanist carga en sus dos pesos de título', async ({ page }) => {
   await login(page)
-  // Pide cada fuente: si el archivo no existe o no se puede leer, no queda ninguna cara cargada.
-  const faces = ['500 16px "IBM Plex Serif"', 'italic 16px "IBM Plex Serif"', '16px "IBM Plex Mono"', '600 16px "IBM Plex Sans Variable"']
+  // Pide cada peso: si el archivo no existe o no se puede leer, no queda ninguna cara cargada.
+  const faces = ['400 16px "Urbanist Variable"', '800 16px "Urbanist Variable"']
   const loaded = await page.evaluate(
     async (list) => Promise.all(list.map(async (f) => (await document.fonts.load(f)).length > 0)),
     faces,
   )
-  expect(loaded).toEqual([true, true, true, true])
+  expect(loaded).toEqual([true, true])
 })

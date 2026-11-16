@@ -3,7 +3,7 @@ import { ApiError, countPhoto, type CountOut, type PymeSettings, type RecipeSumm
 import { DetectionOverlay } from '../components/DetectionOverlay'
 import { ProductionPreview } from '../components/ProductionPreview'
 import { StarSurvey } from '../components/StarSurvey'
-import { Alert, Button, Field, inputClass, Page, Spinner, useOnline } from '../components/ui'
+import { Alert, Button, Field, IconDot, inputClass, Page, Spinner, useOnline } from '../components/ui'
 import { t } from '../i18n'
 import { useCached } from '../offline/cache'
 import { listPhotos, PhotoQueueFullError, removePhoto, savePhoto, type PendingPhoto } from '../offline/photos'
@@ -34,7 +34,7 @@ function objectUrl(blob: Blob): string | null {
 }
 
 const fileButton =
-  'flex min-h-14 w-full cursor-pointer items-center justify-center rounded-lg px-6 py-3 text-lg font-medium focus-within:ring-4 focus-within:ring-primary/40'
+  'flex min-h-14 w-full cursor-pointer items-center justify-center gap-3 rounded-lg py-2 pl-2 pr-8 text-lg font-semibold focus-within:ring-4 focus-within:ring-primary/40'
 
 function PhotoInput({ label, capture, onFile, primary }: { label: string; capture?: boolean; onFile: (f: File) => void; primary?: boolean }) {
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -44,8 +44,9 @@ function PhotoInput({ label, capture, onFile, primary }: { label: string; captur
   }
   return (
     <label
-      className={`${fileButton} ${primary ? 'bg-primary text-on-primary hover:bg-primary/90' : 'border border-outline bg-transparent text-primary hover:bg-primary/8'}`}
+      className={`${fileButton} ${primary ? 'bg-primary text-on-primary shadow-key hover:bg-primary/90' : 'border border-outline bg-surface-container-lowest text-on-surface hover:bg-surface-container-low'}`}
     >
+      <IconDot name={capture ? 'camera' : 'photo'} className="h-10 w-10" />
       {label}
       <input
         type="file"

@@ -521,6 +521,7 @@ export const t = {
     productions: 'Producción reciente',
     noProductions: 'Todavía no registras producción.',
     withoutStock: (n: number) => `Sin existencias (${n})`,
+    noneReady: 'Hoy no tienes productos listos. Se suman al confirmar una producción en «Contar con foto».',
     showMore: 'Ver más',
     voided: 'Anulada',
     corrected: (detected: number) => `corregida (la foto contó ${detected})`,

@@ -30,7 +30,7 @@ function Glyph() {
 export function Isotipo({ className = 'h-10 w-10', framed = true }: { className?: string; framed?: boolean }) {
   return (
     <svg viewBox="0 0 512 512" className={className} aria-hidden="true" focusable="false">
-      {framed && <rect width="512" height="512" rx="96" fill="var(--color-brand)" />}
+      {framed && <rect width="512" height="512" rx="120" fill="var(--color-brand)" />}
       <Glyph />
     </svg>
   )

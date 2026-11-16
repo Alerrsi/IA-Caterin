@@ -21,7 +21,7 @@ export default defineConfig({
         description: 'Gestión simple para tu negocio de catering',
         lang: 'es-CL',
         theme_color: THEME_COLOR,
-        background_color: '#fff8f8',
+        background_color: '#ffffff',
         display: 'standalone',
         start_url: '/',
         // `any` con esquinas redondeadas y `maskable` aparte, con fondo completo y el dibujo en la zona segura.
