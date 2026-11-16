@@ -1,5 +1,5 @@
 # T19 — Portada del catálogo de una pyme en el portal
-- Estado: en curso
+- Estado: hecha en la rama (16-nov-2026); falta integrar a `main`
 - Rama: `feat/T19-portada-catalogo`
 - Depende de: T15 (catálogo del portal, ADR-009), T16 (estética "plano de cocina", ADR-010)
 - Funcionalidad: F3 (portal de clientes)
@@ -43,12 +43,12 @@ invite a cotizar.
 9. **Sin foto:** marco punteado con `grid-paper` y el ícono `cloche` (la demo no tiene fotos de productos).
 
 ## Entregables
-- [ ] Plan (este documento) y ADR-012
-- [ ] Portada de la pyme: título en dos tonos, bajada, "cómo se vende", botón, foto grande sobre panel laurel diagonal,
+- [x] Plan (este documento) y ADR-012
+- [x] Portada de la pyme: título en dos tonos, bajada, "cómo se vende", botón, foto grande sobre panel laurel diagonal,
       marcas decorativas, bloque de la pyme
-- [ ] Tarjeta punteada "Recomendado" con su botón Agregar
-- [ ] Grilla del catálogo con fotos más grandes
-- [ ] Textos en `i18n.ts`; pruebas Vitest; e2e con capturas a 390 y 1280 px (con y sin fotos)
+- [x] Tarjeta punteada "Recomendado" con su botón Agregar
+- [x] Grilla del catálogo con fotos más grandes
+- [x] Textos en `i18n.ts`; pruebas Vitest; e2e con capturas a 390 y 1280 px (con y sin fotos)
 
 ## Criterios de aceptación
 - `/pymes/{id}` muestra la portada con el producto destacado según la regla; "Cotizar {producto}" lleva a
@@ -73,4 +73,19 @@ invite a cotizar.
 - Validar con clientes reales si prefieren ver la portada o ir directo a la lista.
 
 ## Resumen de cierre
-(se completa al terminar)
+**Qué se hizo (16-nov-2026):** portada en `pages/portal/PortalPyme.tsx` (`Showcase`, `Recommended`, `pickShowcase`,
+`splitTitle`): producto destacado en Serif grande en dos tonos, bajada, "Por unidad / Precio al cotizar" en Mono,
+botón "Cotizar {producto}" (lleva el destacado y lo ya marcado), foto en marco punteado girado 2° sobre el panel laurel
+rayado con corte diagonal (celular: arriba con corte inferior; escritorio: columna derecha), marcas del plano y un
+punto cobre como adornos, bloque "Lo prepara" con la pyme y "Ver los N productos" (desplaza a la grilla, sin animación
+con movimiento reducido), y tarjeta punteada "Recomendado" con su botón Agregar (comparte el estado con la grilla).
+Miniaturas de la grilla en el celular de 80 a 96 px. ADR-012 y excepción anotada en la skill `caterin-brand`.
+
+**Pruebas:** Vitest 150 (2 nuevas: regla del destacado y portada con botón y recomendado); `e2e/portada.e2e.ts` con la
+demo sin fotos y con fotos de prueba inyectadas en la respuesta (sin tocar la base): sin scroll horizontal a 390 y
+1280 px y axe sin violaciones serias. `portal.e2e.ts` y `a11y.e2e.ts` pasan. Lint, typecheck y tema al día.
+
+**Pendiente:** fotos reales de productos (la demo no tiene); validar con clientes si la portada ayuda a cotizar.
+
+**Riesgos:** sin fotos la portada se apoya en el vacío del plano; el título grande alarga la pantalla en el celular
+(la foto queda primero y el título justo debajo).
