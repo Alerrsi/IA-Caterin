@@ -33,6 +33,7 @@ from app.core.embeddings import get_embeddings
 from app.core.llm import get_llm
 from app.core.security import hash_password
 from app.core.tenancy import CurrentUser, open_tenant_session
+from app.db.demo_media import assign_demo_photos
 from app.db.enums import (
     BaseUnit,
     CashKind,
@@ -1399,7 +1400,7 @@ def build(session: Session, today: date | None = None) -> uuid.UUID | None:
         return None
     password_hash = hash_password(os.environ.get(DEMO_PASSWORD_ENV, DEFAULT_DEMO_PASSWORD))
     b = Builder(session, today)
-    steps: list[tuple[str, Callable[[], None]]] = [
+    steps: list[tuple[str, Callable[[], object]]] = [
         ("pyme, usuarias y clientes", lambda: b.base(password_hash)),
         ("insumos, proveedores, precios y recetas", b.catalog),
         ("pedidos", b.orders),
@@ -1408,6 +1409,7 @@ def build(session: Session, today: date | None = None) -> uuid.UUID | None:
         ("producción", b.production),
         ("portal de clientes", b.portal),
         ("catálogo del portal", lambda: apply_catalog(session, b.pyme.id)),
+        ("fotos de productos", lambda: assign_demo_photos(session, b.pyme.id)),
         ("documentos, fichas y asistente", b.rag_and_assistant),
         ("métricas y sesiones", b.metrics_and_auth),
     ]
