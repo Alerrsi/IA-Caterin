@@ -14,6 +14,7 @@ from app.core.logging import configure_logging
 from app.core.request_context import RequestIdMiddleware
 from app.modules.assistant.router import router as assistant_router
 from app.modules.auth.router import router as auth_router
+from app.modules.dashboard.router import router as dashboard_router
 from app.modules.documents.router import router as documents_router
 from app.modules.imports.router import router as imports_router
 from app.modules.inventory.router import router as inventory_router
@@ -70,6 +71,7 @@ def create_app() -> FastAPI:
         assistant_router,
         documents_router,
         metrics_router,
+        dashboard_router,
         portal_router,
     ):
         api.include_router(router)
