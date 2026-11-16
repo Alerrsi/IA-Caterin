@@ -1,5 +1,5 @@
 # T17 — Tablero del negocio con gráficos (solo dueña)
-- Estado: hecha en la rama (16-nov-2026); falta integrar a `main`
+- Estado: hecha (16-nov-2026); integrada a `main` por *fast-forward* a pedido del usuario
 - Rama: `feat/T17-tablero`
 - Depende de: T04 (inventario), T05 (cotizaciones), T09 (métricas), T16 (estética)
 - Funcionalidad: transversal
@@ -119,7 +119,6 @@ Archivos: `schemas.py`, `service.py` (consultas + agregación pura en `Decimal`)
 **Pendiente:**
 - Mostrarlo a una dueña real y validar si la venta debe contarse por fecha del evento o por fecha de aceptación.
 - Caja real (ingresos y gastos) cuando el equipo decida la pregunta 3 del índice.
-- Integrar la rama a `main` cuando el usuario lo apruebe.
 
 **Riesgos:** con pocos pedidos por mes las barras exageran variaciones; el tooltip y la tabla muestran cuántos pedidos
 hay detrás de cada mes.
