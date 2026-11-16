@@ -34,8 +34,9 @@ export default defineConfig({
       },
       workbox: {
         navigateFallbackDenylist: [/^\/api\//, /^\/docs/],
-        // Fuentes (solo woff2) e imágenes de la marca en el precaché: la app se ve igual sin red.
-        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        // Fuentes (solo woff2), imágenes de la marca y fotos decorativas (`public/fotos`, T21) en el precaché: la app
+        // se ve igual sin red.
+        globPatterns: ['**/*.{js,css,html,svg,png,webp,woff2}'],
         // Logos y fotos del catálogo del portal (ADR-009): el nombre es el hash del contenido, así que una vez vistos
         // se sirven del caché, también sin red. Tope para no llenar el teléfono.
         runtimeCaching: [
