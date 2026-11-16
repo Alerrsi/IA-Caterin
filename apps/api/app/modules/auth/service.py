@@ -196,7 +196,10 @@ def get_pyme(db: Session, current: CurrentUser) -> Pyme:
 def update_pyme(db: Session, current: CurrentUser, data: PymeUpdate) -> Pyme:
     pyme = get_pyme(db, current)
     for field, value in data.model_dump(exclude_unset=True).items():
-        if field in {"name", "vat_pct", "default_waste_pct", "prices_include_vat"} and value is None:
+        if (
+            field in {"name", "vat_pct", "default_waste_pct", "prices_include_vat", "production_consumes_ingredients"}
+            and value is None
+        ):
             continue
         if field == "description" and value is not None:
             value = " ".join(value.split()) or None

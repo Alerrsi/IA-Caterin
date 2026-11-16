@@ -15,6 +15,7 @@ from app.core.money import quantize_clp
 from app.core.tenancy import CurrentUser
 from app.db.enums import DataDomain, MetricKind, OrderStatus, OrderUnit, QuoteStatus, Role
 from app.db.models import Ingredient, MetricEvent, Order, OrderLine, Pyme, Quote, QuoteLine, Recipe, Supplier
+from app.modules.inventory.service import sync_order_delivery
 from app.modules.quotes.calculator import (
     ORDER_UNIT_LABELS,
     IngredientInfo,
@@ -143,6 +144,8 @@ def update_order(db: Session, order_id: uuid.UUID, data: OrderUpdate) -> Order:
         db.flush()
         order.lines.extend(new_lines)
     bump(db, DataDomain.ORDERS)
+    db.flush()
+    sync_order_delivery(db, order)  # entregado: descuenta los productos terminados una sola vez (T18)
     db.commit()
     db.refresh(order)
     return order

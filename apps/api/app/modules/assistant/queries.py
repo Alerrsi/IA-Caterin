@@ -375,6 +375,36 @@ def get_production(db: Session, text: str, today: date) -> QueryResult:
     )
 
 
+def get_product_stock(db: Session, text: str, today: date) -> QueryResult:
+    """Productos terminados listos para entregar (T18): saldo del libro de productos, sin LLM."""
+    finals = list(db.scalars(select(Recipe).where(Recipe.is_final_product.is_(True), Recipe.is_active.is_(True))))
+    src = _src("products", "tus existencias de productos")
+    found = find_entity(text, {r.id: r.name for r in finals})
+    if found.match:
+        r = next(r for r in finals if r.id == found.match.id)
+        if r.stock_qty <= 0:
+            return QueryResult("no_data", f"No tienes {r.name} listas para entregar.", src, {"item": r.name})
+        return QueryResult("ok", f"Tienes {_product_qty(r)} de {r.name} listas para entregar.", src, {"item": r.name})
+    ask = {c.id for c in found.suggestions}
+    rows = [r for r in finals if r.stock_qty > 0 and (not ask or r.id in ask)]
+    rows.sort(key=lambda r: (-r.stock_qty, r.name.lower()))
+    if not rows:
+        return QueryResult(
+            "no_data",
+            "No tienes productos listos registrados. Se suman cuando confirmas una producción con la foto o a mano.",
+            src,
+        )
+    parts = [f"{_product_qty(r)} de {r.name}" for r in rows[:MAX_LIST]]
+    more = f" y {len(rows) - MAX_LIST} productos más" if len(rows) > MAX_LIST else ""
+    return QueryResult("ok", "Tienes listos para entregar: " + "; ".join(parts) + more + ".", src, {"count": len(rows)})
+
+
+def _product_qty(r: Recipe) -> str:
+    if r.yield_unit == BaseUnit.UNIT:
+        return f"{format_decimal(r.stock_qty)} unidades"
+    return human_qty(r.stock_qty, r.yield_unit)
+
+
 def _period(label: str) -> str:
     return label if label in ("hoy", "ayer") else f"en {label}"
 
@@ -393,4 +423,5 @@ QUERIES: dict[str, Callable[[Session, str, date], QueryResult]] = {
     "get_order": get_order,
     "check_order_stock": check_order_stock,
     "get_production": get_production,
+    "get_product_stock": get_product_stock,
 }

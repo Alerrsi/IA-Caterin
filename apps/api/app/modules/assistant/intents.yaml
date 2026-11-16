@@ -199,6 +199,29 @@ intents:
       - "¿Me falta algo para el encargo de mañana?"
     template: "{answer}"
 
+  - name: product_stock
+    description: Productos terminados listos para entregar (existencias, T18)
+    query: get_product_stock
+    domains: [production, recipes]
+    allow_level1: false
+    overrides: [stock_of_item, production_summary, upcoming_orders]
+    keywords:
+      - '\b(listas|listos)\b'
+      - '\bpara entregar\b'
+      - '\bproductos? terminados?\b'
+      - '\bexistencias? de (productos?|empanadas|canapes|brochetas)\b'
+    examples:
+      - "¿Cuántas empanadas tengo listas?"
+      - "¿Qué productos tengo listos para entregar?"
+      - "¿Cuántos canapés de salmón me quedan listos?"
+      - "existencias de productos terminados"
+      - "¿Tengo brochetas listas?"
+      - "¿Qué tengo listo en la cocina?"
+      - "¿Cuántas sopaipillas hay listas para entregar?"
+      - "productos terminados disponibles"
+      - "¿Me quedan empanadas de pino listas?"
+    template: "{answer}"
+
   - name: production_summary
     description: Cuánto se produjo en un periodo
     query: get_production

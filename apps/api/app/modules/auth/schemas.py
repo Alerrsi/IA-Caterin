@@ -59,6 +59,7 @@ class PymeOut(BaseModel):
     vat_pct: Decimal
     prices_include_vat: bool
     quote_validity_days: int | None
+    production_consumes_ingredients: bool
     is_demo: bool
     customer_code: str | None = None
     description: str | None = None
@@ -86,6 +87,9 @@ class PymeUpdate(BaseModel):
     vat_pct: Decimal | None = Field(default=None, ge=0, lt=100)
     prices_include_vat: bool | None = None
     quote_validity_days: int | None = Field(default=None, ge=1, le=365)
+    production_consumes_ingredients: bool | None = Field(
+        default=None, description="Al confirmar una producción, descontar los insumos de la receta (T18)"
+    )
     description: str | None = Field(
         default=None, max_length=280, description="Presentación corta para el catálogo del portal (pública)"
     )
