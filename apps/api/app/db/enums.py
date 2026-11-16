@@ -24,6 +24,16 @@ class MovementReason(StrEnum):
     IMPORT = "import"
 
 
+class ProductMovementReason(StrEnum):
+    """Movimientos de productos terminados (T18, ADR-011)."""
+
+    PRODUCTION = "production"  # confirmado con la foto o a mano
+    DELIVERY = "delivery"  # pedido entregado
+    ADJUSTMENT = "adjustment"  # corrección manual (+ o -)
+    WASTE = "waste"  # se perdió o se botó
+    VOID = "void"  # anulación de una producción o reversa de una entrega
+
+
 class PriceSourceKind(StrEnum):
     MANUAL = "manual"
     CSV = "csv"

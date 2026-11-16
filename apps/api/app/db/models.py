@@ -45,6 +45,7 @@ from app.db.enums import (
     OrderStatus,
     OrderUnit,
     PriceSourceKind,
+    ProductMovementReason,
     QuoteStatus,
     Role,
 )
@@ -68,6 +69,8 @@ class Pyme(TimestampMixin, Base):
     prices_include_vat: Mapped[bool] = mapped_column(Boolean, server_default=sql_text("true"))
     quote_validity_days: Mapped[int | None] = mapped_column(SmallInteger)
     is_demo: Mapped[bool] = mapped_column(Boolean, server_default=sql_text("false"))
+    # Al confirmar una producción se descuentan los insumos de la receta (T18, ADR-011).
+    production_consumes_ingredients: Mapped[bool] = mapped_column(Boolean, server_default=sql_text("true"))
     # Código del enlace para que los clientes se registren en el portal (ADR-007). None = portal cerrado.
     customer_code: Mapped[str | None] = mapped_column(String(32), unique=True)
     # Catálogo del portal (ADR-009): lo ve cualquiera que mire el directorio de pymes.
@@ -258,6 +261,8 @@ class Recipe(TenantMixin, Base):
     category: Mapped[str | None] = mapped_column(String(60))
     photo_path: Mapped[str | None] = mapped_column(String(200))
     visible_in_catalog: Mapped[bool] = mapped_column(Boolean, server_default=sql_text("true"))
+    # Existencias de producto terminado listas para entregar (T18, ADR-011). Saldo del libro `product_movement`.
+    stock_qty: Mapped[Decimal] = mapped_column(Quantity, server_default="0")
 
     @property
     def photo_url(self) -> str | None:
@@ -444,6 +449,9 @@ class ProductionRecord(TenantMixin, Base):
     detections: Mapped[dict[str, Any] | None] = mapped_column(JSONB)
     was_corrected: Mapped[bool] = mapped_column(Boolean, server_default=sql_text("false"))
     client_op_id: Mapped[uuid.UUID | None] = mapped_column()
+    # T18: si al confirmar se descontaron los insumos, y cuándo se anuló (los movimientos inversos quedan en el libro).
+    consumed_ingredients: Mapped[bool] = mapped_column(Boolean, server_default=sql_text("false"))
+    voided_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
     __table_args__ = tenant_args(
         "production_record",
@@ -451,6 +459,32 @@ class ProductionRecord(TenantMixin, Base):
         extra=(
             UniqueConstraint("pyme_id", "client_op_id", name="uq_production_record_client_op"),
             CheckConstraint("confirmed_qty >= 0", name="confirmed_positive"),
+        ),
+    )
+
+
+class ProductMovement(TenantMixin, Base):
+    """Libro de movimientos de productos terminados (T18, ADR-011): solo crece; `recipe.stock_qty` es su saldo."""
+
+    __tablename__ = "product_movement"
+
+    recipe_id: Mapped[uuid.UUID] = mapped_column()
+    delta_qty: Mapped[Decimal] = mapped_column(Quantity)
+    reason: Mapped[ProductMovementReason] = mapped_column(str_enum(ProductMovementReason, "product_movement_reason"))
+    note: Mapped[str | None] = mapped_column(String(200))
+    reference_type: Mapped[str | None] = mapped_column(String(40))
+    reference_id: Mapped[uuid.UUID | None] = mapped_column()
+    client_op_id: Mapped[uuid.UUID | None] = mapped_column()
+    occurred_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+    __table_args__ = tenant_args(
+        "product_movement",
+        ("recipe_id", "recipe", "CASCADE"),
+        extra=(
+            UniqueConstraint("pyme_id", "client_op_id", name="uq_product_movement_client_op"),
+            CheckConstraint("delta_qty <> 0", name="delta_not_zero"),
+            Index("ix_product_movement_recipe_occurred", "pyme_id", "recipe_id", "occurred_at"),
+            Index("ix_product_movement_reference", "pyme_id", "reference_type", "reference_id"),
         ),
     )
 

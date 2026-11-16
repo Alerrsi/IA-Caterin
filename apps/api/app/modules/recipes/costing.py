@@ -61,6 +61,35 @@ def required_qty(qty_per_yield: Decimal, yield_qty: Decimal, units: Decimal, was
 
 
 @dataclass(frozen=True)
+class ConsumptionInput:
+    """Una línea de receta para calcular lo que consume una producción (T18)."""
+
+    ingredient_id: uuid.UUID
+    qty_per_yield: Decimal
+    line_waste: Decimal | None
+    ingredient_waste: Decimal | None
+
+
+def production_consumption(
+    lines: list[ConsumptionInput], yield_qty: Decimal, units: Decimal, pyme_waste: Decimal
+) -> list[tuple[uuid.UUID, Decimal]]:
+    """Insumo usado (unidad base, con merma) por cada línea al producir `units` en la unidad de rendimiento.
+
+    Es el mismo cálculo que la cotización (`required_qty`), así lo que se cotiza y lo que se descuenta coinciden.
+    Las líneas que dan cero (p. ej. 0 unidades) no se devuelven.
+    """
+    if units < 0:
+        raise ValueError("La cantidad producida no puede ser negativa")
+    out: list[tuple[uuid.UUID, Decimal]] = []
+    for line in lines:
+        waste = effective_waste(line.line_waste, line.ingredient_waste, pyme_waste)
+        qty = required_qty(line.qty_per_yield, yield_qty, units, waste)
+        if qty > 0:
+            out.append((line.ingredient_id, qty))
+    return out
+
+
+@dataclass(frozen=True)
 class CostLineInput:
     ingredient_id: uuid.UUID
     ingredient_name: str

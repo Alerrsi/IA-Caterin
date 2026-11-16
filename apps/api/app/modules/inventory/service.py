@@ -14,6 +14,11 @@ from app.core.http import Page, decode_cursor, encode_cursor
 from app.core.units import UnitConversionError, quantize_qty, to_base
 from app.db.enums import DataDomain, MovementReason
 from app.db.models import Ingredient, StockMovement
+
+# API pública del libro de productos terminados (T18): otros módulos la usan desde aquí.
+from app.modules.inventory.products import apply_product_movement as apply_product_movement
+from app.modules.inventory.products import get_product as get_product
+from app.modules.inventory.products import sync_order_delivery as sync_order_delivery
 from app.modules.inventory.schemas import IngredientCreate, IngredientOut, IngredientUpdate, MovementCreate
 
 _DUPLICATE = ProblemError(409, "ingredient_exists", "Ya tienes un insumo con ese nombre")
@@ -121,8 +126,11 @@ def _apply_movement(
     note: str | None,
     occurred_at: datetime | None,
     client_op_id: uuid.UUID | None,
+    reference: tuple[str, uuid.UUID] | None = None,
 ) -> StockMovement:
     movement = StockMovement(ingredient_id=ing.id, delta_qty=delta, reason=reason, note=note, client_op_id=client_op_id)
+    if reference is not None:
+        movement.reference_type, movement.reference_id = reference
     if occurred_at:
         movement.occurred_at = occurred_at
     db.add(movement)
@@ -131,6 +139,14 @@ def _apply_movement(
     db.flush()
     db.refresh(ing)
     return movement
+
+
+def apply_system_movement(
+    db: Session, ing: Ingredient, delta: Decimal, reason: MovementReason, note: str, reference: tuple[str, uuid.UUID]
+) -> StockMovement:
+    """Movimiento que registra el sistema (p. ej. insumos usados en una producción, T18). No hace commit: va en la
+    misma transacción que lo que lo origina. Quien llama sube la versión de datos `inventory`."""
+    return _apply_movement(db, ing, quantize_qty(delta), reason, note, None, None, reference)
 
 
 def record_movement(

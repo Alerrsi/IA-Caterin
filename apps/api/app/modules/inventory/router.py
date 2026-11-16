@@ -6,8 +6,8 @@ from fastapi import APIRouter, Depends, Request, Response, status
 
 from app.core.http import DEFAULT_LIMIT, CursorQuery, LimitQuery, Page, etag_json, idempotency_key
 from app.core.tenancy import CurrentUserDep, TenantDB
-from app.db.models import Ingredient
-from app.modules.inventory import service
+from app.db.models import Ingredient, Recipe
+from app.modules.inventory import products, service
 from app.modules.inventory.schemas import (
     IngredientCreate,
     IngredientOut,
@@ -15,6 +15,10 @@ from app.modules.inventory.schemas import (
     MovementCreate,
     MovementOut,
     MovementResult,
+    ProductMovementCreate,
+    ProductMovementOut,
+    ProductMovementResult,
+    ProductStockOut,
 )
 
 router = APIRouter(tags=["inventario"])
@@ -99,3 +103,44 @@ def record_movement(
 @router.get("/stock/low", response_model=list[IngredientOut])
 def low_stock(_user: CurrentUserDep, db: TenantDB) -> list[Ingredient]:
     return service.list_low_stock(db)
+
+
+# --------------------------------------------------------------------------- productos terminados (T18, ADR-011)
+
+
+@router.get("/products/stock", response_model=list[ProductStockOut])
+def product_stock(_user: CurrentUserDep, db: TenantDB) -> list[Recipe]:
+    """Productos terminados (recetas finales activas) con sus existencias, ordenados por nombre."""
+    return products.list_product_stock(db)
+
+
+@router.get("/products/{recipe_id}/movements", response_model=Page[ProductMovementOut])
+def product_movements(
+    recipe_id: uuid.UUID,
+    _user: CurrentUserDep,
+    db: TenantDB,
+    limit: LimitQuery = DEFAULT_LIMIT,
+    cursor: CursorQuery = None,
+) -> Page[ProductMovementOut]:
+    rows, next_cursor = products.list_product_movements(db, recipe_id, limit, cursor)
+    return Page[ProductMovementOut](items=[ProductMovementOut.model_validate(r) for r in rows], next_cursor=next_cursor)
+
+
+@router.post("/products/movements", response_model=ProductMovementResult, status_code=status.HTTP_201_CREATED)
+def record_product_movement(
+    data: ProductMovementCreate,
+    response: Response,
+    _user: CurrentUserDep,
+    db: TenantDB,
+    client_op_id: Annotated[uuid.UUID | None, Depends(idempotency_key)],
+) -> ProductMovementResult:
+    """Ajuste (+ o -) o merma (-) de un producto terminado. Con `Idempotency-Key`, un reintento no duplica."""
+    movement, recipe, replayed = products.record_product_movement(db, data, client_op_id)
+    if replayed:
+        response.status_code = status.HTTP_200_OK
+    return ProductMovementResult(
+        movement=ProductMovementOut.model_validate(movement),
+        product=ProductStockOut.model_validate(recipe),
+        went_negative=recipe.stock_qty < 0,
+        replayed=replayed,
+    )

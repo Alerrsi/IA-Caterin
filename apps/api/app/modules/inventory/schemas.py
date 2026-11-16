@@ -1,10 +1,11 @@
 import uuid
 from datetime import datetime
 from decimal import Decimal
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from app.db.enums import BaseUnit, MovementReason
+from app.db.enums import BaseUnit, MovementReason, ProductMovementReason
 
 Name = Field(min_length=2, max_length=120)
 
@@ -85,5 +86,58 @@ class MovementOut(BaseModel):
 class MovementResult(BaseModel):
     movement: MovementOut
     ingredient: IngredientOut
+    went_negative: bool
+    replayed: bool = False
+
+
+# --------------------------------------------------------------------------- productos terminados (T18, ADR-011)
+
+
+class ProductStockOut(BaseModel):
+    """Existencias de un producto terminado (receta final), en su unidad de rendimiento."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    recipe_id: uuid.UUID = Field(validation_alias="id")
+    name: str
+    yield_unit: BaseUnit
+    stock_qty: Decimal
+    vision_class: str | None
+    updated_at: datetime
+
+
+class ProductMovementCreate(BaseModel):
+    recipe_id: uuid.UUID
+    reason: Literal["adjustment", "waste"] = Field(description="adjustment: corrección (+ o -); waste: se perdió (-)")
+    delta_qty: Decimal = Field(max_digits=14, decimal_places=3, description="Positivo entra, negativo sale")
+    note: str | None = Field(default=None, max_length=200)
+    occurred_at: datetime | None = None
+
+    @model_validator(mode="after")
+    def _sign(self) -> "ProductMovementCreate":
+        if self.delta_qty == 0:
+            raise ValueError("La cantidad no puede ser cero")
+        if self.reason == "waste" and self.delta_qty > 0:
+            raise ValueError("Una merma debe restar")
+        return self
+
+
+class ProductMovementOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID
+    recipe_id: uuid.UUID
+    delta_qty: Decimal
+    reason: ProductMovementReason
+    note: str | None
+    reference_type: str | None
+    reference_id: uuid.UUID | None
+    occurred_at: datetime
+    created_at: datetime
+
+
+class ProductMovementResult(BaseModel):
+    movement: ProductMovementOut
+    product: ProductStockOut
     went_negative: bool
     replayed: bool = False
