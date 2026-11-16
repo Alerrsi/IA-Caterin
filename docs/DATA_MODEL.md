@@ -30,6 +30,7 @@ erDiagram
     INGREDIENT_PRICE |o--o{ QUOTE_LINE : "precio elegido"
 
     RECIPE ||--o{ PRODUCTION_RECORD : "se cuenta en"
+    RECIPE ||--o{ PRODUCT_MOVEMENT : "cambia por"
 
     DOCUMENT ||--o{ DOCUMENT_CHUNK : "se divide en"
     USER ||--o{ ASSISTANT_INTERACTION : pregunta
@@ -65,6 +66,7 @@ Leyenda: **[MVP]** son las entidades exigidas en `AGENTS.md` (sección 7.1). **[
 | `customer_code` | text, único, nullable | Código del enlace del portal de clientes (ADR-007). Null = registro cerrado |
 | `description` | varchar(280), nullable | Presentación pública en el catálogo del portal (ADR-009) |
 | `logo_path` | varchar(200), nullable | Ruta relativa a `STORAGE_DIR` del logo (`media/<pyme_id>/<sha256>.webp`) |
+| `production_consumes_ingredients` | bool, default true | Al confirmar una producción se descuentan los insumos de la receta (ADR-011) |
 
 ### Usuario (`app_user`) [MVP]
 | Campo | Tipo | Nota |
@@ -140,6 +142,7 @@ El precio por unidad base se calcula en código cuando se necesita (`price_clp /
 | `category` | varchar(60), nullable | Agrupa el producto en el catálogo (p. ej. Dulces) |
 | `photo_path` | varchar(200), nullable | Foto del producto, ruta relativa a `STORAGE_DIR` |
 | `visible_in_catalog` | bool, default true | `false` saca el producto de todo el portal (catálogo, extractor y solicitudes) |
+| `stock_qty` | numeric(14,3), default 0 | Existencias del producto terminado, en la unidad de rendimiento. Saldo de `product_movement` (ADR-011) |
 
 ### Línea de receta (`recipe_line`) [MVP]
 | Campo | Tipo | Nota |
@@ -213,6 +216,21 @@ Sub-recetas (una receta que usa otra, p. ej. "masa"): **fuera del MVP**. Si apar
 | `detections` | jsonb, nullable | Cajas, clases y confianza; base para reentrenar |
 | `was_corrected` | bool | `detected_qty != confirmed_qty` o clase cambiada |
 | `client_op_id` | UUID, nullable | Idempotencia offline |
+| `consumed_ingredients` | bool, default false | Si al confirmar se descontaron los insumos (ADR-011) |
+| `voided_at` | timestamptz, nullable | Cuándo se anuló; los movimientos inversos quedan en los libros |
+
+### Movimiento de producto terminado (`product_movement`) — ADR-011
+| Campo | Tipo | Nota |
+|-------|------|------|
+| `recipe_id` | FK | Producto final |
+| `delta_qty` | numeric(14,3), distinto de 0 | Positivo entra, negativo sale (unidad de rendimiento) |
+| `reason` | enum `production` \| `delivery` \| `adjustment` \| `waste` \| `void` | `production`, `delivery` y `void` los registra el sistema |
+| `note` | text, nullable | |
+| `reference_type`, `reference_id` | text, UUID, nullable | `production` o `order` |
+| `client_op_id` | UUID, nullable, único por pyme | Idempotencia de ajustes manuales offline |
+| `occurred_at` | timestamptz | |
+
+Solo crece: `recipe.stock_qty` siempre es la suma de sus movimientos.
 
 ### Documento (`document`) [MVP]
 | Campo | Tipo | Nota |
@@ -358,3 +376,9 @@ La intención `get_cash_summary` ("¿cómo va la caja?") necesita algún dato de
   - `manual_baseline`: `task` (`quote` | `data_lookup`), `reference` (sin datos de clientes), `repetition`, `measured_on`, `tool`, `notes`. `value_num` = segundos.
 - Índice nuevo `ix_assistant_interaction_pyme_created (pyme_id, created_at)` para filtrar el panel por periodo (migración `3c1f9a7d2b10`). `metric_event` ya tenía `(pyme_id, kind, created_at)`.
 - "Resuelta sin LLM" = `assistant_interaction.level = 0`. "Degradada" = `fallback_reason IS NOT NULL` (se llamó al LLM pero se entregó la plantilla).
+
+## 10. Cambios al implementar (T18, ADR-011)
+
+- Migración `a350bad426a3` (reversible): tabla `product_movement`; `recipe.stock_qty`; `production_record.consumed_ingredients` y `voided_at`; `pyme.production_consumes_ingredients`.
+- Al confirmar una producción, los insumos usados quedan como `stock_movement` con `reason = production`, delta negativo y `reference = ('production', id)`; la anulación agrega los inversos con la misma referencia.
+- Las entregas de pedidos se registran en `product_movement` con `reference = ('order', id)`: `delivery` al entregar y `void` si el pedido deja de estar entregado o cambian sus líneas. Unidad y porción cuentan 1, docena 12; kg y L se convierten si la receta rinde en g o ml.

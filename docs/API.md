@@ -79,6 +79,9 @@ Todas las respuestas de error usan `application/problem+json`:
 | GET | `/ingredients/{id}/movements` | Historial de movimientos |
 | POST | `/stock/movements` | Registrar entrada, salida, ajuste o merma (idempotente) |
 | GET | `/stock/low` | Insumos bajo el mínimo |
+| GET | `/products/stock` | Productos terminados (recetas finales activas) con `stock_qty` en su unidad de rendimiento (T18) |
+| GET | `/products/{recipe_id}/movements?limit=&cursor=` | Historial del producto (`production`, `delivery`, `adjustment`, `waste`, `void`) |
+| POST | `/products/movements` | `{recipe_id, reason: "adjustment" \| "waste", delta_qty, note?}`: corrección (+ o −) o merma (−), idempotente → `{movement, product, went_negative, replayed}` |
 | GET | `/ingredients?q=&limit=&cursor=&updated_since=&low_only=` | Paginado por cursor, con ETag |
 | GET | `/imports/templates/{ingredients\|prices}.csv` | Plantilla de ejemplo (separador `;`) |
 | POST | `/imports/ingredients/preview` | Subir CSV o Excel (multipart `file`) → filas válidas ya normalizadas + errores por fila. No guarda nada |
@@ -144,10 +147,13 @@ Lo de otro cliente responde 404. Si falta un precio, los montos van en `null`: e
 | Método | Ruta | Descripción |
 |--------|------|-------------|
 | POST | `/vision/count` | Multipart `image` (cualquier formato que lea Pillow, ≤ 15 MB; no se guarda) → `counts` por clase unidos a la receta que declara esa `vision_class` (`recipe_id` nulo si ninguna), `detections` (cajas normalizadas), `model_version` y `elapsed_ms`. 415 `invalid_image`, 413 `image_too_large`, 503 `vision_model_unavailable` si no hay modelo (la interfaz ofrece contar a mano) |
-| POST | `/vision/productions` | `{recipe_id, confirmed_qty, detected_qty?, model_version?, detections?}` → `production_record`; `was_corrected` si lo confirmado difiere de lo detectado. Con `Idempotency-Key`, un reintento devuelve el original (200, `replayed: true`). 404 si la receta no existe o no es producto final |
+| POST | `/vision/productions` | `{recipe_id, confirmed_qty, detected_qty?, model_version?, detections?, consume_ingredients?}` → producción con `product_stock_qty` y `consumed` (insumo, cantidad, saldo, `went_negative`). Suma el producto a las existencias y, si corresponde, descuenta los insumos de la receta (T18, ADR-011); todo en una transacción. `consume_ingredients` nulo = ajuste de la pyme. Con `Idempotency-Key`, un reintento devuelve el original (200, `replayed: true`) sin mover nada. 404 si la receta no existe o no es producto final |
+| POST | `/vision/productions/preview` | `{recipe_id, confirmed_qty, consume_ingredients?}` → lo que se sumaría y descontaría, sin guardar nada |
+| GET | `/vision/productions?limit=&cursor=` | Historial (más reciente primero) con `recipe_name`, `voided_at` y `consumed_ingredients` |
+| POST | `/vision/productions/{id}/void` | Dueña. Anula con movimientos inversos (devuelve insumos, resta el producto) y marca `voided_at`. Anular dos veces no hace nada |
 | GET | `/vision/model` | `{loaded, version, classes, input_size, sha256}` del modelo cargado; `loaded: false` si no hay |
 
-El historial de producciones (`GET /vision/productions`) queda pendiente. El modelo se carga al iniciar desde `VISION_MODEL_PATH` (`model.onnx` + `model.json`).
+El modelo se carga al iniciar desde `VISION_MODEL_PATH` (`model.onnx` + `model.json`).
 
 ### assistant (T07)
 | Método | Ruta | Descripción |

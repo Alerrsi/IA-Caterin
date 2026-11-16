@@ -85,10 +85,11 @@ Reglas:
 
 1. Un módulo solo importa `service.py` y `schemas.py` de otro módulo.
 2. Dependencias permitidas (sin ciclos):
-   - `inventory`, `suppliers` y `recipes` dependen solo de `core`.
+   - `inventory`, `suppliers` y `recipes` dependen solo de `core`. `inventory` es dueño de los dos libros de stock (insumos y productos terminados, ADR-011) y lee `recipe` para el saldo de productos.
    - `quotes` depende de `recipes`, `inventory` y `suppliers`.
    - `assistant` depende de los servicios de lectura de `inventory`, `recipes`, `suppliers` y `quotes`.
-   - `vision` depende de `recipes` (producto final) e `inventory` (registro de producción).
+   - `vision` depende de `recipes` (producto final y consumo por receta) e `inventory` (suma el producto y descuenta los insumos al confirmar, ADR-011).
+   - `quotes` también llama a `inventory` al entregar un pedido (salida de productos terminados, una sola vez).
    - `metrics` recibe eventos de todos y no es dependencia de nadie.
    - `dashboard` (T17) solo lee: agrega pedidos, cotizaciones, líneas de cotización, recetas, proveedores e insumos para el tablero de la dueña, con consultas propias de solo lectura (como `metrics`). No escribe nada y no es dependencia de nadie.
    - `portal` (ADR-007) depende de `quotes` (mismo motor de cotización) y de `auth` (emitir la sesión del cliente).
@@ -137,6 +138,7 @@ flowchart TD
 4. El postprocesamiento filtra por umbral de confianza y cuenta por clase. Cada clase corresponde a una `Receta` marcada como producto final.
 5. La PWA muestra el conteo y las cajas. La usuaria corrige con botones **+/−** o cambia el producto.
 6. Al confirmar se crea un `ProduccionRegistrada` con el conteo detectado y el confirmado, la versión del modelo y las detecciones. La diferencia queda como dato para reentrenar (`ml/vision`).
+6b. Antes de confirmar, la PWA muestra lo que pasará en el inventario (`/vision/productions/preview`). Al confirmar, en la misma transacción, se suma el producto a sus existencias (`product_movement`) y, si la pyme lo tiene activo, se descuentan los insumos de la receta (`stock_movement` `production`). Un pedido entregado descuenta el producto una sola vez; una producción se corrige anulándola (ADR-011).
 7. Sin red, la foto queda en la cola local y se procesa al reconectar. Mientras tanto la usuaria puede registrar el conteo a mano.
 
 Latencia medida solo de la inferencia: p50 de 169 ms en i5-8250U, con imagen aleatoria y sin decodificar ni postprocesar. La latencia de punta a punta se mide en T06.

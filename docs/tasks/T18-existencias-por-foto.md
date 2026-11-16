@@ -1,8 +1,8 @@
 # T18 — Existencias de productos terminados desde la foto
-- Estado: pendiente (plan definido el 16-nov-2026)
+- Estado: hecha en la rama `feat/T18-existencias-por-foto` (16-nov-2026); falta integrar a `main`
 - Depende de: T04 (inventario y libro de movimientos), T06 (conteo por foto), T08 (cola sin red)
 - Funcionalidad: F2 (con efecto en inventario)
-- Decisión: ADR-011 (por escribir en esta tarea)
+- Decisión: [ADR-011](../adr/ADR-011-existencias-de-productos-terminados.md) (aceptado)
 
 ## Objetivo
 Que al confirmar el conteo de una bandeja, las empanadas o canapés contados queden como **existencias listas para
@@ -45,7 +45,7 @@ su primera mitad.
    **descuento automático al marcar un pedido como entregado** (líneas en unidad, porción o docena de recetas finales,
    una sola vez por pedido; si el pedido vuelve atrás, se revierte). Sin salidas el stock solo crecería y no serviría.
 8. **Fuera de esta tarea:** que la cotización use primero el producto ya hecho antes de pedir insumos (cambia el
-   cálculo de F3 y su `calc_version`; queda como T19 si se valida con una dueña).
+   cálculo de F3 y su `calc_version`; queda como T20 si se valida con una dueña).
 
 ## Plan de implementación
 
@@ -95,13 +95,13 @@ su primera mitad.
   stock actualizado una sola vez.
 
 ## Entregables
-- [ ] ADR-011 y `DATA_MODEL.md`
-- [ ] Migración y modelos
-- [ ] Confirmación con efecto en inventario, vista previa, anulación e historial
-- [ ] Productos terminados: saldo, movimientos, ajuste manual y salida al entregar
-- [ ] Pantallas: resumen antes de confirmar, pestaña "Productos listos", anular
-- [ ] Asistente: ficha y consulta de productos listos
-- [ ] `API.md`, `ARCHITECTURE.md`, índice
+- [x] ADR-011 y `DATA_MODEL.md`
+- [x] Migración y modelos
+- [x] Confirmación con efecto en inventario, vista previa, anulación e historial
+- [x] Productos terminados: saldo, movimientos, ajuste manual y salida al entregar
+- [x] Pantallas: resumen antes de confirmar, pestaña "Productos listos", anular
+- [x] Asistente: consulta de productos listos (sin ficha del RAG; ver cierre)
+- [x] `API.md`, `ARCHITECTURE.md`, índice
 
 ## Criterios de aceptación
 - Foto de 48 empanadas confirmada → "Empanadas de pino: 48 listas" en inventario y la harina baja exactamente lo que
@@ -112,7 +112,7 @@ su primera mitad.
 - `./scripts/check.sh` y la e2e de visión pasan.
 
 ## Fuera de alcance
-- Que la cotización use el producto terminado antes de comprar insumos (T19 propuesta).
+- Que la cotización use el producto terminado antes de comprar insumos (T20 propuesta).
 - Vencimiento o lotes de productos terminados, cadena de frío.
 - Reentrenar el modelo con fotos reales (sigue en T10, pregunta 6 del índice).
 
@@ -123,4 +123,30 @@ su primera mitad.
 - Para validar con una dueña: ¿descuenta al producir (supuesto 3) o prefiere descontar al cotizar o al entregar?
 
 ## Resumen de cierre
-(se completa al terminar)
+**Qué se hizo (16-nov-2026):**
+- Datos: migración reversible `a350bad426a3` (`product_movement`, `recipe.stock_qty`,
+  `production_record.consumed_ingredients`/`voided_at`, `pyme.production_consumes_ingredients`). ADR-011.
+- API: `inventory/products.py` (libro de productos con suma atómica, saldo, historial paginado, ajuste y merma
+  idempotentes, `sync_order_delivery`); `vision` confirma sumando el producto y descontando insumos en una transacción,
+  más vista previa, anulación (solo dueña) e historial; `quotes.update_order` descuenta al entregar sin duplicar;
+  ajuste de la pyme en `/pyme`; intención `product_stock` de nivel 0 en el asistente.
+- PWA: vista previa "Al confirmar" con casilla "Descontar insumos usados" y aviso de insumo negativo; botón "Ver
+  productos listos"; pestañas Insumos / Productos listos con saldo, historial, ajuste y merma por la cola sin red;
+  "Producción reciente" con Anular (dueña); casilla en Ajustes.
+- Pruebas: 12 en `tests/test_production_stock.py` (consumo exacto contra el libro, reintento sin duplicar, casilla y
+  ajuste de la pyme, insumo negativo, conteo 0, anulación idempotente y solo dueña, ajustes y mermas, entrega una vez
+  y reversa, aislamiento A/B, asistente sin LLM); Vitest de la vista previa y de "Productos listos"; la e2e de visión
+  ahora recorre registro a mano → vista previa → existencias → anular, con axe y sin scroll horizontal a 390 px.
+
+**Decisiones tomadas al implementar:**
+- El saldo de productos **no** entra en las fichas del RAG (ADR-006): cambiaría con cada producción y obligaría a
+  re-vectorizar la ficha de la receta. Las preguntas de existencias van por la intención `product_stock` (nivel 0).
+- Sin señal, la vista previa no muestra números (las líneas de receta y el stock pueden no estar guardados en el
+  teléfono): explica que se sumará y descontará según la receta al volver la señal. El servidor aplica el cálculo real.
+- Anular está disponible para producciones anteriores a T18; como no movieron stock, solo quedan marcadas como anuladas.
+- La e2e de visión ya no depende de que la API de desarrollo no tenga modelo (hoy sí lo tiene): usa "Contar a mano".
+
+**Pendiente:** validar con una dueña cuándo descontar (al producir, supuesto 3); T20 (cotizar usando producto ya
+hecho); integrar la rama a `main`.
+
+**Riesgos:** recetas mal cargadas descuentan mal; la vista previa y la casilla lo mitigan.
