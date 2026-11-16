@@ -12,12 +12,12 @@ import { plain, savedAtLabel } from '../Inventory'
 export function PymeAvatar({ pyme, size = 'md' }: { pyme: Pick<PortalPyme, 'name' | 'logo_url'>; size?: 'md' | 'lg' }) {
   const box = size === 'lg' ? 'h-20 w-20 text-3xl' : 'h-14 w-14 text-2xl'
   if (pyme.logo_url) {
-    return <img src={pyme.logo_url} alt="" width={512} height={512} className={`${box} shrink-0 rounded-md object-cover`} />
+    return <img src={pyme.logo_url} alt="" width={512} height={512} className={`${box} shrink-0 rounded-full object-cover`} />
   }
   return (
     <span
       aria-hidden="true"
-      className={`${box} inline-flex shrink-0 items-center justify-center rounded-md bg-primary-container font-display font-medium text-on-primary-container`}
+      className={`${box} inline-flex shrink-0 items-center justify-center rounded-full bg-accent font-display font-extrabold text-on-accent`}
     >
       {pyme.name.trim().charAt(0).toUpperCase()}
     </span>
@@ -75,17 +75,17 @@ export default function PortalPymes() {
             <li key={p.id}>
               <a
                 href={`#/pymes/${p.id}`}
-                className="flex h-full gap-4 p-5 transition-colors hover:bg-surface-container-low focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-primary/30"
+                className="flex h-full gap-4 p-5 transition-colors hover:bg-surface-container-low focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-primary/40/30"
               >
                 <PymeAvatar pyme={p} />
                 <span className="min-w-0 flex-1">
-                  <span className="block text-lg font-medium text-on-surface">{p.name}</span>
+                  <span className="block text-lg font-bold text-on-surface">{p.name}</span>
                   {p.commune && <span className="num block text-sm text-on-surface-variant">{p.commune}</span>}
                   {p.description && (
-                    <span className="mt-1 line-clamp-2 block text-sm text-on-surface-variant">{p.description}</span>
+                    <span className="mt-1 line-clamp-2 text-sm text-on-surface-variant">{p.description}</span>
                   )}
                   {p.joined && (
-                    <span className="mt-2 inline-flex h-7 items-center rounded-sm bg-secondary-container px-2 text-sm font-medium text-on-secondary-container">
+                    <span className="mt-2 inline-flex h-7 items-center rounded-lg bg-accent px-3 text-sm font-semibold text-on-accent">
                       {t.portal.joined}
                     </span>
                   )}

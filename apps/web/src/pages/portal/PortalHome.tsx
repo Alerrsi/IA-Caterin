@@ -27,10 +27,10 @@ export default function PortalHome() {
           <button
             type="button"
             onClick={() => navigate('/cotizar')}
-            className="block h-full w-full bg-primary-container p-5 text-left text-on-primary-container transition-colors hover:bg-primary-container/80 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-primary/30"
+            className="doodles block h-full w-full bg-panel p-6 text-left text-on-panel transition-colors hover:bg-panel/90 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-accent"
           >
-            <span className="block font-display text-xl font-medium">{t.portal.newQuote}</span>
-            <span className="mt-1 block">{t.portal.newQuoteHint}</span>
+            <span className="block font-display text-2xl font-extrabold">{t.portal.newQuote}</span>
+            <span className="mt-1 block text-on-panel-variant">{t.portal.newQuoteHint}</span>
           </button>
         </li>
         <li>
@@ -38,11 +38,11 @@ export default function PortalHome() {
             href="#/pymes"
             className="flex h-full items-center gap-4 bg-surface-container-lowest p-5 text-on-surface transition-colors hover:bg-surface-container-low focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-primary/30"
           >
-            <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-tertiary-container text-on-tertiary-container">
+            <span className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-accent text-on-accent">
               <Icon name="store" />
             </span>
             <span>
-              <span className="block text-lg font-medium">{t.catalog.homeLink}</span>
+              <span className="block text-lg font-bold">{t.catalog.homeLink}</span>
               <span className="block text-on-surface-variant">{t.catalog.homeLinkHint}</span>
             </span>
           </a>

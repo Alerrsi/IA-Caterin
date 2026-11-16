@@ -58,7 +58,7 @@ function DrawerItem({ dest, path, onNavigate }: { dest: Dest; path: string; onNa
         onClick={onNavigate}
         aria-current={active ? 'page' : undefined}
         aria-keyshortcuts={dest.shortcut}
-        className={`flex h-14 items-center gap-3 rounded-lg pl-2 pr-4 text-base font-semibold transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent ${
+        className={`flex h-14 items-center gap-3 rounded-lg pl-2 pr-4 text-base font-semibold transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40 ${
           active ? 'bg-primary text-on-primary' : 'text-on-surface hover:bg-surface-container'
         }`}
       >
@@ -102,7 +102,7 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
     <button
       type="button"
       onClick={() => void logout()}
-      className={`inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-lg border border-outline px-5 text-base font-semibold text-on-surface transition-colors hover:bg-surface-container focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent ${className}`}
+      className={`inline-flex h-12 items-center gap-2 whitespace-nowrap rounded-lg border border-outline px-5 text-base font-semibold text-on-surface transition-colors hover:bg-surface-container focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40 ${className}`}
     >
       <Icon name="logout" className="h-5 w-5" />
       {t.home.logout}
@@ -114,7 +114,7 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
       {/* Escritorio: barra superior limpia, como la de la referencia. */}
       <header className="sticky top-0 z-20 hidden border-b border-hairline bg-surface-container-lowest/95 backdrop-blur lg:block">
         <div className="mx-auto flex h-20 max-w-7xl items-center gap-4 px-6 xl:gap-6 xl:px-8">
-          <a href="#/" className="flex min-w-0 shrink-0 items-center gap-3 rounded-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent">
+          <a href="#/" className="flex min-w-0 shrink-0 items-center gap-3 rounded-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40">
             <Logo />
             <span className="hidden max-w-44 truncate text-sm text-on-surface-variant 2xl:inline">{subtitle}</span>
           </a>
@@ -128,7 +128,7 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
                       href={`#${d.path}`}
                       aria-current={active ? 'page' : undefined}
                       aria-keyshortcuts={d.shortcut}
-                      className={`inline-flex h-11 items-center gap-2 whitespace-nowrap rounded-lg px-4 text-base font-semibold transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent ${
+                      className={`inline-flex h-11 items-center gap-2 whitespace-nowrap rounded-lg px-4 text-base font-semibold transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40 ${
                         active ? 'bg-primary text-on-primary' : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
                       }`}
                     >
@@ -144,7 +144,7 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
                     type="button"
                     onClick={() => setOpen(true)}
                     aria-expanded={open}
-                    className="inline-flex h-11 items-center gap-2 whitespace-nowrap rounded-lg px-4 text-base font-semibold text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent"
+                    className="inline-flex h-11 items-center gap-2 whitespace-nowrap rounded-lg px-4 text-base font-semibold text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40"
                   >
                     {t.nav.more}
                     <Icon name="menu" className="h-5 w-5" />
@@ -167,7 +167,7 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
           onClick={() => setOpen(true)}
           aria-label={t.nav.open}
           aria-expanded={open}
-          className="inline-flex h-12 w-12 items-center justify-center rounded-full text-on-surface transition-colors hover:bg-surface-container focus-visible:ring-4 focus-visible:ring-accent"
+          className="inline-flex h-12 w-12 items-center justify-center rounded-full text-on-surface transition-colors hover:bg-surface-container focus-visible:ring-4 focus-visible:ring-primary/40"
         >
           <Icon name="menu" />
         </button>
@@ -203,7 +203,7 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
                   type="button"
                   onClick={() => setOpen(false)}
                   aria-label={t.nav.close}
-                  className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface-container text-on-surface focus-visible:ring-4 focus-visible:ring-accent"
+                  className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface-container text-on-surface focus-visible:ring-4 focus-visible:ring-primary/40"
                 >
                   <Icon name="close" />
                 </button>

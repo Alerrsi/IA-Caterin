@@ -55,7 +55,7 @@ export function Button({
     <button
       type="button"
       aria-keyshortcuts={shortcut}
-      className={`inline-flex min-h-12 items-center justify-center gap-3 rounded-lg py-2.5 text-base font-semibold transition-[background-color,box-shadow,translate] duration-150 ease-out focus:outline-none focus-visible:ring-4 focus-visible:ring-accent enabled:active:translate-y-px disabled:cursor-not-allowed motion-reduce:enabled:active:translate-y-0 ${icon ? 'pl-1.5 pr-6' : 'px-6'} ${VARIANTS[variant]} ${className}`}
+      className={`inline-flex min-h-12 items-center justify-center gap-3 rounded-lg py-2.5 text-base font-semibold transition-[background-color,box-shadow,translate] duration-150 ease-out focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/40 enabled:active:translate-y-px disabled:cursor-not-allowed motion-reduce:enabled:active:translate-y-0 ${icon ? 'pl-1.5 pr-6' : 'px-6'} ${VARIANTS[variant]} ${className}`}
       {...props}
     >
       {icon && <IconDot name={icon} dark={variant === 'tonal'} />}
@@ -121,7 +121,7 @@ export function Page({
           <button
             type="button"
             onClick={onBack}
-            className="-ml-1 mt-1 inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface-container-lowest text-on-surface shadow-cap transition-colors hover:bg-accent focus-visible:ring-4 focus-visible:ring-accent"
+            className="-ml-1 mt-1 inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface-container-lowest text-on-surface shadow-cap transition-colors hover:bg-accent focus-visible:ring-4 focus-visible:ring-primary/40"
             aria-label={t.back}
           >
             <Icon name="back" className="h-6 w-6" />

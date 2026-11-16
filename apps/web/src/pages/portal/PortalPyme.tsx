@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { PortalProduct, PortalPyme as Pyme } from '../../api'
+import { Coupon, Floater, FoodPanel, Plate, Squiggle } from '../../components/Food'
 import { Alert, Button, Cells, Page, Spinner } from '../../components/ui'
 import { Icon } from '../../components/Icon'
 import { t } from '../../i18n'
@@ -14,29 +15,13 @@ export function quotePath(pymeId: string, picked: string[]): string {
 }
 
 function ProductCard({ product, added, onToggle }: { product: PortalProduct; added: boolean; onToggle: () => void }) {
-  // Una celda de la grilla (T16). Celular: fila compacta con miniatura. Desde 640 px: la foto arriba, en un marco
-  // punteado como la línea de corte de una comanda.
+  // Tarjeta del catálogo (T21): el producto como un plato redondo. Celular: fila con el plato a la izquierda. Desde
+  // 640 px: el plato arriba, grande.
   return (
-    <li className="flex gap-3 p-3 sm:flex-col sm:p-4">
-      <div className="shrink-0 rounded-sm border border-dashed border-outline-variant p-1">
-        {product.photo_url ? (
-          <img
-            src={product.photo_url}
-            alt=""
-            loading="lazy"
-            width={800}
-            height={600}
-            className="h-24 w-24 object-cover sm:aspect-[4/3] sm:h-auto sm:w-full"
-          />
-        ) : (
-          <div className="flex h-24 w-24 items-center justify-center bg-surface-container-high text-on-surface-variant sm:aspect-[4/3] sm:h-auto sm:w-full">
-            <Icon name="cloche" className="h-9 w-9 sm:h-12 sm:w-12" />
-            <span className="sr-only">{t.catalog.noPhoto}</span>
-          </div>
-        )}
-      </div>
-      <div className="flex min-w-0 flex-1 flex-col sm:pt-3">
-        <h3 className="text-lg font-medium text-on-surface">{product.name}</h3>
+    <li className="flex gap-4 p-4 sm:flex-col sm:items-center sm:p-6 sm:text-center">
+      <ProductPlate product={product} className="w-24 shrink-0 sm:w-40" />
+      <div className="flex min-w-0 flex-1 flex-col sm:w-full">
+        <h3 className="text-lg font-bold text-on-surface">{product.name}</h3>
         <p className="num text-sm text-on-surface-variant">{t.catalog.soldBy[product.yield_unit]}</p>
         {product.description && <p className="mt-1 text-on-surface-variant">{product.description}</p>}
         <div className="mt-auto pt-3">
@@ -44,10 +29,10 @@ function ProductCard({ product, added, onToggle }: { product: PortalProduct; add
             type="button"
             onClick={onToggle}
             aria-pressed={added}
-            className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg px-4 font-medium transition-[background-color,translate] duration-150 ease-out focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 active:translate-y-px motion-reduce:active:translate-y-0 ${
+            className={`inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg px-5 font-semibold transition-[background-color,translate] duration-150 ease-out focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40 active:translate-y-px motion-reduce:active:translate-y-0 ${
               added
-                ? 'bg-secondary-container text-on-secondary-container'
-                : 'border border-outline bg-surface-container-lowest text-on-surface shadow-cap hover:bg-surface-container-low'
+                ? 'bg-accent text-on-accent'
+                : 'border border-outline bg-surface-container-lowest text-on-surface hover:bg-surface-container-low'
             }`}
           >
             <Icon name={added ? 'check' : 'add'} className="h-5 w-5" />
@@ -79,64 +64,44 @@ export function splitTitle(name: string): [string, string] {
   return words.length < 2 ? ['', name.trim()] : [words[0], words.slice(1).join(' ')]
 }
 
-/** Foto del producto, o el vacío del plano (papel cuadriculado y campana) si no tiene. */
-function Photo({ product, className }: { product: PortalProduct; className: string }) {
-  return product.photo_url ? (
-    <img src={product.photo_url} alt="" width={800} height={600} className={`${className} object-cover`} />
-  ) : (
-    <div
-      className={`${className} grid-paper flex items-center justify-center bg-surface-container-lowest text-on-surface-variant`}
-    >
-      <Icon name="cloche" className="h-1/3 max-h-24 w-1/3 max-w-24 text-outline" />
-      <span className="sr-only">{t.catalog.noPhoto}</span>
-    </div>
-  )
-}
-
-/** Marca del plano que "flota" (cuadrado fino o punto cobre). Solo decoración. */
-function Mark({ className, dot = false }: { className: string; dot?: boolean }) {
+/** El producto como plato redondo: su foto si tiene; si no, el plato dibujado (y lo dice para lectores de pantalla). */
+function ProductPlate({ product, className }: { product: PortalProduct; className: string }) {
   return (
-    <span
-      aria-hidden="true"
-      className={`pointer-events-none absolute ${dot ? 'h-2 w-2 rounded-full' : 'h-2.5 w-2.5 border'} ${className}`}
-    />
+    <>
+      <Plate src={product.photo_url} className={className} />
+      {!product.photo_url && <span className="sr-only">{t.catalog.noPhoto}</span>}
+    </>
   )
 }
 
 function Recommended({ product, added, onToggle }: { product: PortalProduct; added: boolean; onToggle: () => void }) {
   return (
-    <article
-      aria-labelledby="recommended-title"
-      className="w-full max-w-sm rounded-xl border border-dashed border-outline bg-surface-container-lowest p-4"
-    >
-      <p className="flex items-center gap-2 text-sm font-medium text-on-surface-variant">
-        <span aria-hidden="true" className="h-2 w-2 bg-tertiary" />
-        {t.catalog.recommended}
-      </p>
-      <div className="mt-3 flex items-center gap-3 border-t border-dashed border-outline-variant pt-3">
-        <div className="shrink-0 rounded-sm border border-dashed border-outline-variant p-0.5">
-          <Photo product={product} className="h-16 w-16" />
+    <article aria-labelledby="recommended-title">
+      <Coupon dark title={t.catalog.recommended} className="w-full max-w-sm">
+        <div className="flex items-center gap-4">
+          <ProductPlate product={product} className="w-16 shrink-0" />
+          <div className="min-w-0 flex-1">
+            <h3 id="recommended-title" className="font-bold text-on-panel">
+              {product.name}
+            </h3>
+            <p className="num text-sm text-on-panel-variant">{t.catalog.soldBy[product.yield_unit]}</p>
+          </div>
         </div>
-        <div className="min-w-0 flex-1">
-          <h3 id="recommended-title" className="font-medium text-on-surface">
-            {product.name}
-          </h3>
-          <p className="num text-sm text-on-surface-variant">{t.catalog.soldBy[product.yield_unit]}</p>
-        </div>
-      </div>
-      <Button variant={added ? 'tonal' : 'secondary'} aria-pressed={added} onClick={onToggle} className="mt-3 w-full">
-        <Icon name={added ? 'check' : 'add'} className="h-5 w-5" />
-        {added ? t.catalog.added : t.catalog.add}
-        <span className="sr-only">{t.catalog.addRecommended(product.name)}</span>
-      </Button>
+        <Button variant="tonal" aria-pressed={added} onClick={onToggle} className="mt-4 w-full">
+          <Icon name={added ? 'check' : 'add'} className="h-5 w-5" />
+          {added ? t.catalog.added : t.catalog.add}
+          <span className="sr-only">{t.catalog.addRecommended(product.name)}</span>
+        </Button>
+      </Coupon>
     </article>
   )
 }
 
 /**
- * Portada de la pyme (T19, ADR-012): el producto destacado en grande sobre el panel laurel con corte diagonal.
- * Celular: foto arriba, texto y la tarjeta recomendada debajo. Escritorio: texto a la izquierda; foto y tarjeta sobre
- * el panel, a la derecha. Sin precios (ADR-009): dice cómo se vende y que el precio sale al cotizar.
+ * Portada de la pyme (T19; rehecha en T21 según la imagen de referencia, ADR-013): a la izquierda, el producto
+ * destacado con su nombre en dos pesos, cómo se vende, el botón para cotizarlo y quién lo prepara; a la derecha, el panel
+ * oscuro en diagonal con el producto como plato enorme, ingredientes flotando y la tarjeta punteada del recomendado.
+ * Sin precios (ADR-009): dice cómo se vende y que el precio sale al cotizar.
  */
 function Showcase({
   pyme,
@@ -164,69 +129,61 @@ function Showcase({
   return (
     <section
       aria-labelledby="showcase-title"
-      className="relative mb-8 flex flex-col overflow-hidden rounded-xl bg-surface-container-lowest shadow-cap lg:grid lg:min-h-[32rem] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:grid-rows-[1fr_auto]"
+      className="relative mb-10 overflow-hidden rounded-3xl bg-surface-container-lowest shadow-soft lg:grid lg:min-h-[36rem] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:grid-rows-[1fr_auto]"
     >
-      {/* Escritorio: el panel laurel cubre la columna derecha con un corte diagonal. */}
-      <div
-        aria-hidden="true"
-        className="hatch absolute inset-y-0 right-0 hidden w-[52%] bg-brand [clip-path:polygon(18%_0,100%_0,100%_100%,0_100%)] lg:block"
-      />
-
-      <div className="hatch relative flex items-center justify-center bg-brand px-8 pb-12 pt-6 [clip-path:polygon(0_0,100%_0,100%_86%,0_100%)] lg:col-start-2 lg:row-start-1 lg:bg-transparent lg:px-12 lg:pb-6 lg:pt-12 lg:[background-image:none] lg:[clip-path:none]">
-        <Mark className="left-6 top-6 border-on-brand/40" />
-        <Mark className="right-8 top-10 bg-tertiary-container" dot />
-        <Mark className="bottom-16 left-10 border-on-brand/40 lg:bottom-10" />
-        <Mark className="bottom-24 right-6 border-on-brand/40" />
-        <div className="w-full max-w-[16rem] -rotate-2 rounded-sm border border-dashed border-on-brand/50 p-1.5 motion-reduce:rotate-0 sm:max-w-sm lg:max-w-md">
-          <Photo product={featured} className="aspect-[4/3] w-full" />
+      <FoodPanel className="lg:col-start-2 lg:row-span-2 lg:row-start-1">
+        <div className="relative flex h-[300px] items-center justify-center pb-8 sm:h-[360px] lg:h-full lg:min-h-[36rem]">
+          <Floater kind="basil" className="right-[10%] top-[8%] h-12 w-12 rotate-12 lg:right-[14%] lg:h-16 lg:w-16" />
+          <Floater kind="tomato" className="left-[8%] top-[12%] h-10 w-10 lg:left-[4%] lg:top-[20%] lg:h-14 lg:w-14" />
+          <Floater kind="lemon" className="bottom-[20%] left-[12%] h-9 w-9 lg:bottom-auto lg:left-[10%] lg:top-[58%] lg:h-12 lg:w-12" />
+          <ProductPlate
+            product={featured}
+            className="w-[210px] sm:w-[260px] lg:absolute lg:left-[26%] lg:top-[38%] lg:w-[min(400px,30vw)] lg:-translate-x-1/2 lg:-translate-y-1/2"
+          />
         </div>
-      </div>
+      </FoodPanel>
 
-      <div className="relative flex flex-col justify-center px-5 pb-6 pt-2 md:px-8 lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:px-10 lg:py-12">
-        <Mark className="right-6 top-2 border-outline-variant lg:right-10 lg:top-10" />
-        <Mark className="right-14 top-8 bg-tertiary lg:top-16" dot />
-        <p className="flex items-center gap-2 text-sm font-medium text-on-surface-variant">
-          <span aria-hidden="true" className="h-px w-6 bg-outline" />
+      <div className="relative flex flex-col justify-center px-6 pb-8 pt-2 md:px-10 lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:py-12 lg:pl-12">
+        <p className="flex items-center gap-3 text-sm font-semibold text-on-surface-variant">
+          <Squiggle className="h-5 w-10 shrink-0" />
           {t.catalog.featured}
         </p>
-        <h2
-          id="showcase-title"
-          className="mt-3 font-display text-[2.5rem] leading-[1.08] tracking-tight text-on-surface md:text-5xl md:leading-[1.05] lg:text-[3.5rem]"
-        >
-          {first && <span className="block text-on-surface-variant">{first} </span>}
-          <span className="block">{rest}</span>
+        <h2 id="showcase-title" className="mt-3 text-[2.6rem] leading-[1.05] tracking-tight text-on-surface md:text-6xl md:leading-[1.02]">
+          {first && <span className="block font-normal">{first} </span>}
+          <span className="block font-extrabold">{rest}</span>
         </h2>
-        {blurb && <p className="mt-4 max-w-prose text-on-surface-variant">{blurb}</p>}
+        {blurb && <p className="mt-4 max-w-prose text-lg text-on-surface-variant">{blurb}</p>}
 
-        <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-4">
+        <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-4">
           <p>
-            <span className="num block text-2xl text-on-surface">{t.catalog.soldBy[featured.yield_unit]}</span>
+            <span className="num block text-3xl text-on-surface">{t.catalog.soldBy[featured.yield_unit]}</span>
             <span className="text-sm text-on-surface-variant">{t.catalog.priceAtQuote}</span>
           </p>
-          <Button onClick={onQuote} className="w-full sm:w-auto">
-            <Icon name="quote" className="h-5 w-5" />
+          <Button icon="quote" onClick={onQuote} className="min-h-14 w-full text-lg sm:w-auto">
             {t.catalog.quoteProduct(featured.name)}
           </Button>
         </div>
 
-        <div className="mt-8 border-t border-dashed border-outline-variant pt-5">
-          <div className="flex items-center gap-3">
+        {/* "Lo prepara": el bloque de recomendación de la referencia, con el logo o la inicial de la pyme. */}
+        <div className="mt-10 flex flex-wrap items-center gap-4">
+          <span className="rounded-full border-2 border-dashed border-outline-variant p-1">
             <PymeAvatar pyme={pyme} />
-            <div className="min-w-0 flex-1">
-              <p className="text-sm text-on-surface-variant">{t.catalog.madeBy}</p>
-              <p className="font-medium text-on-surface">{pyme.name}</p>
-              {pyme.commune && <p className="text-sm text-on-surface-variant">{pyme.commune}</p>}
-            </div>
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm text-on-surface-variant">{t.catalog.madeBy}</p>
+            <p className="font-bold text-on-surface">{pyme.name}</p>
+            {pyme.commune && <p className="text-sm text-on-surface-variant">{pyme.commune}</p>}
           </div>
-          <Button variant="ghost" onClick={seeAll} className="-ml-5 mt-2">
+          <Button variant="ghost" onClick={seeAll} className="-ml-3">
             {t.catalog.seeAll(total)}
             <Icon name="back" className="h-5 w-5 -rotate-90" />
           </Button>
         </div>
       </div>
 
+      {/* El recomendado: sobre el panel oscuro en escritorio (abajo a la derecha); bajo el texto en el celular. */}
       {recommended && (
-        <div className="relative flex justify-center px-5 pb-5 md:px-8 lg:col-start-2 lg:row-start-2 lg:px-12 lg:pb-10">
+        <div className="relative z-10 px-6 pb-8 md:px-10 lg:col-start-2 lg:row-start-2 lg:flex lg:justify-end lg:px-10 lg:pb-10">
           <Recommended
             product={recommended}
             added={picked.includes(recommended.id)}
@@ -315,11 +272,11 @@ export default function PortalPyme({ id }: { id: string }) {
           {groups.map(([category, items]) => (
           <section key={category} className="mb-6" aria-labelledby={groups.length > 1 ? `cat-${category}` : undefined}>
             {groups.length > 1 && (
-              <h2 id={`cat-${category}`} className="mb-3 font-display text-xl text-on-surface">
+              <h2 id={`cat-${category}`} className="mb-4 text-2xl font-extrabold text-on-surface">
                 {category}
               </h2>
             )}
-            <Cells className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            <Cells className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {items.map((p) => (
                 <ProductCard key={p.id} product={p} added={picked.includes(p.id)} onToggle={() => toggle(p.id)} />
               ))}
@@ -330,8 +287,8 @@ export default function PortalPyme({ id }: { id: string }) {
       )}
       {/* Botón fijo sobre la navegación inferior: siempre a mano para pasar a cotizar. */}
       <p className="mt-2 text-on-surface-variant">{t.catalog.pricesAtQuote}</p>
-      <div className="sticky bottom-24 z-10 mt-3 lg:bottom-6">
-        <Button onClick={() => navigate(quotePath(id, picked))} className="w-full sm:w-auto">
+      <div className="sticky bottom-28 z-10 mt-3 lg:static">
+        <Button icon="quote" onClick={() => navigate(quotePath(id, picked))} className="w-full shadow-soft ring-2 ring-surface-container-lowest sm:w-auto">
           {picked.length ? t.catalog.quoteN(picked.length) : t.catalog.quoteWith}
         </Button>
       </div>

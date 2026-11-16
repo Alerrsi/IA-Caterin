@@ -14,7 +14,7 @@ function ActionCell({ label, hint, icon, onClick }: { label: string; hint: strin
       <button
         type="button"
         onClick={onClick}
-        className="flex h-full w-full items-start gap-4 p-5 text-left text-on-surface transition-colors hover:bg-accent-soft focus-visible:relative focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-accent"
+        className="flex h-full w-full items-start gap-4 p-5 text-left text-on-surface transition-colors hover:bg-accent-soft focus-visible:relative focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-inset focus-visible:ring-primary/40"
       >
         <IconDot name={icon} className="h-12 w-12" />
         <span>
