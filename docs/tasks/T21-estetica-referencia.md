@@ -1,5 +1,5 @@
 # T21 — Rediseño de toda la app con la estética de la imagen de referencia
-- Estado: en curso
+- Estado: hecha en la rama (16-nov-2026); falta integrar a `main` y mostrarla a personas reales
 - Rama: `feat/T21-estetica-referencia` (parte de `main` + T18 + T19)
 - Depende de: T18, T19
 - Funcionalidad: transversal
@@ -44,15 +44,15 @@ contraseña, "Entrar", el mensaje de error y los dos enlaces caben en la primera
   puede necesitar desplazarse; la prueba estricta es la de entrar.
 
 ## Entregables
-- [ ] ADR-013, skill `caterin-brand` y `.interface-design/system.md` al día
-- [ ] Tokens (`scripts/theme.mjs`), fuente, radios, sombras y patrón `doodles`
-- [ ] Componentes base (`ui.tsx`, `AppShell`, `Logo`, `charts.tsx`)
-- [ ] Entrar/registro con portada de plato grande
-- [ ] Portal: portada de la pyme casi como la imagen, directorio y catálogo con fotos redondas
-- [ ] Pantallas de la dueña: inicio con portada, y el resto con los componentes nuevos
-- [ ] Ajustes de T18: productos sin existencias plegados, resumen de insumos en columnas, producción reciente corta
-- [ ] Uso de las fotos del contrato (las trae otro agente)
-- [ ] Pruebas de marca y contraste actualizadas; capturas en `apps/web/e2e-artifacts/t21/`
+- [x] ADR-013, skill `caterin-brand` y `.interface-design/system.md` al día
+- [x] Tokens (`scripts/theme.mjs`), fuente, radios, sombras y patrón `doodles`
+- [x] Componentes base (`ui.tsx`, `AppShell`, `Logo`, `charts.tsx`)
+- [x] Entrar/registro con portada de plato grande
+- [x] Portal: portada de la pyme casi como la imagen, directorio y catálogo con fotos redondas
+- [x] Pantallas de la dueña: inicio con portada, y el resto con los componentes nuevos
+- [x] Ajustes de T18: productos sin existencias plegados, resumen de insumos en columnas, producción reciente corta
+- [x] Uso de las fotos del contrato (las trae otro agente)
+- [x] Pruebas de marca y contraste actualizadas; capturas en `apps/web/e2e-artifacts/t21/`
 
 ## Criterios de aceptación
 - `e2e/login-sin-scroll.e2e.ts`: `document.documentElement.scrollHeight <= window.innerHeight` y cada pieza (logo,
@@ -74,4 +74,31 @@ contraseña, "Entrar", el mensaje de error y los dos enlaces caben en la primera
   portal, y sobria (tokens) en formularios y tablas.
 
 ## Resumen de cierre
-(se completa al terminar)
+**Qué se hizo (16-nov-2026):**
+- Paleta nueva declarada a mano en `scripts/theme.mjs` (tinta `#1a1a1a`, blanco, lienzo `#f7f6f3`, panel `#1b1b1b`,
+  amarillo `#ffd45c` solo como fondo, ámbar `#7a5200` como acento de texto), con los mismos nombres de rol.
+- Urbanist variable autoalojada (≈ 28 KB) en vez de IBM Plex (se quitaron sus 3 paquetes). Títulos en dos pesos.
+- Forma: píldoras (`--radius-lg: 9999px`), tarjetas de 22 px, sombras difusas; patrón propio de dibujos de comida en
+  SVG (`doodles`, `grid-paper`).
+- Componentes: `Button` con `icon` (círculo amarillo), `IconDot`, `Pill`, `Page` con `lead`, `Cells` como tarjetas;
+  `components/Food.tsx` (panel diagonal, plato, ingredientes flotando, cupón, garabato) con reemplazos dibujados
+  cuando falta una foto.
+- `AppShell`: barra superior en escritorio; barra inferior flotante oscura en el celular.
+- Portadas al estilo de la referencia en entrar/registro, inicio de la dueña, portada de la pyme en el portal; portal
+  con platos redondos; el resto de las pantallas toma la estética por tokens.
+- Marca: logo recoloreado (tinta, vapor amarillo, esquina 120/512) y logotipo a trazos en Urbanist 800
+  (`scripts/brand.py`), íconos de la PWA regenerados; colores de gráficos `#d99a00`/`#5a5ad6` validados con dataviz.
+- Ajustes de T18: productos sin existencias plegados en "Sin existencias (N)", resumen de insumos en columnas,
+  producción reciente con 5 y "Ver más", "Anular" discreto.
+- Requisito "entrar sin scroll": cumplido y probado en 4 tamaños.
+- Fotos: las trajo la tarea paralela (contrato `public/fotos/` y `photo_url`).
+
+**Pruebas:** ver el informe de la tarea (Vitest, `check.sh`, e2e de a11y, estética, marca, portal, visión, tablero,
+portada y entrar sin scroll). Capturas en `apps/web/e2e-artifacts/t21/` (no se versionan).
+
+**Pendiente:**
+- `THIRD_PARTY_NOTICES.md`: registrar Urbanist (OFL-1.1) y sacar IBM Plex; lo edita la tarea de las fotos.
+- Mostrarla a una emprendedora real; revisar si el registro en un celular chico necesita algo más compacto.
+- Integrar a `main` cuando el usuario lo apruebe.
+
+**Riesgos:** la estética de landing resta densidad en pantallas de trabajo; se mantuvo sobria fuera de las portadas.
