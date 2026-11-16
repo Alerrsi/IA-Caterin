@@ -26,7 +26,8 @@ blancas, líneas finas como estructura, cifras como en una comanda y un acento c
   corre `npm run theme`; no edites el bloque `theme:start … theme:end` a mano.
 - **Un acento.** `primary` es la acción; `tertiary` (cobre) solo para un ícono o detalle, nunca botones ni fondos
   grandes. Los estados (aviso, éxito, información, error) solo comunican estado.
-- `brand`, `on-brand` y `brand-steam` son **solo** para el logo, el panel del login y la barra del sistema.
+- `brand`, `on-brand` y `brand-steam` son **solo** para el logo, el panel del login, la barra del sistema y el
+  panel de la portada de la pyme en el portal (ADR-012).
 - **Tipografía (IBM Plex, autoalojada en `src/fonts.css`):**
   - Sans (variable) para toda la interfaz. Texto mínimo 15 px (`text-sm`); la única excepción son las etiquetas de la
     barra inferior.
@@ -55,7 +56,8 @@ blancas, líneas finas como estructura, cifras como en una comanda y un acento c
 - **PDF de la cotización:** es de la pyme. El encabezado es el nombre (o logo) de la pyme; Cáterin solo firma al pie.
 - **Íconos:** Material Icons rellenos, `viewBox` 24, en `components/Icon.tsx`. Comida: `cloche`, `restaurant`;
   pyme: `store`.
-- **Un solo momento fuerte:** el panel laurel rayado del login. En las pantallas de trabajo manda la claridad.
+- **Un solo momento fuerte por lado:** el panel laurel rayado del login y, para el cliente, la portada de la pyme en
+  el portal (ADR-012). En las pantallas de trabajo manda la claridad.
 - **Nada de Zed:** se tomaron principios, no su marca (sin su logo, textos, azul, fuentes ni diagramaciones).
 
 ## Textos
