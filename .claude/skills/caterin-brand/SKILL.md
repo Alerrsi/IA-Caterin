@@ -5,81 +5,82 @@ description: Identidad visual de Cáterin (colores, tipografía, forma, logo, í
 
 # Marca Cáterin
 
-Fuentes de verdad: `docs/adr/ADR-008-identidad-visual.md` (color y logo) y `docs/adr/ADR-010-estetica-plano.md`
-(estética "plano de cocina": tipografía, forma, líneas y detalles). Valores de diseño: `.interface-design/system.md`.
-Esto es el resumen operativo. Manda sobre `interface-design`, `frontend-design`, `web-interface-guidelines` y
-`emil-design-eng` cuando se contradicen.
+Fuente de verdad: `docs/adr/ADR-013-estetica-de-la-referencia.md` (T21, 16-nov-2026), que reemplaza a ADR-008
+(laurel y cobre) y ADR-010 ("plano de cocina"). Valores de diseño: `.interface-design/system.md`. Esto es el resumen
+operativo. Manda sobre `interface-design`, `frontend-design`, `web-interface-guidelines` y `emil-design-eng` cuando se
+contradicen.
 
 ## Dirección
 
-"Cocina profesional ordenada", dibujada como un plano: la usuaria es una emprendedora de catering que cotiza desde el
-celular entre un evento y otro. Herramienta tranquila y precisa: una sola tinta de marca (laurel), superficies casi
-blancas, líneas finas como estructura, cifras como en una comanda y un acento cobre que aparece poco.
+La estética de la imagen de referencia que eligió el usuario: una app de **comida** que da hambre, no una planilla.
+Blanco limpio, tinta casi negra, un gran panel oscuro en diagonal con dibujos de comida en línea fina, platos redondos
+enormes vistos desde arriba, ingredientes que flotan, títulos grandes en dos pesos y botones en píldora con un círculo
+amarillo. Fuerte en entrar, inicio y portal; sobria (los mismos tokens) en formularios y tablas.
 
 ## Reglas
 
 - **Roles de color, nunca hex.** Usa los roles de `apps/web/src/index.css` (`bg-primary`, `text-on-surface-variant`,
-  `border-hairline`…). Los nombres vienen de Material Design 3 y se mantienen por compatibilidad.
-- **Pares de contraste:** texto `on-X` sobre fondo `X`; en superficies, `on-surface` u `on-surface-variant`. Si usas un
-  par nuevo, agrégalo a `PAIRS` en `src/theme.test.ts`.
-- **Color:** semilla laurel `#1f4d3f`; terciaria cobre `#a0522d`. Para cambiar colores, edita `scripts/theme.mjs` y
-  corre `npm run theme`; no edites el bloque `theme:start … theme:end` a mano.
-- **Un acento.** `primary` es la acción; `tertiary` (cobre) solo para un ícono o detalle, nunca botones ni fondos
-  grandes. Los estados (aviso, éxito, información, error) solo comunican estado.
-- `brand`, `on-brand` y `brand-steam` son **solo** para el logo, el panel del login, la barra del sistema y el
-  panel de la portada de la pyme en el portal (ADR-012).
-- **Tipografía (IBM Plex, autoalojada en `src/fonts.css`):**
-  - Sans (variable) para toda la interfaz. Texto mínimo 15 px (`text-sm`); la única excepción son las etiquetas de la
-    barra inferior.
-  - Serif 500 (`font-display`) para `h1`, títulos de sección y destacados; cursiva 400 solo en la frase del login.
-  - Mono 400 (clase `num` o `<Num>`) para cifras de comanda: precios, cantidades, stock, fechas, códigos y `kbd`.
-  - No agregues pesos ni fuentes: el presupuesto de fuentes + marca es 200 KB (hoy 152 KB).
-- **Forma:** esquinas casi rectas. `rounded-sm` 2 px etiquetas de estado y `kbd`; `rounded-md`/`rounded-lg` 4 px
-  campos, botones y navegación; `rounded-xl` 6 px tarjetas, celdas y avisos; `rounded-2xl`/`rounded-3xl` 8 px cajón y
-  tarjeta del login. `rounded-full` solo para botones de ícono circulares y el indicador de carga.
-- **Líneas y profundidad:** tarjetas y divisores con `border-hairline`; bordes de campos con `outline` (3:1). Grillas
-  de accesos y productos con `<Cells>` (líneas de 1 px, sin espacio). Línea de corte punteada
-  (`border-dashed border-outline`) antes de un total y marco punteado en fotos de producto. Única sombra: la del botón
-  (`shadow-key`, `shadow-cap`).
-- **Fondos decorativos:** `grid-paper` (papel cuadriculado) en los márgenes del escritorio, el login y los vacíos;
-  `hatch` (rayado) solo sobre el laurel del login. Nunca detrás de texto largo.
-- **Marco:** en escritorio `Page` dibuja rieles a los lados y la línea de la cabecera con marcas (`frame-marks`).
-  Toda pantalla con sesión usa `Page`.
-- **Botones:** `<Button>` (48 px, tecla con borde inferior, baja 1 px al presionar). Atajos con `shortcut` o
-  `aria-keyshortcuts` + `<Kbd>` (solo escritorio con mouse) y el hook `useShortcut` de `src/shortcuts.ts`; nunca
-  actúan dentro de un campo. Hoy: `C` cotizar, `/` buscar.
-- **Movimiento:** solo presión de botones, cajón y cambios de color; `ease-out` (curva fuerte) o `ease-drawer`, menos
-  de 300 ms, propiedades explícitas (nunca `transition` a secas) y `motion-reduce:` siempre.
-- **Logo:** usa `<Logo />`, `<Isotipo />` o `<AuthLayout>` de `components/Logo.tsx`. El dibujo es decorativo
-  (`aria-hidden`); el nombre "Cáterin" va como texto en la serif. Cloche crema con vapor cobre sobre cuadrado laurel
-  de esquina 96/512. Archivos en `public/brand/`; para cambiarlos, `scripts/brand.py` y `npm run icons`.
+  `bg-accent`, `bg-panel`…). Para cambiar un color, edita `scripts/theme.mjs` (paleta declarada a mano) y corre
+  `npm run theme`; no edites el bloque `theme:start … theme:end`.
+- **Pares de contraste:** texto `on-X` sobre fondo `X`. Si usas un par nuevo, agrégalo a `PAIRS` en
+  `src/theme.test.ts`.
+- **Colores:** tinta `#1a1a1a` (`primary`, `brand`) para el botón principal, enlaces y selección; blanco y lienzo
+  `#f7f6f3`; panel `#1b1b1b` con `on-panel`/`on-panel-variant`.
+- **El amarillo `#ffd45c` (`accent`) solo es fondo:** círculo del ícono del botón, chips (`<Pill>`), el destino activo
+  de la barra inferior, el botón `tonal`. Su texto es `on-accent` (negro). **Nunca** amarillo como texto sobre blanco
+  (1,4:1; hay una prueba que lo recuerda). Para un acento cálido sobre blanco, `tertiary` (ámbar oscuro).
+- **Tipografía:** Urbanist variable autoalojada (`src/fonts.css`). Interfaz en 500; títulos grandes en **dos pesos**:
+  arriba 400 y abajo 800 (`<Page lead=… title=…>` o dos `span`). Cifras con la clase `num` o `<Num>` (cifras
+  tabulares, 700). No agregues fuentes.
+- **Forma:** `rounded-lg` es **píldora** (botones, chips, navegación); `rounded-md` 14 px campos; `rounded-xl` 22 px
+  tarjetas y avisos; `rounded-2xl`/`rounded-3xl` 28–36 px portadas y cajón. Botones circulares con `rounded-full`.
+- **Profundidad:** sombras suaves y difusas: `shadow-cap` (tarjetas), `shadow-key` (botón principal), `shadow-soft`
+  (portadas y flotantes), `shadow-plate` (platos). Sin bordes finos alrededor de las tarjetas.
+- **Piezas de comida (`components/Food.tsx`):** `FoodPanel` (panel oscuro con `doodles` y corte diagonal: abajo en el
+  celular, a la izquierda desde `lg`), `Plate` (plato redondo; si la foto falta, uno dibujado), `Floater`
+  (ingrediente flotando), `Coupon` (tarjeta punteada tipo cupón) y `Squiggle`. Fotos en `public/fotos/` (licencia
+  libre, ver `THIRD_PARTY_NOTICES.md`); las de productos llegan por `photo_url`.
+- **Fondos:** `doodles` (dibujos de comida claros) solo sobre `bg-panel`; `grid-paper` (los mismos, muy tenues) en
+  vacíos. Nunca detrás de texto largo.
+- **Botones:** `<Button>` (48 px mínimo, píldora). `icon="…"` pone el ícono en un círculo amarillo, como el "Buy Now"
+  de la referencia; úsalo en la acción principal de una portada. Variantes: `primary` negro, `tonal` amarillo,
+  `secondary` delineado, `ghost` texto. Foco: anillo oscuro (`ring-primary/40`); sobre el panel, `ring-accent`.
+- **Marco:** en escritorio, barra superior blanca con el logo, los destinos en píldora, "Más" (cajón) y "Cerrar sesión"
+  delineado. En el celular, barra superior con menú y barra inferior **flotante oscura**; el activo lleva el círculo
+  amarillo. Toda pantalla con sesión usa `Page` (salvo el inicio, que tiene portada propia).
+- **Atajos:** `shortcut` o `aria-keyshortcuts` + `<Kbd>` (solo escritorio con mouse) y `useShortcut`; nunca actúan
+  dentro de un campo. Hoy: `C` cotizar, `/` buscar.
+- **Movimiento:** solo presión de botones, cajón y cambios de color/opacidad; `ease-out` o `ease-drawer`, menos de
+  300 ms, propiedades explícitas y `motion-reduce:` siempre.
+- **Logo:** `<Logo />`, `<Isotipo />` o `<AuthLayout>` de `components/Logo.tsx`. Cloche blanca con vapor amarillo
+  sobre cuadrado de tinta (esquina 120/512); la palabra "Cáterin" va como texto en Urbanist 800. Archivos en
+  `public/brand/`; para cambiarlos, `scripts/brand.py` y `npm run icons`.
 - **PDF de la cotización:** es de la pyme. El encabezado es el nombre (o logo) de la pyme; Cáterin solo firma al pie.
-- **Íconos:** Material Icons rellenos, `viewBox` 24, en `components/Icon.tsx`. Comida: `cloche`, `restaurant`;
-  pyme: `store`.
-- **Un solo momento fuerte por lado:** el panel laurel rayado del login y, para el cliente, la portada de la pyme en
-  el portal (ADR-012). En las pantallas de trabajo manda la claridad.
-- **Nada de Zed:** se tomaron principios, no su marca (sin su logo, textos, azul, fuentes ni diagramaciones).
+- **Íconos:** Material Icons rellenos, `viewBox` 24, en `components/Icon.tsx`.
+- **Sin precios inventados:** en el portal el precio sale al cotizar (ADR-009); nada de precios tachados si no existe
+  un precio anterior real.
+- **Nada de la marca de la referencia:** se tomaron rasgos visuales, no su logo, nombre ni textos.
 
 ## Textos
 
 Español de Chile, simple, en segunda persona y con verbos concretos. El botón dice lo que pasa ("Cotizar con esta
 pyme", no "Continuar"). Los errores dicen qué pasó y cómo seguir, sin disculpas. Puntos suspensivos con `…`.
 Ejemplos:
-- "Tu catering, ordenado y sin planillas"
-- "Pega el mensaje del cliente y listo"
+- "Tu catering, / **ordenado y sin planillas**"
+- "Hola, Marta / **¿Qué cotizamos hoy?**"
 - "Esta pyme todavía no publica productos. Puedes escribirle tu pedido igual."
 
 ## Otras skills de diseño
 
 - `interface-design`: dirección, jerarquía y revisión (`/interface-design:design-review`).
-- `frontend-design`: solo para momentos de marca (login).
+- `frontend-design`: para portadas y momentos de marca.
 - `web-interface-guidelines`: detalles de interfaz. Excepciones en Cáterin: títulos y botones en mayúscula inicial
-  del español, no *Title Case*; comillas y formatos de es-CL; `autoFocus` no se usa en el celular; `theme-color` es el
-  laurel de la marca, no el fondo de la página.
-- `emil-design-eng`: movimiento y sensación al presionar. Se implementa con CSS (no se agrega Motion); ignora su
-  "Initial Response".
+  del español, no *Title Case*; comillas y formatos de es-CL; `autoFocus` no se usa en el celular; `theme-color` es la
+  tinta de la marca.
+- `emil-design-eng`: movimiento y sensación al presionar. Se implementa con CSS (no se agrega Motion).
+- `dataviz`: colores de gráficos `chart-1` (dorado `#d99a00`) y `chart-2` (índigo `#5a5ad6`), validados con su script.
 
 ## Verificación
 
-`npm test` (contraste, marca y `plano.test.tsx`), `npm run theme -- --check`, `npx playwright test e2e/a11y.e2e.ts
-e2e/plano.e2e.ts` y capturas a 390 y 1280 px con `SHOTS=despues npx playwright test e2e/brand.e2e.ts`.
+`npm test` (contraste, marca y `estetica.test.tsx`), `npm run theme -- --check`, `npx playwright test e2e/a11y.e2e.ts
+e2e/estetica.e2e.ts` y capturas a 390 y 1280 px con `npx playwright test e2e/t21.e2e.ts` (en `e2e-artifacts/t21/`).

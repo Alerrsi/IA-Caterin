@@ -1,6 +1,6 @@
 # ADR-012 — Portada de la pyme en el portal de clientes
 
-- Estado: aceptado (16-nov-2026, T19)
+- Estado: aceptado (16-nov-2026, T19). Su estética (panel laurel, marco punteado) la reemplaza [ADR-013](ADR-013-estetica-de-la-referencia.md) en T21; se mantienen la regla del destacado y del recomendado, y "sin precios".
 - Relacionado: ADR-007 (portal), ADR-008 (identidad visual), ADR-009 (catálogo), ADR-010 (estética "plano de cocina")
 
 ## Contexto

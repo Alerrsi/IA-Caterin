@@ -1,6 +1,7 @@
 # ADR-010 — Estética "plano de cocina" (inspirada en zed.dev)
 
-- Estado: **aceptado** (15-nov-2026: el usuario aceptó todas las recomendaciones del plan). Implementado en la rama
+- Estado: **reemplazado por [ADR-013](ADR-013-estetica-de-la-referencia.md)** (16-nov-2026, T21). Se conservan los
+  atajos de teclado y el `<Kbd>`. Antes: **aceptado** (15-nov-2026: el usuario aceptó todas las recomendaciones del plan). Implementado en la rama
   `feat/T16-estetica-plano` e integrado a `main` el mismo día.
 - Contexto en: ADR-008 (identidad visual), T16 (plan detallado).
 

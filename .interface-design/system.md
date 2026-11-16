@@ -1,89 +1,89 @@
 # Design System — Cáterin
 
 Memoria de la skill `interface-design`. Resumen de marca y reglas en `.claude/skills/caterin-brand/SKILL.md`;
-decisiones en `docs/adr/ADR-008-identidad-visual.md` (color, logo) y `docs/adr/ADR-010-estetica-plano.md` (plano de
-cocina). Los colores salen de `apps/web/scripts/theme.mjs` (no se escriben a mano).
+decisión en `docs/adr/ADR-013-estetica-de-la-referencia.md` (T21, 16-nov-2026; reemplaza ADR-008 y ADR-010). Los
+colores salen de `apps/web/scripts/theme.mjs` (paleta declarada a mano; no se escriben en el CSS).
 
 ## Direction
 
-**Personality:** Precision & Function con calidez contenida ("cocina profesional ordenada", dibujada como un plano).
-**Foundation:** neutral (tono laurel con croma 2: casi blanco, sin crema ni gris azulado).
-**Depth:** borders-only con líneas finas (`hairline`) + cambios de superficie. Única sombra: el botón tecla.
+**Personality:** cálida y apetitosa, como la imagen de referencia de una app de comida: blanco limpio, tinta casi negra,
+panel oscuro en diagonal con dibujos de comida, platos redondos enormes y un acento amarillo.
+**Foundation:** blanco `#ffffff` sobre lienzo `#f7f6f3`.
+**Depth:** sombras suaves y difusas (`shadow-cap`, `shadow-soft`, `shadow-plate`); sin bordes finos en las tarjetas.
 
-Quién: emprendedora de catering, en el celular, entre la cocina y un evento. Qué: cotizar, revisar stock, responder
-clientes. Sensación: tranquila, precisa y confiable, como una cocina limpia antes del servicio.
-Firma: cifras de comanda en monoespaciada, línea de corte punteada antes del total, papel cuadriculado de la libreta
-de recetas y el panel laurel rayado del login.
+Quién: emprendedora de catering (y sus clientes en el portal), en el celular. Qué: cotizar, revisar stock, responder
+clientes. Sensación: dan ganas de comer; ordenado y simple.
+Firma: plato redondo que se sale del panel oscuro, título en dos pesos, píldora negra con círculo amarillo, tarjeta
+punteada tipo cupón, barra inferior flotante oscura.
 
 ## Tokens
 
 ### Color (roles en `apps/web/src/index.css`)
 ```
---color-primary: laurel (#2d6956)         acción principal, enlaces, foco
---color-primary-edge: #004434             borde inferior de la tecla
---color-primary-container: #d1e8dd        acceso destacado, selección en la navegación
---color-tertiary: cobre (#924b29)         acento puntual (≤ 10 %), nunca botones
---color-surface-container-low: #f5f3f1    lienzo de la página y cajón
---color-surface: #faf9f7                  columna de contenido en escritorio
---color-surface-container-lowest: #fff    tarjetas, celdas y campos
---color-hairline: #dbddda                 rieles, celdas, divisores, tarjetas
---color-outline: #757875                  borde de campos y línea de corte (3:1)
---color-brand: #1f4d3f                    solo logo, login y theme-color
+--color-primary: #1a1a1a                  botón principal, enlaces, selección
+--color-accent: #ffd45c                   SOLO fondo: círculo del ícono, chips, activo de la barra, botón tonal
+--color-on-accent: #1a1a1a                texto sobre amarillo
+--color-accent-soft: #fff4cf              hover de tarjetas, contenedores suaves
+--color-tertiary: #7a5200                 acento cálido como texto/ícono sobre blanco (AA)
+--color-panel: #1b1b1b                    panel oscuro de las portadas (con `doodles`)
+--color-on-panel / on-panel-variant       texto sobre el panel
+--color-surface-container-low: #f7f6f3    lienzo de la página
+--color-surface-container-lowest: #fff    tarjetas y campos
+--color-outline: #85827b                  borde de campos (3:1)
+--color-brand: #1a1a1a                    logo y theme-color
+--color-chart-1 / chart-2: #d99a00 / #5a5ad6  gráficos (validados con dataviz)
 ```
 
 ### Spacing
-Base: 4 px (escala de Tailwind). Celda y tarjeta: 16–20 px. Entre bloques: 24 px. Cabecera de pantalla: 16 px
-abajo en celular, 24 px y línea fina en escritorio.
+Base 4 px. Tarjeta: 16–24 px. Entre bloques: 24 px. Portadas: 24–48 px de relleno.
 
 ### Radius
-2 px etiquetas y `kbd` · 4 px campos, botones y navegación · 6 px tarjetas, celdas y avisos · 8 px cajón y login.
+8 px chips de estado y `kbd` · 14 px campos · píldora (`rounded-lg` = 9999 px) botones y navegación · 22 px tarjetas ·
+28–36 px portadas y cajón.
 
-### Typography (IBM Plex)
-Cuerpo: Plex Sans variable, raíz 17 px, mínimo 15 px. `h1`: Plex Serif 500, 29,75 px (38 px escritorio), interletra
-−0,02 em, `text-wrap: balance`. Títulos de sección: Serif 20 px. Cifras: Plex Mono 400 con `tabular-nums` (`.num`).
-Frase del login: Serif cursiva.
+### Typography (Urbanist variable)
+Interfaz 500, raíz 17 px, mínimo 15 px. `h1` 800, 32 px (44 px escritorio), interletra −0,025 em. Títulos de portada
+en dos pesos (400 arriba, 800 abajo) hasta 60 px. `h2` 700. Cifras: misma fuente, 700, `tabular-nums` (`.num`).
 
 ### Motion
-`--ease-out: cubic-bezier(0.23, 1, 0.32, 1)` (150 ms, presión y color); `--ease-drawer: cubic-bezier(0.32, 0.72, 0,
-1)` (300 ms, cajón). `motion-reduce` quita el desplazamiento.
+`--ease-out: cubic-bezier(0.23, 1, 0.32, 1)` (150 ms, presión, color, opacidad); `--ease-drawer` (300 ms, cajón).
+`motion-reduce` quita el desplazamiento.
 
 ## Patterns
 
 ### Button (`ui.tsx`)
-- Alto mínimo 48 px, relleno 20 px horizontal, radio 4 px, 17 px/500.
-- `primary`: relleno laurel + `shadow-key` (borde inferior `primary-edge` de 2 px); al presionar baja 1 px y el borde
-  pasa a 1 px. `secondary`: blanco, borde `outline`, `shadow-cap`. `tonal` y `ghost` sin sombra.
-- `shortcut="C"`: agrega `aria-keyshortcuts` y `<Kbd>` (solo escritorio con mouse).
+- Píldora de 48 px mínimo, 17 px/600. `primary` negro + `shadow-key`; `tonal` amarillo; `secondary` blanco delineado;
+  `ghost` texto. `icon="…"`: círculo amarillo de 36 px al inicio (negro con ícono amarillo en el `tonal`).
+
+### Food (`components/Food.tsx`)
+- `FoodPanel`: panel `bg-panel doodles`, corte diagonal (abajo en el celular, izquierda desde `lg`).
+- `Plate`: foto recortada en círculo con `shadow-plate`; sin foto, un plato dibujado (empanadas).
+- `Floater`: ingrediente con sombra; sin foto, uno dibujado. `Coupon`: borde punteado de 2 px, título con línea punteada.
 
 ### Cells (`ui.tsx`, utilidad `cells`)
-- Lista en grilla, borde `hairline` de 1 px, radio 6 px, fondo blanco; cada `<li>` dibuja su línea derecha e inferior
-  en una capa encima. Accesos del inicio (destacado a todo el ancho), pymes y productos del catálogo.
+- Grilla con 12–16 px de aire; cada `<li>` es una tarjeta blanca, radio 22 px, `shadow-cap`. Accesos con `IconDot`.
 
 ### Page (`ui.tsx`)
-- Escritorio: columna con rieles `hairline` y cabecera con línea inferior y marcas cuadradas de 7 px en los cruces.
-- Título serif, bajada opcional (`description`), acciones a la derecha.
+- Volver en un círculo blanco con sombra; título grande (opcional `lead` en 400 arriba); bajada y acciones.
 
-### Card
-- Borde `hairline`, fondo blanco, radio 6 px, relleno 16/20 px, sin sombra.
-
-### Total como ticket
-- Neto e IVA arriba en mono alineados a la derecha, línea `border-dashed border-outline`, total en mono 36 px.
+### AppShell
+- Escritorio: barra superior blanca (logo, destinos en píldora, "Más", "Cerrar sesión" delineado).
+- Celular: barra superior + barra inferior flotante oscura con el activo en círculo amarillo.
 
 ### Input (`inputClass`)
-- Alto 48 px, borde 1 px `outline`, radio 4 px; foco: borde y anillo de 1 px `primary`.
+- 48 px, borde `outline`, radio 14 px; foco: borde negro y halo amarillo.
 
 ### Status chip
-- Radio 2 px, alto 32 px, `px-2.5`, 15 px/500, colores del contenedor del estado.
+- Píldora de 32 px, 15 px/600, colores del contenedor del estado.
 
 ## Decisions
 
 | Decision | Rationale | Date |
 |----------|-----------|------|
-| Laurel en vez de maqui | El usuario pidió colores distintos y un aspecto más profesional | 2026-11-15 |
-| Estados con croma ≤ 22 | Los avisos no deben gritar más que la acción principal | 2026-11-15 |
-| Se mantienen los nombres de rol MD3 | Cambiarlos tocaba todos los componentes sin cambiar lo que se ve | 2026-11-15 |
-| Estética "plano de cocina" (inspirada en zed.dev) | Pedido del usuario; principios traducidos al catering, sin su marca (ADR-010) | 2026-11-15 |
-| IBM Plex Sans/Serif/Mono en vez de Roboto y Bricolage | Una familia en tres voces; 101,6 KB de fuentes (antes 85,4 con dos familias) | 2026-11-15 |
-| Esquinas de 2–8 px | Las de 8 px y las píldoras se veían blandas para una herramienta de trabajo | 2026-11-15 |
-| Sin Plex Mono 500 | Presupuesto; las cifras destacan por tamaño, no por peso | 2026-11-15 |
-| Atajos solo `C` y `/` | Los que más se repiten en escritorio; nunca dentro de un campo | 2026-11-15 |
+| Estética de la imagen de referencia en toda la app (ADR-013) | El usuario: "yo no veo el diseño como el de la foto"; eligió toda la app, muy fiel y fotos libres | 2026-11-16 |
+| Urbanist en vez de IBM Plex | Geométrica como la de la referencia; una sola variable de ≈ 28 KB | 2026-11-16 |
+| Amarillo solo como fondo | 1,4:1 sobre blanco: como texto no pasa AA | 2026-11-16 |
+| Paleta declarada a mano en `theme.mjs` | La referencia no sale de una semilla MD3; se mantienen los nombres de rol | 2026-11-16 |
+| Píldoras en botones y navegación; tarjetas de 22 px | Así se ve la referencia | 2026-11-16 |
+| Reemplazos dibujados para fotos que faltan | La composición no se rompe sin red ni antes de cargar fotos | 2026-11-16 |
+| Atajos solo `C` y `/` (de T16) | Los que más se repiten en escritorio; nunca dentro de un campo | 2026-11-15 |

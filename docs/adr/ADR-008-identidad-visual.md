@@ -1,6 +1,8 @@
 # ADR-008 — Identidad visual de Cáterin
 
-- Estado: **aceptado** (15-nov-2026, pedido del usuario; plan en `docs/RENOVACION.md`, tarea T14).
+- Estado: **reemplazado por [ADR-013](ADR-013-estetica-de-la-referencia.md)** (16-nov-2026, T21): colores, tipografía y
+  forma. Se mantiene el dibujo del logo (la cloche con vapor), recoloreado. Antes: **aceptado** (15-nov-2026, pedido del
+  usuario; plan en `docs/RENOVACION.md`, tarea T14).
   **Revisado** el mismo día: colores, forma y skills (sección "Revisión: laurel e `interface-design`"). Los puntos
   2, 5 (colores del logo), 9 y 10 quedan reemplazados por esa revisión. La tipografía (punto 4), la forma y el
   logotipo cambian otra vez con [ADR-010](ADR-010-estetica-plano.md) (IBM Plex, esquinas de 2–8 px).
