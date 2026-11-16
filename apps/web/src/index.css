@@ -94,46 +94,50 @@
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
-html {
-  font-size: 17px;
-}
-/* Sin la espera del doble toque para hacer zoom: los botones responden al instante en el celular. */
-a,
-button,
-label,
-summary {
-  touch-action: manipulation;
-}
-body {
-  background: var(--color-surface-container-low);
-  color: var(--color-on-surface);
-  font-family: var(--font-sans);
-  font-weight: 500;
-  -webkit-font-smoothing: antialiased;
-}
-/* Títulos grandes y apretados, como en la referencia. */
-h1 {
-  font-family: var(--font-display);
-  font-weight: 800;
-  letter-spacing: -0.025em;
-}
-h2 {
-  letter-spacing: -0.01em;
-}
-h1,
-h2 {
-  text-wrap: balance;
-}
-/* Cifras que cambian (precios, cantidades, stock) en columnas parejas. */
-table {
-  font-variant-numeric: tabular-nums;
-}
-/* Cifras: precios, cantidades, códigos y fechas, con cifras tabulares y un peso firme. */
-.num {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+/* Estilos base en la capa `base`: las utilidades (p. ej. `font-normal` en un título) siempre pueden ajustarlos. */
+@layer base {
+  html {
+    font-size: 17px;
+  }
+  /* Sin la espera del doble toque para hacer zoom: los botones responden al instante en el celular. */
+  a,
+  button,
+  label,
+  summary {
+    touch-action: manipulation;
+  }
+  body {
+    background: var(--color-surface-container-low);
+    color: var(--color-on-surface);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* Títulos grandes y apretados, como en la referencia. */
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+  }
+  h2 {
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  h1,
+  h2 {
+    text-wrap: balance;
+  }
+  /* Cifras que cambian (precios, cantidades, stock) en columnas parejas. */
+  table {
+    font-variant-numeric: tabular-nums;
+  }
+  /* Cifras: precios, cantidades, códigos y fechas, con cifras tabulares y un peso firme. */
+  .num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
 }
 
 /*

@@ -45,8 +45,8 @@ export function ProductionPreview({ recipeId, qty, consume }: { recipeId: string
   const unit = preview.yield_unit
   const consumed = preview.consumed
   return (
-    <div className="rounded-xl border border-dashed border-outline p-3 text-on-surface" aria-live="polite">
-      <p className="text-sm font-medium text-on-surface-variant">{t.vision.previewTitle}</p>
+    <div className="rounded-xl border-2 border-dashed border-outline-variant p-4 text-on-surface" aria-live="polite">
+      <p className="text-sm font-semibold text-on-surface-variant">{t.vision.previewTitle}</p>
       <p className="mt-1">
         {t.vision.previewAdd(formatStock(preview.add_qty, unit), preview.recipe_name, formatStock(preview.product_stock_qty, unit))}
       </p>
@@ -56,18 +56,20 @@ export function ProductionPreview({ recipeId, qty, consume }: { recipeId: string
         <p className="mt-1 text-sm text-on-surface-variant">{t.vision.previewNoLines}</p>
       ) : (
         <details className="mt-1" open={consumed.some((c) => c.went_negative)}>
-          <summary className="min-h-11 cursor-pointer py-2 font-medium text-primary">
+          <summary className="min-h-11 cursor-pointer py-2 font-semibold text-primary">
             {t.vision.previewConsume(consumed.length)}
           </summary>
-          <ul className="space-y-1 text-sm">
+          {/* Columnas alineadas (T21): insumo a la izquierda, cuánto se usa a la derecha y lo que queda debajo. */}
+          <ul className="divide-y divide-hairline text-sm">
             {consumed.map((c) => (
-              <li key={c.ingredient_id} className="flex flex-wrap items-baseline justify-between gap-x-3">
-                <span>{c.name}</span>
-                <span className="num">
-                  {t.vision.previewLine(formatStock(c.qty, c.base_unit), formatStock(c.stock_qty, c.base_unit))}
+              <li key={c.ingredient_id} className="grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 py-2">
+                <span className="font-semibold text-on-surface">{c.name}</span>
+                <span className="num text-right text-on-surface">{formatStock(c.qty, c.base_unit)}</span>
+                <span className="col-span-2 text-on-surface-variant">
+                  <span className="num font-medium">{t.vision.previewLeft(formatStock(c.stock_qty, c.base_unit))}</span>
                 </span>
                 {c.went_negative && (
-                  <span className="inline-flex w-full items-center gap-1 font-medium text-on-warning-container">
+                  <span className="col-span-2 mt-1 inline-flex items-center gap-1 font-semibold text-on-warning-container">
                     <Icon name="warning" className="h-4 w-4 text-warning" />
                     {t.vision.previewNegative}
                   </span>

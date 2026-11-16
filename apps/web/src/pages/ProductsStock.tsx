@@ -132,13 +132,13 @@ function ProductRow({ product, onAdjusted }: { product: ProductStock; onAdjusted
   const [mode, setMode] = useState<'none' | 'adjust' | 'history'>('none')
   const negative = Number(product.stock_qty) < 0
   return (
-    <li className="rounded-xl bg-surface-container-lowest shadow-cap p-4">
+    <li className="rounded-xl bg-surface-container-lowest p-4 shadow-cap md:p-5">
       <div className="flex items-center gap-3">
         <div className="min-w-0 flex-1">
-          <p className="text-lg font-medium text-on-surface">{product.name}</p>
+          <p className="text-lg font-bold text-on-surface">{product.name}</p>
           <Num className="block text-2xl text-on-surface">{formatStock(product.stock_qty, product.yield_unit)}</Num>
           {negative && (
-            <span className="mt-1 inline-flex items-center gap-1 rounded-sm bg-warning-container px-2 py-0.5 text-sm font-medium text-on-warning-container">
+            <span className="mt-1 inline-flex items-center gap-1 rounded-lg bg-warning-container px-3 py-0.5 text-sm font-semibold text-on-warning-container">
               <Icon name="warning" className="h-4 w-4" />
               {p.negative}
             </span>
@@ -166,6 +166,8 @@ function ProductRow({ product, onAdjusted }: { product: ProductStock; onAdjusted
   )
 }
 
+const RECENT = 5
+
 /** Producción reciente con "Anular" para la dueña: devuelve los insumos y resta lo que se sumó. */
 function RecentProductions({ onVoided }: { onVoided: () => void }) {
   const online = useOnline()
@@ -175,11 +177,12 @@ function RecentProductions({ onVoided }: { onVoided: () => void }) {
   const [confirming, setConfirming] = useState<string | null>(null)
   const [message, setMessage] = useState<{ kind: 'info' | 'error'; text: string } | null>(null)
   const [tick, setTick] = useState(0)
+  const [shown, setShown] = useState(RECENT)
 
   useEffect(() => {
     if (!online) return
     let alive = true
-    api<{ items: Production[] }>('/vision/productions?limit=10').then(
+    api<{ items: Production[] }>('/vision/productions?limit=30').then(
       (page) => alive && setItems(page.items),
       () => alive && setItems([]),
     )
@@ -203,7 +206,7 @@ function RecentProductions({ onVoided }: { onVoided: () => void }) {
 
   return (
     <section aria-labelledby="productions-title" className="mt-6">
-      <h2 id="productions-title" className="mb-3 font-display text-xl text-on-surface">
+      <h2 id="productions-title" className="mb-3 text-2xl font-extrabold text-on-surface">
         {p.productions}
       </h2>
       {message && (
@@ -218,21 +221,32 @@ function RecentProductions({ onVoided }: { onVoided: () => void }) {
       ) : items.length === 0 ? (
         <p className="text-on-surface-variant">{p.noProductions}</p>
       ) : (
+        <>
         <ul className="divide-y divide-hairline rounded-xl bg-surface-container-lowest shadow-cap">
-          {items.map((r) => (
-            <li key={r.id} className="p-4">
-              <div className="flex flex-wrap items-baseline justify-between gap-x-3">
-                <span className={`font-medium ${r.voided_at ? 'text-on-surface-variant line-through' : 'text-on-surface'}`}>
+          {items.slice(0, shown).map((r) => (
+            <li key={r.id} className="px-4 py-3 md:px-5">
+              <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-3">
+                <span className={`font-semibold ${r.voided_at ? 'text-on-surface-variant line-through' : 'text-on-surface'}`}>
                   {r.recipe_name}
                 </span>
-                <Num className="text-on-surface">{`+${r.confirmed_qty}`}</Num>
+                <Num className="text-right text-on-surface">{`+${r.confirmed_qty}`}</Num>
+                <p className="text-sm text-on-surface-variant">
+                  <Num className="font-medium">{formatDate(r.created_at)}</Num>
+                  {r.was_corrected && r.detected_qty !== null && ` · ${p.corrected(r.detected_qty)}`}
+                  {r.voided_at && ` · ${p.voided}`}
+                </p>
+                {owner && !r.voided_at && r.confirmed_qty > 0 && confirming !== r.id && (
+                  // Discreto: texto chico a la derecha; la anulación pide confirmar.
+                  <button
+                    type="button"
+                    onClick={() => setConfirming(r.id)}
+                    className="-mr-2 min-h-11 justify-self-end rounded-lg px-2 text-sm text-on-surface-variant underline underline-offset-4 hover:text-on-surface focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40"
+                  >
+                    {p.void}
+                  </button>
+                )}
               </div>
-              <p className="text-sm text-on-surface-variant">
-                <Num>{formatDate(r.created_at)}</Num>
-                {r.was_corrected && r.detected_qty !== null && ` · ${p.corrected(r.detected_qty)}`}
-                {r.voided_at && ` · ${p.voided}`}
-              </p>
-              {owner && !r.voided_at && r.confirmed_qty > 0 && (
+              {owner && !r.voided_at && r.confirmed_qty > 0 && confirming === r.id && (
                 <div className="mt-2">
                   {confirming === r.id ? (
                     <div className="space-y-2">
@@ -246,16 +260,18 @@ function RecentProductions({ onVoided }: { onVoided: () => void }) {
                         </Button>
                       </div>
                     </div>
-                  ) : (
-                    <Button variant="ghost" className="-ml-3" onClick={() => setConfirming(r.id)}>
-                      {p.void}
-                    </Button>
-                  )}
+                  ) : null}
                 </div>
               )}
             </li>
           ))}
         </ul>
+        {items.length > shown && (
+          <Button variant="secondary" className="mt-3" onClick={() => setShown((n) => n + 10)}>
+            {p.showMore}
+          </Button>
+        )}
+        </>
       )}
     </section>
   )
@@ -274,6 +290,9 @@ export default function ProductsStock() {
     )
     setNotice(navigator.onLine ? null : t.sync.savedLocally)
   }
+
+  const withStock = value?.data.filter((x) => Number(x.stock_qty) !== 0) ?? []
+  const empty = value?.data.filter((x) => Number(x.stock_qty) === 0) ?? []
 
   return (
     <Page title={t.inventory.title} description={p.intro} onBack={() => navigate('/')}>
@@ -295,11 +314,26 @@ export default function ProductsStock() {
       ) : value.data.length === 0 ? (
         <p>{p.empty}</p>
       ) : (
-        <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3" aria-label={p.title}>
-          {value.data.map((product) => (
-            <ProductRow key={product.recipe_id} product={product} onAdjusted={(d) => adjusted(product, d)} />
-          ))}
-        </ul>
+        <>
+          {/* Primero lo que tiene existencias (o quedó en negativo); los de cero, plegados (T21). */}
+          {withStock.length > 0 && (
+            <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3" aria-label={p.title}>
+              {withStock.map((product) => (
+                <ProductRow key={product.recipe_id} product={product} onAdjusted={(d) => adjusted(product, d)} />
+              ))}
+            </ul>
+          )}
+          {empty.length > 0 && (
+            <details className="mt-4 rounded-xl bg-surface-container-lowest p-4 shadow-cap md:p-5" open={withStock.length === 0}>
+              <summary className="min-h-11 cursor-pointer py-2 text-lg font-bold text-on-surface">{p.withoutStock(empty.length)}</summary>
+              <ul className="mt-2 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                {empty.map((product) => (
+                  <ProductRow key={product.recipe_id} product={product} onAdjusted={(d) => adjusted(product, d)} />
+                ))}
+              </ul>
+            </details>
+          )}
+        </>
       )}
       <RecentProductions onVoided={refresh} />
     </Page>

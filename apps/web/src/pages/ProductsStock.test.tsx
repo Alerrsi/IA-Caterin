@@ -105,3 +105,26 @@ test('la colaboradora ajusta pero no puede anular producciones', async () => {
   expect(within(recent).queryByRole('button', { name: 'Anular' })).not.toBeInTheDocument()
   expect(screen.getAllByRole('button', { name: 'Ajustar' })).toHaveLength(2)
 })
+
+test('los productos sin existencias quedan plegados y la producción reciente muestra 5 con "Ver más" (T21)', async () => {
+  const zero = { ...products[0], recipe_id: 'r-queso', name: 'Empanadas de queso', stock_qty: '0.000' }
+  const many = Array.from({ length: 7 }, (_, i) => ({ ...productions.items[0], id: `pr${i + 1}`, confirmed_qty: 10 + i }))
+  mockApi({
+    ...routes(),
+    'GET /products/stock': () => ({ body: [...products, zero] }),
+    'GET /vision/productions': () => ({ body: { items: many, next_cursor: null } }),
+  })
+  const user = userEvent.setup()
+  render(<App />)
+  const list = await screen.findByRole('list', { name: 'Productos listos' })
+  expect(within(list).queryByText('Empanadas de queso')).not.toBeInTheDocument()
+  const folded = screen.getByText('Sin existencias (1)').closest('details')!
+  expect(folded).not.toHaveAttribute('open')
+  expect(within(folded).getByText('Empanadas de queso')).toBeInTheDocument()
+
+  const recent = await screen.findByRole('region', { name: 'Producción reciente' })
+  await waitFor(() => expect(within(recent).getAllByRole('listitem')).toHaveLength(5))
+  await user.click(within(recent).getByRole('button', { name: 'Ver más' }))
+  expect(within(recent).getAllByRole('listitem')).toHaveLength(7)
+  expect(within(recent).queryByRole('button', { name: 'Ver más' })).not.toBeInTheDocument()
+})
