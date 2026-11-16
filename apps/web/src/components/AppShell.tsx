@@ -34,6 +34,7 @@ function destinations(role: string | undefined): Dest[] {
     { path: '/inventario', label: t.nav.inventory, icon: 'inventory' },
     { path: '/recetas', label: t.nav.recipes, icon: 'restaurant' },
     { path: '/foto', label: t.nav.vision, icon: 'camera' },
+    owner && { path: '/tablero', label: t.nav.dashboard, icon: 'trend' },
     owner && { path: '/importar', label: t.nav.imports, icon: 'upload' },
     owner && { path: '/metricas', label: t.nav.metrics, icon: 'metrics' },
     owner && { path: '/ajustes', label: t.nav.settings, icon: 'settings' },

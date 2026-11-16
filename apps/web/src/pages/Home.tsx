@@ -137,6 +137,9 @@ export default function Home() {
           <ActionCell icon="orders" label={t.home.orders} hint={t.home.ordersHint} onClick={() => navigate('/pedidos')} />
           <ActionCell icon="restaurant" label={t.home.recipes} hint={t.home.recipesHint} onClick={() => navigate('/recetas')} />
           {owner && (
+            <ActionCell icon="trend" label={t.home.dashboard} hint={t.home.dashboardHint} onClick={() => navigate('/tablero')} />
+          )}
+          {owner && (
             <ActionCell icon="upload" label={t.home.imports} hint={t.home.importsHint} onClick={() => navigate('/importar')} />
           )}
           {owner && (

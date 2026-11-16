@@ -101,3 +101,48 @@ export const ADJUST_UNITS: Record<BaseUnit, { value: string; label: string; fact
     { value: 'docena', label: 'docenas', factor: 12 },
   ],
 }
+
+/** Eje de un gráfico de dinero (T17): 1250000 -> "$1,3 M", 450000 -> "$450 mil", 900 -> "$900". */
+export function formatCLPCompact(value: number): string {
+  const abs = Math.abs(value)
+  const sign = value < 0 ? '-' : ''
+  if (abs >= 1_000_000) return `${sign}$${formatQty((abs / 1_000_000).toFixed(1))} M`
+  if (abs >= 1_000) return `${sign}$${formatQty(Math.round(abs / 1_000).toString())} mil`
+  return `${sign}$${Math.round(abs)}`
+}
+
+/** Entero con separador de miles: 2882 -> "2.882". */
+export function formatInt(value: number): string {
+  return formatQty(Math.round(value).toString())
+}
+
+const MONTHS_SHORT = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sept', 'oct', 'nov', 'dic']
+const MONTHS_LONG = [
+  'enero',
+  'febrero',
+  'marzo',
+  'abril',
+  'mayo',
+  'junio',
+  'julio',
+  'agosto',
+  'septiembre',
+  'octubre',
+  'noviembre',
+  'diciembre',
+]
+
+/** "2026-06" -> "jun" (corto) o "junio 2026" (largo). */
+export function formatMonth(key: string, long = false): string {
+  const [y, m] = key.split('-').map(Number)
+  return long ? `${MONTHS_LONG[m - 1]} ${y}` : MONTHS_SHORT[m - 1]
+}
+
+const WEEKDAYS_SHORT = ['do', 'lu', 'ma', 'mi', 'ju', 'vi', 'sá']
+
+/** "2026-11-16" -> { short: "lu 16", long: "lunes 16 de noviembre" } (fecha local, sin zona horaria). */
+export function formatDay(iso: string): { short: string; long: string } {
+  const [y, m, d] = iso.slice(0, 10).split('-').map(Number)
+  const wd = new Date(y, m - 1, d).getDay()
+  return { short: `${WEEKDAYS_SHORT[wd]} ${d}`, long: `${t.weekdays[(wd + 6) % 7]} ${d} de ${MONTHS_LONG[m - 1]}` }
+}

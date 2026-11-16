@@ -56,6 +56,11 @@
   --color-brand-steam: #ffdbcd;
   /* theme:end */
 
+  /* Gráficos del tablero (T17). Colores de dato, no de interfaz: validados con validate_palette.js (skill dataviz)
+     contra el blanco de las tarjetas. chart-2 queda bajo 3:1, así que cada gráfico lleva texto y vista en tabla. */
+  --color-chart-1: #14845c;
+  --color-chart-2: #d4874c;
+
   /* Fuentes autoalojadas (ver src/fonts.css): funcionan sin red. Familia IBM Plex en tres voces (T16, ADR-010):
      Sans para la interfaz, Serif para títulos y Mono para las cifras de comanda. */
   --font-sans: 'IBM Plex Sans Variable', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;

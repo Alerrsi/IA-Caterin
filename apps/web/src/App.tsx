@@ -3,6 +3,7 @@ import { AppShell } from './components/AppShell'
 import { OfflineBanner, Spinner } from './components/ui'
 import { t } from './i18n'
 import Assistant from './pages/Assistant'
+import Dashboard from './pages/Dashboard'
 import Home from './pages/Home'
 import Imports from './pages/Imports'
 import IngredientDetail from './pages/IngredientDetail'
@@ -67,6 +68,7 @@ function StaffRoutes({ path }: { path: string }) {
   if (matchPath('/cotizar', path)) return <NewQuote />
   if (matchPath('/pedidos', path)) return <Orders />
   if (matchPath('/metricas', path)) return <Metrics />
+  if (matchPath('/tablero', path)) return <Dashboard />
   if (matchPath('/preguntar', path)) return <Assistant />
   if (matchPath('/inventario/nuevo', path)) return <IngredientNew />
   const ingredient = matchPath('/inventario/:id', path)

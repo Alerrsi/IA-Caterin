@@ -295,6 +295,50 @@ export interface MetricsSummary {
   warnings: string[]
 }
 
+/** Tablero del negocio (T17, `GET /dashboard`). Dinero en CLP enteros; cantidades en texto decimal. */
+export interface Dashboard {
+  period: { months: number; date_from: string; date_to: string; today: string; timezone: string }
+  kpis: {
+    sales_total_clp: number
+    sales_net_clp: number
+    ingredients_cost_clp: number
+    margin_clp: number
+    margin_pct: number | null
+    sold_orders: number
+    avg_ticket_clp: number | null
+    orders_without_quote: number
+    pending_requests: number
+    upcoming_7d: number
+    low_stock: number
+  }
+  sales_by_month: {
+    month: string
+    orders: number
+    net_clp: number
+    ingredients_cost_clp: number
+    margin_clp: number
+    total_clp: number
+  }[]
+  orders_by_status: { status: string; orders: number }[]
+  top_products: { items: { recipe_id: string; name: string; units: string; orders: number }[]; excluded_lines: number }
+  upcoming_by_day: { day: string; confirmed: number; pending: number; guests: number }[]
+  spend_by_supplier: { supplier_id: string | null; name: string; amount_clp: number }[]
+  low_stock: {
+    items: {
+      ingredient_id: string
+      name: string
+      base_unit: BaseUnitName
+      stock_qty: string
+      min_stock_qty: string
+      pct_of_min: number
+    }[]
+    total: number
+  }
+  generated_at: string
+}
+
+type BaseUnitName = 'g' | 'ml' | 'unit'
+
 /** Envía el tiempo de una cotización sin bloquear a la usuaria: si falla, se pierde solo la métrica. */
 export function sendQuoteTiming(body: {
   started_at: string
