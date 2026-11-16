@@ -23,7 +23,15 @@ function errorText(err: unknown): string {
 
 function PymeForm({ online }: { online: boolean }) {
   const [pyme, setPyme] = useState<PymeSettings | null>(null)
-  const [form, setForm] = useState({ name: '', margin: '', waste: '', vat: '', validity: '', includesVat: true })
+  const [form, setForm] = useState({
+    name: '',
+    margin: '',
+    waste: '',
+    vat: '',
+    validity: '',
+    includesVat: true,
+    consumes: true,
+  })
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -39,6 +47,7 @@ function PymeForm({ online }: { online: boolean }) {
           vat: pctText(p.vat_pct),
           validity: p.quote_validity_days === null ? '' : String(p.quote_validity_days),
           includesVat: p.prices_include_vat,
+          consumes: p.production_consumes_ingredients,
         })
       })
       .catch((err) => setError(errorText(err)))
@@ -74,6 +83,7 @@ function PymeForm({ online }: { online: boolean }) {
         vat_pct: vat,
         quote_validity_days: validity,
         prices_include_vat: form.includesVat,
+        production_consumes_ingredients: form.consumes,
       })
       setPyme(out)
       setSaved(true)
@@ -111,6 +121,18 @@ function PymeForm({ online }: { online: boolean }) {
           onChange={(e) => set('includesVat')(e.target.checked)}
         />
         {t.settings.pricesIncludeVat}
+      </label>
+      <label className="flex min-h-12 items-start gap-3 text-lg">
+        <input
+          type="checkbox"
+          className="mt-1 h-6 w-6 shrink-0 accent-primary"
+          checked={form.consumes}
+          onChange={(e) => set('consumes')(e.target.checked)}
+        />
+        <span>
+          {t.settings.consumesIngredients}
+          <span className="block text-sm text-on-surface-variant">{t.settings.consumesIngredientsHint}</span>
+        </span>
       </label>
       {error && <Alert>{error}</Alert>}
       {saved && <Alert kind="info">{t.settings.saved}</Alert>}

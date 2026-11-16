@@ -295,6 +295,62 @@ export interface MetricsSummary {
   warnings: string[]
 }
 
+/** Producto terminado con sus existencias (T18, `GET /products/stock`). */
+export interface ProductStock {
+  recipe_id: string
+  name: string
+  yield_unit: 'g' | 'ml' | 'unit'
+  stock_qty: string
+  vision_class: string | null
+  updated_at: string
+}
+
+export interface ProductMovement {
+  id: string
+  recipe_id: string
+  delta_qty: string
+  reason: 'production' | 'delivery' | 'adjustment' | 'waste' | 'void'
+  note: string | null
+  reference_type: string | null
+  reference_id: string | null
+  occurred_at: string
+  created_at: string
+}
+
+export interface ConsumedIngredient {
+  ingredient_id: string
+  name: string
+  base_unit: 'g' | 'ml' | 'unit'
+  qty: string
+  stock_qty: string
+  went_negative: boolean
+}
+
+export interface ProductionPreview {
+  recipe_id: string
+  recipe_name: string
+  yield_unit: 'g' | 'ml' | 'unit'
+  add_qty: string
+  product_stock_qty: string
+  consume_ingredients: boolean
+  consumed: ConsumedIngredient[]
+}
+
+export interface Production {
+  id: string
+  recipe_id: string
+  recipe_name: string | null
+  detected_qty: number | null
+  confirmed_qty: number
+  model_version: string | null
+  was_corrected: boolean
+  consumed_ingredients: boolean
+  voided_at: string | null
+  created_at: string
+  product_stock_qty: string | null
+  consumed: ConsumedIngredient[]
+}
+
 /** Tablero del negocio (T17, `GET /dashboard`). Dinero en CLP enteros; cantidades en texto decimal. */
 export interface Dashboard {
   period: { months: number; date_from: string; date_to: string; today: string; timezone: string }
@@ -538,6 +594,7 @@ export interface PymeSettings {
   vat_pct: string
   prices_include_vat: boolean
   quote_validity_days: number | null
+  production_consumes_ingredients: boolean
   is_demo: boolean
   customer_code?: string | null
   description?: string | null

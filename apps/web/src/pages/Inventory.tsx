@@ -48,6 +48,32 @@ export function useReloadWhenSynced(reload: () => void): void {
   }, [pending.length, reload])
 }
 
+/** Pestañas del inventario: insumos y productos listos (T18). Son enlaces: cada vista tiene su dirección. */
+export function InventoryTabs({ active }: { active: 'ingredients' | 'products' }) {
+  const tabs = [
+    { id: 'ingredients', label: t.inventory.tabIngredients, href: '#/inventario' },
+    { id: 'products', label: t.inventory.tabProducts, href: '#/inventario/productos' },
+  ] as const
+  return (
+    <nav aria-label={t.inventory.tabs} className="mb-4 flex border-b border-hairline">
+      {tabs.map((tab) => (
+        <a
+          key={tab.id}
+          href={tab.href}
+          aria-current={active === tab.id ? 'page' : undefined}
+          className={`-mb-px inline-flex min-h-12 items-center border-b-2 px-4 text-base font-medium transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 ${
+            active === tab.id
+              ? 'border-primary text-primary'
+              : 'border-transparent text-on-surface-variant hover:text-on-surface'
+          }`}
+        >
+          {tab.label}
+        </a>
+      ))}
+    </nav>
+  )
+}
+
 export default function Inventory() {
   const { value, error, loading, setData, reload } = useCached<Ingredient[]>('ingredients', loadAllIngredients)
   const [query, setQuery] = useState('')
@@ -85,6 +111,7 @@ export default function Inventory() {
 
   return (
     <Page title={t.inventory.title} onBack={() => navigate('/')}>
+      <InventoryTabs active="ingredients" />
       {value?.fromCache && (
         <div className="mb-3">
           <Alert kind="info">{t.sync.staleData(savedAtLabel(value.savedAt))}</Alert>

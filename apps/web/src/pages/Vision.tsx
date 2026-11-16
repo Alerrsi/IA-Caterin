@@ -1,6 +1,7 @@
 import { useEffect, useState, type ChangeEvent } from 'react'
-import { ApiError, countPhoto, type CountOut, type RecipeSummary } from '../api'
+import { ApiError, countPhoto, type CountOut, type PymeSettings, type RecipeSummary } from '../api'
 import { DetectionOverlay } from '../components/DetectionOverlay'
+import { ProductionPreview } from '../components/ProductionPreview'
 import { StarSurvey } from '../components/StarSurvey'
 import { Alert, Button, Field, inputClass, Page, Spinner, useOnline } from '../components/ui'
 import { t } from '../i18n'
@@ -90,6 +91,24 @@ function RecipeSelect({ label, recipes, value, onChange }: { label: string; reci
   )
 }
 
+/** Casilla para descontar (o no) los insumos en esta confirmación. Parte con el ajuste de la pyme (T18). */
+function ConsumeToggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <label className="flex min-h-12 items-start gap-3 text-lg">
+      <input
+        type="checkbox"
+        className="mt-1 h-6 w-6 shrink-0 accent-primary"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+      />
+      <span>
+        {t.vision.consume}
+        <span className="block text-sm text-on-surface-variant">{t.vision.consumeHint}</span>
+      </span>
+    </label>
+  )
+}
+
 export default function Vision() {
   const online = useOnline()
   const recipes = useCached<Recipe[]>('recipes', '/recipes')
@@ -104,6 +123,9 @@ export default function Vision() {
   const [error, setError] = useState<string | null>(null)
   const [info, setInfo] = useState<string | null>(null)
   const [doneMsg, setDoneMsg] = useState('')
+  const settings = useCached<PymeSettings>('pyme', '/pyme')
+  const [consumeChoice, setConsume] = useState<boolean | null>(null)
+  const consume = consumeChoice ?? settings.value?.data.production_consumes_ingredients ?? true
 
   useEffect(() => {
     let alive = true
@@ -221,11 +243,12 @@ export default function Vision() {
           detected_qty: l.detected,
           model_version: count.model_version,
           detections: count.detections.filter((d) => d.vision_class === l.visionClass),
+          consume_ingredients: consume,
         },
         label: `${t.vision.title} · ${name}: ${l.qty}`,
       })
     }
-    await finish(navigator.onLine ? t.vision.confirmed : t.vision.confirmedOffline)
+    await finish(navigator.onLine ? t.vision.confirmedStock : t.vision.confirmedOffline)
   }
 
   async function confirmManual() {
@@ -242,10 +265,10 @@ export default function Vision() {
     const name = finals.find((r) => r.id === manual.recipeId)?.name ?? ''
     await enqueue({
       path: '/vision/productions',
-      body: { recipe_id: manual.recipeId, confirmed_qty: qty },
+      body: { recipe_id: manual.recipeId, confirmed_qty: qty, consume_ingredients: consume },
       label: `${t.vision.title} · ${name}: ${qty}`,
     })
-    await finish(navigator.onLine ? t.vision.confirmed : t.vision.confirmedOffline)
+    await finish(navigator.onLine ? t.vision.confirmedStock : t.vision.confirmedOffline)
   }
 
   const setLine = (i: number, patch: Partial<Line>) =>
@@ -259,6 +282,9 @@ export default function Vision() {
           <StarSurvey context="vision" />
           <Button className="w-full" onClick={reset}>
             {t.vision.another}
+          </Button>
+          <Button variant="secondary" className="w-full" onClick={() => navigate('/inventario/productos')}>
+            {t.vision.seeProducts}
           </Button>
         </div>
       </Page>
@@ -337,9 +363,11 @@ export default function Vision() {
                   )}
                   <p className="text-on-surface-variant">{t.vision.detected(l.detected)}</p>
                   <Stepper name={name} value={l.qty} onChange={(qty) => setLine(i, { qty })} />
+                  <ProductionPreview recipeId={l.recipeId} qty={l.qty} consume={consume} />
                 </div>
               )
             })}
+            <ConsumeToggle checked={consume} onChange={setConsume} />
             <Button className="w-full" onClick={() => void confirmCount()}>
               {t.vision.confirm}
             </Button>
@@ -365,6 +393,10 @@ export default function Vision() {
                     onChange={(e) => setManual((m) => ({ ...m, qty: e.target.value.replace(/\D/g, '') }))}
                   />
                 </Field>
+                {manual.qty !== '' && (
+                  <ProductionPreview recipeId={manual.recipeId || null} qty={Number(manual.qty)} consume={consume} />
+                )}
+                <ConsumeToggle checked={consume} onChange={setConsume} />
                 <Button className="w-full" onClick={() => void confirmManual()}>
                   {t.vision.confirm}
                 </Button>

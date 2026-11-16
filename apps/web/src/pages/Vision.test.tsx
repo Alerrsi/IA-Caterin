@@ -68,7 +68,7 @@ test('cuenta la foto, se corrige con +/− y confirma con Idempotency-Key', asyn
   await user.click(screen.getByRole('button', { name: 'Uno más de Canapés de salmón' }))
   await user.click(screen.getByRole('button', { name: 'Confirmar producción' }))
 
-  expect(await screen.findByText('Producción registrada.')).toBeInTheDocument()
+  expect(await screen.findByText('Producción registrada y sumada a tus existencias.')).toBeInTheDocument()
   await waitFor(() => expect(calls.filter((c) => c.path === '/vision/productions')).toHaveLength(2))
   const sent = calls.filter((c) => c.path === '/vision/productions').map((c) => c.body as Record<string, unknown>)
   expect(sent[0]).toMatchObject({ recipe_id: 'r-pino', confirmed_qty: 2, detected_qty: 3, model_version: 'snacks-v1-nano-1' })
@@ -101,9 +101,9 @@ test('sin modelo (503) ofrece registrar a mano', async () => {
   await user.selectOptions(screen.getByLabelText('Producto'), 'r-pino')
   await user.type(screen.getByLabelText('Cantidad'), '24')
   await user.click(screen.getByRole('button', { name: 'Confirmar producción' }))
-  expect(await screen.findByText('Producción registrada.')).toBeInTheDocument()
+  expect(await screen.findByText('Producción registrada y sumada a tus existencias.')).toBeInTheDocument()
   await waitFor(() =>
-    expect(calls.find((c) => c.path === '/vision/productions')?.body).toEqual({ recipe_id: 'r-pino', confirmed_qty: 24 }),
+    expect(calls.find((c) => c.path === '/vision/productions')?.body).toEqual({ recipe_id: 'r-pino', confirmed_qty: 24, consume_ingredients: true }),
   )
 })
 
@@ -131,7 +131,8 @@ test('sin conexión guarda la foto para después y el registro manual queda en c
   expect(await screen.findByText(/Se enviará al volver la señal/)).toBeInTheDocument()
   const queued = await pendingOps()
   expect(queued).toHaveLength(1)
-  expect(queued[0].body).toEqual({ recipe_id: 'r-can', confirmed_qty: 12 })
+  expect(queued[0].body).toEqual({ recipe_id: 'r-can', confirmed_qty: 12, consume_ingredients: true })
+  expect(screen.queryByText(/Al confirmar/)).not.toBeInTheDocument() // sin señal no hay vista previa
   expect(calls.some((c) => c.path === '/vision/productions')).toBe(false)
 })
 
@@ -144,6 +145,50 @@ test('con señal cuenta la foto guardada y la quita de la lista', async () => {
   await user.click(await screen.findByRole('button', { name: 'Contar ahora' }))
   expect(await screen.findByText('Detecté 3')).toBeInTheDocument()
   await user.click(screen.getByRole('button', { name: 'Confirmar producción' }))
-  expect(await screen.findByText('Producción registrada.')).toBeInTheDocument()
+  expect(await screen.findByText('Producción registrada y sumada a tus existencias.')).toBeInTheDocument()
   expect(await listPhotos()).toHaveLength(0)
+})
+
+test('antes de confirmar muestra qué se suma y qué se descuenta, y respeta la casilla', async () => {
+  const preview = (raw: unknown) => {
+    const body = raw as { confirmed_qty: number; consume_ingredients: boolean }
+    return {
+    body: {
+      recipe_id: 'r-pino',
+      recipe_name: 'Empanadas de pino',
+      yield_unit: 'unit',
+      add_qty: String(body.confirmed_qty),
+      product_stock_qty: String(10 + body.confirmed_qty),
+      consume_ingredients: body.consume_ingredients,
+      consumed: body.consume_ingredients
+        ? [
+            { ingredient_id: 'i1', name: 'Harina', base_unit: 'g', qty: '1200', stock_qty: '3800', went_negative: false },
+            { ingredient_id: 'i2', name: 'Carne molida', base_unit: 'g', qty: '800', stock_qty: '-200', went_negative: true },
+          ]
+        : [],
+    },
+    }
+  }
+  mockApi({
+    ...base,
+    'GET /pyme': () => ({ body: { production_consumes_ingredients: true } }),
+    'POST /vision/productions/preview': preview,
+    'POST /vision/count': () => ({ body: { ...count, counts: [count.counts[0]], detections: count.detections.slice(0, 3) } }),
+  })
+  const user = userEvent.setup()
+  render(<App />)
+  await user.upload(await screen.findByLabelText('Elegir foto'), photo())
+  expect(await screen.findByText('Se suman 3 unid. de Empanadas de pino a tus existencias (quedarán 13 unid.).')).toBeInTheDocument()
+  // un insumo que quedaría negativo abre el detalle y se avisa con texto
+  expect(screen.getByText('Se descuentan 2 insumos')).toBeInTheDocument()
+  expect(screen.getByText('quedará en negativo')).toBeInTheDocument()
+
+  await user.click(screen.getByRole('checkbox', { name: /Descontar insumos usados/ }))
+  expect(await screen.findByText('No se descuentan insumos.')).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: 'Confirmar producción' }))
+  await waitFor(() =>
+    expect(calls.find((c) => c.path === '/vision/productions')?.body).toMatchObject({ consume_ingredients: false }),
+  )
+  await user.click(await screen.findByRole('button', { name: 'Ver productos listos' }))
+  expect(window.location.hash).toBe('#/inventario/productos')
 })

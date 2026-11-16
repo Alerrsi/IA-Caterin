@@ -1,0 +1,82 @@
+import { useEffect, useState } from 'react'
+import { ApiError, post, type ProductionPreview as Preview } from '../api'
+import { formatStock } from '../format'
+import { t } from '../i18n'
+import { Icon } from './Icon'
+import { useOnline } from './ui'
+
+/**
+ * Lo que va a pasar en el inventario al confirmar una producción (T18): cuánto se suma a las existencias del
+ * producto y qué insumos se descuentan. Lo calcula la API (`/vision/productions/preview`), con la misma regla que la
+ * confirmación. Sin señal no hay números: se explica qué se hará al volver la red.
+ */
+export function ProductionPreview({ recipeId, qty, consume }: { recipeId: string | null; qty: number; consume: boolean }) {
+  const online = useOnline()
+  const [preview, setPreview] = useState<Preview | null>(null)
+  const [failed, setFailed] = useState(false)
+
+  useEffect(() => {
+    if (!recipeId || !online) return
+    let alive = true
+    // Espera un momento: al apretar + varias veces no se pide una vista previa por cada toque.
+    const timer = window.setTimeout(() => {
+      post<Preview>('/vision/productions/preview', {
+        recipe_id: recipeId,
+        confirmed_qty: qty,
+        consume_ingredients: consume,
+      }).then(
+        (p) => {
+          if (!alive) return
+          setPreview(p)
+          setFailed(false)
+        },
+        (err: unknown) => alive && setFailed(!(err instanceof ApiError && err.status === 0)),
+      )
+    }, 250)
+    return () => {
+      alive = false
+      window.clearTimeout(timer)
+    }
+  }, [recipeId, qty, consume, online])
+
+  if (!recipeId || failed) return null
+  if (!online) return <p className="text-sm text-on-surface-variant">{t.vision.previewOffline}</p>
+  if (!preview || preview.recipe_id !== recipeId) return null
+  const unit = preview.yield_unit
+  const consumed = preview.consumed
+  return (
+    <div className="rounded-lg border border-dashed border-outline p-3 text-on-surface" aria-live="polite">
+      <p className="text-sm font-medium text-on-surface-variant">{t.vision.previewTitle}</p>
+      <p className="mt-1">
+        {t.vision.previewAdd(formatStock(preview.add_qty, unit), preview.recipe_name, formatStock(preview.product_stock_qty, unit))}
+      </p>
+      {!preview.consume_ingredients ? (
+        <p className="mt-1 text-sm text-on-surface-variant">{t.vision.previewNoConsume}</p>
+      ) : consumed.length === 0 ? (
+        <p className="mt-1 text-sm text-on-surface-variant">{t.vision.previewNoLines}</p>
+      ) : (
+        <details className="mt-1" open={consumed.some((c) => c.went_negative)}>
+          <summary className="min-h-11 cursor-pointer py-2 font-medium text-primary">
+            {t.vision.previewConsume(consumed.length)}
+          </summary>
+          <ul className="space-y-1 text-sm">
+            {consumed.map((c) => (
+              <li key={c.ingredient_id} className="flex flex-wrap items-baseline justify-between gap-x-3">
+                <span>{c.name}</span>
+                <span className="num">
+                  {t.vision.previewLine(formatStock(c.qty, c.base_unit), formatStock(c.stock_qty, c.base_unit))}
+                </span>
+                {c.went_negative && (
+                  <span className="inline-flex w-full items-center gap-1 font-medium text-on-warning-container">
+                    <Icon name="warning" className="h-4 w-4 text-warning" />
+                    {t.vision.previewNegative}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+    </div>
+  )
+}

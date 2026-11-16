@@ -19,6 +19,7 @@ import Login from './pages/Login'
 import Metrics from './pages/Metrics'
 import NewQuote from './pages/NewQuote'
 import Orders from './pages/Orders'
+import ProductsStock from './pages/ProductsStock'
 import QuoteView from './pages/QuoteView'
 import CustomerRegister from './pages/portal/CustomerRegister'
 import PortalHome from './pages/portal/PortalHome'
@@ -71,6 +72,7 @@ function StaffRoutes({ path }: { path: string }) {
   if (matchPath('/tablero', path)) return <Dashboard />
   if (matchPath('/preguntar', path)) return <Assistant />
   if (matchPath('/inventario/nuevo', path)) return <IngredientNew />
+  if (matchPath('/inventario/productos', path)) return <ProductsStock />
   const ingredient = matchPath('/inventario/:id', path)
   if (ingredient) return <IngredientDetail key={ingredient.id} id={ingredient.id} />
   if (matchPath('/inventario', path)) return <Inventory />
