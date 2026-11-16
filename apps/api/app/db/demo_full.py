@@ -43,6 +43,7 @@ from app.db.enums import (
     OrderStatus,
     OrderUnit,
     PriceSourceKind,
+    ProductMovementReason,
     QuoteStatus,
     Role,
 )
@@ -57,6 +58,7 @@ from app.db.models import (
     Order,
     OrderLine,
     ProductionRecord,
+    ProductMovement,
     Pyme,
     Quote,
     Recipe,
@@ -1088,31 +1090,88 @@ class Builder:
     def production(self) -> None:
         pid = self.pyme.id
         with_class = {r.name for r in RECIPES if r.vision}
-        rows = []
+        rows: list[ProductionRecord] = []
+        moves: list[ProductMovement] = []
         for o in self.order_rows:
             if o.status != OrderStatus.DELIVERED or o.event_date is None or (self.today - o.event_date).days > 90:
                 continue
             for line in o.lines:
                 name = next(n for n, r in self.recipes.items() if r.id == line.recipe_id)
-                if name not in with_class:
+                if name not in with_class or line.recipe_id is None:
                     continue
                 confirmed = int(self._units(line.qty, line.unit))
                 detected = confirmed + self.rng.choice([0, 0, 0, -1, -2, 1, -3])
-                rows.append(
-                    ProductionRecord(
-                        pyme_id=pid,
-                        created_by=self.users[1].id,
-                        recipe_id=line.recipe_id,
-                        detected_qty=max(detected, 0),
-                        confirmed_qty=confirmed,
-                        model_version="rfdetr-nano-demo (SINTÉTICO)",
-                        detections={"note": "conteo sintético de demostración"},
-                        was_corrected=detected != confirmed,
-                        created_at=_at(o.event_date - timedelta(days=1), 17, self.rng.randint(0, 59)),
-                    )
+                made_at = _at(o.event_date - timedelta(days=1), 17, self.rng.randint(0, 59))
+                record = ProductionRecord(
+                    id=uuid.uuid4(),
+                    pyme_id=pid,
+                    created_by=self.users[1].id,
+                    recipe_id=line.recipe_id,
+                    detected_qty=max(detected, 0),
+                    confirmed_qty=confirmed,
+                    model_version="rfdetr-nano-demo (SINTÉTICO)",
+                    detections={"note": "conteo sintético de demostración"},
+                    was_corrected=detected != confirmed,
+                    created_at=made_at,
                 )
+                rows.append(record)
+                # Existencias de producto terminado (T18, ADR-011): entra al producir y sale al entregar el pedido.
+                # Los insumos ya se descontaron como consumo del pedido (stock_and_cash), así que no se duplican aquí.
+                moves += [
+                    self._product_move(line.recipe_id, confirmed, ProductMovementReason.PRODUCTION, made_at, record.id),
+                    self._product_move(
+                        line.recipe_id, -confirmed, ProductMovementReason.DELIVERY, _at(o.event_date, 12), o.id, "order"
+                    ),
+                ]
+        # Dos bandejas listas hoy, todavía sin entregar: así "Productos listos" no parte en cero.
+        for name, qty in zip(sorted(with_class), (48, 36), strict=False):
+            rid = self.recipes[name].id
+            made_at = _at(self.today, 9, 30)
+            record = ProductionRecord(
+                id=uuid.uuid4(),
+                pyme_id=pid,
+                created_by=self.users[1].id,
+                recipe_id=rid,
+                detected_qty=qty,
+                confirmed_qty=qty,
+                model_version="rfdetr-nano-demo (SINTÉTICO)",
+                detections={"note": "conteo sintético de demostración"},
+                was_corrected=False,
+                created_at=made_at,
+            )
+            rows.append(record)
+            moves.append(self._product_move(rid, qty, ProductMovementReason.PRODUCTION, made_at, record.id))
         self.s.add_all(rows)
+        self.s.flush()
+        self.s.add_all(moves)
+        self.s.flush()
+        for rid in {m.recipe_id for m in moves}:
+            total = sum((m.delta_qty for m in moves if m.recipe_id == rid), Decimal(0))
+            self.s.execute(update(Recipe).where(Recipe.id == rid).values(stock_qty=total))
         self.s.commit()
+
+    def _product_move(
+        self,
+        recipe_id: uuid.UUID,
+        qty: int,
+        reason: ProductMovementReason,
+        when: datetime,
+        ref_id: uuid.UUID,
+        ref_type: str = "production",
+    ) -> ProductMovement:
+        return ProductMovement(
+            pyme_id=self.pyme.id,
+            created_by=self.users[1].id,
+            recipe_id=recipe_id,
+            delta_qty=Decimal(qty),
+            reason=reason,
+            note="Movimiento sintético de demostración",
+            reference_type=ref_type,
+            reference_id=ref_id,
+            occurred_at=when,
+            created_at=when,
+            updated_at=when,
+        )
 
     # ----------------------------------------------------------------- portal de clientes (servicio real)
     def portal(self) -> None:
