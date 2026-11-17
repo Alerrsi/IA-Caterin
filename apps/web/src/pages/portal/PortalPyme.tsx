@@ -5,7 +5,8 @@ import { Alert, Button, Cells, Page, Spinner } from '../../components/ui'
 import { Icon } from '../../components/Icon'
 import { t } from '../../i18n'
 import { useCached } from '../../offline/cache'
-import { navigate } from '../../router'
+import { useRemember } from '../../recent'
+import { goBack, navigate } from '../../router'
 import { savedAtLabel } from '../Inventory'
 import { PymeAvatar } from './PortalPymes'
 
@@ -205,6 +206,7 @@ export default function PortalPyme({ id }: { id: string }) {
   const [picked, setPicked] = useState<string[]>([])
   const pyme = pymes.value?.data.find((p) => p.id === id)
   const list = products.value?.data
+  useRemember(pyme ? { path: `/pymes/${id}`, label: pyme.name, kind: 'pyme' } : null)
 
   const groups = useMemo(() => {
     const out = new Map<string, PortalProduct[]>()
@@ -222,7 +224,7 @@ export default function PortalPyme({ id }: { id: string }) {
   const notFound = products.error?.code === 'pyme_not_available' || (pymes.value && !pyme && !pymes.loading)
   if (notFound) {
     return (
-      <Page title={t.catalog.title} onBack={() => navigate('/pymes')}>
+      <Page title={t.catalog.title} onBack={() => goBack('/pymes')}>
         <Alert>{t.catalog.notFound}</Alert>
         <Button variant="secondary" className="mt-4" onClick={() => navigate('/pymes')}>
           {t.catalog.backToList}
@@ -236,7 +238,7 @@ export default function PortalPyme({ id }: { id: string }) {
   const cached = products.value?.fromCache ? products.value : pymes.value?.fromCache ? pymes.value : null
 
   return (
-    <Page title={pyme?.name ?? t.catalog.title} onBack={() => navigate('/pymes')}>
+    <Page title={pyme?.name ?? t.catalog.title} onBack={() => goBack('/pymes')}>
       {cached && (
         <div className="mb-3">
           <Alert kind="info">{t.sync.staleData(savedAtLabel(cached.savedAt))}</Alert>

@@ -3,7 +3,7 @@ import { Alert, Button, Page, Spinner, inputClass } from '../components/ui'
 import { formatStock, type BaseUnit } from '../format'
 import { t } from '../i18n'
 import { useCached } from '../offline/cache'
-import { navigate } from '../router'
+import { goBack, navigate } from '../router'
 import { plain, savedAtLabel } from './Inventory'
 
 interface RecipeItem {
@@ -26,7 +26,7 @@ export default function Recipes() {
   }, [value, query])
 
   return (
-    <Page title={t.recipes.title} onBack={() => navigate('/')}>
+    <Page title={t.recipes.title} onBack={() => goBack('/')}>
       {value?.fromCache && (
         <div className="mb-3">
           <Alert kind="info">{t.sync.staleData(savedAtLabel(value.savedAt))}</Alert>

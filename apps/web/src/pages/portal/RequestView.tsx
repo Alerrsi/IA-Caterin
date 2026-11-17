@@ -3,7 +3,7 @@ import { api, apiBlob, ApiError, post, type PortalRequest } from '../../api'
 import { Alert, Button, Page, Spinner, StatusChip } from '../../components/ui'
 import { formatCLP, formatDate } from '../../format'
 import { t } from '../../i18n'
-import { navigate } from '../../router'
+import { goBack } from '../../router'
 
 /** Una cotización guardada del cliente: precio, PDF, enviar a la pyme y su respuesta (ADR-007). */
 export default function RequestView({ id }: { id: string }) {
@@ -48,7 +48,7 @@ export default function RequestView({ id }: { id: string }) {
 
   if (!req) {
     return (
-      <Page title={t.portal.requestTitle} onBack={() => navigate('/')}>
+      <Page title={t.portal.requestTitle} onBack={() => goBack('/')}>
         {error ? <Alert>{error}</Alert> : <Spinner label={t.loading} />}
       </Page>
     )
@@ -56,7 +56,7 @@ export default function RequestView({ id }: { id: string }) {
 
   const q = req.quote
   return (
-    <Page title={t.portal.requestTitle} onBack={() => navigate('/')}>
+    <Page title={t.portal.requestTitle} onBack={() => goBack('/')}>
       <p className="mb-2 text-lg text-on-surface">{req.pyme_name}</p>
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <StatusChip status={req.status}>{t.portal.status[req.status]}</StatusChip>

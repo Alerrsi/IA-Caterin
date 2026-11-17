@@ -6,7 +6,8 @@ import { Alert, Button, Field, Page, Spinner, inputClass, useOnline } from '../c
 import { formatCLP, formatDate, formatQty, formatStock, parseQtyInput } from '../format'
 import { t } from '../i18n'
 import { patchCached, useCached } from '../offline/cache'
-import { navigate } from '../router'
+import { useRemember } from '../recent'
+import { goBack } from '../router'
 import { savedAtLabel } from './Inventory'
 
 function CostPanel({ recipe }: { recipe: Recipe }) {
@@ -214,9 +215,10 @@ export default function RecipeDetail({ id }: { id: string }) {
   const { user } = useAuth()
   const { value, error, loading } = useCached<Recipe>(`recipe:${id}`, `/recipes/${id}`)
   const recipe = value?.data
+  useRemember(recipe ? { path: `/recetas/${id}`, label: recipe.name, kind: 'recipe' } : null)
 
   return (
-    <Page title={recipe?.name ?? t.recipes.title} onBack={() => navigate('/recetas')}>
+    <Page title={recipe?.name ?? t.recipes.title} onBack={() => goBack('/recetas')}>
       {value?.fromCache && (
         <div className="mb-3">
           <Alert kind="info">{t.sync.staleData(savedAtLabel(value.savedAt))}</Alert>

@@ -1,10 +1,11 @@
 import { loadAllIngredients, type Ingredient, type OrderOut } from '../api'
 import { useAuth } from '../auth'
-import type { IconName } from '../components/Icon'
+import { Icon, type IconName } from '../components/Icon'
 import { Coupon, Floater, FoodPanel, Plate, Squiggle } from '../components/Food'
 import { Button, Cells, IconDot, Num } from '../components/ui'
 import { t } from '../i18n'
 import { useCached } from '../offline/cache'
+import { useRecent } from '../recent'
 import { navigate } from '../router'
 
 /** Acceso: tarjeta blanca con el ícono en un círculo amarillo (T21, ADR-013). */
@@ -73,20 +74,20 @@ function Alerts() {
       <Coupon title={<span id="alerts-title">{t.home.alertsTitle}</span>} className="shadow-cap">
       <ul className="space-y-2">
         {requested !== undefined && requested > 0 && (
-          <AlertRow text={t.home.requests(requested)} tone="info" onClick={() => navigate('/pedidos')} />
+          <AlertRow text={t.home.requests(requested)} tone="info" onClick={() => navigate('/pedidos?estado=requested')} />
         )}
         {low !== undefined && (
           <AlertRow
             text={low > 0 ? t.home.lowStock(low) : t.home.noLowStock}
             tone={low > 0 ? 'warning' : 'plain'}
-            onClick={() => navigate('/inventario')}
+            onClick={() => navigate(low > 0 ? '/inventario?bajo=1' : '/inventario')}
           />
         )}
         {upcoming !== undefined && (
           <AlertRow
             text={upcoming > 0 ? t.home.upcoming(upcoming) : t.home.noUpcoming}
             tone="plain"
-            onClick={() => navigate('/pedidos')}
+            onClick={() => navigate(upcoming > 0 ? '/pedidos?proximos=7' : '/pedidos')}
           />
         )}
       </ul>
@@ -135,13 +136,77 @@ function Hero({ name, pymeName }: { name: string; pymeName?: string }) {
   )
 }
 
+/** Acciones rápidas (T22): lo que más se hace, a un toque y con botones grandes. */
+function QuickActions() {
+  const actions: { label: string; icon: IconName; path: string }[] = [
+    { label: t.home.quote, icon: 'quote', path: '/cotizar' },
+    { label: t.home.vision, icon: 'camera', path: '/foto' },
+    { label: t.home.adjust, icon: 'inventory', path: '/inventario?ajustar=1' },
+    { label: t.home.assistant, icon: 'chat', path: '/preguntar' },
+  ]
+  return (
+    <section aria-labelledby="quick-title">
+      <h2 id="quick-title" className="mb-3 text-xl font-extrabold text-on-surface">
+        {t.home.quickTitle}
+      </h2>
+      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {actions.map((a) => (
+          <li key={a.path}>
+            <a
+              href={`#${a.path}`}
+              className="flex min-h-24 flex-col items-start justify-between gap-3 rounded-3xl bg-surface-container-lowest p-4 text-base font-bold text-on-surface shadow-cap transition-colors hover:bg-accent-soft focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40"
+            >
+              <IconDot name={a.icon} className="h-11 w-11" />
+              {a.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+/** "Seguir donde quedaste" (T22): lo último que se abrió en este teléfono. No aparece si no hay nada. */
+function Recent({ userId }: { userId?: string }) {
+  const items = useRecent(userId)
+  if (items.length === 0) return null
+  return (
+    <section aria-labelledby="recent-title">
+      <h2 id="recent-title" className="mb-3 text-xl font-extrabold text-on-surface">
+        {t.home.recentTitle}
+      </h2>
+      <ul className="grid gap-3 sm:grid-cols-3">
+        {items.map((i) => (
+          <li key={i.path}>
+            <a
+              href={`#${i.path}`}
+              className="flex min-h-16 items-center gap-3 rounded-3xl bg-surface-container-lowest px-4 py-3 shadow-cap transition-colors hover:bg-accent-soft focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40"
+            >
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm text-on-surface-variant">{t.home.recentKinds[i.kind]}</span>
+                <span className="block truncate font-bold text-on-surface">{i.label}</span>
+              </span>
+              <Icon name="back" className="h-5 w-5 shrink-0 rotate-180 text-on-surface-variant" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
 export default function Home() {
   const { user, pyme } = useAuth()
   const owner = user?.role === 'owner'
   return (
     <main className="mx-auto w-full max-w-6xl px-4 pb-28 pt-5 md:px-8 md:pt-8 lg:pb-16">
       <Hero name={user?.full_name.split(' ')[0] ?? ''} pymeName={pyme?.name} />
-      <div className="mt-6 grid gap-6 lg:grid-cols-3">
+      <div className="mt-6 space-y-6">
+        <QuickActions />
+        <Recent userId={user?.id} />
+      </div>
+      <h2 className="mb-3 mt-8 text-xl font-extrabold text-on-surface">{t.home.allTitle}</h2>
+      <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:order-2">
           <Alerts />
         </div>

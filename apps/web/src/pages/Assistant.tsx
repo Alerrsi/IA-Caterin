@@ -11,7 +11,7 @@ import {
 import { StarSurvey } from '../components/StarSurvey'
 import { Alert, Button, Page, useOnline } from '../components/ui'
 import { t } from '../i18n'
-import { navigate } from '../router'
+import { goBack } from '../router'
 
 interface Turn {
   id: number
@@ -138,7 +138,7 @@ export default function Assistant() {
   }
 
   return (
-    <Page title={t.assistant.title} onBack={() => navigate('/')} size="narrow">
+    <Page title={t.assistant.title} onBack={() => goBack('/')} size="narrow">
       {!online && <Alert kind="warning">{t.assistant.offline}</Alert>}
       {turns.length === 0 && <p className="mb-4 text-lg text-on-surface-variant">{t.assistant.intro}</p>}
       {quick.length > 0 && (

@@ -6,7 +6,7 @@ import { formatStock } from '../format'
 import { t } from '../i18n'
 import { useCached } from '../offline/cache'
 import { useQueue } from '../offline/queue'
-import { navigate } from '../router'
+import { goBack, navigate, queryParams, replaceQuery } from '../router'
 import { useShortcut } from '../shortcuts'
 
 export function plain(text: string): string {
@@ -76,10 +76,19 @@ export function InventoryTabs({ active }: { active: 'ingredients' | 'products' }
 
 export default function Inventory() {
   const { value, error, loading, setData, reload } = useCached<Ingredient[]>('ingredients', loadAllIngredients)
-  const [query, setQuery] = useState('')
+  // Filtros desde la URL (T22): los avisos del inicio y el buscador global llegan con la vista ya filtrada.
+  const [initial] = useState(() => queryParams())
+  const adjusting = initial.get('ajustar') === '1'
+  const [query, setQuery] = useState(() => initial.get('q') ?? '')
   const search = useRef<HTMLInputElement>(null)
   useShortcut('/', () => search.current?.focus())
-  const [onlyLow, setOnlyLow] = useState(false)
+  const [onlyLow, setOnlyLow] = useState(() => initial.get('bajo') === '1')
+  useEffect(() => {
+    if (adjusting) search.current?.focus()
+  }, [adjusting])
+  useEffect(() => {
+    replaceQuery({ q: query.trim() || null, bajo: onlyLow ? '1' : null })
+  }, [query, onlyLow])
   const [onlyNoPrice, setOnlyNoPrice] = useState(false)
   // Precios vigentes de todos los insumos en una llamada: con eso se sabe cuáles no tienen precio.
   const prices = useCached<{ ingredient_id: string }[]>('prices:current', '/prices')
@@ -110,7 +119,7 @@ export default function Inventory() {
   }
 
   return (
-    <Page title={t.inventory.title} onBack={() => navigate('/')}>
+    <Page title={t.inventory.title} onBack={() => goBack('/')}>
       <InventoryTabs active="ingredients" />
       {value?.fromCache && (
         <div className="mb-3">
@@ -120,6 +129,11 @@ export default function Inventory() {
       {notice && (
         <div className="mb-3">
           <Alert kind={notice.kind}>{notice.text}</Alert>
+        </div>
+      )}
+      {adjusting && (
+        <div className="mb-3">
+          <Alert kind="info">{t.inventory.adjustHint}</Alert>
         </div>
       )}
       <Button className="mb-4 w-full" onClick={() => navigate('/inventario/nuevo')}>

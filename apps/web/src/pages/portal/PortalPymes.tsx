@@ -4,7 +4,7 @@ import { Alert, Cells, Kbd, Page, Spinner, inputClass } from '../../components/u
 import { Icon } from '../../components/Icon'
 import { t } from '../../i18n'
 import { useCached } from '../../offline/cache'
-import { navigate } from '../../router'
+import { goBack } from '../../router'
 import { useShortcut } from '../../shortcuts'
 import { plain, savedAtLabel } from '../Inventory'
 
@@ -37,7 +37,7 @@ export default function PortalPymes() {
   }, [all, query])
 
   return (
-    <Page title={t.catalog.title} description={t.catalog.intro} onBack={() => navigate('/')}>
+    <Page title={t.catalog.title} description={t.catalog.intro} onBack={() => goBack('/')}>
       {value?.fromCache && (
         <div className="mb-3">
           <Alert kind="info">{t.sync.staleData(savedAtLabel(value.savedAt))}</Alert>

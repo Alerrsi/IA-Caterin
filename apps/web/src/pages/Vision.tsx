@@ -8,7 +8,7 @@ import { t } from '../i18n'
 import { useCached } from '../offline/cache'
 import { listPhotos, PhotoQueueFullError, removePhoto, savePhoto, type PendingPhoto } from '../offline/photos'
 import { enqueue } from '../offline/queue'
-import { navigate } from '../router'
+import { goBack, navigate } from '../router'
 
 /** `/recipes` también trae si la receta es un producto final (lo que se puede contar). */
 type Recipe = RecipeSummary & { is_final_product?: boolean }
@@ -277,7 +277,7 @@ export default function Vision() {
 
   if (stage === 'done') {
     return (
-      <Page title={t.vision.title} onBack={() => navigate('/')} size="narrow">
+      <Page title={t.vision.title} onBack={() => goBack('/')} size="narrow">
         <div className="space-y-4">
           <Alert kind="info">{doneMsg}</Alert>
           <StarSurvey context="vision" />
@@ -293,7 +293,7 @@ export default function Vision() {
   }
 
   return (
-    <Page title={t.vision.title} onBack={() => navigate('/')} size="narrow">
+    <Page title={t.vision.title} onBack={() => goBack('/')} size="narrow">
       <div className="space-y-4">
         {!online && <Alert kind="warning">{t.vision.offline}</Alert>}
         {error && <Alert>{error}</Alert>}

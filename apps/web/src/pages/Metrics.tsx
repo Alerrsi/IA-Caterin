@@ -4,7 +4,7 @@ import { useAuth } from '../auth'
 import { Alert, Button, Field, inputClass, Page, Spinner } from '../components/ui'
 import { formatDate, formatDuration, formatMs, formatPct, formatQty, parseMinutesSeconds } from '../format'
 import { t } from '../i18n'
-import { navigate } from '../router'
+import { goBack } from '../router'
 
 type PeriodKey = '7' | '30' | '90' | 'all'
 
@@ -188,7 +188,7 @@ export default function Metrics() {
 
   if (user?.role !== 'owner') {
     return (
-      <Page title={t.metrics.title} onBack={() => navigate('/')}>
+      <Page title={t.metrics.title} onBack={() => goBack('/')}>
         <Alert>{t.metrics.ownerOnly}</Alert>
       </Page>
     )
@@ -196,7 +196,7 @@ export default function Metrics() {
 
   const min = summary?.low_n_threshold ?? 5
   return (
-    <Page title={t.metrics.title} onBack={() => navigate('/')}>
+    <Page title={t.metrics.title} onBack={() => goBack('/')}>
       <p className="mb-3 text-on-surface-variant">{t.metrics.intro}</p>
       <Field label={t.metrics.period}>
         <select className={inputClass} value={period} onChange={(e) => setPeriod(e.target.value as PeriodKey)}>

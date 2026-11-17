@@ -6,7 +6,8 @@ import { Alert, Button, Page, Spinner } from '../components/ui'
 import { formatStock } from '../format'
 import { t } from '../i18n'
 import { useCached } from '../offline/cache'
-import { navigate } from '../router'
+import { useRemember } from '../recent'
+import { goBack } from '../router'
 import { savedAtLabel, usePendingIngredients, useReloadWhenSynced } from './Inventory'
 
 export default function IngredientDetail({ id }: { id: string }) {
@@ -19,6 +20,7 @@ export default function IngredientDetail({ id }: { id: string }) {
   useReloadWhenSynced(history.reload)
 
   const ing = list.value?.data.find((i) => i.id === id)
+  useRemember(ing ? { path: `/inventario/${id}`, label: ing.name, kind: 'ingredient' } : null)
 
   function applied(deltaBase: number) {
     if (!ing) return
@@ -30,7 +32,7 @@ export default function IngredientDetail({ id }: { id: string }) {
   }
 
   return (
-    <Page title={ing?.name ?? t.inventory.title} onBack={() => navigate('/inventario')}>
+    <Page title={ing?.name ?? t.inventory.title} onBack={() => goBack('/inventario')}>
       {list.value?.fromCache && (
         <div className="mb-3">
           <Alert kind="info">{t.sync.staleData(savedAtLabel(list.value.savedAt))}</Alert>

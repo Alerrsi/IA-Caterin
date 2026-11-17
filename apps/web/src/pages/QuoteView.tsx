@@ -6,11 +6,15 @@ import { Alert, Button, Page, Spinner, StatusChip } from '../components/ui'
 import { formatCLP, formatDate, formatQty, formatWeekdays } from '../format'
 import { t } from '../i18n'
 import { useCached } from '../offline/cache'
-import { navigate } from '../router'
+import { useRemember } from '../recent'
+import { goBack, navigate } from '../router'
 import { plain } from './Inventory'
 
 export default function QuoteView({ id }: { id: string }) {
   const [quote, setQuote] = useState<QuoteOut | null>(null)
+  useRemember(
+    quote ? { path: `/cotizaciones/${id}`, label: `${t.view.title} · ${formatCLP(quote.total_clp)}`, kind: 'quote' } : null,
+  )
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState<string | null>(null)
   const [shopping, setShopping] = useState<ShoppingList | null>(null)
@@ -80,14 +84,14 @@ export default function QuoteView({ id }: { id: string }) {
 
   if (!quote) {
     return (
-      <Page title={t.view.title} onBack={() => navigate('/pedidos')}>
+      <Page title={t.view.title} onBack={() => goBack('/pedidos')}>
         {error ? <Alert>{error}</Alert> : <Spinner label={t.loading} />}
       </Page>
     )
   }
 
   return (
-    <Page title={`${t.view.title} · ${t.view.version(quote.version)}`} onBack={() => navigate('/pedidos')}>
+    <Page title={`${t.view.title} · ${t.view.version(quote.version)}`} onBack={() => goBack('/pedidos')}>
       <div className="mb-4">
         <StatusChip status={quote.status}>{t.view.status[quote.status]}</StatusChip>
       </div>

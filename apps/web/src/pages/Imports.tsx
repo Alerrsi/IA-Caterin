@@ -4,7 +4,7 @@ import { useAuth } from '../auth'
 import { Alert, Button, Page, Spinner, useOnline } from '../components/ui'
 import { formatCLP, formatStock, type BaseUnit } from '../format'
 import { t } from '../i18n'
-import { navigate } from '../router'
+import { goBack } from '../router'
 
 type Kind = 'ingredients' | 'prices'
 
@@ -132,14 +132,14 @@ export default function Imports() {
 
   if (user?.role !== 'owner') {
     return (
-      <Page title={t.imports.title} onBack={() => navigate('/')} size="narrow">
+      <Page title={t.imports.title} onBack={() => goBack('/')} size="narrow">
         <Alert kind="info">{t.imports.ownerOnly}</Alert>
       </Page>
     )
   }
 
   return (
-    <Page title={t.imports.title} onBack={() => navigate('/')} size="narrow">
+    <Page title={t.imports.title} onBack={() => goBack('/')} size="narrow">
       {!online && (
         <div className="mb-4">
           <Alert kind="warning">{t.sync.needsNetwork}</Alert>

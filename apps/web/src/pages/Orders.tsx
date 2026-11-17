@@ -4,7 +4,7 @@ import { MarginFix, isMarginRequired } from '../components/MarginFix'
 import { Alert, Button, Field, inputClass, Page, Spinner, StatusChip } from '../components/ui'
 import { formatCLP, formatDate, formatQty } from '../format'
 import { t } from '../i18n'
-import { navigate } from '../router'
+import { goBack, navigate, queryParams } from '../router'
 
 const linesText = (o: OrderOut) =>
   o.lines
@@ -59,11 +59,37 @@ export default function Orders() {
     }
   }
 
-  const requests = orders?.filter((o) => o.status === 'requested') ?? []
-  const others = orders?.filter((o) => o.status !== 'requested') ?? []
+  // Vistas filtradas desde la URL (T22): avisos del inicio y buscador global.
+  const [filter] = useState(() => {
+    const q = queryParams()
+    return { estado: q.get('estado'), proximos: Number(q.get('proximos')) || null, pedido: q.get('pedido') }
+  })
+  const filtered = !!(filter.estado || filter.proximos || filter.pedido)
+  const today = new Date()
+  const limit = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (filter.proximos ?? 0))
+  const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  const visible =
+    orders?.filter((o) => {
+      if (filter.pedido) return o.id === filter.pedido
+      if (filter.estado && o.status !== filter.estado) return false
+      if (filter.proximos) {
+        if (!o.event_date || (o.status !== 'draft' && o.status !== 'confirmed')) return false
+        if (o.event_date < iso(today) || o.event_date > iso(limit)) return false
+      }
+      return true
+    }) ?? null
+  const filterText = filter.pedido
+    ? t.orders.filterOne
+    : filter.estado === 'requested'
+      ? t.orders.filterRequested
+      : filter.proximos
+        ? t.orders.filterUpcoming
+        : null
+  const requests = visible?.filter((o) => o.status === 'requested') ?? []
+  const others = visible?.filter((o) => o.status !== 'requested') ?? []
 
   return (
-    <Page title={t.orders.title} onBack={() => navigate('/')}>
+    <Page title={t.orders.title} onBack={() => goBack('/')}>
       {marginFor && (
         <div className="mb-4">
           <MarginFix onSaved={() => quote(marginFor)} />
@@ -79,8 +105,18 @@ export default function Orders() {
           <Alert kind="info">{notice}</Alert>
         </div>
       )}
+      {filtered && (
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-accent-soft px-4 py-3" role="status">
+          <span className="font-semibold text-on-surface">{filterText}</span>
+          <Button variant="secondary" onClick={() => navigate('/pedidos')}>
+            {t.orders.showAll}
+          </Button>
+        </div>
+      )}
       {!orders ? (
         !error && <Spinner label={t.loading} />
+      ) : filtered && visible?.length === 0 ? (
+        <p>{t.orders.filterEmpty}</p>
       ) : (
         <>
           {requests.length > 0 && (

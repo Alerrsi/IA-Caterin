@@ -17,7 +17,7 @@ import { Alert, Button, Field, inputClass, Page, Spinner } from '../components/u
 import { formatQty, parseQtyInput } from '../format'
 import { t } from '../i18n'
 import { useAuth } from '../auth'
-import { currentPath, navigate } from '../router'
+import { currentPath, goBack, navigate } from '../router'
 
 const UNITS: OrderUnit[] = ['unit', 'dozen', 'kg', 'g', 'l', 'ml']
 
@@ -234,7 +234,7 @@ export default function NewQuote({ portal = false }: { portal?: boolean }) {
 
   if (step === 'paste') {
     return (
-      <Page title={t.quote.title} onBack={() => navigate('/')} size="narrow">
+      <Page title={t.quote.title} onBack={() => goBack('/')} size="narrow">
         <p className="mb-3 font-medium text-on-surface-variant">{t.quote.step1}</p>
         {portal && (
           <div className="mb-4">

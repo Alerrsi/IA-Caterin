@@ -4,7 +4,7 @@ import { Alert, Button, Field, Page, Spinner, inputClass, useOnline } from '../c
 import { ADJUST_UNITS, parseQtyInput } from '../format'
 import { t } from '../i18n'
 import { useCached } from '../offline/cache'
-import { navigate } from '../router'
+import { goBack, navigate } from '../router'
 import { plain } from './Inventory'
 
 interface Line {
@@ -189,7 +189,7 @@ export default function RecipeNew() {
   }
 
   return (
-    <Page title={t.recipeForm.title} onBack={() => navigate('/recetas')} size="narrow">
+    <Page title={t.recipeForm.title} onBack={() => goBack('/recetas')} size="narrow">
       {!online && (
         <div className="mb-4">
           <Alert kind="warning">{t.sync.needsNetwork}</Alert>

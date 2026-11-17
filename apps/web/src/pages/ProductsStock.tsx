@@ -7,7 +7,7 @@ import { formatDate, formatQty, formatStock, parseQtyInput } from '../format'
 import { t } from '../i18n'
 import { useCached } from '../offline/cache'
 import { enqueue } from '../offline/queue'
-import { navigate } from '../router'
+import { goBack } from '../router'
 import { InventoryTabs, savedAtLabel, useReloadWhenSynced } from './Inventory'
 
 const p = t.products
@@ -304,7 +304,7 @@ export default function ProductsStock() {
   const empty = value?.data.filter((x) => Number(x.stock_qty) === 0) ?? []
 
   return (
-    <Page title={t.inventory.title} description={p.intro} onBack={() => navigate('/')}>
+    <Page title={t.inventory.title} description={p.intro} onBack={() => goBack('/')}>
       <InventoryTabs active="products" />
       {value?.fromCache && (
         <div className="mb-3">

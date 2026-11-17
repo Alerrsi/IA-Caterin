@@ -6,7 +6,7 @@ import { Alert, Button, Cells, Page, Spinner } from '../components/ui'
 import { formatCLP, formatCLPCompact, formatDay, formatInt, formatMonth, formatPct, formatStock } from '../format'
 import { t } from '../i18n'
 import { useCached } from '../offline/cache'
-import { navigate } from '../router'
+import { goBack, navigate } from '../router'
 import { savedAtLabel } from './Inventory'
 
 type Months = '3' | '6' | '12'
@@ -125,7 +125,7 @@ export default function Dashboard() {
 
   if (!owner) {
     return (
-      <Page title={d.title} onBack={() => navigate('/')}>
+      <Page title={d.title} onBack={() => goBack('/')}>
         <Alert>{d.ownerOnly}</Alert>
       </Page>
     )
@@ -134,7 +134,7 @@ export default function Dashboard() {
   const data = value?.data
   const k = data?.kpis
   return (
-    <Page title={d.title} description={d.intro} onBack={() => navigate('/')}>
+    <Page title={d.title} description={d.intro} onBack={() => goBack('/')}>
       <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2">
         <PeriodPicker value={months} onChange={setMonths} />
         {data && (

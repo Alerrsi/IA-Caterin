@@ -67,7 +67,8 @@ function StaffRoutes({ path }: { path: string }) {
   const quote = matchPath('/cotizaciones/:id', path)
   if (quote) return <QuoteView key={quote.id} id={quote.id} />
   if (matchPath('/cotizar', path)) return <NewQuote />
-  if (matchPath('/pedidos', path)) return <Orders />
+  // Con `key` por ruta completa: al llegar con otro filtro en la URL (T22) la pantalla parte de cero.
+  if (matchPath('/pedidos', path)) return <Orders key={path} />
   if (matchPath('/metricas', path)) return <Metrics />
   if (matchPath('/tablero', path)) return <Dashboard />
   if (matchPath('/preguntar', path)) return <Assistant />
@@ -75,7 +76,7 @@ function StaffRoutes({ path }: { path: string }) {
   if (matchPath('/inventario/productos', path)) return <ProductsStock />
   const ingredient = matchPath('/inventario/:id', path)
   if (ingredient) return <IngredientDetail key={ingredient.id} id={ingredient.id} />
-  if (matchPath('/inventario', path)) return <Inventory />
+  if (matchPath('/inventario', path)) return <Inventory key={path} />
   if (matchPath('/recetas/nueva', path)) return <RecipeNew />
   const recipe = matchPath('/recetas/:id', path)
   if (recipe) return <RecipeDetail key={recipe.id} id={recipe.id} />

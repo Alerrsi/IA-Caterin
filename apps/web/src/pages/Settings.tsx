@@ -4,7 +4,7 @@ import { useAuth } from '../auth'
 import { ImagePicker } from '../components/ImagePicker'
 import { Alert, Button, Field, Page, Spinner, inputClass, useOnline } from '../components/ui'
 import { t } from '../i18n'
-import { navigate } from '../router'
+import { goBack } from '../router'
 
 /** "19,5" -> "19.5". Porcentaje entre 0 y 100, con hasta 2 decimales; null si no es válido. */
 function parsePct(raw: string): string | null {
@@ -383,7 +383,7 @@ export default function Settings() {
   const { user } = useAuth()
   const online = useOnline()
   return (
-    <Page title={t.settings.title} onBack={() => navigate('/')}>
+    <Page title={t.settings.title} onBack={() => goBack('/')}>
       {user?.role !== 'owner' ? (
         <Alert kind="info">{t.settings.ownerOnly}</Alert>
       ) : (

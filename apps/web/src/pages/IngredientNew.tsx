@@ -4,7 +4,7 @@ import { Alert, Button, Field, inputClass, Page, useOnline } from '../components
 import { ADJUST_UNITS, parseQtyInput } from '../format'
 import { t } from '../i18n'
 import { patchCached } from '../offline/cache'
-import { navigate } from '../router'
+import { goBack, navigate } from '../router'
 
 const BASES: BaseUnitCode[] = ['g', 'ml', 'unit']
 
@@ -66,7 +66,7 @@ export default function IngredientNew() {
   }
 
   return (
-    <Page title={t.ingredientForm.title} onBack={() => navigate('/inventario')} size="narrow">
+    <Page title={t.ingredientForm.title} onBack={() => goBack('/inventario')} size="narrow">
       {!online && (
         <div className="mb-4">
           <Alert kind="warning">{t.ingredientForm.needsNetwork}</Alert>
