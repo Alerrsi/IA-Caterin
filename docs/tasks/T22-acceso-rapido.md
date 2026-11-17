@@ -1,5 +1,5 @@
 # T22 — Acceso rápido: todo a uno o dos toques
-- Estado: hecha en la rama `feat/T22-acceso-rapido` (falta integrar a `main` y validar con una emprendedora real)
+- Estado: hecha, integrada a `main` el 17-nov-2026 (falta validar con una emprendedora real)
 - Depende de: T21 (estética nueva de toda la app)
 - Funcionalidad: transversal
 

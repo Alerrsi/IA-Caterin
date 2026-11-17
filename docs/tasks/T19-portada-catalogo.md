@@ -1,5 +1,5 @@
 # T19 — Portada del catálogo de una pyme en el portal
-- Estado: hecha en la rama (16-nov-2026); falta integrar a `main`
+- Estado: hecha (16-nov-2026), integrada a `main` el 17-nov-2026
 - Rama: `feat/T19-portada-catalogo`
 - Depende de: T15 (catálogo del portal, ADR-009), T16 (estética "plano de cocina", ADR-010)
 - Funcionalidad: F3 (portal de clientes)

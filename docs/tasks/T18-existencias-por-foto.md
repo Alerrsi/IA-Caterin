@@ -1,5 +1,5 @@
 # T18 — Existencias de productos terminados desde la foto
-- Estado: hecha en la rama `feat/T18-existencias-por-foto` (16-nov-2026); falta integrar a `main`
+- Estado: hecha (16-nov-2026), integrada a `main` el 17-nov-2026
 - Depende de: T04 (inventario y libro de movimientos), T06 (conteo por foto), T08 (cola sin red)
 - Funcionalidad: F2 (con efecto en inventario)
 - Decisión: [ADR-011](../adr/ADR-011-existencias-de-productos-terminados.md) (aceptado)

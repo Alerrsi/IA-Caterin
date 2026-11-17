@@ -1,5 +1,5 @@
 # T21 — Rediseño de toda la app con la estética de la imagen de referencia
-- Estado: hecha en la rama (16-nov-2026); falta integrar a `main` y mostrarla a personas reales
+- Estado: hecha (16-nov-2026), integrada a `main` el 17-nov-2026; falta mostrarla a personas reales
 - Rama: `feat/T21-estetica-referencia` (parte de `main` + T18 + T19)
 - Depende de: T18, T19
 - Funcionalidad: transversal
