@@ -55,3 +55,9 @@ Las emprendedoras de La Araucanía trabajan a veces en cocinas, bodegas o evento
 - **Sesión sin señal:** se guarda la última usuaria y pyme en `localStorage`, **sin tokens**. Si al abrir la app el refresh falla por falta de red (no por un 401), se entra con esa sesión; las lecturas salen de la caché y las escrituras van a la cola. Si el refresh responde 401, se pide login y la cola se conserva.
 - **Banner:** "Sin conexión…", "N cambios por enviar" / "Enviando N cambios…" y la lista de fallidas.
 - **No implementado:** Background Sync (el reintento es al volver la red o al abrir la app, lo que también cubre iOS) y el diálogo de conflicto "este dato cambió, ¿cuál dejo?" para catálogos, que no hace falta todavía porque sin señal no se editan catálogos, solo se envían movimientos.
+
+## Acceso rápido sin red (T22, 17-nov-2026)
+
+- **Buscador global "¿Qué necesitas?":** arma los resultados con las listas que guarda `useCached` (insumos, recetas, productos listos, pedidos; para el cliente, el catálogo del directorio). Con señal las pide de nuevo al abrirse; sin señal usa lo guardado en IndexedDB y lo avisa. La búsqueda corre en el navegador y no llama a la IA, así que funciona igual sin conexión. Solo encuentra lo que el teléfono ya guardó.
+- **"Seguir donde quedaste":** los últimos 3 insumos, recetas, cotizaciones o pymes abiertos se guardan **solo en el teléfono**, en `localStorage` con una clave por persona (`caterin:recent:<id>`); guarda la ruta, el tipo y el nombre visible (en una cotización, "Cotización · $total", sin el nombre del cliente), nada más, y no viaja al servidor. Si el almacenamiento está bloqueado la lista no aparece y la app sigue igual.
+- **Filtros en la URL y "Volver":** son rutas del router por hash, así que funcionan sin red. El rastro de "Volver" vive en memoria y se pierde al recargar (entonces va al padre lógico).

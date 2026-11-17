@@ -1,5 +1,5 @@
 # T22 — Acceso rápido: todo a uno o dos toques
-- Estado: pendiente (plan del 16-nov-2026; se implementa cuando termine T21, que está rehaciendo la navegación)
+- Estado: hecha en la rama `feat/T22-acceso-rapido` (falta integrar a `main` y validar con una emprendedora real)
 - Depende de: T21 (estética nueva de toda la app)
 - Funcionalidad: transversal
 
@@ -60,12 +60,13 @@ principales"; esta tarea lo baja a 2 y lo verifica con pruebas.
 - axe sin violaciones serias en todas las pantallas; lector de pantalla: el cambio de pantalla se anuncia.
 
 ## Entregables
-- [ ] Barra de 5 con "Más" y barra lateral agrupada
-- [ ] Buscador global con acciones y datos, sin red
-- [ ] Volver con historial y filtros en la URL
-- [ ] Saltar al contenido, foco y anuncio al cambiar de pantalla, ayuda de atajos
-- [ ] Inicio con acciones rápidas y "Seguir donde quedaste"
-- [ ] Pruebas de alcance y de teclado; documentación e índice
+- [x] Barra de 5 con "Más" y ~~barra lateral~~ agrupación en "Más" (en escritorio quedó la barra superior de T21 con
+  Inicio, Cotizar, Foto, Inventario y Pedidos, más el botón "Más" con la misma hoja agrupada; no hay barra lateral)
+- [x] Buscador global con acciones y datos, sin red (sin proveedores: ver "Pendiente")
+- [x] Volver con historial y filtros en la URL
+- [x] Saltar al contenido, foco y anuncio al cambiar de pantalla, ayuda de atajos
+- [x] Inicio con acciones rápidas y "Seguir donde quedaste"
+- [x] Pruebas de alcance y de teclado; documentación e índice (pasan el 17-nov-2026; ver "Resultados de las pruebas")
 
 ## Criterios de aceptación
 - Cualquier pantalla principal a ≤ 2 toques desde cualquier otra en el celular, medido por la e2e.
@@ -80,4 +81,84 @@ principales"; esta tarea lo baja a 2 y lo verifica con pruebas.
 - Validar con una emprendedora real cuáles son sus 4 accesos más usados.
 
 ## Resumen de cierre
-(se completa al terminar)
+**Qué se hizo (16 y 17-nov-2026):**
+- `components/AppShell.tsx`: barra inferior del celular con **Inicio · Cotizar · Foto · Inventario · Más** (dueña y
+  colaboradora; el cliente del portal tiene sus 3 destinos + "Más"). "Más" abre la hoja "Todo Cáterin" con botones
+  grandes agrupados en Ventas (Pedidos, Preguntar, Mi negocio), Cocina (Recetas, Productos listos) y Administración
+  (Importar, Métricas, Ajustes), más "Cerrar sesión". Mi negocio y Administración son solo de la dueña. En escritorio
+  (≥ 1024 px) la barra superior de T21 muestra Inicio, Cotizar, Foto, Inventario y Pedidos con su atajo, y un botón
+  "Más" que abre la misma hoja. `aria-current` en todos los destinos.
+- `components/Dialog.tsx`: diálogo modal común (foco atrapado, Esc y toque fuera cierran, el foco vuelve a donde
+  estaba); lo usan "Más", el buscador y la ayuda de atajos.
+- Buscador global **"¿Qué necesitas?"** (`components/QuickFind.tsx` + `quickfind.ts`): combobox ARIA 1.2 con flechas,
+  Inicio/Fin, Enter y Esc; busca sin tildes, por prefijo, por palabras clave y con errores de tipeo (una letra desde 4
+  letras, dos desde 7). Encuentra acciones (cotizar, contar con foto, ajustar stock, nuevo insumo, nueva receta,
+  solicitudes, insumos bajo el mínimo, pedidos de los próximos 7 días y cada pantalla) y datos: insumos con su stock,
+  recetas, productos listos con existencias y pedidos por cliente, fecha o estado. Al cliente del portal le busca pymes
+  y productos del catálogo. Máximo 8 resultados agrupados. Al abrirse pide las listas con `useCached`:
+  con señal trae lo último y sin señal usa lo guardado en el teléfono y lo avisa.
+  Nunca llama a la IA. Se abre con la lupa de la cabecera,
+  `Ctrl/⌘ K` o `/` (en Inventario y en el directorio de pymes `/` sigue enfocando el buscador de la pantalla).
+- `router.ts`: rastro de la sesión en memoria y `goBack(fallback)`: "Volver" regresa a la pantalla anterior de la app y,
+  si se entró directo por un enlace, al padre lógico (insumo → Inventario, receta → Recetas, cotización → Pedidos).
+  `navigate(path, { replace: true })` después de guardar un formulario (nuevo insumo, nueva receta, cotizar), para que
+  "Volver" no regrese al formulario enviado. `queryParams` y `replaceQuery` para filtros en la URL. Se reemplazaron
+  los `onBack={() => navigate('/')}` de las pantallas por `goBack`.
+- Filtros en la URL: `/inventario?bajo=1`, `?q=` y `?ajustar=1` (enfoca el buscador del inventario);
+  `/pedidos?estado=requested`, `?proximos=7` y `?pedido=<id>`, con un aviso "Mostrando…" y "Ver todos". Los avisos del
+  inicio abren la vista ya filtrada.
+- Accesibilidad: botón "Saltar al contenido" como primer elemento con Tab; al cambiar de pantalla (no de filtro) la
+  página sube, el foco va al `h1` (salvo que la pantalla haya enfocado un campo) y una región `aria-live` anuncia
+  "Pantalla: …". Objetivos táctiles de 48 px o más en la navegación.
+- Atajos de escritorio (`shortcuts.ts`, ayuda con `?`): `C` cotizar, `F` contar con foto, `I` inventario, `P` pedidos,
+  `/` o `Ctrl/⌘ K` buscar, `?` ayuda. No actúan dentro de un campo ni con un diálogo abierto; el cliente del portal
+  solo tiene `C`, `/` y `?`.
+- Inicio (`pages/Home.tsx`): "Acciones rápidas" (Cotizar un pedido, Contar con foto, Ajustar stock, Preguntar) y
+  "Seguir donde quedaste" (`recent.ts`): los últimos 3 insumos, recetas, cotizaciones o pymes abiertos, guardados solo
+  en este teléfono (`localStorage`, por persona). Si el almacenamiento está bloqueado la lista no aparece y la app sigue
+  igual.
+- Pruebas: `src/quickaccess.test.tsx` (Vitest: normalización, búsqueda aproximada y agrupada, `goBack`, recientes,
+  `Ctrl+K`, "Más" con foco atrapado y Esc, avisos filtrados, saltar al contenido y foco al título) y
+  `e2e/acceso-rapido.e2e.ts` (mapa de alcance desde 5 pantallas a 390 px, acciones principales en ≤ 3 toques, recorrido
+  solo con teclado en escritorio, axe en 12 pantallas a 390 y 1280 px, capturas en `apps/web/e2e-artifacts/t22/`).
+
+**Resultados de las pruebas:**
+Ejecutadas el 17-nov-2026 con el compose de desarrollo y la demo de Banquetería Volcán Llaima (datos sintéticos):
+- `./scripts/check.sh`: pasa (ruff, mypy; pytest 309 aprobadas, 1 omitida, 1 xfail, cobertura 97 %; eslint, `tsc -b`;
+  Vitest 24 archivos, 173 pruebas).
+- `npx playwright test e2e/acceso-rapido.e2e.ts`: 4 aprobadas. Suite e2e completa: 31 aprobadas, 3 omitidas (las de
+  `pwa.e2e.ts`, que exigen `PWA_BASE_URL` con `vite preview`; no se ejercitaron).
+- Mapa de alcance a 390 px, peor caso desde `/`, `/inventario`, `/recetas`, `/pedidos` y `/tablero`: Inicio, Cotizar,
+  Contar con foto e Inventario a 1 toque; Pedidos, Preguntar, Mi negocio, Recetas, Productos listos, Importar, Métricas
+  y Ajustes a 2. Acciones principales a ≤ 3 toques (en "ajustar stock" la prueba cuenta hasta abrir el ajuste, no el
+  guardado).
+- axe: sin violaciones serias ni críticas en 12 pantallas a 390 y 1280 px, ni con la hoja "Más" o el buscador abiertos.
+- Correcciones al verificar: la prueba de teclado llegaba a "Volver" con `focus()` por código y ahora llega solo con
+  `Shift+Tab`; `navigate(…, { replace: true })` hacia la misma ruta dejaba una marca encendida que hacía que "Volver"
+  se saltara una pantalla (corregido en `router.ts`, con prueba Vitest).
+
+**Pendiente:**
+- Proveedores en el buscador: el plan los incluía y no están (solo acciones, insumos, recetas, productos listos y
+  pedidos).
+- Barra lateral de escritorio: no se hizo; se mantuvo la barra superior de T21 (ADR-013) con "Más". Si una usuaria de
+  computador echa de menos ver todo de una vez, se reevalúa.
+- "Seguir donde quedaste" guarda cotizaciones en vez de pedidos (los pedidos se abren desde la lista, sin pantalla
+  propia).
+- Probar el anuncio con un lector de pantalla real (TalkBack en Android); las pruebas solo verifican la región
+  `aria-live` y el foco.
+- La e2e cubre a la dueña; la colaboradora y el cliente del portal no tienen mapa de alcance propio.
+- Validar con una emprendedora real cuáles son sus 4 accesos más usados.
+- Integrar a `main` cuando el usuario lo apruebe.
+- Guía de usuaria: todavía no existe (es parte de T12). Cuando se escriba, debe explicar la barra inferior y "Más", el
+  buscador "¿Qué necesitas?" y los atajos (`C`, `F`, `I`, `P`, `/` o `Ctrl/⌘ K`, `?`); el detalle técnico quedó en
+  `docs/ARCHITECTURE.md` (3.1) y `docs/adr/ADR-004-offline-pwa.md`.
+
+**Riesgos:**
+- Cinco espacios en la barra inferior: la e2e mide a 390 px; en celulares de 360 px no se ha probado y las etiquetas
+  pueden quedar justas.
+- Sin señal, el buscador solo encuentra lo que el teléfono ya guardó: un insumo creado en otro equipo no aparece hasta
+  abrir la app con señal.
+- Cada vez que se abre, el buscador pide hasta 4 listas (insumos, recetas, productos listos, pedidos); al cliente del
+  portal le pide el catálogo de cada pyme del directorio. Con red lenta o muchas pymes puede ser lento o gastar datos;
+  si se nota, conviene mostrar primero lo guardado y refrescar en segundo plano.
+- El rastro de "Volver" vive en memoria: al recargar la página se pierde y "Volver" va al padre lógico.

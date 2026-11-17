@@ -25,6 +25,7 @@ Actualizado: 16-nov-2026. Por decisión del usuario (9-nov-2026), las tareas se 
 | [T19](T19-portada-catalogo.md) | Portada de la pyme en el portal (ADR-012) | F3 | hecha en la rama `feat/T19-portada-catalogo` (falta integrar a `main` y fotos reales) | T15, T16 | por asignar |
 | T20 | Cotización que usa primero los productos ya hechos (propuesta en T18) | F3 | propuesta | T18 | por asignar |
 | [T21](T21-estetica-referencia.md) | Rediseño de toda la app con la estética de la imagen de referencia | transversal | hecha en la rama `feat/T21-estetica-referencia` (ADR-013; falta integrar a `main` y validar con personas) | T18, T19 | por asignar |
+| [T22](T22-acceso-rapido.md) | Acceso rápido: todo a uno o dos toques (barra con "Más", buscador sin red, volver con historial) | transversal | hecha en la rama `feat/T22-acceso-rapido` (falta integrar a `main` y validar con una emprendedora real) | T21 | por asignar |
 
 Orden recomendado: T01 → T02 → T03 → T04 → (T05, T06, T07 en paralelo si hay capacidad) → T08 → T09 → T10 → T11 → T12.
 

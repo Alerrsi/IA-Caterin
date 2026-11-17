@@ -69,6 +69,14 @@ Proveedor externo de LLM: opcional, se activa por `.env` y pasa por la misma int
 
 > **Nota:** `modules/suppliers` no aparece en la estructura del `README.md`. Se propone separarlo de `inventory` porque los precios y la comparación de proveedores son la base de F3 y tienen su propia lógica de importación. Si el equipo prefiere no separarlo, se fusiona con `inventory` sin cambiar el modelo de datos.
 
+### 3.1 Navegación de la PWA (T22)
+
+- **Router por hash** (`apps/web/src/router.ts`, `#/ruta`): funciona sin servidor y sin red. Guarda en memoria un rastro de la sesión para que "Volver" (`goBack(fallback)`) regrese a la pantalla anterior de la app o, si se entró directo por un enlace, al padre lógico. Después de guardar un formulario se navega con `replace` para no volver al formulario enviado.
+- **Destinos** (`components/AppShell.tsx`): en el celular, barra inferior con Inicio, Cotizar, Foto, Inventario y "Más" (hoja agrupada en Ventas, Cocina y Administración); en escritorio, barra superior con los mismos destinos más Pedidos y el mismo "Más". Los destinos dependen del rol (dueña, colaboradora, cliente del portal).
+- **Buscador global "¿Qué necesitas?"** (`components/QuickFind.tsx`, búsqueda pura en `quickfind.ts`): acciones y datos (insumos, recetas, productos listos, pedidos; pymes y productos para el cliente) desde las listas de `useCached`, sin tildes y con coincidencia aproximada, en el navegador y sin IA.
+- **Filtros en la URL** (`?bajo=1`, `?ajustar=1`, `?estado=requested`, `?proximos=7`, `?pedido=<id>`): los avisos del inicio y el buscador abren la vista ya filtrada; `replaceQuery` actualiza la URL sin crear historial.
+- **Accesibilidad de base:** "Saltar al contenido", foco al `h1` y anuncio `aria-live` al cambiar de pantalla, diálogos con foco atrapado (`components/Dialog.tsx`) y atajos de una tecla (`shortcuts.ts`) que no actúan dentro de campos.
+
 ## 4. Límites de módulos
 
 Cada módulo de `apps/api/app/modules/<módulo>/` sigue la misma forma:
