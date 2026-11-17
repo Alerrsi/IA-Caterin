@@ -87,6 +87,10 @@ principales"; esta tarea lo baja a 2 y lo verifica con pruebas.
   ventas, cliente del portal); un toque entra. Va en la fila que ya existía para no romper "entrar sin scroll" de T21
   (a 360×640 quedaban ~50 px libres). Solo aparece en desarrollo o con `VITE_DEMO_LOGIN=true` (`apps/web/src/demoLogin.ts`).
   Prueba Vitest en `App.test.tsx` y e2e con axe en `acceso-rapido.e2e.ts`; suite e2e completa: 32 aprobadas, 3 omitidas.
+  Ajuste del 17-nov-2026 (pedido del usuario): la hoja queda solo con **Dueña** y **Cliente del portal**. En el mismo
+  cambio se corrigió la estética del escritorio: la hoja "Más" (440 px) pasa a 2 columnas porque con 3 la tecla "P" se
+  montaba sobre "Pedidos", y la barra superior muestra el texto de "¿Qué necesitas?" y de "Cerrar sesión" solo desde
+  1536 px (antes se cortaba "Cerrar sesión" y había scroll horizontal a 1366 px).
 - `components/AppShell.tsx`: barra inferior del celular con **Inicio · Cotizar · Foto · Inventario · Más** (dueña y
   colaboradora; el cliente del portal tiene sus 3 destinos + "Más"). "Más" abre la hoja "Todo Cáterin" con botones
   grandes agrupados en Ventas (Pedidos, Preguntar, Mi negocio), Cocina (Recetas, Productos listos) y Administración

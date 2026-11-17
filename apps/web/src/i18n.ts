@@ -82,8 +82,6 @@ export const t = {
     demoHint: 'Cuentas de la pyme ficticia Banquetería Volcán Llaima. Un toque y entras.',
     demoUsers: {
       owner: 'Dueña',
-      kitchen: 'Jefa de cocina',
-      sales: 'Encargada de ventas',
       customer: 'Cliente del portal',
     },
   },

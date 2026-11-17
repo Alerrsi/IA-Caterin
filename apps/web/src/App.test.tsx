@@ -44,10 +44,12 @@ test('el acceso rápido de demostración entra con un toque con la cuenta elegid
   render(<App />)
   await user.click(await screen.findByRole('button', { name: 'Demo' }))
   const demo = screen.getByRole('dialog', { name: 'Acceso rápido de demostración' })
-  await user.click(within(demo).getByRole('button', { name: /Jefa de cocina/ }))
+  expect(within(demo).getAllByRole('button', { name: /Dueña|Cliente del portal/ })).toHaveLength(2)
+  expect(within(demo).queryByRole('button', { name: /cocina|ventas/i })).toBeNull()
+  await user.click(within(demo).getByRole('button', { name: /Cliente del portal/ }))
   expect(await screen.findByText('Hola, Dueña')).toBeInTheDocument()
   const login = calls.find((c) => c.method === 'POST' && c.path === '/auth/login')
-  expect(login?.body).toEqual({ email: 'cocina.llaima@demo.local', password: 'caterin-demo-2026' })
+  expect(login?.body).toEqual({ email: 'cliente1.llaima@demo.local', password: 'caterin-demo-2026' })
 })
 
 test('lee un pedido, ofrece sugerencias, se edita y genera la cotización', async () => {

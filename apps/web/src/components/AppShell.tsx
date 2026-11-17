@@ -100,7 +100,8 @@ function MoreSheet({
               <h3 id={`more-${g}`} className="px-1 pb-2 text-sm font-semibold text-on-surface-variant">
                 {t.nav.groups[g]}
               </h3>
-              <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {/* En escritorio la hoja mide 440 px: 2 columnas para que el nombre y el atajo no se monten. */}
+              <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-2">
                 {items.map((d) => {
                   const active = isActive(d.path, path)
                   return (
@@ -119,7 +120,7 @@ function MoreSheet({
                         >
                           <Icon name={d.icon} className="h-5 w-5" />
                         </span>
-                        <span className="min-w-0 flex-1">{d.label}</span>
+                        <span className="min-w-0 flex-1 break-words">{d.label}</span>
                         {d.shortcut && <Kbd>{d.shortcut}</Kbd>}
                       </a>
                     </li>
@@ -255,10 +256,10 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
       type="button"
       onClick={() => void logout()}
       aria-label={compact ? t.home.logout : undefined}
-      className={`inline-flex h-12 items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-outline px-4 text-base font-semibold text-on-surface transition-colors hover:bg-surface-container focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40 ${className}`}
+      className={`inline-flex h-12 items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-outline ${compact ? 'w-12 px-0 2xl:w-auto 2xl:px-4' : 'px-4'} text-base font-semibold text-on-surface transition-colors hover:bg-surface-container focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40 ${className}`}
     >
       <Icon name="logout" className="h-5 w-5" />
-      <span className={compact ? 'sr-only xl:not-sr-only' : ''}>{t.home.logout}</span>
+      <span className={compact ? 'sr-only 2xl:not-sr-only' : ''}>{t.home.logout}</span>
     </button>
   )
 
@@ -266,7 +267,7 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
     <button
       type="button"
       onClick={() => setFinding(true)}
-      aria-label={wide ? undefined : t.find.open}
+      aria-label={t.find.open}
       aria-keyshortcuts="Control+K Meta+K /"
       aria-haspopup="dialog"
       className={
@@ -278,7 +279,7 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
       <Icon name="search" className="h-5 w-5" />
       {wide && (
         <>
-          <span className="hidden xl:inline">{t.find.open}</span>
+          <span aria-hidden="true" className="hidden 2xl:inline">{t.find.open}</span>
           <Kbd>/</Kbd>
         </>
       )}
@@ -306,7 +307,7 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
             <Logo />
             <span className="sr-only">{subtitle}</span>
           </a>
-          <nav aria-label={t.nav.label} className="flex flex-1 justify-center">
+          <nav aria-label={t.nav.label} className="flex min-w-0 flex-1 justify-center">
             <ul className="flex items-center gap-1">
               {desk.map((d) => {
                 const active = isActive(d.path, path)

@@ -8,7 +8,7 @@ import { Alert, Button, Field, IconDot, inputClass } from '../components/ui'
 import { DEMO_PASSWORD, DEMO_USERS, demoLoginEnabled, type DemoUserKey } from '../demoLogin'
 import { t } from '../i18n'
 
-const DEMO_ICONS: Record<DemoUserKey, IconName> = { owner: 'store', kitchen: 'restaurant', sales: 'orders', customer: 'cloche' }
+const DEMO_ICONS: Record<DemoUserKey, IconName> = { owner: 'store', customer: 'cloche' }
 
 export default function Login() {
   const { login } = useAuth()
