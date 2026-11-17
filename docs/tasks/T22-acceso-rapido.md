@@ -82,6 +82,11 @@ principales"; esta tarea lo baja a 2 y lo verifica con pruebas.
 
 ## Resumen de cierre
 **Qué se hizo (16 y 17-nov-2026):**
+- Agregado el 17-nov-2026 para la reunión de demostración (pedido del usuario): botón **Demo** en la fila del logo del
+  login que abre una hoja con 4 cuentas ficticias de Banquetería Volcán Llaima (dueña, jefa de cocina, encargada de
+  ventas, cliente del portal); un toque entra. Va en la fila que ya existía para no romper "entrar sin scroll" de T21
+  (a 360×640 quedaban ~50 px libres). Solo aparece en desarrollo o con `VITE_DEMO_LOGIN=true` (`apps/web/src/demoLogin.ts`).
+  Prueba Vitest en `App.test.tsx` y e2e con axe en `acceso-rapido.e2e.ts`; suite e2e completa: 32 aprobadas, 3 omitidas.
 - `components/AppShell.tsx`: barra inferior del celular con **Inicio · Cotizar · Foto · Inventario · Más** (dueña y
   colaboradora; el cliente del portal tiene sus 3 destinos + "Más"). "Más" abre la hoja "Todo Cáterin" con botones
   grandes agrupados en Ventas (Pedidos, Preguntar, Mi negocio), Cocina (Recetas, Productos listos) y Administración

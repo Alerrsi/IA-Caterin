@@ -115,6 +115,11 @@ docker compose -f infra/docker-compose.yml exec api python -m app.db.demo_full
 | Banquetería del Lago (`seed`) | `duena.lago@demo.local` | Segunda pyme para probar el aislamiento |
 | Banquetería Volcán Llaima (`demo_full`) | `duena.llaima@demo.local`, `cocina.llaima@demo.local`, `ventas.llaima@demo.local`; clientes del portal `cliente1.llaima@demo.local` … `cliente8.llaima@demo.local` (enlace `#/cliente/llaima-demo-2026`) | Volumen para la demo: ~100 insumos, 10 proveedores con historial de precios, 30 recetas, ~220 pedidos en 8 meses con cotizaciones, más de 3.600 movimientos de stock, caja, producción, 6 documentos indexados, fichas del RAG, preguntas al asistente, métricas y solicitudes del portal |
 
+**Acceso rápido de demostración:** en desarrollo, el login muestra un botón **Demo** (arriba a la derecha) que abre
+las cuentas de Banquetería Volcán Llaima (dueña, jefa de cocina, encargada de ventas y cliente del portal): un toque y
+se entra. En un build de producción no aparece, salvo que se compile con `VITE_DEMO_LOGIN=true`; si el seed usó otra
+`SEED_DEMO_PASSWORD`, se indica con `VITE_DEMO_PASSWORD`. Ver `apps/web/src/demoLogin.ts`.
+
 - API: http://localhost:8000/docs (OpenAPI en `/api/v1/openapi.json`)
 - Web: http://localhost:5173
 - Postgres queda en `localhost:5433` (para no chocar con otro Postgres local).

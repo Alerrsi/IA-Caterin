@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react'
+import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 import App from './App'
@@ -33,6 +33,21 @@ test('sin sesión muestra el login y al entrar muestra el inicio', async () => {
   expect(await screen.findByText('Hola, Dueña')).toBeInTheDocument()
   expect(screen.getByRole('button', { name: /Cotizar un pedido/ })).toBeEnabled()
   expect(screen.getByRole('button', { name: /Contar con foto/ })).toBeEnabled()
+})
+
+test('el acceso rápido de demostración entra con un toque con la cuenta elegida', async () => {
+  mockApi({
+    'POST /auth/refresh': () => ({ status: 401, body: { code: 'session_expired', title: 'Tu sesión venció' } }),
+    'POST /auth/login': () => ({ body: session }),
+  })
+  const user = userEvent.setup()
+  render(<App />)
+  await user.click(await screen.findByRole('button', { name: 'Demo' }))
+  const demo = screen.getByRole('dialog', { name: 'Acceso rápido de demostración' })
+  await user.click(within(demo).getByRole('button', { name: /Jefa de cocina/ }))
+  expect(await screen.findByText('Hola, Dueña')).toBeInTheDocument()
+  const login = calls.find((c) => c.method === 'POST' && c.path === '/auth/login')
+  expect(login?.body).toEqual({ email: 'cocina.llaima@demo.local', password: 'caterin-demo-2026' })
 })
 
 test('lee un pedido, ofrece sugerencias, se edita y genera la cotización', async () => {

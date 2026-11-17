@@ -66,10 +66,13 @@ export function AuthLayout({
   children,
   titleAsHeading = false,
   compact = false,
+  headerAction,
 }: {
   children: ReactNode
   titleAsHeading?: boolean
   compact?: boolean
+  /** Botón opcional a la derecha del logo (acceso de demostración del login): no agrega altura. */
+  headerAction?: ReactNode
 }) {
   const Title = titleAsHeading ? 'h1' : 'p'
   const [lead, rest] = t.taglineParts
@@ -80,6 +83,7 @@ export function AuthLayout({
           <div className="flex items-center gap-3">
             <Isotipo className="h-9 w-9 lg:h-11 lg:w-11" />
             <Title className="font-display text-2xl font-extrabold tracking-tight text-on-surface lg:text-3xl">{t.appName}</Title>
+            {headerAction && <div className="ml-auto">{headerAction}</div>}
           </div>
           <div className={`mt-3 gap-4 lg:mt-6 lg:flex ${compact ? 'max-lg:hidden' : 'max-lg:short:hidden'}`}>
             <Squiggle className="mt-3 hidden h-6 w-12 shrink-0 text-on-surface-variant lg:block" />

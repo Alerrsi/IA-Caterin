@@ -213,3 +213,15 @@ test('axe y capturas de la navegación nueva en todas las pantallas (390 y 1280 
     await page.keyboard.press('Escape')
   }
 })
+
+test('login: el acceso rápido de demostración entra en dos toques (Demo → cuenta)', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Demo', exact: true }).click()
+  const demo = page.getByRole('dialog', { name: 'Acceso rápido de demostración' })
+  await expect(demo).toBeVisible()
+  await audit(page, 'login con acceso rápido')
+  await page.screenshot({ path: `${DIR}/login-demo-390.png`, fullPage: true })
+  await demo.getByRole('button', { name: /Dueña/ }).click()
+  await expect(page.getByRole('heading', { level: 1, name: /Hola/ })).toBeVisible()
+})

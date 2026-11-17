@@ -76,6 +76,16 @@ export const t = {
     password: 'Contraseña',
     submit: 'Entrar',
     submitting: 'Entrando…',
+    demoOpen: 'Demo',
+    demoTitle: 'Acceso rápido de demostración',
+    demoClose: 'Cerrar',
+    demoHint: 'Cuentas de la pyme ficticia Banquetería Volcán Llaima. Un toque y entras.',
+    demoUsers: {
+      owner: 'Dueña',
+      kitchen: 'Jefa de cocina',
+      sales: 'Encargada de ventas',
+      customer: 'Cliente del portal',
+    },
   },
   home: {
     hello: (name: string) => `Hola, ${name}`,
