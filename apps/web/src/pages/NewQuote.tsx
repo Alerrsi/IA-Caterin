@@ -198,7 +198,7 @@ export default function NewQuote({ portal = false }: { portal?: boolean }) {
       const quote = await post<QuoteOut>(`/orders/${orderId}/quotes`, {})
       // Métrica T09: desde que se abrió esta pantalla hasta tener la cotización calculada.
       sendQuoteTiming({ started_at: startedAt.current, ended_at: new Date().toISOString(), quote_id: quote.id, source })
-      navigate(`/cotizaciones/${quote.id}`)
+      navigate(`/cotizaciones/${quote.id}`, { replace: true })
     } catch (err) {
       if (isMarginRequired(err)) {
         setNeedsMargin(true)
@@ -224,7 +224,7 @@ export default function NewQuote({ portal = false }: { portal?: boolean }) {
         extraction: source === 'text' ? extraction : null,
         lines: lines.map((l, i) => ({ recipe_id: l.recipe_id, requested_name: l.requested_name || null, qty: parsed[i], unit: l.unit })),
       })
-      navigate(`/solicitudes/${req.id}`)
+      navigate(`/solicitudes/${req.id}`, { replace: true })
     } catch (err) {
       setError(err instanceof ApiError ? err.userMessage : t.genericError)
     } finally {

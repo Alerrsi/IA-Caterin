@@ -58,7 +58,7 @@ export default function IngredientNew() {
         category: category.trim() || null,
       })
       await patchCached<Ingredient[]>('ingredients', (all) => [...all.filter((i) => i.id !== created.id), created])
-      navigate(`/inventario/${created.id}`)
+      navigate(`/inventario/${created.id}`, { replace: true })
     } catch (err) {
       setError(err instanceof ApiError ? err.userMessage : t.genericError)
       setBusy(false)

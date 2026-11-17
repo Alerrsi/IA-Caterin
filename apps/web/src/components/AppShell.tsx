@@ -76,7 +76,8 @@ function MoreSheet({
   onClose: () => void
   footer: ReactNode
 }) {
-  const groups: Group[] = ['main', 'sales', 'kitchen', 'admin']
+  // Lo de todos los días ya está en la barra: la hoja muestra solo el resto (en el cliente, sus 3 destinos).
+  const groups: Group[] = dests.some((d) => d.group !== 'main') ? ['sales', 'kitchen', 'admin'] : ['main']
   return (
     <Dialog label={t.nav.moreTitle} onClose={onClose}>
       <div className="flex items-center justify-between gap-2 px-5 pb-2 pt-4">
@@ -109,19 +110,17 @@ function MoreSheet({
                         onClick={onClose}
                         aria-current={active ? 'page' : undefined}
                         aria-keyshortcuts={d.shortcut}
-                        className={`flex min-h-20 flex-col items-start justify-between gap-2 rounded-2xl p-3 text-base font-semibold transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40 ${
+                        className={`flex min-h-14 items-center gap-3 rounded-2xl py-2 pl-2 pr-3 text-base font-semibold leading-tight transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40 ${
                           active ? 'bg-primary text-on-primary' : 'bg-surface-container text-on-surface hover:bg-surface-container-high'
                         }`}
                       >
-                        <span className="flex w-full items-center justify-between">
-                          <span
-                            className={`inline-flex h-9 w-9 items-center justify-center rounded-full ${active ? 'bg-accent text-on-accent' : 'bg-surface-container-lowest'}`}
-                          >
-                            <Icon name={d.icon} className="h-5 w-5" />
-                          </span>
-                          {d.shortcut && <Kbd>{d.shortcut}</Kbd>}
+                        <span
+                          className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${active ? 'bg-accent text-on-accent' : 'bg-surface-container-lowest'}`}
+                        >
+                          <Icon name={d.icon} className="h-5 w-5" />
                         </span>
-                        {d.label}
+                        <span className="min-w-0 flex-1">{d.label}</span>
+                        {d.shortcut && <Kbd>{d.shortcut}</Kbd>}
                       </a>
                     </li>
                   )
@@ -322,6 +321,7 @@ export function AppShell({ path, children }: { path: string; children: ReactNode
                       }`}
                     >
                       {d.label}
+                      {d.shortcut && <Kbd>{d.shortcut}</Kbd>}
                     </a>
                   </li>
                 )

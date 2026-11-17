@@ -40,10 +40,10 @@ test.describe('escritorio', () => {
   })
 })
 
-test('con "reducir movimiento" el cajón del celular aparece sin animación', async ({ page }) => {
+test('con "reducir movimiento" la hoja "Más" del celular aparece sin animación (T22)', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await login(page)
-  await page.getByRole('button', { name: 'Abrir menú' }).click()
+  await page.getByRole('navigation', { name: 'Navegación principal' }).getByRole('button', { name: 'Más' }).click()
   const dialog = page.getByRole('dialog')
   await expect(dialog).toBeVisible()
   expect(await dialog.evaluate((el) => getComputedStyle(el).transitionProperty)).toBe('none')

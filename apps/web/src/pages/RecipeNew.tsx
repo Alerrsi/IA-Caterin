@@ -181,7 +181,7 @@ export default function RecipeNew() {
           waste_pct: l.waste.trim() ? l.waste.trim().replace(',', '.') : null,
         })),
       })
-      navigate(`/recetas/${created.id}`)
+      navigate(`/recetas/${created.id}`, { replace: true })
     } catch (err) {
       setError(err instanceof ApiError ? err.userMessage : t.genericError)
       setSaving(false)

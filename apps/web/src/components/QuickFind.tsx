@@ -209,7 +209,8 @@ export function QuickFind({ role, onClose }: { role: string | undefined; onClose
           aria-activedescendant={results.length > 0 ? optionId(active) : undefined}
           aria-label={t.find.label}
           aria-describedby={`${uid}-hint`}
-          type="search"
+          type="text"
+          inputMode="search"
           enterKeyHint="go"
           autoComplete="off"
           spellCheck={false}

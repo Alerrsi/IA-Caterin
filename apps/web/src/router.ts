@@ -6,8 +6,21 @@ export function currentPath(): string {
   return hash || '/'
 }
 
-export function navigate(path: string): void {
-  window.location.hash = path
+let replacing = false
+
+/**
+ * Cambia de pantalla. Con `replace`, la nueva reemplaza a la actual en el historial: después de guardar un formulario
+ * (nuevo insumo, nueva receta, cotizar), "Volver" no regresa al formulario ya enviado (T22).
+ */
+export function navigate(path: string, options: { replace?: boolean } = {}): void {
+  if (options.replace) {
+    // Si ya se está en esa ruta no hay `hashchange`: no se marca, o la próxima visita reemplazaría en vez de sumar.
+    if (currentPath() === path) return
+    replacing = true
+    window.location.replace(`#${path}`)
+  } else {
+    window.location.hash = path
+  }
 }
 
 /**
@@ -22,6 +35,11 @@ function pathOnly(path: string): string {
 
 /** Registra el cambio de pantalla: si se volvió a la anterior, la saca del rastro; si no, la agrega. */
 export function recordVisit(path: string): void {
+  if (replacing) {
+    replacing = false
+    trail[trail.length - 1] = path
+    return
+  }
   const last = trail[trail.length - 1]
   if (last === path) return
   if (trail.length > 1 && trail[trail.length - 2] === path) trail.pop()

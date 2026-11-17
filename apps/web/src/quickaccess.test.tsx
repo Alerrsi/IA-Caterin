@@ -6,7 +6,7 @@ import { setAccessToken } from './api'
 import { resetMemory } from './offline/db'
 import { editDistance, normalize, scoreItem, search, type FindItem } from './quickfind'
 import { remember, recentFor } from './recent'
-import { goBack, recordVisit, resetTrail } from './router'
+import { goBack, navigate, recordVisit, resetTrail } from './router'
 import { mockApi, session } from './test/mockApi'
 
 // --------------------------------------------------------------------------- búsqueda (pura)
@@ -37,6 +37,7 @@ test('encuentra sin tildes, por prefijo, por palabra clave y con un error de tip
   expect(search('arina', items).map((r) => r.id)).toEqual(['harina']) // falta la h
   expect(search('presupuesto', items).map((r) => r.id)).toEqual(['quote'])
   expect(search('xyz', items)).toEqual([])
+  expect(search('emp', [item('m', 'actions', 'Métricas', 'tiempo encuesta')])).toEqual([]) // no por un trozo de clave
   expect(scoreItem('harina', items[1])).toBeGreaterThan(scoreItem('arina', items[1]))
 })
 
@@ -69,6 +70,29 @@ test('volver regresa a la pantalla anterior de la app o, si se entró directo, a
   recordVisit('/recetas/r1')
   goBack('/recetas')
   expect(back).toHaveBeenCalledTimes(1)
+  back.mockRestore()
+})
+
+test('después de guardar, la pantalla nueva reemplaza al formulario: volver no regresa al formulario', async () => {
+  const back = vi.spyOn(window.history, 'back').mockImplementation(() => {})
+  const changed = () => new Promise((resolve) => window.addEventListener('hashchange', resolve, { once: true }))
+  window.location.hash = '#/'
+  resetTrail('/')
+  let wait = changed()
+  window.location.hash = '#/recetas/nueva'
+  await wait
+  wait = changed()
+  navigate('/recetas/r9', { replace: true })
+  await wait
+  navigate('/recetas/r9', { replace: true }) // misma ruta: no hay hashchange y no debe quedar marcado
+  recordVisit('/inventario') // se suma (no reemplaza a la receta)
+  recordVisit('/recetas/r9') // atrás
+  // El rastro es ['/', '/recetas/r9']: al volver al inicio se reconoce como "atrás" y desde ahí no hay anterior.
+  recordVisit('/')
+  window.location.hash = '#/'
+  goBack('/fallback')
+  expect(back).not.toHaveBeenCalled()
+  expect(window.location.hash).toBe('#/fallback')
   back.mockRestore()
 })
 

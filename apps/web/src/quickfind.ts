@@ -58,10 +58,10 @@ export function editDistance(a: string, b: string, max: number): number {
 }
 
 /** Qué tan bien calza una palabra buscada con una palabra del texto (0 = no calza). */
-function wordScore(q: string, word: string): number {
+function wordScore(q: string, word: string, inside = true): number {
   if (word === q) return 10
   if (word.startsWith(q)) return 8
-  if (q.length >= 3 && word.includes(q)) return 5
+  if (inside && q.length >= 3 && word.includes(q)) return 5
   // Error de tipeo: una letra de diferencia desde 4 letras, dos desde 7 ("arina" encuentra "harina").
   if (q.length >= 4) {
     const max = q.length >= 7 ? 2 : 1
@@ -83,7 +83,8 @@ export function scoreItem(query: string, item: FindItem): number {
   let total = 0
   for (const q of qWords) {
     const inName = Math.max(0, ...nameWords.map((w) => wordScore(q, w)))
-    const inExtra = Math.max(0, ...extraWords.map((w) => wordScore(q, w))) * 0.6
+    // En las palabras clave no cuenta un trozo en medio ("emp" no debe encontrar "tiempo").
+    const inExtra = Math.max(0, ...extraWords.map((w) => wordScore(q, w, false))) * 0.6
     const best = Math.max(inName, inExtra)
     if (best === 0) return 0
     total += best
